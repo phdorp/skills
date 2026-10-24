@@ -88,6 +88,9 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
   how to request, receive, and act on feedback.
 - **[finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md)** - Verify,
   choose merge/PR/keep, and clean up; includes the PR body shape.
+- **[conventional-commits](skills/conventional-commits/SKILL.md)** - Write commit messages in
+  the Conventional Commits format: type, optional scope, breaking-change marker, body, and
+  footers.
 - **[handoff](skills/handoff/SKILL.md)** _(user-invoked)_ - Compact a session into a handoff document or a fresh
   background agent.
 - **[retro](skills/retro/SKILL.md)** _(user-invoked)_ - Turn a session's friction into environment improvements.

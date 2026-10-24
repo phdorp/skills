@@ -110,7 +110,7 @@ Each step is one action with a checkable result:
 2. Run it and see it fail.
 3. Implement the minimal code.
 4. Run it and see it pass.
-5. Commit.
+5. Commit, with the message formatted per [conventional-commits](../conventional-commits/SKILL.md).
 
 ### Fill the template
 

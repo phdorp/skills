@@ -57,7 +57,7 @@ Same loop in every mode. Mode 1 runs it yourself; mode 2 hand it to a fresh impl
 1. **Take the task.** Get its brief, record BASE (`git rev-parse HEAD`), and read the brief — every task, including ones you remember from setup. What you remember is a summary; the brief has the exact values, signatures, and test cases. Never make a subagent read the whole plan file.
 2. **Work the steps in order.** The plan's steps are already in RED-GREEN order. A test step's code is written first and run first; watching it fail is a step, not a formality. Every step that runs a command has an `Expected:` line: run it, read the output, compare.
 3. **Classify a mismatch.** The code is wrong → `systematic-debugging`, find the cause, never patch the symptom. The plan is wrong → rule on the smallest change that satisfies the spec, ledger it, continue.
-4. **Commit as the plan's commit steps say.** A task that spans several commits is fine. BASE is what the review range is cut from, never `HEAD~1`.
+4. **Commit as the plan's commit steps say**, with each message in the [conventional-commits](../conventional-commits/SKILL.md) format. A task that spans several commits is fine. BASE is what the review range is cut from, never `HEAD~1`.
 5. **Satisfy the completion contract.** With evidence in this session, not inferred from the diff looking right:
    - every test the brief names exists and ran in this task, and you read the output;
    - the final test run for the task passed, and the ledger line carries the command and result;

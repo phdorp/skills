@@ -1,7 +1,7 @@
 # Attribution
 
-This collection is a curated merge of two MIT-licensed skill libraries. Each merged skill names
-the upstream skills it draws from. Upstream text is adapted, not copied wholesale: names,
+This collection is mainly a curated merge of two MIT-licensed skill libraries, alongside a few
+original skills. Each merged skill names the upstream skills it draws from. Upstream text is adapted, not copied wholesale: names,
 cross-references, and conflicting guidance were reconciled.
 
 ## Sources
@@ -41,6 +41,14 @@ Skills merged: `test-driven-development`, `systematic-debugging`, `requesting-co
 - License: MIT
 
 The PR-body guidance in `finishing-a-development-branch` is derived from `show-me`.
+
+### conventionalcommits.org
+
+- URL: <https://www.conventionalcommits.org/en/v1.0.0/>
+- License: CC BY 3.0
+
+The `conventional-commits` skill restates the Conventional Commits 1.0.0 specification. Its
+default type set follows `@commitlint/config-conventional` (MIT).
 
 ### openmodelica
 
