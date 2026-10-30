@@ -1,5 +1,5 @@
 ---
-name: Setup Project Workflow
+name: setup-project-workflow
 description: Configure a repo for this collection's issue tracker, triage labels, and domain doc layout.
 metadata:
   opencode/autoinvoke: false

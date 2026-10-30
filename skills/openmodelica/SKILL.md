@@ -1,5 +1,5 @@
 ---
-name: OpenModelica
+name: openmodelica
 description: Use when building, checking, or simulating Modelica models with OpenModelica - modelling a physical system, a modular model library, or validating and plotting simulation results.
 ---
 

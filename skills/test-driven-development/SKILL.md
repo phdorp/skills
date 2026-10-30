@@ -1,5 +1,5 @@
 ---
-name: Test-Driven Development
+name: test-driven-development
 description: Use when implementing a feature, fixing a bug, or changing behavior, and the work needs a test that proves it — especially when the user mentions red-green-refactor, test-first, integration tests, or asks for TDD.
 ---
 

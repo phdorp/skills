@@ -1,5 +1,5 @@
 ---
-name: Conventional Commits
+name: conventional-commits
 description: Use when writing or amending a git commit message, or when a repository enforces commit conventions. Triggers include "commit this", "write a commit message", "amend the commit", and "which type should this commit be".
 ---
 

@@ -6,6 +6,7 @@ Checks:
   - the frontmatter parses as YAML (when PyYAML is installed), catching
     unquoted colons and other syntax a real loader would reject
   - the directory name is a valid lowercase kebab-case skill ID
+  - the frontmatter name matches the directory name
   - skill IDs are unique
   - relative Markdown links resolve to files or directories
   - no references to retired upstream skill IDs or harness prefixes survive
@@ -116,6 +117,10 @@ def main() -> int:
         else:
             if not fm.get("name"):
                 errors.append(f"{skill_id}: frontmatter missing name")
+            elif fm["name"] != skill_id:
+                errors.append(
+                    f"{skill_id}: frontmatter name {fm['name']!r} must match the directory id"
+                )
             if not fm.get("description"):
                 errors.append(f"{skill_id}: frontmatter missing description")
             elif len(fm["description"]) > 1024:

@@ -1,5 +1,5 @@
 ---
-name: Triage
+name: triage
 description: Move incoming issues and external PRs through triage into agent-ready briefs, or close them with a reason.
 metadata:
   opencode/autoinvoke: false

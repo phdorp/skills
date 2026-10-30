@@ -1,5 +1,5 @@
 ---
-name: Wayfinder
+name: wayfinder
 description: Map work too large for one session as decision tickets on the issue tracker and resolve them one at a time.
 metadata:
   opencode/autoinvoke: false

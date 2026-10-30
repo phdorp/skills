@@ -1,5 +1,5 @@
 ---
-name: Setup TypeScript Deep Modules
+name: setup-ts-deep-modules
 description: Enforce TypeScript package boundaries so each package stays a deep module with a narrow entry point.
 metadata:
   opencode/autoinvoke: false

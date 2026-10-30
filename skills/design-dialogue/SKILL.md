@@ -1,5 +1,5 @@
 ---
-name: Design Dialogue
+name: design-dialogue
 description: Use when the user wants to brainstorm a feature or product, grill a plan or decision, or settle what to build before code exists. Triggers include "brainstorm", "grill me", "help me think this through", "what should we build", and any vague request whose intent is still unsettled.
 ---
 
