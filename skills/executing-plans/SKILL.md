@@ -1,5 +1,5 @@
 ---
-name: Executing Plans
+name: executing-plans
 description: Use when implementing an approved plan or ticket graph, in this session or with subagents.
 ---
 

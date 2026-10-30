@@ -1,5 +1,5 @@
 ---
-name: Teach
+name: teach
 description: Teach a skill or concept in this workspace through a guided, hands-on lesson.
 metadata:
   opencode/autoinvoke: false

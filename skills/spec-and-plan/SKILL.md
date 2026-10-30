@@ -1,5 +1,5 @@
 ---
-name: Spec and Plan
+name: spec-and-plan
 description: Use when the user wants to write a spec, turn a conversation into a spec, break a spec or plan into tickets, or write an implementation plan. Triggers include "write a spec", "write a plan", "break this into tickets", "turn this into tickets", and "plan this out".
 ---
 

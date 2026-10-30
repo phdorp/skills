@@ -1,5 +1,5 @@
 ---
-name: Writing for Agents
+name: writing-for-agents
 description: Use when creating or editing skills, AGENTS.md or CLAUDE.md files, or any document an agent consumes.
 ---
 

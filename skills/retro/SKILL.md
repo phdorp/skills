@@ -1,5 +1,5 @@
 ---
-name: Retro
+name: retro
 description: Conduct a retrospective on a coding session and rank evidence-backed improvements to steering files, checks, and tooling.
 metadata:
   opencode/autoinvoke: false

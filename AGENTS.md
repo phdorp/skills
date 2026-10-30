@@ -31,12 +31,18 @@ accumulating plausible advice. Read this before editing a skill.
 
 ```yaml
 ---
-name: Human Readable Name
+name: <directory id>
 description: Use when ... Specific triggers and symptoms.
 metadata:
   opencode/autoinvoke: false   # only for user-invoked workflows
 ---
 ```
+
+`name` repeats the directory id, and must match it exactly. Harnesses address a skill by this
+name, so the Agent Skills naming rules apply: lowercase alphanumerics with single hyphens, no
+spaces, 1–64 characters. A human-readable label such as `Code Review` is not a valid name — it
+breaks hosts that match skill mentions with `[a-zA-Z0-9][a-zA-Z0-9:_-]*`, and it disagrees with the
+directory, which is the ID every other harness uses.
 
 Use `disable-model-invocation: true` only when portability with other harnesses matters; it is
 equivalent to `opencode/autoinvoke: false` in OpenCode.

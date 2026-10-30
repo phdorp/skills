@@ -1,5 +1,5 @@
 ---
-name: To Questionnaire
+name: to-questionnaire
 description: Turn a decision you cannot make alone into a written questionnaire for the person who can.
 metadata:
   opencode/autoinvoke: false

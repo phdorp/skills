@@ -1,5 +1,5 @@
 ---
-name: Improve Codebase Architecture
+name: improve-codebase-architecture
 description: Scan a codebase for deepening opportunities, present them as a visual report, then work through the chosen one.
 metadata:
   opencode/autoinvoke: false

@@ -1,5 +1,5 @@
 ---
-name: Code Review
+name: code-review
 description: Use when requesting, performing, or receiving review of a branch, PR, or work-in-progress diff - reviews against Standards and Spec on separate axes and turns feedback into verified changes.
 ---
 

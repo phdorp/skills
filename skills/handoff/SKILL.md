@@ -1,5 +1,5 @@
 ---
-name: Handoff
+name: handoff
 description: Compact a session into a handoff document, or seed a fresh background agent with it.
 metadata:
   opencode/autoinvoke: false

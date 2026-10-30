@@ -1,5 +1,5 @@
 ---
-name: Systematic Debugging
+name: systematic-debugging
 description: Use when something is broken, throwing, failing intermittently, or slower than it should be — any bug, test failure, build failure, integration problem, or performance regression — before proposing a fix.
 ---
 

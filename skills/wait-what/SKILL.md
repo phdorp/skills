@@ -1,5 +1,5 @@
 ---
-name: Wait What
+name: wait-what
 description: Re-pitch the last message in plain language when it did not land.
 metadata:
   opencode/autoinvoke: false

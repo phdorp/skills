@@ -1,5 +1,5 @@
 ---
-name: Finishing a Development Branch
+name: finishing-a-development-branch
 description: Use when implementation is complete, the suite passes, and the work needs integrating - verify tests, choose merge/PR/keep, execute it, clean up owned worktrees, and write the PR body.
 ---
 
