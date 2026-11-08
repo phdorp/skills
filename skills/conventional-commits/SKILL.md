@@ -7,6 +7,8 @@ description: Use when writing or amending a git commit message, or when a reposi
 
 Every commit message names its type and states what changed, in a shape changelogs and release tools parse. The specification is Conventional Commits 1.0.0: <https://www.conventionalcommits.org/en/v1.0.0/>.
 
+For the commit a squash merge lands on the default branch, also follow [squash-merge-message](../squash-merge-message/SKILL.md): it decides which parts of the message reach the changelog.
+
 ## The format
 
 ```

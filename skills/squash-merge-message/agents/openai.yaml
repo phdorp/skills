@@ -1,0 +1,3 @@
+interface:
+  display_name: "Squash-Merge Message"
+  short_description: "Write changelog-ready squash-merge commit messages"

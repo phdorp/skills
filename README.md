@@ -91,6 +91,8 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 - **[conventional-commits](skills/conventional-commits/SKILL.md)** - Write commit messages in
   the Conventional Commits format: type, optional scope, breaking-change marker, a required
   body, and closing footers.
+- **[squash-merge-message](skills/squash-merge-message/SKILL.md)** - Write the squash commit of a
+  pull request so its changelog parts serve users and its body serves developers.
 - **[handoff](skills/handoff/SKILL.md)** _(user-invoked)_ - Compact a session into a handoff document or a fresh
   background agent.
 - **[retro](skills/retro/SKILL.md)** _(user-invoked)_ - Turn a session's friction into environment improvements.
