@@ -50,6 +50,9 @@ The PR-body guidance in `finishing-a-development-branch` is derived from `show-m
 The `conventional-commits` skill restates the Conventional Commits 1.0.0 specification. Its
 default type set follows `@commitlint/config-conventional` (MIT).
 
+The `squash-merge-message` skill describes release-please's multi-change footers and commit
+override from its README (<https://github.com/googleapis/release-please>, Apache-2.0).
+
 ### openmodelica
 
 The OpenModelica skill and `SyntaxCard.mo` were provided by the repository owner.
