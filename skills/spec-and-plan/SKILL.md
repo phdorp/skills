@@ -47,6 +47,10 @@ Use [references/spec-template.md](references/spec-template.md). The shape:
 - **Testing Decisions**: what makes a good test here (external behaviour, not internals), which modules, and prior art in the repo.
 - **Out of Scope** and **Further Notes**.
 
+### Close the open decisions
+
+Before publishing, list every decision the draft leaves open or hands to "the plan" or "the implementer". Ask each as a numbered question in a round, in the [design-dialogue](../design-dialogue/SKILL.md) format with your recommendation, and write the answers into the spec. A decision stays open in the published spec only when the user explicitly chose to defer it; say so in Further Notes, with who settles it and when. Publish when this list is empty.
+
 ### Publish
 
 - **Configured tracker**: create one issue with the spec body and apply the `ready-for-agent` triage label unless the user says otherwise. If the source was an existing issue, publish as its sub-issue or follow the tracker doc.

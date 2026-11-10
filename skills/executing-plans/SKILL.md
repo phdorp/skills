@@ -153,5 +153,5 @@ Cheapest sufficient tier, specified explicitly on every dispatch. An omitted mod
 - [references/batching.md](references/batching.md) — folding small same-shape tasks into one dispatch.
 - [references/fix-loop.md](references/fix-loop.md) — rounds, cap, breaker.
 - [references/final-review.md](references/final-review.md) — the whole-branch review and finish.
-- [implementer-prompt.md](implementer-prompt.md), [task-reviewer-prompt.md](task-reviewer-prompt.md), [re-review-prompt.md](re-review-prompt.md) — dispatch templates.
+- [implementer-prompt.md](implementer-prompt.md), [task-reviewer-prompt.md](task-reviewer-prompt.md), [re-review-prompt.md](re-review-prompt.md), [merger-prompt.md](merger-prompt.md) — dispatch templates.
 - `scripts/sdd-workspace`, `scripts/task-brief`, `scripts/review-package`, `scripts/task-start`, `scripts/task-done` — the workspace, brief, package, and bookkeeping helpers.
