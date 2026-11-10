@@ -39,7 +39,7 @@ Subagent (general-purpose):
     2. Write the failing test first, per the test-driven-development skill,
        and watch it fail before you write the code
     3. Verify the implementation works
-    4. Commit your work
+    4. Commit each green slice before starting the next (see below)
     5. Self-review (see below)
     6. Report back
 
@@ -48,8 +48,23 @@ Subagent (general-purpose):
     **While you work:** If you encounter something unexpected or unclear,
     **ask questions**. It is always OK to pause and clarify. Do not guess.
 
+    **Work in slices.** A slice is one behaviour: its failing test, the code
+    that turns it green, and a commit. Commit the slice as soon as its test
+    passes, then start the next. An interrupted session keeps every finished
+    slice, and the commit history shows the test came first.
+
     While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    full suite once before reporting, not after every edit.
+
+    **Long test runs:** run every test command in the foreground with the
+    Bash `timeout` set to 600000 (its 10-minute maximum) and read its output
+    when it returns. If the full suite can take longer than that, run it as
+    one foreground call per test directory. Polling a background run with
+    `sleep` is blocked here, and you have no tool to wait on one.
+
+    **Scratch space:** put scratch scripts and experiment output in your own
+    `mktemp -d` directory. Other agents share `/tmp` and the git stash, so set
+    unfinished work aside with a WIP commit on your branch.
 
     ## You Do Not Dispatch Subagents
 
@@ -124,10 +139,13 @@ Subagent (general-purpose):
     Write your full report to [REPORT_FILE]:
     - What you implemented (or what you attempted, if blocked)
     - What you tested and the results
-    - **TDD evidence** (when TDD was required):
-      - RED: command run, failing output before implementation, why that
-        failure was expected
-      - GREEN: command run, passing output after implementation
+    - **Slices** (when TDD was required), one row per behaviour:
+
+      | Test | RED: command and failing line | GREEN: result | Commit |
+      |------|-------------------------------|---------------|--------|
+
+      A row with an empty RED cell is a behaviour whose test you never saw
+      fail. Say so in the row rather than leaving it out.
     - Files changed
     - Self-review findings (if any)
     - Any issues or concerns
@@ -152,5 +170,5 @@ Subagent (general-purpose):
 **Placeholders:**
 - `[MODEL]` — REQUIRED: per SKILL.md Model Selection
 - `[BRIEF_FILE]` — REQUIRED: the path `bash scripts/task-brief PLAN_FILE N` printed
-- `[REPORT_FILE]` — REQUIRED: `<workspace>/task-<N>-report.md`
+- `[REPORT_FILE]` — REQUIRED: the absolute path `<workspace>/task-<N>-report.md`. In task-graph mode the workspace sits in the integration worktree, outside the implementer's checkout, so the report never lands in a commit
 - `[directory]` — the worktree or ticket worktree the implementer works in

@@ -6,7 +6,7 @@ Mode 3. The work is published as a spec plus tickets, and the tickets are a grap
 
 **Communication is sparse.** Talk to subagents through **context pointers**: the spec, the ticket, research notes, previous commits. Never duplicate what a pointer already reaches.
 
-**Concurrency:** run implementer subagents in the background where the platform supports it. Independent tickets in independent worktrees do not conflict; two agents in one worktree always do.
+**Concurrency:** run implementer subagents in the background where the platform supports it, **at most three at a time**; a ready ticket beyond the cap waits for a slot. Parallel agents draw on one usage limit, and a wide frontier can exhaust it with every agent mid-ticket. Independent tickets in independent worktrees do not conflict; two agents in one worktree always do.
 
 ## Setup
 
@@ -19,14 +19,9 @@ Mode 3. The work is published as a spec plus tickets, and the tickets are a grap
 
 Repeat until no tickets remain:
 
-1. **Take the frontier.** Every ticket whose blockers are all merged is ready. Dispatch one implementer subagent per ready ticket, in parallel, each on its own branch in its own worktree cut from the integration branch.
-2. **Let each implementer finish its ticket.** Its brief is the ticket plus the spec pointer, the interfaces already merged that it consumes, and the rulings in the ledger that touch it. It implements under `test-driven-development`, commits on its branch, and reports status, commits, and concerns — the full detail goes in its report file.
-3. **Merge with a merger subagent.** When an implementer reports DONE, dispatch a merger — not the human, and not yourself — to merge that branch into the integration branch. The merger:
-   - confirms the ticket's worktree is based on the current integration tip, merging the tip in if it has moved;
-   - merges the branch, resolves conflicts in favour of the spec, and records every conflict resolution as a ruling;
-   - runs the ticket's tests and the repository's full suite on the integration branch;
-   - commits the merge and reports the resulting tip, the suite result, and anything it had to decide.
-   A merger that finds a ticket's tests failing on the integration branch sends the ticket back to its implementer with the failure output; it does not patch around it.
+1. **Take the frontier.** Every ticket whose blockers are all merged is ready. Dispatch one implementer subagent per ready ticket, up to the concurrency cap, each on its own branch in its own worktree cut from the integration branch, with [../implementer-prompt.md](../implementer-prompt.md).
+2. **Let each implementer finish its ticket.** Its brief is the ticket plus the spec pointer, the interfaces already merged that it consumes, and the rulings in the ledger that touch it. It implements under `test-driven-development`, commits each green slice on its branch, and reports status, commits, and concerns — the full detail goes in its report file. Read the report's Slices table before merging: a row with no RED is a behaviour whose test never failed, so send the ticket back for a mutation check on those rows (break the code, confirm a test fails, restore it).
+3. **Merge with a merger subagent.** When an implementer reports DONE, dispatch a merger — not the human, and not yourself — with [../merger-prompt.md](../merger-prompt.md). One merge at a time. It merges the integration tip into the ticket, merges the ticket into integration, runs the ticket's tests and every full check, and reports each check's exit code. A merger that finds a ticket's tests failing on the integration branch sends the ticket back to its implementer with the failure output; it does not patch around it.
 4. **Recompute the frontier.** A merge unblocks tickets. Dispatch them immediately — do not wait for the rest of the frontier to drain. Record the new frontier in the ledger in the same message as the merge confirmation.
 5. **Close the ticket** the way the tracker closes work — a closing commit message, a state change, or the PR's closing reference. A merged ticket that is still open is work nobody can account for.
 
