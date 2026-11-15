@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+  "name": "phdorp-skills",
+  "version": "1.0.0",
+  "description": "Coding-workflow skills: design dialogue, planning, TDD, debugging, code review, and more.",
+  "author": { "name": "phdorp" },
+  "license": "Apache-2.0",
+  "keywords": ["skills", "coding", "workflow"]
+}
