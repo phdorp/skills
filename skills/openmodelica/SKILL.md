@@ -62,7 +62,7 @@ memory. The forms omc reports most misleadingly:
 - Changing an inherited value: `extends Base(mass = 100);`, not `redeclare parameter Real
   mass = 100` (that produces errors at unrelated lines).
 - Parameter sets are records; a derived record in place of a base one needs `replaceable
-  parameter Vehicle v;` and `extends Body(redeclare parameter Warhead v);`. A model can't be
+  parameter Vehicle v;` and `extends Body(redeclare parameter Variant v);`. A model can't be
   a parameter with a value.
 
 A syntax error means your file differs from Modelica, not that omc is broken: OpenModelica

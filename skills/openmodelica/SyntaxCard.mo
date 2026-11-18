@@ -7,10 +7,10 @@ package SyntaxCard "Tested forms of common Modelica constructs: om-test SyntaxCa
     parameter Real cg[3] = {0, 0, 0} "Centre of gravity, m";
   end Vehicle;
 
-  record Warhead "Extends a record and changes an inherited value in the extends clause"
+  record Variant "Extends a record and changes an inherited value in the extends clause"
     extends Vehicle(mass = 100);
     parameter Real canardArea = 0.5 "m2";
-  end Warhead;
+  end Variant;
 
   function polar "A function with two outputs; call it as (r, phi) = polar(x, y)"
     input Real x;
@@ -31,7 +31,7 @@ package SyntaxCard "Tested forms of common Modelica constructs: om-test SyntaxCa
   end Body;
 
   model FallingBody "Extends the interface; swaps the parameter set for a derived record"
-    extends Body(redeclare parameter Warhead v);  // a Vehicle-typed v = Warhead() is a type error
+    extends Body(redeclare parameter Variant v);  // a Vehicle-typed v = Variant() is a type error
     parameter Real g = 9.81 "m/s2";
   equation
     der(vz) = -g;
