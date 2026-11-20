@@ -12,6 +12,15 @@ and requirements before writing equations.
 The shell sandbox has OpenModelica 1.27 with the Modelica Standard Library 4.1.0 (offline), and
 Python with numpy, scipy, pandas and matplotlib.
 
+Load a reference when the task reaches it:
+
+- [references/library-layout.md](references/library-layout.md): the project spans several
+  files or folders, or omc reports "Class MyLib.X not found in scope <top>".
+- [references/solvers.md](references/solvers.md): choosing a solver, a stiff model, or a run
+  that is slow or ends in a solver error.
+- [references/msl-conventions.md](references/msl-conventions.md): the model uses MultiBody
+  (frames, quaternions, World, Body) or Translational masses with springs.
+
 ## Work in small, checked steps
 
 A model that simulates is not yet a correct model: most wrong results run fine. So:
@@ -133,29 +142,6 @@ your own .mos scripts, `omc --cmd` calls or OMPython probes to work around it. G
 calls fail with misleading errors (there is no `exists()`; `simulate("A.B")` with a string
 argument gives "Class simulate not found").
 
-For a library in a folder, write `package.mo` plus one file per class. Pass any one of its files
-(e.g. `MyLib/package.mo` or the test model's file): om-sim loads the top-level `package.mo`, and
-OpenModelica loads the whole folder from there. Each file starts with `within PackageName;`, and a
-`package.order` file lists the classes in order.
-
-Every folder is a package and needs its own file named exactly `package.mo`:
-
-    MyLib/package.mo                 within ;                package MyLib end MyLib;
-    MyLib/package.order              Sub
-    MyLib/Sub/package.mo             within MyLib;           package Sub end Sub;
-    MyLib/Sub/package.order          Model1 and Tests, one name per line
-    MyLib/Sub/Model1.mo              within MyLib.Sub;       model Model1 ... end Model1;
-    MyLib/Sub/Tests/package.mo       within MyLib.Sub;       package Tests end Tests;
-    MyLib/Sub/Tests/Test1.mo         within MyLib.Sub.Tests; model Test1 ... end Test1;
-
-A `package.mo` holds only the package line, its `end` and optionally constants or imports; the
-classes in their own files are not declared in it (no `model Model1;` lines).
-
-A file named like its folder (`Sub/Sub.mo`) is not loaded, and nothing below it either. The
-`within` line is the folder path with dots, without the class itself. "Class MyLib.Sub.X not
-found in scope <top>" means exactly this: a `package.mo` is missing or misnamed, or a `within`
-line does not match the folder. Check with `find MyLib -name '*.mo'` and `head -2` of each file.
-
 ## Modelica rules that trip models up
 
 - Plain ASCII only in .mo files, also in comments and description strings: no em-dashes, no
@@ -247,63 +233,6 @@ Results are stored at output points only, 500 per run by default (om-sim prints 
 ... s"): VAR@T interpolates between them, and max(VAR) and min(VAR) miss a peak between two. For
 short peaks or events, set `experiment(Interval = ...)` finer, or check inside the model (an
 assert in a `when` at the event, or the peak tracked in a variable).
-
-## Solvers
-
-The solver is part of the model, in its annotation, so om-sim and om-test both use it:
-
-    annotation(experiment(StopTime = 10, Tolerance = 1e-8),
-      __OpenModelica_simulationFlags(s = "gbode", gbm = "radauIIA4"));
-
-om-sim and om-test print the solver that actually ran ("Solver: gbode (radauIIA4), tolerance
-1e-8"); read that line after changing it. Without `s` the solver is dassl. Tested in this
-sandbox (OpenModelica 1.27):
-
-| s = | gbm = | Use |
-|---|---|---|
-| `"dassl"` (default) | | BDF, variable step and order, stiff and non-stiff: the safe choice |
-| `"ida"`, `"cvode"` | | SUNDIALS BDF (cvode also Adams); ida with a sparse solver for large models |
-| `"gbode"` | `"radauIIA2"` ... `"radauIIA7"` | Radau IIA, implicit, L-stable, for stiff models; the number is the stages, order 2n-1 (radauIIA4: order 7) |
-| `"gbode"` | `"radauIA2"` ... `"radauIA4"`, `"lobattoIIIA3"`, `"lobattoIIIA4"` (also IIIB, IIIC), `"gauss2"` ... `"gauss6"` | other implicit Runge-Kutta families |
-| `"gbode"` | `"sdirk2"` ... `"sdirk4"`, `"esdirk2"` ... `"esdirk4"`, `"esdirk4s7"`, `"impl_euler"`, `"trapezoid"`, `"adams"` | cheaper implicit methods |
-| `"gbode"` | `"dopri45"`, `"tsit5"`, `"fehlberg45"`, `"fehlberg78"`, `"rk810"`, `"rk1012"`, `"rk1214"`, `"merson"`, `"heun"`, `"expl_euler"`, `"rungekutta"` | explicit, variable step: smooth non-stiff models (orbits, trajectories) |
-| `"euler"`, `"rungekutta"` | | fixed step: one step per output interval, set with `experiment(Interval = 1e-3)`; Tolerance doesn't apply |
-
-Stiff (fast and slow time constants together, e.g. stiff springs, chemistry, controllers): dassl,
-ida or a Radau gbm. Forms that look right but are wrong:
-
-- `radau5`, `radau3`, `lobatto6`, `impeuler` (old names): "unrecognized option -s" or "Unknown
-  flag value", which lists the valid gbm names.
-- `experiment(__OpenModelica_Algorithm = "radau5")` or `__Dymola_Algorithm = "Radau"`: ignored,
-  the model runs with dassl; om-sim prints a WARNING.
-- The gbm without `s = "gbode"`: ignored.
-- `symSolver` (needs a compiler flag), `qss` (experimental, wrong at events): don't use.
-
-gbode prints "Numerical Jacobians without coloring are currently not supported by GBODE":
-harmless, om-sim hides it. A result's accuracy is bounded by the tolerance: a check against an
-analytic value needs a tolerance looser than the solver's, e.g. 1e-6 relative with Tolerance
-= 1e-8.
-
-## Standard Library conventions
-
-The library's conventions may differ from the project's (its conventions ADR). Where a ticket
-uses a library class, convert at its connectors and test the conversion:
-
-- Quaternions (`Modelica.Mechanics.MultiBody.Frames.Quaternions`): **scalar last**,
-  `Q = {n*sin(phi/2), cos(phi/2)}`, so `Q[4]` is the scalar part.
-- Orientations are **passive**: `Frames.Orientation` R holds `T`, the transformation matrix from
-  frame 1 (usually world) to frame 2 (local); `resolve2(R, v1)` gives the same vector's
-  coordinates in frame 2, `resolve1(R, v2)` back. Nothing is rotated.
-- `World`: uniform gravity `g = g_n` along `n = {0, -1, 0}`, i.e. **minus y is down**; point
-  gravity with `gravityType = PointGravity` and `mu`. Set both explicitly.
-- `Parts.Body`: quaternion states by default (`useQuaternions = true`); Euler angle states use
-  `sequence_angleStates = {1, 2, 3}`. A Body without `r_CM` warns "Parameter body.r_CM has no
-  value": harmless, it uses {0, 0, 0}; give `r_CM` to silence it.
-- Angles in radians (`Modelica.Units.Conversions.from_deg`), all units SI.
-- `Translational.Components.Mass` (and the other sliding masses) has a length `L` (default 1 m):
-  its flanges sit at `s - L/2` and `s + L/2`, and `s` is its centre.
-  With a `Fixed` at s0 = 0 and a spring with `s_rel0 = 0`, set `L = 0`; then `mass.s` is the
-  displacement from the spring's rest position (seen: L = 0.2 left the spring unstretched).
 
 ## Results
 
