@@ -1,9 +1,10 @@
 """Simulate every test model of a Modelica file or library with omc and report PASS/FAIL.
 
-Usage: python3 run_tests.py FILE.mo [NAME-PART ...] [--timeout SECONDS]
+Usage: python3 run_tests.py FILE.mo [FILE.mo ...] [NAME-PART ...] [--timeout SECONDS]
 
-FILE.mo is a single-file package or any file of a library folder (the top-level package.mo is
-found by walking up). Test models are the non-partial models inside a package named Tests,
+Each FILE.mo is a single file (a model, or a package of them) or any file of a library folder
+(the top-level package.mo is found by walking up); all of them are loaded together, so a test
+file can use a model from another file. Test models are the non-partial models inside a package named Tests,
 TestCases or Examples; NAME-PART arguments keep only the models whose name contains one of them.
 Each model runs with its own experiment annotation in its own omc process.
 
@@ -57,23 +58,25 @@ def top_file(path):
     return os.path.join(folder, "package.mo")
 
 
-def load(path):
+def load(paths):
     # omc collects messages until getErrorString() returns them; the calls echo only true/false
     return ('loadModel(Modelica);\n'
-            f'loadFile("{path}");\n'
-            'print("@@LOAD\\n" + getErrorString() + "\\n@@END\\n");\n')
+            + "".join(f'loadFile("{p}");\n' for p in paths)
+            + 'print("@@LOAD\\n" + getErrorString() + "\\n@@END\\n");\n')
 
 
-def list_models(path, workdir, timeout):
-    script = load(path) + (
-        f'for top in parseFile("{path}") loop\n'
+def list_models(paths, workdir, timeout):
+    script = load(paths) + "".join(
+        f'for top in parseFile("{p}") loop\n'
         '  for cl in getClassNames(top, recursive = true, qualified = true) loop\n'
         '    if isModel(cl) and not isPartial(cl) then\n'
         '      print("@@MODEL " + typeNameString(cl) + "\\n");\n'
         '    end if;\n'
         '  end for;\n'
-        'end for;\n')
-    out = omc(script, workdir, timeout) or ""
+        'end for;\n' for p in paths)
+    out = omc(script, workdir, timeout)
+    if out is None:
+        return None, []
     models = re.findall(r"^@@MODEL (\S+)$", out, re.M)
     return section(out, "LOAD"), models
 
@@ -102,8 +105,8 @@ def problems(errors, messages):
     return found
 
 
-def run_model(path, model, workdir, timeout):
-    script = load(path) + (
+def run_model(paths, model, workdir, timeout):
+    script = load(paths) + (
         f'checkModel({model});\n'  # simulate() alone skips the unit check
         'checkErrors := getErrorString();\n'
         f'r := simulate({model});\n'
@@ -132,16 +135,22 @@ def main(argv):
         i = argv.index("--timeout")
         timeout = float(argv[i + 1])
         del argv[i:i + 2]
-    if not argv or not argv[0].endswith(".mo") or not os.path.exists(argv[0]):
+    files = [a for a in argv if a.endswith(".mo")]
+    parts = [a for a in argv if not a.endswith(".mo")]
+    if not files or any(p.startswith("-") for p in parts) or not all(map(os.path.exists, files)):
         print(__doc__.strip())
         return 2
     if not shutil.which("omc"):
         print("omc not found on PATH")
         return 1
-    path, parts = top_file(argv[0]), argv[1:]
+    paths = list(dict.fromkeys(top_file(f) for f in files))
+    path = " ".join(paths)
     build = tempfile.mkdtemp(prefix="run_tests_")
     try:
-        load_errors, models = list_models(path, build, timeout)
+        load_errors, models = list_models(paths, build, timeout)
+        if load_errors is None:
+            print(f"listing the models of {path} took over {timeout} s: give a larger --timeout")
+            return 1
         if re.search(r"\b(Error|Warning)\b", load_errors):
             print(f"FAIL loading {path}\n  " + load_errors.replace("\n", "\n  "))
             return 1
@@ -156,7 +165,7 @@ def main(argv):
         for d in dirs.values():
             os.makedirs(d)
         with concurrent.futures.ThreadPoolExecutor(os.cpu_count() or 2) as pool:
-            runs = {m: pool.submit(run_model, path, m, dirs[m], timeout) for m in tests}
+            runs = {m: pool.submit(run_model, paths, m, dirs[m], timeout) for m in tests}
             failed = 0
             for m in tests:
                 ok, stop, found = runs[m].result()

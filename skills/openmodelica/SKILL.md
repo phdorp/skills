@@ -111,13 +111,16 @@ that folder; for a library, load its top-level `package.mo`.
   found in scope <global scope>". Guessed calls fail the same way (there is no `exists()`; use
   `isModel(A.B)`). Look up a call before using it: `getClassNames(OpenModelica.Scripting)` lists
   all of them, `list(OpenModelica.Scripting.simulate, interfaceOnly = true)` shows one's inputs.
+  On a library class `interfaceOnly = true` returns `""`; use plain `list(...)` there (seen in
+  the benchmark).
 
 ## Run the test models
 
-    python3 SKILL_DIR/scripts/run_tests.py FILE.mo [NAME-PART ...] [--timeout SECONDS]
+    python3 SKILL_DIR/scripts/run_tests.py FILE.mo [FILE.mo ...] [NAME-PART ...] [--timeout SECONDS]
 
-SKILL_DIR is the folder holding this file; the script is executed, not read. It loads FILE.mo
-(for a library, any of its files) with the Standard Library, runs checkModel and simulate on every
+SKILL_DIR is the folder holding this file; the script is executed, not read. It loads every
+FILE.mo (for a library, any of its files) together with the Standard Library, so a test file can
+use a model from another file, runs checkModel and simulate on every
 non-partial model in a package named Tests, TestCases or Examples with its own experiment
 annotation, and prints PASS or FAIL per model with the stop time used and the omc and runtime
 messages behind a FAIL. Any error, warning, violated assert or failed simulation fails a model;
@@ -196,7 +199,11 @@ Those that point at the model, not at omc:
   degree signs, no Greek letters, no typographic quotes.
 - Exchangeable parts: define a `partial model` (the interface), several models that `extend` it,
   and use them as `replaceable SomeVariant comp constrainedby Interface;`. Switch with
-  `redeclare` in an example model: `extends Base(redeclare Variant2 comp);`.
+  `redeclare` in an example model: `extends Base(redeclare Variant2 comp);`. A redeclare drops
+  the modifiers of the original declaration: `replaceable LinearDrag drag(v = v) constrainedby
+  Drag;` loses `v = v` and leaves the model one equation short, while checkModel still reports
+  success. Bind such inputs in the equation section (`drag.v = v;`) or in the constraining
+  clause (`constrainedby Drag(v = v)`) (seen in the benchmark).
 - Real literals: `9.81`, not `9,81`; parameters need a value or a `start`; every variable needs
   exactly one equation (simulate reports "Too few equations" or "Too many equations" otherwise).
   A binding already is that equation: `Real x = 1.0;` must not get another `x = 1.0;` in the
