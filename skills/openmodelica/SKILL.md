@@ -10,7 +10,8 @@ several coupled modules, also use `design-dialogue` and `spec-and-plan` to settl
 and requirements before writing equations.
 
 The shell has OpenModelica 1.27 (`omc`) with the Modelica Standard Library 4.1.0 (offline), and
-python3; the sandbox also has numpy, scipy, pandas and matplotlib.
+python3. numpy, pandas and matplotlib are not always installed: check with
+`python3 -c "import numpy"` before you use them, and read results with the `csv` module otherwise.
 
 Load a reference when the task reaches it:
 
