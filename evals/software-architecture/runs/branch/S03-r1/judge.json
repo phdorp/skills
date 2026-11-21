@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "rejected 2026-11-21: a server database contradicts R-3; we will not run a second storage engine.",
-   "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
-   "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the given reason and added ADR-0006 for the JSON move, and the git status shows no other decision files changed."
+   "quote": "ADR-0004 is accepted, ADR-0005 is rejected, and the SQLite decision is replaced by a new proposed ADR-0006. I changed only the decision records.",
+   "source": "transcript.md",
+   "reason": "ADR-0004 is accepted, ADR-0005 is rejected with the architect's reason, and the SQLite move is recorded as new ADR-0006; ADRs 0001-0003 are unchanged in the workspace."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **ADR-0001 (SQLite):** unchanged, still `accepted`. It is only marked superseded once ADR-0006 is accepted.",
+   "quote": "**ADR-0006 — Store each note as one JSON file.** Question: do you approve one JSON file per note in a store directory, replacing SQLite, with the skip-and-report rule for corrupt files under QS-1?",
    "source": "transcript.md",
-   "reason": "ADR-0006 is left as proposed, ADR-0001 is not superseded, and the final message lists ADR-0006 under 'Waiting for your approval'."
+   "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message puts ADR-0006 under 'Waiting for you' for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1213738
+ "cost_usd": 0.1173498
 }

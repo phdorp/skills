@@ -35,7 +35,9 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 9. Architecture decisions
 
-Decisions are ADRs in `docs/adr/`, linked as `../adr/` from this file. The ADR that draws the line between central and block-level decisions is [Record architecture decisions](../adr/0001-record-architecture-decisions.md).
+The architecture decisions are recorded as ADRs in [`docs/adr/`](../adr/). The central list
+is the ADR "Record architecture decisions", drafted after the architect confirms the setup
+proposal (`0001` in this project).
 
 ## 10. Quality requirements
 

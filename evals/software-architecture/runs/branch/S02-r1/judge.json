@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "The export decision is written up as ADR-0004, but it is `proposed`, not accepted.",
+   "quote": "The ADR is `proposed`, not accepted, so it needs your approval before the team builds from it.",
    "source": "transcript.md",
-   "reason": "The final message explicitly presents ADR-0004 as proposed and awaiting the architect's approval."
+   "reason": "The final message presents ADR-0004 as proposed and waiting for the architect's approval."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "The ADR-0002 list says import/export formats and CLI command names and exit codes are decided centrally, so this needs an ADR.",
+   "quote": "===== docs/adr/0002-record-architecture-decisions.md\n# 2. Record architecture decisions",
    "source": "transcript.md",
-   "reason": "The agent read ADR-0002 and the arc42 document with its cat loop before drafting, and then acted on ADR-0002's list."
+   "reason": "The agent printed ADR-0002 with cat before writing the new ADR."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "must not lose any note (R-2, QG-1), must run with only the standard library (R-3, QG-2)",
-   "source": "workspace/docs/adr/0004-export-notes-as-json-via-export-command.md",
-   "reason": "The ADR's Context cites the requirements and quality goals it serves by ID."
+   "quote": "must keep every note (R-2, QG-1), use only the standard library (R-3, QG-2), and must not",
+   "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
+   "reason": "The Context cites the requirements and quality goals the decision serves by their IDs."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.13611379999999998
+ "cost_usd": 0.1308098
 }

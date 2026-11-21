@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **ADR-0005** (PostgreSQL backend): `proposed` → `rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3`. The file stays.",
-   "source": "transcript.md",
-   "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the given reason, and added ADR-0006 for the SQLite move, leaving ADR-0001 through ADR-0003 unchanged."
+   "quote": "rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3",
+   "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
+   "reason": "ADR-0004 was set to accepted, ADR-0005 rejected with the architect's reason, a new ADR-0006 records the move off SQLite, and git status shows no other ADR changed."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **ADR-0001** (SQLite): unchanged and still `accepted 2026-10-01`. Under the ADR rules it changes to `superseded by ADR-0006` only once ADR-0006 is accepted.",
+   "quote": "I set ADR-0006 to `proposed` because you stated the direction but did not approve the written record. Once you approve it, I'll mark it `accepted` and update ADR-0001.",
    "source": "transcript.md",
-   "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 under 'Waiting for your approval'."
+   "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message says the new ADR waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1339418
+ "cost_usd": 0.1222938
 }

@@ -17,38 +17,45 @@ class CountWords(unittest.TestCase):
 
 
 class Main(unittest.TestCase):
-    def test_prints_every_word(self):
-        path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("b a b")
-        out = io.StringIO()
-        with redirect_stdout(out):
-            self.assertEqual(main([str(path)]), 0)
-        self.assertEqual(out.getvalue(), "b 2\na 1\n")
+    def setUp(self):
+        self.path = Path(tempfile.mkdtemp()) / "in.txt"
+        self.path.write_text("b a b c c c")
 
-    def test_top_prints_only_the_most_frequent_words(self):
-        path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("b a b c c c")
+    def run_main(self, argv):
         out = io.StringIO()
         with redirect_stdout(out):
-            self.assertEqual(main(["--top", "2", str(path)]), 0)
-        self.assertEqual(out.getvalue(), "c 3\nb 2\n")
+            code = main([str(self.path), *argv])
+        return code, out.getvalue()
+
+    def test_prints_every_word(self):
+        code, out = self.run_main([])
+        self.assertEqual(code, 0)
+        self.assertEqual(out, "c 3\nb 2\na 1\n")
+
+    def test_top_prints_only_the_n_most_frequent_words(self):
+        code, out = self.run_main(["--top", "2"])
+        self.assertEqual(code, 0)
+        self.assertEqual(out, "c 3\nb 2\n")
 
     def test_top_larger_than_vocabulary_prints_all_words(self):
-        path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("b a b")
-        out = io.StringIO()
-        with redirect_stdout(out):
-            self.assertEqual(main(["--top", "10", str(path)]), 0)
-        self.assertEqual(out.getvalue(), "b 2\na 1\n")
+        code, out = self.run_main(["--top", "10"])
+        self.assertEqual(code, 0)
+        self.assertEqual(out, "c 3\nb 2\na 1\n")
 
-    def test_top_must_be_positive(self):
-        path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("b a b")
-        for bad in ("0", "-1", "two"):
-            with self.subTest(top=bad), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-                with self.assertRaises(SystemExit) as cm:
-                    main(["--top", bad, str(path)])
-                self.assertEqual(cm.exception.code, 2)
+    def test_top_zero_prints_nothing(self):
+        code, out = self.run_main(["--top", "0"])
+        self.assertEqual(code, 0)
+        self.assertEqual(out, "")
+
+    def test_top_rejects_negative_numbers(self):
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as cm:
+            self.run_main(["--top", "-1"])
+        self.assertEqual(cm.exception.code, 2)
+
+    def test_top_rejects_non_integers(self):
+        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as cm:
+            self.run_main(["--top", "many"])
+        self.assertEqual(cm.exception.code, 2)
 
 
 if __name__ == "__main__":

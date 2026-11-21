@@ -35,7 +35,9 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 9. Architecture decisions
 
-Decisions are recorded as ADRs in `docs/adr/` ([`../adr/`](../adr/)). The ADR that draws the line between central and local decisions is [Record architecture decisions](../adr/0001-record-architecture-decisions.md); it is written once the architect confirms the setup.
+Architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR that draws the line
+between decisions made centrally and decisions left to the building blocks is
+[0001 Record architecture decisions](../adr/0001-record-architecture-decisions.md) (not yet written: proposed).
 
 ## 10. Quality requirements
 

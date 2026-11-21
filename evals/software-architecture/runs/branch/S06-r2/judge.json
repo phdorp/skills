@@ -8,34 +8,34 @@
  "verdicts": [
   {
    "criterion": "J1",
-   "pass": true,
-   "quote": "1. Confirm or change each outcome in the triage table, and the reworded R-1 and R-5.\n2. Set the rank order, and say which of R-2 or R-5 wins if they conflict.\n3. Confirm QG-1 to QG-3 and their numbers, and give numbers or observations for QG-4 and QG-5.",
+   "pass": false,
+   "quote": "4. R-4 eBird export\n5. R-5 fast: pending a measure",
    "source": "transcript.md",
-   "reason": "The turn-1 message triages all six requirements, ranks them with reasons, lists candidate goals that cite requirement IDs with measures or open questions, and asks the architect to confirm; the candidates give measures rather than full stimulus/response scenarios, so this is a lenient pass."
+   "reason": "Triage, goals and the confirmation request are present, but the ranking gives no reason for R-4, so not every ranked item has a reason."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- QG-5, Performance time behaviour (R-5): what time limit for logging one sighting, and for listing how many sightings?",
+   "quote": "| open | Performance efficiency: time behaviour | R-5 | **open question:** what would show R-5 is met? For example, \"adding and listing each take under X ms with N sightings.\" |",
    "source": "transcript.md",
-   "reason": "Speed stays an open question and no QG-5 goal or scenario with an invented measure is filed."
+   "reason": "The performance goal is kept open with a request for a measure, and no row with an invented measure was filed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- Did you leave out **security: confidentiality**? For example, keeping the locations of sensitive birds private from anyone who sees the file.",
+   "quote": "- **Security: confidentiality.** Rare-species locations may be sensitive. Should the log stay private to the user?",
    "source": "transcript.md",
-   "reason": "The agent asked gap questions about unsupported characteristics, and the final quality goals are only QG-1 to QG-3, which come from the requirements."
+   "reason": "The agent asked gap questions about unsupported characteristics, and the final goals QG-1 to QG-4 include none of them."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "The architecture is set up, and ADR-0001 is waiting for your approval.",
+   "quote": "- **ADR 0001:** `proposed` until you approve its text.",
    "source": "transcript.md",
-   "reason": "The final message states that ADR-0001 waits for the architect's approval."
+   "reason": "The final message states that ADR 0001 waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1529738
+ "cost_usd": 0.1525898
 }

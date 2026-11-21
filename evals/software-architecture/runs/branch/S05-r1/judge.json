@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Proposed: add QG-4 (Security: confidentiality) with a scenario, for example \"a stolen laptop's store is read without the key → 0 note plaintext recovered.\" Not added; you decide.",
+   "quote": "**Goal impact, R-8:** no goal covers Security: confidentiality. Proposed new goal with a scenario: a thief reads the disk, and no note text is recoverable. Question: what measure?",
    "source": "transcript.md",
-   "reason": "The final message proposes a security quality goal with scenario and measure and leaves the decision to the architect without adding it."
+   "reason": "The agent proposes a security goal with a scenario and asks for the measure instead of adding the goal; the goal tables stay unchanged."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "1. Set the ranks. R-7 (4) and R-8 (5) are proposals only.",
+   "quote": "**Ranks:** set the order for R-7 and R-8.",
    "source": "transcript.md",
-   "reason": "The agent proposes ranks 4 and 5 for the new active requirements and asks the architect to set them."
+   "reason": "The agent proposed ranks 4 and 5 in the rows and asks the architect to set the order."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "4. ADR-0004 cannot be accepted until its file layout and atomic-write method are decided. Storage work waits until you accept it.",
+   "quote": "**ADR-0004 waits for your approval.** Storage work (`notes/store.py`, and the `~/.notes.db` default in the README) waits until you accept it.",
    "source": "transcript.md",
-   "reason": "The agent states that storage work waits for acceptance of the new ADR-0004."
+   "reason": "The agent states that storage-dependent work waits for the new ADR's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1209858
+ "cost_usd": 0.1413578
 }

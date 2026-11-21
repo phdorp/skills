@@ -6,7 +6,7 @@ proposed
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. Sightings must survive a crash mid-write (R-2, QG-1, QS-1) and the product must work offline with only Python installed (R-3, QG-2, QS-2), so the storage and the dependency rule are decided centrally.
+The architect decides the architecture; contributors and agents build it. Sightings must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2), and exports must be accepted by eBird (R-4, QG-3). Logging must be fast (R-5, performance goal open).
 
 ## Decision
 
@@ -14,17 +14,19 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- Storage engine and on-disk data format (serves R-2, QG-1). The choice itself is not yet made and gets its own ADR.
-- Export format: the mapping from sightings to eBird CSV columns (serves R-4).
-- Interfaces between building blocks and the dependency rule: standard library only (serves R-3, QG-2).
-- Versioning of the CLI commands and the stored file format.
-- Crosscutting conventions: how time and time zones are stored, and error handling.
-- Third-party dependencies: none.
+- storage engine and on-disk format, including how a write becomes durable (R-2, R-5)
+- eBird CSV export mapping: which sighting field goes to which eBird column (R-4)
+- third-party dependencies: standard library only (R-3)
+- interfaces between the CLI, log store, export and list blocks, and the dependency rule between them
+- versioning of the CLI and of the on-disk format
+- crosscutting conventions: timestamp and time-zone format, count as integer, species naming, error handling and exit codes
 
 Left to the building blocks (no ADR):
 
-- Internal helpers, structure inside one block, test layout.
+- internal helpers and the structure inside one block
+- parsing internals
+- test layout
 
 ## Consequences
 
-Work that depends on a decision on the list waits until its ADR is accepted. The storage engine choice waits for its own ADR; the export mapping waits for the export format decision. No code for storage or export is written before then.
+Work that depends on a decision on the list waits until its ADR is accepted.
