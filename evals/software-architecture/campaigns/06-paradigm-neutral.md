@@ -36,3 +36,24 @@ Judge note: Modelica's own `extends` and `replaceable` are idiomatic, so J1 can 
 framing that borrows the object-oriented reading (classes with methods, subclass variants).
 
 Gate: met.
+
+## GREEN, first attempt: skills at `deec33d` (2026-11-21, 2 runs)
+
+Both runs loaded `codebase-design` and `domain-modeling`; both pass every check.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S08-r1 | - | - |
+| S08-r2 | - | J1 |
+
+r2 proposed the right Modelica seam in object-oriented words: "Add partial base classes with the
+port contract, and declare the two components `replaceable` in `System`." Baseline r2 slipped
+the same way ("a new class that extends the base").
+
+Gate: not met (J1, r2).
+
+## Loophole round
+
+`codebase-design` names the dataflow seam in Modelica's terms (a `replaceable` block constrained
+by a partial model that holds the port contract) and asks for each construct in the language's
+own words. J1 stays as written. Both branch runs were replaced.

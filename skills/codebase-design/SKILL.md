@@ -37,9 +37,12 @@ speak of connectors, signals, connections and parameters, not classes, methods o
 |---|---|---|---|
 | Module | class or package | function or file | block, model or subsystem |
 | Interface | public methods and types | function signature and the globals it reads | ports, connectors and their units |
-| Seam | an injected dependency | a function pointer or link-time choice | a replaceable block behind a fixed port contract |
+| Seam | an injected dependency | a function pointer or link-time choice | a `replaceable` block constrained by a partial model that holds the port contract |
 | Adapter | a class implementing the interface | a function matching the signature | a block with the same ports, or a converter block between connector types |
 | Coupling source | calls and inheritance | calls and shared globals | connections, shared parameters, global `inner`/`outer` or `Goto`/`From` |
+
+Name each construct in the language's own words: in Modelica a *partial model* holding the port
+contract, a *`replaceable` block*, a *modifier*; in Simulink a *variant subsystem*, a *bus*.
 
 In dataflow code **the signals are the interface**. A block that reads another block's
 parameters, or a package constant both of them use, bypasses its ports: that is coupling outside
