@@ -27,7 +27,7 @@
   },
   "S05": {
    "runs": 2,
-   "score": 0.333,
+   "score": 0.375,
    "judge": 0.0,
    "cost_usd": 0.046
   }
@@ -45,7 +45,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -115,7 +115,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.054s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -626,11 +626,21 @@
      "name": "feature_routed",
      "pass": false,
      "detail": ""
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "cli.py, model.py, store.py"
     }
    ],
-   "passed": 2,
-   "total": 6,
-   "score": 0.333,
+   "passed": 3,
+   "total": 8,
+   "score": 0.375,
    "valid": true,
    "judge": {
     "criteria": [
@@ -701,11 +711,21 @@
      "name": "feature_routed",
      "pass": false,
      "detail": ""
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "cli.py, model.py, store.py"
     }
    ],
-   "passed": 2,
-   "total": 6,
-   "score": 0.333,
+   "passed": 3,
+   "total": 8,
+   "score": 0.375,
    "valid": true,
    "judge": {
     "criteria": [

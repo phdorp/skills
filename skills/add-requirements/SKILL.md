@@ -56,8 +56,8 @@ requirement that repeats a deferred or rejected row changes nothing in that row;
 report that it was asked for again.
 
 - **System-level:** append a row with the next free R-ID (one past the highest, deferred and
-  rejected rows included), the architect's wording, status `active`, and a rank from
-  `quality-requirements` › Rank, marked as proposed in your report. Then run
+  rejected rows included), the architect's wording, status `active`, and a rank proposed
+  through `quality-requirements` › Rank. Then run
   `quality-requirements` › Goal impact.
 - **Conflict with an accepted ADR:** draft a superseding ADR through `domain-modeling`. It is
   `proposed`, and the ADR it replaces stays `accepted`. Work that depends on the change waits

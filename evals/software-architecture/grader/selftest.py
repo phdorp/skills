@@ -54,6 +54,8 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S05-goal": {"goals_unchanged"},                    # added QG-4 without confirmation
     "S05-nofeature": {"feature_routed"},                # newest-first item not filed
     "S05-extracol": set(),                              # an extra R-list column still parses
+    "S05-rankfinal": {"ranks_marked_proposed"},         # new row ranked "4" as if the architect set it
+    "S05-code": {"code_unchanged"},                     # started the storage change before ADR-0004
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05")
 

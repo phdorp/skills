@@ -192,14 +192,19 @@ def _read(path):
     return path.read_text(encoding="utf-8", errors="replace") if path.is_file() else ""
 
 
+def _code_changes(ws, base):
+    """Changed, added or deleted `notes/*.py` files."""
+    code = [p.name for p in _changed_py(ws, base, "notes")]
+    return code + [p.name for p in sorted((base / "notes").glob("*.py"))
+                   if not (ws / "notes" / p.name).exists()]
+
+
 def s04(run_dir):
     ws, base = run_dir / "workspace", base_workspace("S04")
     try:
         arc_same = _read(ws / ARC42) == _read(base / ARC42) and (ws / ARC42).is_file()
         adrs = [p.name for p in adr.new_adrs(ws, base) + adr.changed_adrs(ws, base)]
-        code = [p.name for p in _changed_py(ws, base, "notes")]
-        code += [p.name for p in sorted((base / "notes").glob("*.py"))
-                 if not (ws / "notes" / p.name).exists()]
+        code = _code_changes(ws, base)
     finally:
         shutil.rmtree(base.parent, ignore_errors=True)
     return [
@@ -235,6 +240,7 @@ def s05(run_dir):
         a1 = _find(ws, "0001")
         routed = [p for p in _new_files(ws, base)
                   if "newest" in _read(p).lower() and R1.search(_read(p))]
+        code = _code_changes(ws, base)
     finally:
         shutil.rmtree(base.parent, ignore_errors=True)
     by_id = {r.get("id"): r for r in rows}
@@ -247,6 +253,7 @@ def s05(run_dir):
         return [r for r in added if word in r.get("requirement", "").lower() and _status(r) == status]
 
     rich = one("rich", "rejected")
+    bare = [r["id"] for r in added if re.fullmatch(r"\d+", r.get("rank", "").strip("*_` "))]
     reason = re.sub(r"[\W_]+", " ", rich[0].get("reason", "")).strip() if rich else ""
     stray = [r["id"] for r in added if re.search(r"sync|newest", r.get("requirement", ""), re.I)]
     nums = sorted(int(m.group(1)) for r in added if (m := R_ID.match(r.get("id", ""))))
@@ -271,6 +278,8 @@ def s05(run_dir):
               and norm_rows(goals[0]) == norm_rows(goals[2])
               and norm_rows(goals[1]) == norm_rows(goals[3])),
         check("feature_routed", bool(routed), ", ".join(str(p.relative_to(ws)) for p in routed)),
+        check("ranks_marked_proposed", bool(added) and not bare, ", ".join(bare)),
+        check("code_unchanged", not code, ", ".join(code)),
     ]
 
 

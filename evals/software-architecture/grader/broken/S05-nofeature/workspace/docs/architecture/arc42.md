@@ -13,8 +13,8 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | R-3 | Runs on Linux and macOS with only the Python standard library. | 3 | active | installed on locked-down machines |
 | R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
 | R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
-| R-6 | Notes are encrypted at rest, so a stolen laptop exposes nothing. | 4 | active | user interviews |
-| R-7 | Notes can be read and edited with any text editor. | 5 | active | user interviews |
+| R-6 | Notes are encrypted at rest, so a stolen laptop exposes nothing. | 4 (proposed) | active | user interviews |
+| R-7 | Notes can be read and edited with any text editor. | 5 (proposed) | active | user interviews |
 | R-8 | Install with pip, using the `rich` library for coloured output. | - | rejected | breaks R-3: standard library only |
 
 ### Quality goals

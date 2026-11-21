@@ -36,8 +36,8 @@ through the same triage.
 4. Ask the architect to set the order. Use no scoring scheme (MoSCoW, weights) unless they ask.
 
 Done when the architect has the proposed order, every conflict, and the tie-breakers in front
-of them. The `rank` column changes only to the order they set; until then a new row's rank is
-your proposal, marked as such in your report.
+of them. A bare number in the `rank` column is the architect's order. Until they set it, a new row's
+rank cell holds your proposal as `4 (proposed)`, and your report asks them to set the order.
 
 ## Derive goals
 

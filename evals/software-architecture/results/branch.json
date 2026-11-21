@@ -27,7 +27,7 @@
   },
   "S05": {
    "runs": 2,
-   "score": 1.0,
+   "score": 0.938,
    "judge": 1.0,
    "cost_usd": 0.027
   }
@@ -636,11 +636,21 @@
      "name": "feature_routed",
      "pass": true,
      "detail": ".scratch/requirements/issues/01-notes-list-newest-first.md"
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": false,
+     "detail": "R-7, R-8"
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
     }
    ],
-   "passed": 6,
-   "total": 6,
-   "score": 1.0,
+   "passed": 7,
+   "total": 8,
+   "score": 0.875,
    "valid": true,
    "judge": {
     "criteria": [
@@ -676,7 +686,7 @@
     "cost_usd": 0.1286898
    },
    "cost_usd": 0.0133122,
-   "needs_review": false
+   "needs_review": true
   },
   {
    "run": "S05-r2",
@@ -711,10 +721,20 @@
      "name": "feature_routed",
      "pass": true,
      "detail": ".scratch/requirements/issues/01-list-newest-first.md"
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
     }
    ],
-   "passed": 6,
-   "total": 6,
+   "passed": 8,
+   "total": 8,
    "score": 1.0,
    "valid": true,
    "judge": {
