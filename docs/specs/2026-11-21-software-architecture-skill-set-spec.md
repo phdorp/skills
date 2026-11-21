@@ -187,8 +187,8 @@ Every changed skill except `domain-modeling` gates its architecture behaviour on
   transcript or file passage behind every verdict; the user reviews runs where judge and grader
   disagree, plus a sample. Grader self-test with reference and broken outputs, as in openmodelica.
 - **Arms**: baseline (skills at `main`) and new skills; 2 runs per scenario, about 10 scenarios.
-- **Model**: Claude Haiku 5.5 (`claude-haiku-5-5`) at medium effort, for both the scenario runs
-  and the judge.
+- **Models**: scenario runs on Claude Haiku 5.5 (`claude-haiku-5-5`) at medium effort; the judge
+  on Claude Opus 5.5 (`claude-opus-5-5`).
 - **Discipline rules get RED before GREEN**: for "never self-accept", "pause dependent work", and
   "no invented goals", the baseline run must show the failure before the change counts as fixing
   it (`writing-for-agents`).
