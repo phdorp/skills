@@ -1,0 +1,4 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("Pendulum.mo"); getErrorString();
+checkModel(Pendulum); getErrorString();
+simulate(Pendulum, outputFormat="csv", variableFilter="time|phi|hinge.w|mass.r_0.*"); getErrorString();

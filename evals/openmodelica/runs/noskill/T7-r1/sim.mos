@@ -1,0 +1,6 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("Thermostat.mo"); getErrorString();
+checkModel(Thermostat); getErrorString();
+r := simulate(Thermostat); getErrorString();
+r.messages;
+val(nOn, 86400); val(tOff1, 86400); val(heaterOn, 86400); val(T, 86400);

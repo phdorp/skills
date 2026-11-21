@@ -1,0 +1,1 @@
+filterSimulationResults("MSD_res.mat","MSD_res.csv",{"time","x","mass.s","mass.v"}); getErrorString();

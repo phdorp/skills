@@ -1,0 +1,5 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../Tank.mo"); getErrorString();
+loadFile("../TankTests.mo"); getErrorString();
+checkModel(Tests.TankEmpties); getErrorString();
+simulate(Tests.TankEmpties, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();

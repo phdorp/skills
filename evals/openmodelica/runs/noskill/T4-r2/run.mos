@@ -1,0 +1,10 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../Vehicle/package.mo"); getErrorString();
+checkModel(Vehicle.Examples.CoastLinear); getErrorString();
+r := simulate(Vehicle.Examples.CoastLinear, outputFormat="csv"); r.messages; getErrorString();
+checkModel(Vehicle.Examples.CoastQuadratic); getErrorString();
+r := simulate(Vehicle.Examples.CoastQuadratic, outputFormat="csv"); r.messages; getErrorString();
+checkModel(Vehicle.Tests.LinearCoastAnalytic); getErrorString();
+r := simulate(Vehicle.Tests.LinearCoastAnalytic, outputFormat="csv"); r.messages; getErrorString();
+checkModel(Vehicle.Tests.QuadraticCoastAnalytic); getErrorString();
+r := simulate(Vehicle.Tests.QuadraticCoastAnalytic, outputFormat="csv"); r.messages; getErrorString();

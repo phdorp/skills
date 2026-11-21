@@ -1,0 +1,4 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../Fleet/package.mo"); getErrorString();
+checkModel(Fleet.Coast); getErrorString();
+simulate(Fleet.Coast, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();

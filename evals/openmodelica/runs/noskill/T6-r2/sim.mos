@@ -1,0 +1,3 @@
+loadFile("Robertson.mo"); getErrorString();
+res := simulate(Robertson); getErrorString();
+res.messages;

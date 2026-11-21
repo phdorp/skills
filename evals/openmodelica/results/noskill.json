@@ -1,0 +1,1147 @@
+{
+  "arm": "noskill",
+  "runs": [
+    {
+      "task": "T1",
+      "run_dir": "runs/noskill/T1-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Tank.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Tank: ok, 3004 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 300; Tank: annotation StopTime=300.0, result ends at 300"
+        },
+        {
+          "name": "h_final_zero",
+          "pass": true,
+          "detail": "final h = 0, expected [-0.001, 0.001]"
+        },
+        {
+          "name": "h_nonnegative",
+          "pass": true,
+          "detail": "min h = -1e-12, expected [-0.001, inf]"
+        },
+        {
+          "name": "t_empty",
+          "pass": true,
+          "detail": "final tEmpty = 180.607, expected [178.803, 182.416]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 9,
+      "total": 9,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 5.23,
+      "omc_time_s": 5.21,
+      "arm": "noskill",
+      "run": "T1-r1"
+    },
+    {
+      "task": "T1",
+      "run_dir": "runs/noskill/T1-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Tank.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Tank: ok, 3004 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 300; Tank: annotation StopTime=300.0, result ends at 300"
+        },
+        {
+          "name": "h_final_zero",
+          "pass": true,
+          "detail": "final h = 0, expected [-0.001, 0.001]"
+        },
+        {
+          "name": "h_nonnegative",
+          "pass": true,
+          "detail": "min h = -1e-10, expected [-0.001, inf]"
+        },
+        {
+          "name": "t_empty",
+          "pass": true,
+          "detail": "final tEmpty = 180.567, expected [178.803, 182.416]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 9,
+      "total": 9,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 5.49,
+      "omc_time_s": 5.47,
+      "arm": "noskill",
+      "run": "T1-r2"
+    },
+    {
+      "task": "T2",
+      "run_dir": "runs/noskill/T2-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Ball.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Ball: ok, 5008 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 5; Ball: annotation StopTime=5.0, result ends at 5"
+        },
+        {
+          "name": "n_bounces",
+          "pass": true,
+          "detail": "final n = 2, expected [2, 2]"
+        },
+        {
+          "name": "t_first",
+          "pass": true,
+          "detail": "final tFirst = 1.42784, expected [1.42684, 1.42884]"
+        },
+        {
+          "name": "h_above_floor",
+          "pass": true,
+          "detail": "min h = -1.00656e-10, expected [-0.001, inf]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 9,
+      "total": 9,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 5.0,
+      "omc_time_s": 4.92,
+      "arm": "noskill",
+      "run": "T2-r1"
+    },
+    {
+      "task": "T2",
+      "run_dir": "runs/noskill/T2-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Ball.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Ball: ok, 5008 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 5; Ball: annotation StopTime=5.0, result ends at 5"
+        },
+        {
+          "name": "n_bounces",
+          "pass": true,
+          "detail": "final n = 2, expected [2, 2]"
+        },
+        {
+          "name": "t_first",
+          "pass": true,
+          "detail": "final tFirst = 1.42784, expected [1.42684, 1.42884]"
+        },
+        {
+          "name": "h_above_floor",
+          "pass": true,
+          "detail": "min h = -1.00656e-10, expected [-0.001, inf]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 9,
+      "total": 9,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 5.64,
+      "omc_time_s": 5.5,
+      "arm": "noskill",
+      "run": "T2-r2"
+    },
+    {
+      "task": "T3",
+      "run_dir": "runs/noskill/T3-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "MSD.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "MSD: ok, 3002 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 3; MSD: annotation StopTime=3.0, result ends at 3"
+        },
+        {
+          "name": "uses_msl",
+          "pass": true,
+          "detail": "MSD.mo mentions Modelica.Mechanics.Translational"
+        },
+        {
+          "name": "x_at_0",
+          "pass": true,
+          "detail": "x(0) = 0.1, expected [0.099999, 0.100001]"
+        },
+        {
+          "name": "x_at_0_5",
+          "pass": true,
+          "detail": "x(0.5) = 0.00985441, expected [0.00975507, 0.00995507]"
+        },
+        {
+          "name": "x_at_1",
+          "pass": true,
+          "detail": "x(1) = -0.0336842, expected [-0.0337852, -0.0335852]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 5.7,
+      "omc_time_s": 5.6,
+      "arm": "noskill",
+      "run": "T3-r1"
+    },
+    {
+      "task": "T3",
+      "run_dir": "runs/noskill/T3-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "MSD.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "MSD: ok, 3002 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 3; MSD: annotation StopTime=3.0, result ends at 3"
+        },
+        {
+          "name": "uses_msl",
+          "pass": true,
+          "detail": "MSD.mo mentions Modelica.Mechanics.Translational"
+        },
+        {
+          "name": "x_at_0",
+          "pass": true,
+          "detail": "x(0) = 0.1, expected [0.099999, 0.100001]"
+        },
+        {
+          "name": "x_at_0_5",
+          "pass": true,
+          "detail": "x(0.5) = 0.00985505, expected [0.00975507, 0.00995507]"
+        },
+        {
+          "name": "x_at_1",
+          "pass": true,
+          "detail": "x(1) = -0.0336852, expected [-0.0337852, -0.0335852]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 5.51,
+      "omc_time_s": 5.42,
+      "arm": "noskill",
+      "run": "T3-r2"
+    },
+    {
+      "task": "T4",
+      "run_dir": "runs/noskill/T4-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Vehicle/package.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "11 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "drag_partial",
+          "pass": true,
+          "detail": "isPartial = True"
+        },
+        {
+          "name": "drag_subclasses",
+          "pass": true,
+          "detail": "Vehicle.LinearDrag: extends Vehicle.Drag; Vehicle.QuadraticDrag: extends Vehicle.Drag"
+        },
+        {
+          "name": "tests_have_assert",
+          "pass": true,
+          "detail": "test models with assert: ['Vehicle.Tests.LinearAnalytic', 'Vehicle.Tests.QuadraticAnalytic']"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Vehicle.Examples.CoastLinear: ok, 502 rows; Vehicle.Examples.CoastQuadratic: ok, 502 rows; Vehicle.Tests.LinearAnalytic: ok, 502 rows; Vehicle.Tests.QuadraticAnalytic: ok, 502 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 100; Vehicle.Examples.CoastLinear: annotation StopTime=100.0, result ends at 100; Vehicle.Examples.CoastQuadratic: annotation StopTime=100.0, result ends at 100"
+        },
+        {
+          "name": "coast_linear",
+          "pass": true,
+          "detail": "Vehicle.Examples.CoastLinear final car.v = 11.0364, expected [10.9812, 11.0916]"
+        },
+        {
+          "name": "coast_quadratic",
+          "pass": true,
+          "detail": "Vehicle.Examples.CoastQuadratic final car.v = 14.4231, expected [14.351, 14.4952]"
+        },
+        {
+          "name": "tests_pass",
+          "pass": true,
+          "detail": "2 test model(s) pass"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 12,
+      "total": 12,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 25.82,
+      "omc_time_s": 25.71,
+      "arm": "noskill",
+      "run": "T4-r1"
+    },
+    {
+      "task": "T4",
+      "run_dir": "runs/noskill/T4-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Vehicle/package.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "11 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "drag_partial",
+          "pass": true,
+          "detail": "isPartial = True"
+        },
+        {
+          "name": "drag_subclasses",
+          "pass": true,
+          "detail": "Vehicle.LinearDrag: extends Vehicle.Drag; Vehicle.QuadraticDrag: extends Vehicle.Drag"
+        },
+        {
+          "name": "tests_have_assert",
+          "pass": true,
+          "detail": "test models with assert: ['Vehicle.Tests.LinearCoastAnalytic', 'Vehicle.Tests.QuadraticCoastAnalytic']"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Vehicle.Examples.CoastLinear: ok, 502 rows; Vehicle.Examples.CoastQuadratic: ok, 502 rows; Vehicle.Tests.LinearCoastAnalytic: ok, 502 rows; Vehicle.Tests.QuadraticCoastAnalytic: ok, 502 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 100; Vehicle.Examples.CoastLinear: annotation StopTime=100.0, result ends at 100; Vehicle.Examples.CoastQuadratic: annotation StopTime=100.0, result ends at 100"
+        },
+        {
+          "name": "coast_linear",
+          "pass": true,
+          "detail": "Vehicle.Examples.CoastLinear final car.v = 11.0364, expected [10.9812, 11.0916]"
+        },
+        {
+          "name": "coast_quadratic",
+          "pass": true,
+          "detail": "Vehicle.Examples.CoastQuadratic final car.v = 14.4231, expected [14.351, 14.4952]"
+        },
+        {
+          "name": "tests_pass",
+          "pass": true,
+          "detail": "2 test model(s) pass"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 12,
+      "total": 12,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 25.83,
+      "omc_time_s": 25.63,
+      "arm": "noskill",
+      "run": "T4-r2"
+    },
+    {
+      "task": "T5",
+      "run_dir": "runs/noskill/T5-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Pendulum.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Pendulum: ok, 3002 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 3; Pendulum: annotation StopTime=3.0, result ends at 3"
+        },
+        {
+          "name": "uses_msl",
+          "pass": true,
+          "detail": "Pendulum.mo mentions Modelica.Mechanics.MultiBody"
+        },
+        {
+          "name": "phi_initial",
+          "pass": true,
+          "detail": "|phi(0)| = 1.5708, expected [1.5698, 1.5718]"
+        },
+        {
+          "name": "t_quarter",
+          "pass": true,
+          "detail": "first phi = 0 (g = 9.81; g = 9.80665 gives 0.592062) = 0.591961, expected [0.59191, 0.592011]"
+        },
+        {
+          "name": "phi_bounded",
+          "pass": true,
+          "detail": "max |phi| = 1.5708, expected [-inf, 1.5718]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 9.52,
+      "omc_time_s": 9.08,
+      "arm": "noskill",
+      "run": "T5-r1"
+    },
+    {
+      "task": "T5",
+      "run_dir": "runs/noskill/T5-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Pendulum.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Pendulum: ok, 502 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 3; Pendulum: annotation StopTime=3.0, result ends at 3"
+        },
+        {
+          "name": "uses_msl",
+          "pass": true,
+          "detail": "Pendulum.mo mentions Modelica.Mechanics.MultiBody"
+        },
+        {
+          "name": "phi_initial",
+          "pass": true,
+          "detail": "|phi(0)| = 1.5708, expected [1.5698, 1.5718]"
+        },
+        {
+          "name": "t_quarter",
+          "pass": true,
+          "detail": "first phi = 0 (g = 9.81; g = 9.80665 gives 0.592062) = 0.591963, expected [0.59191, 0.592011]"
+        },
+        {
+          "name": "phi_bounded",
+          "pass": true,
+          "detail": "max |phi| = 1.5708, expected [-inf, 1.5718]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 12.02,
+      "omc_time_s": 11.97,
+      "arm": "noskill",
+      "run": "T5-r2"
+    },
+    {
+      "task": "T6",
+      "run_dir": "runs/noskill/T6-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Robertson.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Robertson: ok, 502 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 40; Robertson: annotation StopTime=40.0, result ends at 40"
+        },
+        {
+          "name": "y1_at_40",
+          "pass": true,
+          "detail": "y1(40) = 0.715827, expected [0.715755, 0.715899]"
+        },
+        {
+          "name": "y2_at_40",
+          "pass": true,
+          "detail": "y2(40) = 9.18553e-06, expected [9.18462e-06, 9.18645e-06]"
+        },
+        {
+          "name": "y3_at_40",
+          "pass": true,
+          "detail": "y3(40) = 0.284164, expected [0.284135, 0.284192]"
+        },
+        {
+          "name": "mass_conserved",
+          "pass": true,
+          "detail": "final y1+y2+y3 = 1, expected [0.999999, 1]"
+        },
+        {
+          "name": "solver",
+          "pass": true,
+          "detail": "plain simulate applied simflags \"-s='gbode' -gbm='radauIIA3'\"; ran gbode/radauIIA3; expected gbode/radauIIA3"
+        },
+        {
+          "name": "no_warnings",
+          "pass": false,
+          "detail": "1 warning(s)"
+        }
+      ],
+      "passed": 10,
+      "total": 11,
+      "score": 0.9091,
+      "warnings": {
+        "count": 1,
+        "text": [
+          "Robertson (runtime): LOG_STDOUT        | warning | Numerical Jacobians without coloring are currently not supported by GBODE. Colored numerical Jacobian will be used."
+        ]
+      },
+      "errors": [],
+      "wall_time_s": 15.2,
+      "omc_time_s": 15.17,
+      "arm": "noskill",
+      "run": "T6-r1"
+    },
+    {
+      "task": "T6",
+      "run_dir": "runs/noskill/T6-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Robertson.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Robertson: ok, 502 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 40; Robertson: annotation StopTime=40.0, result ends at 40"
+        },
+        {
+          "name": "y1_at_40",
+          "pass": true,
+          "detail": "y1(40) = 0.715827, expected [0.715755, 0.715899]"
+        },
+        {
+          "name": "y2_at_40",
+          "pass": true,
+          "detail": "y2(40) = 9.18553e-06, expected [9.18462e-06, 9.18645e-06]"
+        },
+        {
+          "name": "y3_at_40",
+          "pass": true,
+          "detail": "y3(40) = 0.284164, expected [0.284135, 0.284192]"
+        },
+        {
+          "name": "mass_conserved",
+          "pass": true,
+          "detail": "final y1+y2+y3 = 1, expected [0.999999, 1]"
+        },
+        {
+          "name": "solver",
+          "pass": true,
+          "detail": "plain simulate applied simflags \"-s='gbode' -gbm='radauIIA3'\"; ran gbode/radauIIA3; expected gbode/radauIIA3"
+        },
+        {
+          "name": "no_warnings",
+          "pass": false,
+          "detail": "1 warning(s)"
+        }
+      ],
+      "passed": 10,
+      "total": 11,
+      "score": 0.9091,
+      "warnings": {
+        "count": 1,
+        "text": [
+          "Robertson (runtime): LOG_STDOUT        | warning | Numerical Jacobians without coloring are currently not supported by GBODE. Colored numerical Jacobian will be used."
+        ]
+      },
+      "errors": [],
+      "wall_time_s": 15.37,
+      "omc_time_s": 15.34,
+      "arm": "noskill",
+      "run": "T6-r2"
+    },
+    {
+      "task": "T7",
+      "run_dir": "runs/noskill/T7-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Thermostat.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Thermostat: ok, 9780 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 86400; Thermostat: annotation StopTime=86400.0, result ends at 86400"
+        },
+        {
+          "name": "heater_on",
+          "pass": true,
+          "detail": "heaterOn in result"
+        },
+        {
+          "name": "t_off1",
+          "pass": true,
+          "detail": "final tOff1 = 1021.65, expected [1016.54, 1026.76]"
+        },
+        {
+          "name": "n_on",
+          "pass": true,
+          "detail": "final nOn = 142, expected [142, 142]"
+        },
+        {
+          "name": "t_band",
+          "pass": true,
+          "detail": "T after 1021.65 s in [292.15, 294.15] K, expected [292.1, 294.2]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 7.51,
+      "omc_time_s": 7.48,
+      "arm": "noskill",
+      "run": "T7-r1"
+    },
+    {
+      "task": "T7",
+      "run_dir": "runs/noskill/T7-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Thermostat.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "1 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Thermostat: ok, 9780 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 86400; Thermostat: annotation StopTime=86400.0, result ends at 86400"
+        },
+        {
+          "name": "heater_on",
+          "pass": true,
+          "detail": "heaterOn in result"
+        },
+        {
+          "name": "t_off1",
+          "pass": true,
+          "detail": "final tOff1 = 1021.65, expected [1016.54, 1026.76]"
+        },
+        {
+          "name": "n_on",
+          "pass": true,
+          "detail": "final nOn = 142, expected [142, 142]"
+        },
+        {
+          "name": "t_band",
+          "pass": true,
+          "detail": "T after 1021.65 s in [292.15, 294.15] K, expected [292.1, 294.2]"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 10,
+      "total": 10,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 7.28,
+      "omc_time_s": 7.22,
+      "arm": "noskill",
+      "run": "T7-r2"
+    },
+    {
+      "task": "T8",
+      "run_dir": "runs/noskill/T8-r1",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Fleet/package.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "12 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "params_record",
+          "pass": true,
+          "detail": "isRecord = True"
+        },
+        {
+          "name": "records_extend",
+          "pass": true,
+          "detail": "Fleet.Car: extends Fleet.Params; Fleet.Truck: extends Fleet.Params"
+        },
+        {
+          "name": "tests_have_assert",
+          "pass": false,
+          "detail": "no non-partial model in Fleet.Tests contains assert (models: ['Fleet.Tests.CarStopTime', 'Fleet.Tests.TruckStopTime'])"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast: ok, 504 rows; Fleet.Examples.TruckCoast: ok, 504 rows; Fleet.Tests.CarStopTime: ok, 504 rows; Fleet.Tests.TruckStopTime: ok, 504 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 300; Fleet.Examples.CarCoast: annotation StopTime=300.0, result ends at 300; Fleet.Examples.TruckCoast: annotation StopTime=300.0, result ends at 300"
+        },
+        {
+          "name": "t_stop_car",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast final coast.tStop = 174.119, expected [173.249, 174.99]"
+        },
+        {
+          "name": "t_stop_truck",
+          "pass": true,
+          "detail": "Fleet.Examples.TruckCoast final coast.tStop = 226.177, expected [225.046, 227.308]"
+        },
+        {
+          "name": "v_stopped",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast final coast.v = 0; Fleet.Examples.TruckCoast final coast.v = 0; tolerance 0.001"
+        },
+        {
+          "name": "no_rollback",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast min coast.v = -1.00021e-10; Fleet.Examples.TruckCoast min coast.v = -1.00164e-10; tolerance 0.001"
+        },
+        {
+          "name": "tests_pass",
+          "pass": true,
+          "detail": "2 test model(s) pass"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 13,
+      "total": 14,
+      "score": 0.9286,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 27.7,
+      "omc_time_s": 27.05,
+      "arm": "noskill",
+      "run": "T8-r1"
+    },
+    {
+      "task": "T8",
+      "run_dir": "runs/noskill/T8-r2",
+      "checks": [
+        {
+          "name": "files_exist",
+          "pass": true,
+          "detail": "Fleet/package.mo"
+        },
+        {
+          "name": "ascii",
+          "pass": true,
+          "detail": "11 .mo file(s)"
+        },
+        {
+          "name": "loads",
+          "pass": true,
+          "detail": "ok"
+        },
+        {
+          "name": "params_record",
+          "pass": true,
+          "detail": "isRecord = True"
+        },
+        {
+          "name": "records_extend",
+          "pass": true,
+          "detail": "Fleet.Car: extends Fleet.Params; Fleet.Truck: extends Fleet.Params"
+        },
+        {
+          "name": "tests_have_assert",
+          "pass": true,
+          "detail": "test models with assert: ['Fleet.Tests.CarStopTime', 'Fleet.Tests.TruckStopTime']"
+        },
+        {
+          "name": "simulates",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast: ok, 504 rows; Fleet.Examples.TruckCoast: ok, 504 rows; Fleet.Tests.CarStopTime: ok, 504 rows; Fleet.Tests.TruckStopTime: ok, 504 rows"
+        },
+        {
+          "name": "stop_time",
+          "pass": true,
+          "detail": "expected 300; Fleet.Examples.CarCoast: annotation StopTime=300.0, result ends at 300; Fleet.Examples.TruckCoast: annotation StopTime=300.0, result ends at 300"
+        },
+        {
+          "name": "t_stop_car",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast final coast.tStop = 174.119, expected [173.249, 174.99]"
+        },
+        {
+          "name": "t_stop_truck",
+          "pass": true,
+          "detail": "Fleet.Examples.TruckCoast final coast.tStop = 226.177, expected [225.046, 227.308]"
+        },
+        {
+          "name": "v_stopped",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast final coast.v = 0; Fleet.Examples.TruckCoast final coast.v = 0; tolerance 0.001"
+        },
+        {
+          "name": "no_rollback",
+          "pass": true,
+          "detail": "Fleet.Examples.CarCoast min coast.v = -1.00021e-10; Fleet.Examples.TruckCoast min coast.v = -1.00164e-10; tolerance 0.001"
+        },
+        {
+          "name": "tests_pass",
+          "pass": true,
+          "detail": "2 test model(s) pass"
+        },
+        {
+          "name": "no_warnings",
+          "pass": true,
+          "detail": "none"
+        }
+      ],
+      "passed": 14,
+      "total": 14,
+      "score": 1.0,
+      "warnings": {
+        "count": 0,
+        "text": []
+      },
+      "errors": [],
+      "wall_time_s": 27.45,
+      "omc_time_s": 27.08,
+      "arm": "noskill",
+      "run": "T8-r2"
+    }
+  ]
+}
