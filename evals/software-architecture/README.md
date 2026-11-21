@@ -79,9 +79,11 @@ with the agents' wording: [campaigns/](campaigns/).
 | S03 lifecycle | 0.400 | 0.250 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 0.875 | 2 of 2 (slash) |
 | S07 setup-documented (two turns) | 0.071 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 0.916 | 0.875 | 2 of 2 (slash) |
+| S09 recovery-python (three turns) | 0.000 | 0.000 | 0.928 | 1.000 | 2 of 2 (slash) |
+| S10 recovery-dataflow (three turns) | 0.000 | 0.000 | 1.000 | 0.875 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -112,7 +114,8 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   `accepted (legacy)`. An earlier round filed an unmeasured goal (both S07 runs) and dropped
   single proposal items (two runs); the final re-run did not repeat them, which two runs
   cannot rule out. Every branch run was re-run with clean isolation.
-- S08 (ticket 06, [campaign](campaigns/06-paradigm-neutral.md)): fixture `modelica` is a
+- S08 (ticket 06, [campaign](campaigns/06-paradigm-neutral.md)): fixture `heating` with
+  overlay `s08` (its README and `docs/`; until ticket 07 one fixture, `modelica`) is a
   Modelica library that checks with `omc`. On `main`, both runs implemented the accepted
   candidate in the `.mo` files, wrote no ADR ("no new ADR is needed") and tied no candidate to a
   quality goal. On the branch, every candidate cites an existing `QG-n`, the accepted change is
@@ -120,6 +123,15 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   seam "partial base classes"; `codebase-design` now names constructs in the language's own
   words. Open loophole: one final run wrote a safety-net test for the accepted change before
   its ADR was accepted, and skipped turn 1's closing question.
+- S09, S10 (ticket 07, [campaign](campaigns/07-setup-undocumented.md)): fixtures `undocumented`
+  (`pantry`, a Python CLI) and `heating` without its docs. On `main`, every run wrote a whole
+  architecture document in turn 1, proposed no "made centrally" list, marked nothing as found
+  and wrote no ADR for a found decision; no run changed code. On the branch, turn 2 stops at
+  ADR-0001 `proposed`; after its approval, arc42 sections 2–8 and 11 carry *As found,
+  unconfirmed.* and only listed decisions become `proposed` ADRs. One loophole round gave
+  dataflow blocks `in`/`out` columns in section 5. Open loopholes: S09-r2 filed an unmeasured
+  goal; S10-r1's final message did not list the as-found sections for review. S06 and S07 were
+  re-run because `setup-architecture` changed; S06-r2 ranked requirements without reasons (J1).
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
