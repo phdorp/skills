@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Confirm or change the triage outcomes and the wording of R-1 to R-5.",
+   "quote": "Once you confirm, I will write the R-list rows, the goals and scenarios, and ADR-0001 (status `proposed`).",
    "source": "transcript.md",
-   "reason": "The turn-1 message gives a triage outcome for all six requirements, a ranking with reasons, and candidate goals citing R-IDs with scenarios, and it asks the architect to confirm."
+   "reason": "The turn-1 message gives a triage table for all six requirements, a ranking with a reason per ranked item, three candidate goals each citing an R-ID with a scenario, and a request to confirm."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "1. **R-5 \"fast\":** what number would show it is met?",
+   "quote": "R-5 (\"fast\") has no measure, so it has no goal.",
    "source": "transcript.md",
-   "reason": "The speed requirement is kept as an open question asking for a measure, and no performance goal is filed."
+   "reason": "\"Fast\" is kept as an open question that asks for a response time, and no quality goal is filed for it."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- Security (confidentiality): should sighting locations be protected from other users on the same machine?",
+   "quote": "**Security: confidentiality.** Did you leave out protecting sighting locations?",
    "source": "transcript.md",
-   "reason": "The agent asks gap questions about characteristics no requirement supports, and no goal for them appears in the final goal table."
+   "reason": "Turn 1 asks gap questions about unsupported characteristics, and the final files contain only QG-1 to QG-3, none for those characteristics."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "The architecture setup is written. ADR-0001 is `proposed` and waits for your approval of its text.",
+   "quote": "ADR-0001 is `proposed`, waiting for your approval.",
    "source": "transcript.md",
    "reason": "The final message states that ADR-0001 waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1661458
+ "cost_usd": 0.1722938
 }

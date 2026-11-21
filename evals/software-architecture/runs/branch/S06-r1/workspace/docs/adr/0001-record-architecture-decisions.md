@@ -6,7 +6,7 @@ proposed
 
 ## Context
 
-Sightings must survive crashes (R-1, QG-1) and work everywhere with only Python (R-3, QG-4). Exported files must be accepted by eBird (R-4, QG-3), and logging and listing must be fast (R-5, goal open).
+The architect decides the architecture; contributors and agents build it. Sightings must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2).
 
 ## Decision
 
@@ -14,17 +14,17 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- storage engine and on-disk data format (serves R-1; not yet chosen, own ADR);
-- import/export format: eBird CSV (R-4), including which eBird checklist fields are captured (open);
-- interfaces between building blocks (CLI, core logic, storage) and the dependency rule between them;
-- versioning of the CLI and of the stored data format;
-- crosscutting conventions: time zone and units for sighting times (open), error handling and exit codes, logging;
-- third-party dependencies: none beyond the Python standard library (R-3).
+- storage engine and on-disk data format (R-2, R-5);
+- import and export formats: the eBird CSV export (R-4);
+- interfaces between the CLI and the storage, and the dependency rule between them;
+- versioning of the CLI and of the on-disk format;
+- crosscutting conventions: timestamps and time zones, counts, error handling;
+- third-party dependencies: the standard library only, per R-3.
 
 Left to the building blocks (no ADR):
 
-- internal helpers, module layout inside one block, test layout.
+- internal helpers, the argument-parsing structure within the CLI, test layout.
 
 ## Consequences
 
-Work that depends on a decision on the list waits until its ADR is accepted. In particular, no storage or export code is written until the storage and export decisions are accepted. This ADR stays `proposed` until the architect approves its text.
+Work that depends on a decision on the list waits until its ADR is accepted.

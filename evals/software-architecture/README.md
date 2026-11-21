@@ -98,7 +98,8 @@ Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50�
 - S06 (ticket 04, [campaign](campaigns/04-setup-fresh.md)): on `main`, "set up the
   architecture" became a coded program in turn 1, with nothing proposed to confirm and no
   arc42 or ADR. On the branch, turn 1 wrote only the skeleton and the proposal; the reply
-  produced the R-list, measured goals and a proposed ADR-0001. All branch runs of S01–S05 were
+  produced the R-list, measured goals, section 5's building-block table and a proposed
+  ADR-0001. All branch runs of S01–S05 were
   re-run then, with the three new skills visible.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.

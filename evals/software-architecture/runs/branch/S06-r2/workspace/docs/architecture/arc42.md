@@ -8,25 +8,23 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | ID | requirement | rank | status | reason |
 |---|---|---|---|---|
-| R-1 | Birders log a sighting (species, place, time, count) from the command line. | 2 | active | Defines the core interface and the data every other requirement touches. |
-| R-2 | No sighting is ever lost, even if the laptop dies mid-write. | 1 | active | Shapes the storage and write path; needs an ADR. |
-| R-3 | Runs offline on Linux, macOS and Windows with nothing but Python installed. | 3 | active | Limits dependencies to the standard library and rules out a server. |
-| R-4 | Sightings export to the eBird CSV format. | 4 | active | Import and export formats are a central decision. |
-| R-5 | It must be fast. | 5 | active | Shapes storage; not testable as written, so its goal stays open. |
+| R-1 | Birders log and review sightings (species, place, time, count) from the command line. | 2 | active | Core function; fixes the input interface and the record shape. |
+| R-2 | No sighting is lost, even if the laptop dies mid-write. | 1 | active | Core promise; decides how writes are made durable. |
+| R-3 | Runs offline on Linux, macOS and Windows with nothing but Python installed. | 3 | active | Sets the dependency rule: standard library only, no third-party packages. |
+| R-4 | Sightings export to the eBird CSV format. | 4 | active | Import/export data format; a central decision. |
+| R-5 | Logging a sighting and listing sightings each complete within a measured limit (limit to be set). | 5 | active | Goal with no measure yet; see the open questions for QG-4 and QG-5. |
 
-R-6 (`birdlog list` shows the latest sighting first) is feature-level under R-1 and has no row here; see the issue in `.scratch/requirements/issues/`.
+R-6 (`birdlog list` shows the latest sighting first) is feature-level under R-1 and has no row here; it is filed as an issue.
 
 ### Quality goals
 
 | ID | goal (ISO/IEC 25010) | from | scenario |
 |---|---|---|---|
-| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
-| QG-2 | Flexibility: adaptability | R-3 | QS-2 |
-| QG-3 | Functional suitability: functional correctness | R-1 | QS-3 |
-| QG-4 | Compatibility: interoperability | R-4 | QS-4 |
+| QG-1 | Reliability: recoverability | R-2 | QS-1 |
+| QG-2 | Flexibility: installability | R-3 | QS-2 |
+| QG-3 | Functional correctness | R-1 | QS-3 |
 
-Open question (no measure yet, so no goal row): Performance efficiency: time behaviour, from R-5.
-What would show R-5 is met?
+### Stakeholders
 
 ## 2. Constraints
 
@@ -36,6 +34,9 @@ What would show R-5 is met?
 
 ## 5. Building block view
 
+| block | responsibility | may use |
+|---|---|---|
+
 ## 6. Runtime view
 
 ## 7. Deployment view
@@ -44,18 +45,15 @@ What would show R-5 is met?
 
 ## 9. Architecture decisions
 
-Decisions are recorded as ADRs in `docs/adr/`. The ADR that defines which decisions are made
-centrally is [Record architecture decisions](../adr/0001-record-architecture-decisions.md)
-(written once the architect confirms the proposal).
+Decisions are recorded as ADRs in `docs/adr/` ([`../adr/`](../adr/)). The ADR that draws the line between central and local decisions is [Record architecture decisions](../adr/0001-record-architecture-decisions.md); it is written once the architect confirms the setup.
 
 ## 10. Quality requirements
 
 | ID | goal | stimulus | environment | response | measure |
 |---|---|---|---|---|---|
-| QS-1 | QG-1 | the process is killed during `birdlog add` | normal operation | the sighting is either fully stored or absent, and the store opens on the next run | 0 unreadable stores and 0 acknowledged sightings lost in 100 kill trials |
-| QS-2 | QG-2 | the test suite runs on a clean Python install on each OS, with no packages beyond the standard library | normal operation | all tests pass | 3 of 3 OSes pass; 0 third-party imports |
-| QS-3 | QG-3 | a user logs a sighting, then lists and exports it | normal operation | the species, place, time and count match what was entered | 0 mismatches in a 1,000-entry round-trip test |
-| QS-4 | QG-4 | a user exports the log to eBird CSV | normal operation | the file has the eBird columns and values | 0 format errors on the fixture set |
+| QS-1 | QG-1 | the process is killed (SIGKILL, or power is lost) during `birdlog add` | normal operation | the sighting is either fully stored or absent; sightings stored before are intact and the store opens | 0 confirmed sightings lost and 0 unreadable stores in 100 kill-during-write trials |
+| QS-2 | QG-2 | a person installs birdlog on a machine with only Python 3 | fresh Linux, macOS or Windows machine, offline | birdlog runs without any package beyond the standard library | 0 third-party packages; the test suite passes on all three OSes |
+| QS-3 | QG-3 | a sighting is logged, then listed | normal operation | every field is stored as entered; `list` shows the latest sighting first | 0 mismatched fields and 0 wrong orderings in the round-trip test suite |
 
 ## 11. Risks and technical debt
 

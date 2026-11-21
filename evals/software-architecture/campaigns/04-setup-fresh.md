@@ -13,8 +13,8 @@ one session over both turns (`meta.json` `session_ids`). No run loaded a skill.
 
 | run | failed checks | failed criteria |
 |---|---|---|
-| S06-r1 | all 7 | J1, J3, J4 |
-| S06-r2 | all 7 | J1, J3, J4 |
+| S06-r1 | all 8 | J1, J3, J4 |
+| S06-r2 | all 8 | J1, J3, J4 |
 
 Observed failures, in the agents' words (`runs/baseline/S06-r*/transcript.md`):
 
@@ -59,8 +59,28 @@ r2), and ADR-0001 `proposed`: "ADR-0001 is
 
 Grader fix (no skill change): r1's QS-4 measure "the suite passes on all three OSes in CI" is
 checkable but has no digit, so `goals_measured` failed it. `goals_measured` now also accepts
-number words (`all`, `every`, `three`, …); self-test case `S06-wordmeasure`.
+number words; self-test case `S06-wordmeasure`. The final review narrowed this (below).
 
 Re-run of S01–S05 on the same commit, now that three new skills are visible to them: every
 check and criterion passes. S02 loaded `sa:domain-modeling` in 2 of 2 runs, S03 2 of 2, S04 and
 S05 loaded all three requirement skills, S01 loaded none.
+
+## Final review fixes
+
+The whole-branch review found three Important issues; each fix started with a failing test.
+
+1. **Section 5 not started.** Spec story 1 and the ticket start sections 1, 5, 9 and 10 at
+   setup; the skeleton left 5 empty. New check `section5_started` (self-test `S06-nosection5`)
+   failed both GREEN runs. Counter (commit d983dc7): the skeleton writes section 5's empty
+   `| block | responsibility | may use |` table in the first turn.
+2. **Vague measures passed.** Number words such as `every` let "every command feels fast"
+   through `goals_measured`. `grade.has_measure` now accepts digits, `zero`, or a quantifier
+   over a counted number ("all three OSes"); unit tests list the vague phrasings it rejects.
+3. **A failed turn left no trace.** `meta.json` kept only the last turn's exit code and counted
+   a missing cost as 0. `run.turn_summary` now records `exit_codes`, keeps a missing cost as
+   `null`, and a failed turn in a multi-turn run fails the run.
+
+Re-run of S06 on the branch (2 runs, replacing the runs above): both pass every check and
+criterion, with section 5 started in turn 1. One grader correction on the way: r2's ADR-0001
+Context cited QS-1 and QS-2, which exist, and `adr_0001` counted only R- and QG-IDs as known;
+it now counts existing QS-IDs too (self-test `S06-citesqs`).

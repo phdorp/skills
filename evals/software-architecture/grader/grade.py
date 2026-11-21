@@ -345,7 +345,7 @@ def s06(run_dir):
 
     adrs = sorted((ws / "docs" / "adr").glob("*.md")) if (ws / "docs" / "adr").is_dir() else []
     a = adr.parse(adrs[0]) if len(adrs) == 1 else None
-    known = set(rids) | {g["id"] for g in goals}
+    known = set(rids) | {g["id"] for g in goals} | set(scen)
     cited = adr.ids(a.fields.get("context", "")) if a else set()
     routed = [p for p in routed_files
               if "latest" in _read(p).lower() and set(R_ANY.findall(_read(p))) & set(rids)]

@@ -1,11 +1,9 @@
 # `birdlog list` shows the latest sighting first
 
-Parent: R-1 (feature-level, no R-list row)
+Parent: R-1 (feature-level).
 
-Requirement (architect's wording): `birdlog list` shows the latest sighting first.
+`birdlog list` shows sightings in order, latest first.
 
-Open question for the architect: does "latest" mean the time the bird was seen, or the time the
-sighting was logged? Implement the chosen meaning only after it is answered.
+Assumption made at setup: "latest" means the time of the sighting (the `time` field), not the time it was logged. If the architect means the logging time, change this before implementation.
 
-Note: no issue tracker is configured (`docs/agents/issue-tracker.md` does not exist), so this
-issue is kept at `.scratch/requirements/issues/01-list-latest-first.md`.
+Measured by QG-3 (QS-3): 0 wrong orderings in the round-trip test suite.

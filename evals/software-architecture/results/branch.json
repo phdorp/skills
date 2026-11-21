@@ -33,9 +33,9 @@
   },
   "S06": {
    "runs": 2,
-   "score": 0.875,
+   "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.067
+   "cost_usd": 0.055
   }
  },
  "runs": [
@@ -126,7 +126,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.059s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -801,16 +801,16 @@
     {
      "name": "goals_measured",
      "pass": true,
-     "detail": "QG-1, QG-2, QG-3, QG-4"
+     "detail": "QG-1, QG-2, QG-3"
     },
     {
      "name": "adr_0001",
      "pass": true,
-     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-3', 'QG-4', 'R-1', 'R-3', 'R-4', 'R-5']"
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-2', 'R-3']"
     },
     {
      "name": "section5_started",
-     "pass": false,
+     "pass": true,
      "detail": ""
     },
     {
@@ -824,9 +824,9 @@
      "detail": ".scratch/requirements/issues/01-list-latest-first.md"
     }
    ],
-   "passed": 7,
+   "passed": 8,
    "total": 8,
-   "score": 0.875,
+   "score": 1.0,
    "valid": true,
    "judge": {
     "criteria": [
@@ -839,38 +839,38 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Confirm or change the triage outcomes and the wording of R-1 to R-5.",
+      "quote": "Once you confirm, I will write the R-list rows, the goals and scenarios, and ADR-0001 (status `proposed`).",
       "source": "transcript.md",
-      "reason": "The turn-1 message gives a triage outcome for all six requirements, a ranking with reasons, and candidate goals citing R-IDs with scenarios, and it asks the architect to confirm."
+      "reason": "The turn-1 message gives a triage table for all six requirements, a ranking with a reason per ranked item, three candidate goals each citing an R-ID with a scenario, and a request to confirm."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "1. **R-5 \"fast\":** what number would show it is met?",
+      "quote": "R-5 (\"fast\") has no measure, so it has no goal.",
       "source": "transcript.md",
-      "reason": "The speed requirement is kept as an open question asking for a measure, and no performance goal is filed."
+      "reason": "\"Fast\" is kept as an open question that asks for a response time, and no quality goal is filed for it."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "- Security (confidentiality): should sighting locations be protected from other users on the same machine?",
+      "quote": "**Security: confidentiality.** Did you leave out protecting sighting locations?",
       "source": "transcript.md",
-      "reason": "The agent asks gap questions about characteristics no requirement supports, and no goal for them appears in the final goal table."
+      "reason": "Turn 1 asks gap questions about unsupported characteristics, and the final files contain only QG-1 to QG-3, none for those characteristics."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "The architecture setup is written. ADR-0001 is `proposed` and waits for your approval of its text.",
+      "quote": "ADR-0001 is `proposed`, waiting for your approval.",
       "source": "transcript.md",
       "reason": "The final message states that ADR-0001 waits for the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1661458
+    "cost_usd": 0.1722938
    },
-   "cost_usd": 0.032245,
-   "needs_review": true
+   "cost_usd": 0.028388,
+   "needs_review": false
   },
   {
    "run": "S06-r2",
@@ -894,16 +894,16 @@
     {
      "name": "goals_measured",
      "pass": true,
-     "detail": "QG-1, QG-2, QG-3, QG-4"
+     "detail": "QG-1, QG-2, QG-3"
     },
     {
      "name": "adr_0001",
      "pass": true,
-     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-2', 'R-3']"
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'QS-1', 'QS-2', 'R-2', 'R-3']"
     },
     {
      "name": "section5_started",
-     "pass": false,
+     "pass": true,
      "detail": ""
     },
     {
@@ -917,9 +917,9 @@
      "detail": ".scratch/requirements/issues/01-list-latest-first.md"
     }
    ],
-   "passed": 7,
+   "passed": 8,
    "total": 8,
-   "score": 0.875,
+   "score": 1.0,
    "valid": true,
    "judge": {
     "criteria": [
@@ -932,38 +932,38 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Please confirm and rank the top three to five. I'd keep all four.",
+      "quote": "1. Confirm or change each outcome in the triage table, and the reworded R-1 and R-5.\n2. Set the rank order, and say which of R-2 or R-5 wins if they conflict.\n3. Confirm QG-1 to QG-3 and their numbers, and give numbers or observations for QG-4 and QG-5.",
       "source": "transcript.md",
-      "reason": "Turn 1 gives triage outcomes for all six requirements, a ranking with a reason per ranked item, candidate goals citing R-IDs with scenarios, and asks the architect to confirm."
+      "reason": "The turn-1 message triages all six requirements, ranks them with reasons, lists candidate goals that cite requirement IDs with measures or open questions, and asks the architect to confirm; the candidates give measures rather than full stimulus/response scenarios, so this is a lenient pass."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Open question (no measure yet, so no goal row): Performance efficiency: time behaviour, from R-5.",
-      "source": "workspace/docs/architecture/arc42.md",
-      "reason": "The 'fast' requirement is kept as an open question with no goal row and no invented measure."
+      "quote": "- QG-5, Performance time behaviour (R-5): what time limit for logging one sighting, and for listing how many sightings?",
+      "source": "transcript.md",
+      "reason": "Speed stays an open question and no QG-5 goal or scenario with an invented measure is filed."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "sightings of sensitive species, such as nesting owls, could be used to find them. Do you want location hiding or coarsening?",
+      "quote": "- Did you leave out **security: confidentiality**? For example, keeping the locations of sensitive birds private from anyone who sees the file.",
       "source": "transcript.md",
-      "reason": "The agent asks gap questions about unsupported characteristics (confidentiality, user error protection, learnability) and files no goals for them."
+      "reason": "The agent asked gap questions about unsupported characteristics, and the final quality goals are only QG-1 to QG-3, which come from the requirements."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "**ADR-0001 is waiting for your approval** of its text.",
+      "quote": "The architecture is set up, and ADR-0001 is waiting for your approval.",
       "source": "transcript.md",
-      "reason": "The final message states that ADR-0001 awaits the architect's approval."
+      "reason": "The final message states that ADR-0001 waits for the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1870378
+    "cost_usd": 0.1529738
    },
-   "cost_usd": 0.03487,
-   "needs_review": true
+   "cost_usd": 0.026731,
+   "needs_review": false
   }
  ]
 }
