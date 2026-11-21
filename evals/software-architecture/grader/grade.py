@@ -17,6 +17,11 @@ import sys
 import tempfile
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import adr  # noqa: E402
+import run  # noqa: E402
+
 HERE = Path(__file__).resolve().parent
 HIDDEN = HERE / "hidden"
 CMD_TIMEOUT_S = 120
@@ -85,7 +90,94 @@ def s01(run_dir):
     ]
 
 
-CHECKS = {"S01": s01}
+DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+CITES_0001 = re.compile(r"\bADR[- ]?0*1\b|\b0001\b", re.I)
+
+
+def base_workspace(scenario_id):
+    """Temp copy of the scenario's fixture with its overlay, as the agent first saw it."""
+    scenario = run.load_scenarios(run.SUITE / "TASKS.md")[scenario_id]
+    fixture, overlay = run.fixture_dirs(scenario)
+    base = Path(tempfile.mkdtemp(prefix="sa-base-")) / "ws"
+    shutil.copytree(fixture, base)
+    if overlay is not None:
+        shutil.copytree(overlay, base, dirs_exist_ok=True)
+    return base
+
+
+def five_fields(a):
+    return a is not None and bool(a.title) and all(a.fields.get(f) for f in adr.FIELDS)
+
+
+def _changed_py(ws, base, package):
+    out = []
+    for p in sorted((ws / package).rglob("*.py")) if (ws / package).is_dir() else []:
+        old = base / p.relative_to(ws)
+        if not old.exists() or old.read_bytes() != p.read_bytes():
+            out.append(p)
+    return out
+
+
+def s02(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S02")
+    try:
+        new = adr.new_adrs(ws, base)
+        changed = adr.changed_adrs(ws, base)
+        known = adr.ids((base / "docs" / "architecture" / "arc42.md").read_text())
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    a = adr.parse(new[0]) if new else None
+    cited = adr.ids(a.fields.get("context", "")) if a else set()
+    export = [p for p in _changed_py(ws, base, "notes") if "export" in p.read_text().lower()]
+    return [
+        check("one_new_adr", len(new) == 1, ", ".join(p.name for p in new)),
+        check("next_number", len(new) == 1 and new[0].name.startswith("0004-"),
+              ", ".join(p.name for p in new)),
+        check("five_fields", five_fields(a), str(sorted(a.fields)) if a else "no new ADR"),
+        check("status_proposed", a is not None and a.status.startswith("proposed"),
+              a.status if a else ""),
+        check("cites_ids", bool(cited) and cited <= known, ", ".join(sorted(cited))),
+        check("others_unchanged", not changed, ", ".join(p.name for p in changed)),
+        check("no_export_code", not export, ", ".join(p.name for p in export)),
+    ]
+
+
+def _find(ws, prefix):
+    found = sorted((ws / "docs" / "adr").glob(prefix + "-*.md")) if (ws / "docs" / "adr").is_dir() else []
+    return adr.parse(found[0]) if found else None
+
+
+def s03(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S03")
+    try:
+        new = adr.new_adrs(ws, base)
+        changed = [p for p in adr.changed_adrs(ws, base) if p.name[:4] in ("0002", "0003")]
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    a4, a5, a1 = _find(ws, "0004"), _find(ws, "0005"), _find(ws, "0001")
+    reason = ""
+    if a5 is not None:
+        reason = re.sub(r"rejected", "", a5.fields.get("status", ""), count=1, flags=re.I)
+        reason = re.sub(r"[\W_]+", " ", reason).strip()
+    a6 = adr.parse(new[0]) if len(new) == 1 else None
+    return [
+        check("approved_accepted_dated",
+              a4 is not None and a4.status.startswith("accepted")
+              and bool(DATE.search(a4.fields.get("status", ""))), a4.status if a4 else "missing"),
+        check("rejected_kept_with_reason",
+              a5 is not None and a5.status.startswith("rejected") and len(reason) >= 10,
+              a5.fields.get("status", "") if a5 else "missing"),
+        check("supersede_new_adr",
+              a6 is not None and new[0].name.startswith("0006-") and five_fields(a6)
+              and a6.status.startswith("proposed") and bool(CITES_0001.search(new[0].read_text())),
+              ", ".join(p.name for p in new)),
+        check("old_status", a1 is not None and a1.status.startswith("accepted"),
+              a1.status if a1 else "missing"),
+        check("others_unchanged", not changed, ", ".join(p.name for p in changed)),
+    ]
+
+
+CHECKS = {"S01": s01, "S02": s02, "S03": s03}
 
 
 def grade(scenario_id, run_dir):

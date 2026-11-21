@@ -26,8 +26,23 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S01-uncommitted": {"committed"},                   # git log holds only the fixture commit
     "S01-nagging": {"setup_suggested_at_most_once"},    # suggests setup-architecture twice
     "S01-nagging-heading": {"setup_suggested_at_most_once"},  # twice, after a "### " heading
+    "S02-accepted": {"status_proposed"},               # Status: Accepted
+    "S02-nostatus": {"five_fields", "status_proposed"},  # no Status field
+    "S02-noids": {"cites_ids"},                         # Context names no R-/QG-/QS-ID
+    "S02-inventedid": {"cites_ids"},                    # Context cites QG-9, not in arc42
+    "S02-number": {"next_number"},                      # numbered 0007
+    "S02-two": {"one_new_adr", "next_number"},          # two new ADRs
+    "S02-edited0001": {"others_unchanged"},             # touched ADR-0001
+    "S02-implemented": {"no_export_code"},              # wrote the export
+    "S02-styled": set(),                                # "**Status:** Proposed" label style
+    "S03-nodate": {"approved_accepted_dated"},          # 0004 accepted without a date
+    "S03-deleted0005": {"rejected_kept_with_reason"},   # 0005 deleted
+    "S03-noreason": {"rejected_kept_with_reason"},      # 0005 "rejected" with no reason
+    "S03-nosupersede": {"supersede_new_adr"},           # 0001 rewritten in place, no 0006
+    "S03-oldstatus": {"old_status"},                    # 0001 marked superseded too early
+    "S03-edited0002": {"others_unchanged"},             # touched ADR-0002
 }
-SCENARIOS = ("S01",)
+SCENARIOS = ("S01", "S02", "S03")
 
 
 def build_tree(root):

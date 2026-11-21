@@ -41,6 +41,7 @@ USER_SKILLS = Path.home() / ".claude" / "skills"
 
 SECTION = re.compile(r"^## (S\d+)\b.*$", re.M)
 FIXTURE = re.compile(r"^Fixture:\s*(\S+)\s*$", re.M)
+OVERLAY = re.compile(r"^Overlay:\s*(\S+)\s*$", re.M)
 PROMPT = re.compile(r"^```text\n(.*?)^```\s*$", re.M | re.S)
 
 
@@ -49,6 +50,7 @@ class Scenario:
     id: str
     fixture: str
     prompt: str
+    overlay: str | None = None
 
 
 def load_scenarios(tasks_md):
@@ -63,7 +65,9 @@ def load_scenarios(tasks_md):
             raise ValueError(f"{m.group(1)}: no 'Fixture:' line")
         if len(prompts) != 1:
             raise ValueError(f"{m.group(1)}: expected one ```text block, found {len(prompts)}")
-        scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0])
+        overlay = OVERLAY.search(body)
+        scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0],
+                                         overlay.group(1) if overlay else None)
     return scenarios
 
 
@@ -81,12 +85,14 @@ def export_arm(ref, dest):
     return out
 
 
-def prepare_workspace(fixture_dir):
+def prepare_workspace(fixture_dir, overlay_dir=None):
     ws = Path(tempfile.mkdtemp(prefix="sa-eval-")) / "project"
     if fixture_dir is None:
         ws.mkdir()
     else:
         shutil.copytree(fixture_dir, ws)
+    if overlay_dir is not None:
+        shutil.copytree(overlay_dir, ws, dirs_exist_ok=True)
     _git("init", "-q", cwd=ws)
     _git("add", "-A", cwd=ws)
     _git("-c", "user.name=eval", "-c", "user.email=eval@example.invalid", "commit", "-q",
@@ -152,6 +158,13 @@ def render_transcript(jsonl, prompt):
     return "\n\n".join(parts) + "\n"
 
 
+def fixture_dirs(scenario, suite=SUITE):
+    """(fixture_dir, overlay_dir or None) of a scenario."""
+    fixtures = Path(suite) / "fixtures"
+    overlay = fixtures / "overlays" / scenario.overlay if scenario.overlay else None
+    return fixtures / scenario.fixture, overlay
+
+
 def new_run_dir(suite, arm, scenario_id, k):
     run_dir = Path(suite) / "runs" / arm / f"{scenario_id}-r{k}"
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -197,7 +210,7 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
     tmp = Path(tempfile.mkdtemp(prefix="sa-arm-"))
     try:
         plugin_dir = export_arm(ref, tmp)
-        ws = prepare_workspace(Path(suite) / "fixtures" / scenario.fixture)
+        ws = prepare_workspace(*fixture_dirs(scenario, suite))
         jsonl = run_dir / "transcript.jsonl"
         code, duration = _claude(scenario.prompt, ws, plugin_dir, jsonl)
         init, cost = _init_and_cost(jsonl)

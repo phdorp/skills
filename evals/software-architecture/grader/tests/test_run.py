@@ -36,6 +36,12 @@ class LoadScenarios(unittest.TestCase):
         self.assertEqual((s.id, s.fixture, s.prompt), ("S99", "plain", "Do the thing.\n"))
         self.assertEqual(set(scenarios), {"S99", "S98"})
 
+    def test_load_scenarios_reads_optional_overlay(self):
+        p = self._write("## S97 x\n\nFixture: setup\nOverlay: s97\n\n```text\nGo.\n```\n\n"
+                        "## S96 y\n\nFixture: setup\n\n```text\nGo.\n```\n")
+        scenarios = run.load_scenarios(p)
+        self.assertEqual((scenarios["S97"].overlay, scenarios["S96"].overlay), ("s97", None))
+
     def test_load_scenarios_rejects_section_without_fixture(self):
         p = self._write("## S99 thing\n\n```text\nDo it.\n```\n")
         with self.assertRaises(ValueError):
@@ -113,6 +119,21 @@ class Workspace(unittest.TestCase):
         self.assertFalse(ws.resolve().is_relative_to(REPO_ROOT))
         self.assertEqual(_git_subjects(ws), ["fixture"])
         self.assertTrue((ws / "README.md").exists())
+
+    def test_prepare_workspace_applies_overlay(self):
+        root = Path(tempfile.mkdtemp())
+        (root / "fx" / "docs").mkdir(parents=True)
+        (root / "fx" / "docs" / "a.md").write_text("fixture\n")
+        (root / "ov" / "docs").mkdir(parents=True)
+        (root / "ov" / "docs" / "a.md").write_text("overlay\n")
+        (root / "ov" / "docs" / "b.md").write_text("new\n")
+        ws = run.prepare_workspace(root / "fx", root / "ov")
+        self.assertEqual((ws / "docs" / "a.md").read_text(), "overlay\n")
+        self.assertTrue((ws / "docs" / "b.md").exists())
+        self.assertEqual(_git_subjects(ws), ["fixture"])
+        status = subprocess.run(["git", "status", "--porcelain"], cwd=ws, capture_output=True,
+                                text=True).stdout
+        self.assertEqual(status, "")
 
     def test_run_dir_refuses_existing(self):
         suite = Path(tempfile.mkdtemp())
