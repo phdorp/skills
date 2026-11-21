@@ -122,7 +122,7 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 ### Domain
 
 - **[openmodelica](skills/openmodelica/SKILL.md)** - Build, check, and simulate Modelica models
-  with OpenModelica, including a syntax card of tested forms.
+  with OpenModelica's `omc`, including a syntax card of tested forms and a test-model runner.
 
 ## User-invoked skills
 

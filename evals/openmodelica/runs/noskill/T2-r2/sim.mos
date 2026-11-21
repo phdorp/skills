@@ -1,0 +1,4 @@
+loadModel(Modelica); getErrorString();
+loadFile("Ball.mo"); getErrorString();
+checkModel(Ball); getErrorString();
+simulate(Ball); getErrorString();

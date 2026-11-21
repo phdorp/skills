@@ -1,0 +1,7 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../Thermostat.mo"); getErrorString();
+loadFile("../ThermostatCheck.mo"); getErrorString();
+checkModel(Thermostat); getErrorString();
+simulate(Thermostat, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();
+checkModel(ThermostatCheck); getErrorString();
+simulate(ThermostatCheck, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();

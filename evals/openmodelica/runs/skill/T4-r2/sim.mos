@@ -1,0 +1,4 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../Vehicle/package.mo"); getErrorString();
+checkModel(Vehicle.Car); getErrorString();
+simulate(Vehicle.Car, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();

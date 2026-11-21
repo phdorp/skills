@@ -1,0 +1,6 @@
+// Run: omc verify.mos   (simulate() takes no solver arguments; the annotation picks gbode/radauIIA3)
+loadFile("Robertson.mo"); getErrorString();
+checkModel(Robertson); getErrorString();
+r := simulate(Robertson); getErrorString();
+f := "Robertson_res.mat";
+val(y1, 40.0, f); val(y2, 40.0, f); val(y3, 40.0, f);

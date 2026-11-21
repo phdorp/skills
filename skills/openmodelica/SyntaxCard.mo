@@ -1,6 +1,6 @@
 within ;
-package SyntaxCard "Tested forms of common Modelica constructs: om-test SyntaxCard.mo passes"
-  // Copy the form you need. Each class here loads, checks and simulates in OpenModelica 1.27.
+package SyntaxCard "Tested forms of common Modelica constructs: python3 scripts/run_tests.py SyntaxCard.mo passes"
+  // Copy the form you need. Each class here loads, checks and simulates in OpenModelica 1.27 without warnings.
 
   record Vehicle "A parameter set: a record, not a model"
     parameter Real mass = 1 "Mass, kg";
@@ -150,7 +150,7 @@ package SyntaxCard "Tested forms of common Modelica constructs: om-test SyntaxCa
     annotation(experiment(StopTime = 0.5));
   end RCCircuit;
 
-  package Tests "Test models with asserts: om-test runs every model in a package named Tests"
+  package Tests "Test models with asserts: scripts/run_tests.py runs every model in a package named Tests"
     model PolarRoundTrip
       Real r, phi;
     equation
@@ -163,7 +163,7 @@ package SyntaxCard "Tested forms of common Modelica constructs: om-test SyntaxCa
     equation
       when terminal() then
         assert(abs(b.h - (10 - 9.81 / 2)) < 1e-3, "h(1) wrong: " + String(b.h, significantDigits = 15));
-        assert(b.v.mass == 100, "the record binding should give mass 100");
+        assert(abs(b.v.mass - 100) < 1e-9, "the record binding should give mass 100");  // Real values: compare with a tolerance (== on Reals warns)
       end when;
     end FallTime;
 
@@ -171,7 +171,7 @@ package SyntaxCard "Tested forms of common Modelica constructs: om-test SyntaxCa
       Exchangeable ex(redeclare model BodyModel = DraggedBody);
     equation
       when terminal() then
-        assert(ex.body.v.mass == 2 and ex.body.h > 10 - 9.81 / 2, "the dragged body should fall slower");
+        assert(abs(ex.body.v.mass - 2) < 1e-9 and ex.body.h > 10 - 9.81 / 2, "the dragged body should fall slower");
       end when;
     end SwapBody;
 

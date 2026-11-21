@@ -1,0 +1,35 @@
+name: openmodelica
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/openmodelica/**"
+      - ".github/workflows/openmodelica.yml"
+  pull_request:
+    paths:
+      - "skills/openmodelica/**"
+      - ".github/workflows/openmodelica.yml"
+
+jobs:
+  syntax-card:
+    # Every SyntaxCard.Tests model must simulate without errors, warnings or failed asserts,
+    # because agents copy the card.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OpenModelica and the Modelica Standard Library 4.1.0
+        run: |
+          curl -fsSL https://build.openmodelica.org/apt/openmodelica.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/openmodelica-keyring.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/openmodelica-keyring.gpg] https://build.openmodelica.org/apt noble stable" \
+            | sudo tee /etc/apt/sources.list.d/openmodelica.list
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends omc omlibrary
+          omc --version
+          echo 'installPackage(Modelica, "4.1.0"); getErrorString();' > "$RUNNER_TEMP/install.mos"
+          omc "$RUNNER_TEMP/install.mos"
+
+      - name: Simulate SyntaxCard.Tests
+        run: python3 skills/openmodelica/scripts/run_tests.py skills/openmodelica/SyntaxCard.mo

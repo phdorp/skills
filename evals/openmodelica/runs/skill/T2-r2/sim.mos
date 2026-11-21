@@ -1,0 +1,8 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../Ball.mo"); getErrorString();
+loadFile("../BallTest.mo"); getErrorString();
+checkModel(Ball); getErrorString();
+simulate(Ball, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();
+simulate(Ball, outputFormat = "csv", fileNamePrefix = "BallFine", numberOfIntervals = 50000, simflags = "-alarm=60"); getErrorString();
+checkModel(BallTest); getErrorString();
+simulate(BallTest, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();

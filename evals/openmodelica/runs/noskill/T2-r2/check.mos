@@ -1,0 +1,2 @@
+loadModel(Modelica); loadFile("Ball.mo");
+simulate(Ball, outputFormat="csv", fileNamePrefix="BallCsv"); getErrorString();

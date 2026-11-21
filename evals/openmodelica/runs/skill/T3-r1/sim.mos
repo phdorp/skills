@@ -1,0 +1,4 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("../MSD.mo"); getErrorString();
+checkModel(MSD); getErrorString();
+simulate(MSD, outputFormat = "csv", simflags = "-alarm=60"); getErrorString();

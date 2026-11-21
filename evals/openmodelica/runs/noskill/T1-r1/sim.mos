@@ -1,0 +1,5 @@
+loadModel(Modelica, {"4.1.0"}); getErrorString();
+loadFile("Tank.mo"); getErrorString();
+checkModel(Tank); getErrorString();
+simulate(Tank); getErrorString();
+val(tEmpty, 300); val(h, 300); val(h, 100); val(empty, 300);
