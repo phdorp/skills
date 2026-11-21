@@ -18,6 +18,18 @@
    "score": 0.4,
    "judge": 0.0,
    "cost_usd": 0.017
+  },
+  "S04": {
+   "runs": 2,
+   "score": 0.5,
+   "judge": 0.75,
+   "cost_usd": 0.016
+  },
+  "S05": {
+   "runs": 2,
+   "score": 0.333,
+   "judge": 0.0,
+   "cost_usd": 0.046
   }
  },
  "runs": [
@@ -103,7 +115,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.058s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -443,6 +455,292 @@
     "cost_usd": 0.1442138
    },
    "cost_usd": 0.00892372,
+   "needs_review": false
+  },
+  {
+   "run": "S04-r1",
+   "scenario": "S04",
+   "checks": [
+    {
+     "name": "arc42_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adrs_unchanged",
+     "pass": false,
+     "detail": "0004-plain-text-note-files-with-sync-and-encryption.md, 0005-third-party-dependency-rich-and-packaging.md"
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "store.py"
+    }
+   ],
+   "passed": 1,
+   "total": 3,
+   "score": 0.333,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Sync between devices (1):** R-4 is deferred in arc42",
+      "source": "transcript.md",
+      "reason": "The agent explicitly maps the sync requirement to the existing deferred requirement R-4."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "arc42 requires standard library only (R-3)",
+      "source": "transcript.md",
+      "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the rich/pip requirement."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "ADR-0001 chose a binary SQLite file, which a text editor can't read.",
+      "source": "transcript.md",
+      "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "Requirement 4 is done and the suite passes.",
+      "source": "transcript.md",
+      "reason": "The agent implemented requirement 4 before asking for confirmation and did not assign each requirement one outcome from system-level, feature-level, deferred or rejected."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1463058
+   },
+   "cost_usd": 0.0093744,
+   "needs_review": false
+  },
+  {
+   "run": "S04-r2",
+   "scenario": "S04",
+   "checks": [
+    {
+     "name": "arc42_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adrs_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "store.py"
+    }
+   ],
+   "passed": 2,
+   "total": 3,
+   "score": 0.667,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "R-4 is \"deferred, needs a server, revisit next year\" in arc42.",
+      "source": "transcript.md",
+      "reason": "The agent ties the sync requirement directly to the already-deferred R-4 and later speaks of reopening R-4, treating it as the same requirement."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "R-3 requires standard library only.",
+      "source": "transcript.md",
+      "reason": "The agent explicitly names R-3's standard-library-only constraint as conflicting with the pip/rich requirement."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "ADR-0001 chose a binary SQLite file and says it \"cannot be read or repaired with a text editor\".",
+      "source": "transcript.md",
+      "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "Baseline is green. I'll start with the one requirement that fits the current architecture (#4, newest-first list), writing the test first.",
+      "source": "transcript.md",
+      "reason": "The agent changed code for requirement 4 before asking for confirmation, and it gave options rather than one proposed outcome per requirement."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1062978
+   },
+   "cost_usd": 0.006866920000000001,
+   "needs_review": false
+  },
+  {
+   "run": "S05-r1",
+   "scenario": "S05",
+   "checks": [
+    {
+     "name": "old_rows_kept",
+     "pass": false,
+     "detail": "R-4"
+    },
+    {
+     "name": "new_rows",
+     "pass": false,
+     "detail": "R-6 active; R-7 open; R-8 rejected"
+    },
+    {
+     "name": "ids_next_free",
+     "pass": true,
+     "detail": "R-6, R-7, R-8"
+    },
+    {
+     "name": "superseding_adr",
+     "pass": false,
+     "detail": "0004-store-notes-as-text-files.md, 0005-encryption-at-rest.md"
+    },
+    {
+     "name": "goals_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 2,
+   "total": 6,
+   "score": 0.333,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "**Item 5:** I recommend full-disk encryption (FileVault or LUKS). It protects a stolen laptop with no code change and keeps R-3 and R-6. The alternative is adding `cryptography`, which means breaking R-3. Please pick one; I can update the ADR and README either way.",
+      "source": "transcript.md",
+      "reason": "The final message asks only for an option choice and never asks whether encryption needs a security quality goal, a scenario or a measure."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "| R-6 | Notes can be read and edited with any text editor. | tbd | active | replaces the SQLite storage (ADR-0004) |",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "The new requirements' rank is left 'tbd', with no proposed rank and no request in the final message for the architect to set the order."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "**Accept ADR-0004?** I marked it accepted because you ruled on item 3. If you're not the architect who accepts ADRs, change its status.",
+      "source": "transcript.md",
+      "reason": "The agent marked the storage ADR accepted itself and implemented the change, instead of saying that dependent work waits for the ADR's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1846738
+   },
+   "cost_usd": 0.01992546,
+   "needs_review": false
+  },
+  {
+   "run": "S05-r2",
+   "scenario": "S05",
+   "checks": [
+    {
+     "name": "old_rows_kept",
+     "pass": false,
+     "detail": "R-4"
+    },
+    {
+     "name": "new_rows",
+     "pass": false,
+     "detail": "R-6 rejected; R-7 active; R-8 active; R-9 proposed"
+    },
+    {
+     "name": "ids_next_free",
+     "pass": true,
+     "detail": "R-6, R-7, R-8, R-9"
+    },
+    {
+     "name": "superseding_adr",
+     "pass": false,
+     "detail": "0004-store-notes-as-plain-text-files.md, 0005-encrypt-notes-at-rest.md"
+    },
+    {
+     "name": "goals_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 2,
+   "total": 6,
+   "score": 0.333,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "Please pick one, or relax R-7 or R-3, and accept the ADR. Per ADR-0002 nothing encryption-related is built until then.",
+      "source": "transcript.md",
+      "reason": "The final message asks the architect to choose an encryption option but never asks whether a security quality goal, scenario or measure is needed."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "New rows R-7 to R-9 are \"unranked\", since no rank was given.",
+      "source": "transcript.md",
+      "reason": "The agent left the new requirements unranked without proposing a rank or asking the architect to set the order."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "The file format and name scheme are mine; ADR-0004 is marked accepted on your say-so.",
+      "source": "transcript.md",
+      "reason": "The agent marked the storage ADR accepted and implemented the change instead of saying dependent work waits for its approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.24913780000000002
+   },
+   "cost_usd": 0.025677480000000003,
    "needs_review": false
   }
  ]
