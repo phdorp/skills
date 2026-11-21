@@ -27,6 +27,24 @@ Use these terms exactly: don't substitute "component," "service," "API," or "bou
 
 **Locality**: what maintainers get from depth. Change, bugs, knowledge, and verification concentrate in one place rather than spreading across callers. Fix once, fixed everywhere.
 
+## Paradigms
+
+The glossary holds in every paradigm; only what each term points at changes. Map the code onto
+these terms and keep the terms. Advice belongs in the code's own paradigm: for a dataflow model,
+speak of connectors, signals, connections and parameters, not classes, methods or inheritance.
+
+| Term | Object-oriented | Imperative | Dataflow (Modelica, Simulink) |
+|---|---|---|---|
+| Module | class or package | function or file | block, model or subsystem |
+| Interface | public methods and types | function signature and the globals it reads | ports, connectors and their units |
+| Seam | an injected dependency | a function pointer or link-time choice | a replaceable block behind a fixed port contract |
+| Adapter | a class implementing the interface | a function matching the signature | a block with the same ports, or a converter block between connector types |
+| Coupling source | calls and inheritance | calls and shared globals | connections, shared parameters, global `inner`/`outer` or `Goto`/`From` |
+
+In dataflow code **the signals are the interface**. A block that reads another block's
+parameters, or a package constant both of them use, bypasses its ports: that is coupling outside
+the interface, and the place to look for a seam.
+
 ## Deep vs shallow
 
 **Deep module** = small interface + lots of implementation:
@@ -66,7 +84,7 @@ When designing an interface, ask:
 
 ## Designing for testability
 
-Good interfaces make testing natural:
+Good interfaces make testing natural. The examples are (OO/imperative); each ends with its dataflow form.
 
 1. **Accept dependencies, don't create them.**
 
@@ -80,6 +98,8 @@ Good interfaces make testing natural:
    }
    ```
 
+   Dataflow: pass the parameter in through a port or modifier, not a global.
+
 2. **Return results, don't produce side effects.**
 
    ```typescript
@@ -92,7 +112,9 @@ Good interfaces make testing natural:
    }
    ```
 
-3. **Small surface area.** Fewer methods = fewer tests needed. Fewer params = simpler test setup.
+   Dataflow: put the result on an output signal; don't write another block's variables.
+
+3. **Small surface area.** Fewer methods or ports = fewer tests needed. Fewer params = simpler test setup.
 
 ## Relationships
 
@@ -112,3 +134,7 @@ Good interfaces make testing natural:
 
 - **Deepening a cluster given its dependencies**, see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and replace-don't-layer testing.
 - **Exploring alternative interfaces**, see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up parallel sub-agents to design the interface several radically different ways, then compare on depth, locality, and seam placement.
+- **Principles** (SoC, DRY, KISS, YAGNI, SOLID, Law of Demeter, Rule of Three) with their dataflow reading, see [references/principles.md](references/principles.md).
+- **Architectural and GoF patterns**, with dataflow counterparts, see [references/patterns.md](references/patterns.md).
+- **Anti-patterns** (Blob, Lava Flow, Golden Hammer, Spaghetti Code, Analysis Paralysis), see [references/anti-patterns.md](references/anti-patterns.md).
+- **Code smells**: the `code-review` skill's [smell baseline](../code-review/references/standards-and-smells.md).
