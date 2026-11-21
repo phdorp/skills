@@ -9,35 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "The fix is a `C` parameter on `Thermostat`, wired from `System` as `thermostat(C = room.C)`.",
+   "quote": "I read HeatingLib as a Modelica library, so I mapped the design vocabulary onto dataflow terms.",
    "source": "transcript.md",
-   "reason": "The coupling is described as parameters wired between blocks in System and signals crossing ports, not as object-oriented classes, methods or inheritance."
+   "reason": "The agent frames coupling as parameters wired through System and blocks bypassing their ports, which are dataflow terms rather than object-oriented classes, methods or inheritance."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "<span class=\"px-2 py-1 rounded-full bg-indigo-100 text-indigo-800\">QG-3 faultlessness</span>",
+   "quote": "QG-3 · Reliability: faultlessness (R-3, QS-3)",
    "source": "transcript.md",
-   "reason": "Every candidate card has a QG badge (QG-2, QG-2, QG-3) naming the quality goal it serves."
+   "reason": "Every candidate card in the report has a QG badge: QG-2 for candidates 1 and 2, QG-3 for candidates 3 and 4."
   },
   {
    "criterion": "J3",
-   "pass": true,
-   "quote": "Which candidate would you like to explore?",
+   "pass": false,
+   "quote": "I did not create a `GLOSSARY.md`, since the report is the only output requested.",
    "source": "transcript.md",
-   "reason": "The first turn's final message ends by asking the architect which candidate to explore."
+   "reason": "Turn 1 ends with judgement-call notes and never asks the architect which candidate to explore."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "Candidate 1 is now a proposed ADR, and the code is unchanged.",
+   "quote": "**Held until you accept ADR-0002:** removing `roomHeatCapacity` from `package.mo`, adding `C` to `Thermostat`, and wiring `Thermostat thermostat(C = room.C)` in `System.mo`. The model files are unchanged",
    "source": "transcript.md",
-   "reason": "The final message states the ADR is proposed and waiting for the architect's approval, and that no model was changed in the repo."
+   "reason": "The final message says the change is recorded as a proposed ADR awaiting the architect's approval and that the model files are unchanged."
   }
  ],
- "quote_errors": [
-  "J2: quote not found in transcript.md"
- ],
- "needs_review": true,
- "cost_usd": 0.23497780000000001
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.40445380000000003
 }

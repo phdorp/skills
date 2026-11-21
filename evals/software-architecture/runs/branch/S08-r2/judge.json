@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "The heat capacity is a package constant. Two blocks read it directly instead of receiving it through a port or parameter:",
+   "quote": "<code>Thermostat</code> takes <code>C</code> as a parameter; <code>System</code> binds it to <code>room.C</code>.",
    "source": "transcript.md",
-   "reason": "Coupling is described via ports, parameters and modifiers (dataflow terms) rather than OO classes, methods or inheritance."
+   "reason": "Coupling is described as parameters, ports and bindings wired by System, in dataflow terms rather than OO classes or methods."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "<dt class=\\\"font-semibold\\\">Quality goal</dt><dd>QG-3 (faultlessness, QS-3)",
+   "quote": "3. **Make Room a replaceable seam** (Speculative, QG-2).",
    "source": "transcript.md",
-   "reason": "Each of the three candidates has a Quality goal row naming QG-2 or QG-3."
+   "reason": "All three candidates carry a QG badge (QG-3, QG-2, QG-2) in the report and the summary."
   },
   {
    "criterion": "J3",
    "pass": true,
    "quote": "Which of these would you like to explore?",
    "source": "transcript.md",
-   "reason": "The first turn's final message ends by asking which candidate to explore."
+   "reason": "Turn 1's final message ends by asking the architect which candidate to explore."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "The candidate is accepted and the decision is drafted, but the shared-value code stays as it is until the architect approves the ADR.",
+   "quote": "I wrote that ADR as `proposed`, and it's the only change in the repo.",
    "source": "transcript.md",
-   "reason": "The final message states the ADR is proposed and awaiting approval and that the model code was not changed."
+   "reason": "The final message states the ADR is proposed and awaiting approval, and that nothing else (no model) was changed."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.3211418
+ "cost_usd": 0.2191578
 }

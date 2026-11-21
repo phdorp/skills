@@ -1165,7 +1165,7 @@
     {
      "name": "code_unchanged",
      "pass": false,
-     "detail": "HeatingLib/Room.mo, HeatingLib/System.mo, HeatingLib/Thermostat.mo, HeatingLib/package.mo"
+     "detail": "HeatingLib/Room.mo, HeatingLib/System.mo, HeatingLib/Thermostat.mo, HeatingLib/package.mo, HeatingLib/package.order"
     },
     {
      "name": "adr_proposed",
@@ -1248,7 +1248,7 @@
     {
      "name": "code_unchanged",
      "pass": false,
-     "detail": "HeatingLib/Room.mo, HeatingLib/System.mo, HeatingLib/Thermostat.mo, HeatingLib/package.mo"
+     "detail": "HeatingLib/Room.mo, HeatingLib/System.mo, HeatingLib/Thermostat.mo, HeatingLib/package.mo, HeatingLib/package.order"
     },
     {
      "name": "adr_proposed",

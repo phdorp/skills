@@ -45,9 +45,9 @@
   },
   "S08": {
    "runs": 2,
-   "score": 1.0,
-   "judge": 1.0,
-   "cost_usd": 0.122
+   "score": 0.916,
+   "judge": 0.875,
+   "cost_usd": 0.137
   }
  },
  "runs": [
@@ -63,7 +63,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -138,7 +138,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.054s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.057s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1160,7 +1160,90 @@
     {
      "name": "report_outside_repo",
      "pass": true,
-     "detail": "writes: /tmp/architecture-review-20261121-210833.html; in workspace: "
+     "detail": "writes: /tmp/architecture-review-20261121-211456.html; in workspace: "
+    },
+    {
+     "name": "goals_cited",
+     "pass": true,
+     "detail": "QG-2, QG-3"
+    },
+    {
+     "name": "t1_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "tests/SteadyStateTest.mo, tests/check.mos"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0002-heat-capacity-wired-through-system.md; status proposed; cites ['QG-2']"
+    },
+    {
+     "name": "adr0001_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 6,
+   "score": 0.833,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "I read HeatingLib as a Modelica library, so I mapped the design vocabulary onto dataflow terms.",
+      "source": "transcript.md",
+      "reason": "The agent frames coupling as parameters wired through System and blocks bypassing their ports, which are dataflow terms rather than object-oriented classes, methods or inheritance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "QG-3 \u00b7 Reliability: faultlessness (R-3, QS-3)",
+      "source": "transcript.md",
+      "reason": "Every candidate card in the report has a QG badge: QG-2 for candidates 1 and 2, QG-3 for candidates 3 and 4."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I did not create a `GLOSSARY.md`, since the report is the only output requested.",
+      "source": "transcript.md",
+      "reason": "Turn 1 ends with judgement-call notes and never asks the architect which candidate to explore."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "**Held until you accept ADR-0002:** removing `roomHeatCapacity` from `package.mo`, adding `C` to `Thermostat`, and wiring `Thermostat thermostat(C = room.C)` in `System.mo`. The model files are unchanged",
+      "source": "transcript.md",
+      "reason": "The final message says the change is recorded as a proposed ADR awaiting the architect's approval and that the model files are unchanged."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.40445380000000003
+   },
+   "cost_usd": 0.088517,
+   "needs_review": false
+  },
+  {
+   "run": "S08-r2",
+   "scenario": "S08",
+   "checks": [
+    {
+     "name": "report_outside_repo",
+     "pass": true,
+     "detail": "writes: /tmp/architecture-review-20261121-211521.html; in workspace: "
     },
     {
      "name": "goals_cited",
@@ -1180,7 +1263,7 @@
     {
      "name": "adr_proposed",
      "pass": true,
-     "detail": "0002-controller-gain-from-room-capacity.md; status proposed; cites ['QG-1', 'QG-2']"
+     "detail": "0002-test-blocks-through-their-ports.md; status proposed; cites ['QG-3']"
     },
     {
      "name": "adr0001_unchanged",
@@ -1203,122 +1286,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "The fix is a `C` parameter on `Thermostat`, wired from `System` as `thermostat(C = room.C)`.",
+      "quote": "<code>Thermostat</code> takes <code>C</code> as a parameter; <code>System</code> binds it to <code>room.C</code>.",
       "source": "transcript.md",
-      "reason": "The coupling is described as parameters wired between blocks in System and signals crossing ports, not as object-oriented classes, methods or inheritance."
+      "reason": "Coupling is described as parameters, ports and bindings wired by System, in dataflow terms rather than OO classes or methods."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "<span class=\"px-2 py-1 rounded-full bg-indigo-100 text-indigo-800\">QG-3 faultlessness</span>",
+      "quote": "3. **Make Room a replaceable seam** (Speculative, QG-2).",
       "source": "transcript.md",
-      "reason": "Every candidate card has a QG badge (QG-2, QG-2, QG-3) naming the quality goal it serves."
-     },
-     {
-      "criterion": "J3",
-      "pass": true,
-      "quote": "Which candidate would you like to explore?",
-      "source": "transcript.md",
-      "reason": "The first turn's final message ends by asking the architect which candidate to explore."
-     },
-     {
-      "criterion": "J4",
-      "pass": true,
-      "quote": "Candidate 1 is now a proposed ADR, and the code is unchanged.",
-      "source": "transcript.md",
-      "reason": "The final message states the ADR is proposed and waiting for the architect's approval, and that no model was changed in the repo."
-     }
-    ],
-    "quote_errors": [
-     "J2: quote not found in transcript.md"
-    ],
-    "needs_review": true,
-    "cost_usd": 0.23497780000000001
-   },
-   "cost_usd": 0.055241,
-   "needs_review": true
-  },
-  {
-   "run": "S08-r2",
-   "scenario": "S08",
-   "checks": [
-    {
-     "name": "report_outside_repo",
-     "pass": true,
-     "detail": "writes: /tmp/architecture-review-20261121-210745.html; in workspace: "
-    },
-    {
-     "name": "goals_cited",
-     "pass": true,
-     "detail": "QG-1, QG-2, QG-3"
-    },
-    {
-     "name": "t1_unchanged",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "code_unchanged",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "adr_proposed",
-     "pass": true,
-     "detail": "0002-share-heat-capacity-through-system.md; status proposed; cites ['QG-2']"
-    },
-    {
-     "name": "adr0001_unchanged",
-     "pass": true,
-     "detail": ""
-    }
-   ],
-   "passed": 6,
-   "total": 6,
-   "score": 1.0,
-   "valid": true,
-   "judge": {
-    "criteria": [
-     "J1",
-     "J2",
-     "J3",
-     "J4"
-    ],
-    "verdicts": [
-     {
-      "criterion": "J1",
-      "pass": true,
-      "quote": "The heat capacity is a package constant. Two blocks read it directly instead of receiving it through a port or parameter:",
-      "source": "transcript.md",
-      "reason": "Coupling is described via ports, parameters and modifiers (dataflow terms) rather than OO classes, methods or inheritance."
-     },
-     {
-      "criterion": "J2",
-      "pass": true,
-      "quote": "<dt class=\\\"font-semibold\\\">Quality goal</dt><dd>QG-3 (faultlessness, QS-3)",
-      "source": "transcript.md",
-      "reason": "Each of the three candidates has a Quality goal row naming QG-2 or QG-3."
+      "reason": "All three candidates carry a QG badge (QG-3, QG-2, QG-2) in the report and the summary."
      },
      {
       "criterion": "J3",
       "pass": true,
       "quote": "Which of these would you like to explore?",
       "source": "transcript.md",
-      "reason": "The first turn's final message ends by asking which candidate to explore."
+      "reason": "Turn 1's final message ends by asking the architect which candidate to explore."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "The candidate is accepted and the decision is drafted, but the shared-value code stays as it is until the architect approves the ADR.",
+      "quote": "I wrote that ADR as `proposed`, and it's the only change in the repo.",
       "source": "transcript.md",
-      "reason": "The final message states the ADR is proposed and awaiting approval and that the model code was not changed."
+      "reason": "The final message states the ADR is proposed and awaiting approval, and that nothing else (no model) was changed."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.3211418
+    "cost_usd": 0.2191578
    },
-   "cost_usd": 0.066655,
+   "cost_usd": 0.048468,
    "needs_review": false
   }
  ]

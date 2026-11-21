@@ -79,3 +79,29 @@ Credit: `goals_cited`, `code_unchanged`, `adr_proposed`, J1, J2, J4 went RED →
 GREEN credit. With 2 runs per arm, a J1 slip back to object-oriented wording is not ruled out.
 
 Gate: met.
+
+## Final review fix pass: skills at `af42af5` (2026-11-21, 2 runs)
+
+The final review found that GREEN r2 also rewrote `tests/check.mos` after acceptance ("I also
+implemented the test-script change, which needed no decision"), unseen because
+`code_unchanged` compared only `.mo` files. `code_unchanged` now covers every file except ADRs,
+`GLOSSARY.md` and the report; `improve-codebase-architecture` ends the run with the ADR "including
+parts the 'made centrally' list leaves to the blocks". The GREEN runs above were replaced.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S08-r1 | `code_unchanged` (`tests/SteadyStateTest.mo`, `tests/check.mos`) | J3 |
+| S08-r2 | - | - |
+
+r1 held the model change ("Held until you accept ADR-0002 … The model files are unchanged") but
+built the test that guarded it: "The test and check script are finished, but the
+`Thermostat`/`System` change is held." Its turn 1 ended on notes, not on the question (J3).
+
+**Open loophole:** a safety-net test for the accepted change is written before the ADR is
+accepted. One fix pass is spent; this stays open.
+
+**Isolation gap:** r2 loaded `codebase-design` and `domain-modeling` without the `sa:` prefix,
+from the machine's `~/.claude/skills/`, whose copies differ from the branch. The run shares
+`HOME` with the machine (known gap); its pass rests partly on the installed skills.
+
+Gate: not met (r1); reported as an open loophole.

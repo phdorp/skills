@@ -81,7 +81,7 @@ with the agents' wording: [campaigns/](campaigns/).
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S07 setup-documented (two turns) | 0.071 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 0.916 | 0.875 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -118,7 +118,8 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   quality goal. On the branch, every candidate cites an existing `QG-n`, the accepted change is
   a `proposed` ADR-0002, and no model changes. One loophole round: a run named the Modelica
   seam "partial base classes"; `codebase-design` now names constructs in the language's own
-  words.
+  words. Open loophole: one final run wrote a safety-net test for the accepted change before
+  its ADR was accepted, and skipped turn 1's closing question.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
@@ -131,7 +132,9 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   questions, so a run that stops to ask ends there.
 - Two runs per scenario cannot detect small effects.
 - Runs share `HOME` with the machine's Claude installation: an agent can search
-  `~/.claude` (baseline S07-r2 found "other projects' transcripts" and did not open them).
+  `~/.claude` (baseline S07-r2 found "other projects' transcripts" and did not open them), and
+  can load the machine's installed skills instead of the arm's `sa:` copies (branch S08-r2
+  loaded `codebase-design` and `domain-modeling` that way).
 - The account's usage limit can cut a run off mid-turn; the run then fails isolation on its
   exit code and must be re-run.
 - Spec story 16 (a multi-context repo with `GLOSSARY-MAP.md`) has no fixture.
