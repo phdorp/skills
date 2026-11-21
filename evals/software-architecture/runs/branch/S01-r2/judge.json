@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **Validation:** N must be a positive integer. `--top 0`, `--top -1` and `--top x` exit with code 2 and a usage message.",
+   "quote": "- **Validation:** I made `N` a positive integer, so `0`, negative values, and non-numbers exit with a usage error. You didn't specify this; say if you'd rather allow `0`.",
    "source": "transcript.md",
-   "reason": "The agent decided input validation itself and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
+   "reason": "The agent made only a concrete input-validation choice and wrote no quality goals, scenarios or ISO 25010 characteristics anywhere."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "git add README.md tally/cli.py tests/test_cli.py",
+   "quote": "I added `--top N` to the tally CLI and committed it as `e0e900b`. All 7 tests pass (`python3 -m unittest`), and I checked the CLI by hand.",
    "source": "transcript.md",
-   "reason": "Only code, tests and the README were committed, and no ADR was created or proposed."
+   "reason": "The final report and the committed files cover only code, tests and the README, with no ADR created or proposed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "The project is small: one CLI module, one test file, and a README. I'll write the failing tests first, then implement.",
+   "quote": "The project is small: a `tally/cli.py` with `format_counts` and `main`, tested with `unittest`. I'll write the failing tests first, then implement.",
    "source": "transcript.md",
-   "reason": "The agent followed an ordinary read-test-implement-verify-commit workflow with no architecture setup, recovery or documentation step."
+   "reason": "The agent followed an ordinary read, test, implement, verify, commit flow with no architecture steps."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0890898
+ "cost_usd": 0.08914580000000001
 }

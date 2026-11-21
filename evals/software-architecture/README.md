@@ -69,8 +69,8 @@ with the agents' wording: [campaigns/](campaigns/).
 | scenario | baseline grader | baseline judge | branch grader | branch judge | branch runs that loaded the target skill |
 |---|---:|---:|---:|---:|---|
 | S01 no-setup | 1.000 | 1.000 | 1.000 | 1.000 | - (none expected) |
-| S02 record-decision | 0.785 | 0.834 | 0.857 | 0.834 | 1 of 2 |
-| S03 lifecycle | 0.500 | 0.000 | 1.000 | 1.000 | 2 of 2 |
+| S02 record-decision | 0.785 | 0.834 | 0.928 | 0.666 | 1 of 2 |
+| S03 lifecycle | 0.400 | 0.000 | 1.000 | 1.000 | 2 of 2 |
 
 Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run takes 20–60 s.
 
@@ -82,8 +82,7 @@ Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run tak
   load it accepted its own ADR again. Open loophole: the skill does not load reliably for
   "record the decision as an ADR".
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
-  failure stands because R-6 does not exist; `branch/S03-r1`, where the judge garbled the
-  Markdown in a correct quote and the verdict stands.
+  failure stands because R-6 does not exist.
 
 ## Known gaps
 

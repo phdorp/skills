@@ -19,7 +19,7 @@ def format_counts(counts, top=None):
 def positive_int(value):
     n = int(value)
     if n < 1:
-        raise argparse.ArgumentTypeError(f"must be at least 1, got {value}")
+        raise argparse.ArgumentTypeError("must be a positive integer")
     return n
 
 

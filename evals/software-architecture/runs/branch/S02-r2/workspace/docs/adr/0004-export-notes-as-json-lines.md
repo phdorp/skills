@@ -6,93 +6,75 @@ accepted 2026-11-21
 
 ## Context
 
-Users ask to export their notes so they can back them up and move them to other tools. This
-adds a requirement: proposed R-6, "Users export all their notes to a file they can keep as a
-backup and import into other tools", not yet in arc42 section 1.
+Users want to back up their notes and move them to other tools. A copy of the SQLite file
+(ADR-0001) is a backup only for this program; other tools get no documented format from it.
+Notes are free text and may contain newlines, quotes and non-ASCII characters, so the export
+must be lossless for any note text. The program still uses only the standard library (R-3),
+and notes are read only through `Store` (ADR-0003).
 
-The export must:
+Formats considered:
 
-- keep every note exactly: the text (which may contain any characters, including newlines,
-  since `notes add` takes arbitrary text), the id, and the creation time (R-2, QS-1 spirit);
-- use only the standard library (R-3);
-- read notes only through `Store` (ADR-0003);
-- use a format and command name that are decided centrally (ADR-0002).
+- CSV: quoting rules differ between tools, and every field is text.
+- One JSON array: not streamable; one damaged byte makes the whole file unreadable.
+- Markdown: no clear structure for `id` and `created`; multi-line text is ambiguous.
+- Raw SQLite copy: already exists as a backup, but is not portable.
 
 ## Decision
 
-### Format: JSON Lines
-
-The export is UTF-8 text with one note per line, in ascending `id` order. Each line is a JSON
-object with exactly three keys:
-
-- `id`: integer, the note id;
-- `created`: string, the creation time as stored (ISO 8601, UTC);
-- `text`: string, the note text.
-
-Example:
+Export format: **JSON Lines**. One JSON object per note, one object per line, UTF-8 text,
+ordered by ascending `id`. Each line ends with `\n`:
 
 ```json
-{"id": 1, "created": "2026-10-03T08:15:00+00:00", "text": "Buy milk"}
-{"id": 2, "created": "2026-10-03T08:16:12+00:00", "text": "Line one\nLine two"}
+{"id": 1, "text": "Buy milk", "created": "2026-11-21T10:00:00+00:00"}
+{"id": 2, "text": "Call Ann\nabout the trip", "created": "2026-11-21T10:05:00+00:00"}
 ```
 
-Each record is written with `json.dumps(..., ensure_ascii=False)` and terminated by `\n`.
-Newlines inside `text` are escaped by JSON, so every record is exactly one line. There is no
-header line and no wrapping array, so each line parses on its own, and a damaged line does not
-make the rest of the file unreadable.
+- Each object has exactly the keys `id` (integer), `text` (string) and `created` (string, as
+  stored: ISO 8601, UTC, whole seconds).
+- Written with Python's `json.dumps` using its default settings (non-ASCII escaped), so the
+  output is ASCII-safe on any terminal or pipe.
+- No header line and no wrapping array, so each line parses on its own.
+- An empty store produces empty output and exit code 0.
+- Readers must ignore keys they do not know. Adding a key is allowed without a new ADR.
+  Renaming or removing a key, or changing its meaning, needs a new ADR.
 
-Rejected alternatives:
+CLI:
 
-- **CSV**: quoting and embedded-newline handling differ between tools, and it has no types.
-  A CSV variant may be added later as an option; it is not part of this decision.
-- **Plain text or Markdown**: lossy (ids and timestamps are easily lost) and not re-importable.
-- **SQLite file copy**: a faithful backup of the database, but tied to our schema, and no
-  other tool reads it as notes.
-- **One JSON array**: the whole file is invalid if the write is interrupted, and it cannot be
-  streamed.
+- `python3 -m notes export` writes to standard output.
+- `python3 -m notes export -o FILE` writes to `FILE`.
+- `--force` is required to replace an existing `FILE`. Without it, an existing `FILE` is an
+  error and nothing is written.
+- Writing to `FILE` is atomic: write a temporary file in the same directory, flush and fsync
+  it, then rename it onto `FILE`. A failure leaves neither a partial `FILE` nor a temporary
+  file behind. The temporary file is created with mode 0600, and `FILE` keeps that mode.
 
-### Command: `notes export [PATH]`
+Exit codes for the CLI (this command and all existing ones):
 
-- `python3 -m notes export` writes the export to stdout. Nothing else is printed to stdout.
-  Output is always UTF-8, independent of the terminal locale.
-- `python3 -m notes export PATH` writes the export to a new file at `PATH`.
-  - If `PATH` already exists, the command fails with `notes: <PATH> already exists` and exit
-    code 1. It never overwrites a file. (`--force` is not part of this decision.)
-  - The file is first written to a temporary file in the same directory, flushed and fsynced.
-    It is then put in place without overwriting anything (for example `os.link`, not
-    `os.replace`). A crash leaves either no file at `PATH` or a complete one.
-  - Nothing is printed on success.
-- Errors follow arc42 section 8: `notes: <message>` on stderr, exit code 1. Success is exit
-  code 0.
+- `0`: success.
+- `1`: runtime error, reported on stderr as `notes: <message>` (arc42 section 8).
+- `2`: invalid usage, as argparse reports it.
 
-### Code layout
+Building blocks (arc42 section 5):
 
-- A new block `notes/export.py` formats records. It may use `model` only and takes notes and
-  an output stream as arguments. It does not import `sqlite3` and does not open files itself.
-- `notes/cli.py` gets the notes with `Store.all()`, passes them to `export.py`, and handles
-  the output destination and the file-creation rules above.
-- The dependency rule `cli → store → model` in ADR-0002 is unchanged. `export` is added as a
-  block that uses only `model`.
+- New block `export` (`notes/export.py`) turns notes into JSON Lines and may use only `model`.
+- `cli` gets the notes from `Store.all()` and passes them to `export`. The dependency rule
+  becomes `cli` → `store` → `model`, with `cli` → `export` → `model` alongside it.
 
-Import is not decided here. It needs its own ADR when it is wanted.
+Out of scope for v1: import or restore, other formats (CSV, Markdown), encryption, export
+filtered by search term, and sync (R-4 is deferred).
 
 ## Consequences
 
-- No storage change is needed. `Store.all()` already provides the data, and the store stays
-  the only module that touches the database (ADR-0003).
-- The export reads all notes into memory before writing, the same as `notes list` does today.
-  That is fine for short notes. If the store grows large enough to matter, the export can
-  stream rows instead; the output format stays the same.
-- The export files are plain UTF-8 text. Users can open them in an editor, unlike the binary
-  database (ADR-0001).
-- Adding fields later is compatible with existing readers if the new keys are optional. Any
-  change that alters or removes a key needs a new ADR.
-- Acceptance tests the team should write before merging:
-  - round trip: `add` notes with unicode, quotes, and embedded newlines; export; parse each
-    line with `json.loads`; the texts, ids, and creation times match the store;
-  - an empty store produces an empty output;
-  - `export PATH` refuses an existing `PATH` with exit code 1 and leaves the file unchanged;
-  - `export PATH` leaves no temporary file behind on success.
-- When this ADR is accepted, arc42 needs two edits, which are not part of this ADR: add R-6 to
-  the requirements table in section 1, and add the `export` block to the building block table
-  in section 5.
+- Build order for tomorrow:
+  1. `notes/export.py` with a function that writes notes to a text stream.
+  2. The `export` subcommand in `notes/cli.py`, with `-o`/`--force` and the atomic write.
+  3. Tests: round trip of text with newlines, quotes and non-ASCII; empty store; existing
+     `FILE` refused without `--force`; a failed write leaves no `FILE` and no temporary file.
+  4. A usage line in `README.md` and the new block in arc42 section 5.
+- `Store.all()` runs one `SELECT`, so the export is a consistent snapshot of the store.
+- The export is a one-way copy. Until an import exists, this program cannot restore from it.
+  The release notes must say so.
+- The file is plain text. It can be read in an editor or with `jq`, unlike the SQLite file
+  (ADR-0001). It also contains the note text unencrypted, so users must protect it.
+- All notes are loaded into memory before writing. This is acceptable for short notes. Revisit
+  it if stores grow large.

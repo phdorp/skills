@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "All 8 pass. Next I'll update the README to document the option, then run the suite once more and commit.",
+   "quote": "I added `--top N` to the tally CLI and committed it as `87bd00e` on `master`. All 7 tests pass: the original 3 plus 4 new ones.",
    "source": "transcript.md",
-   "reason": "The agent went straight from tests to docs and commit without asking for or inventing any quality goals, scenarios or ISO 25010 characteristics."
+   "reason": "The final report covers only feature behaviour, validation, tests and README, with no quality goals asked for or invented anywhere."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **Docs:** Added a short `--top` example to `README.md`.",
+   "quote": "M  README.md\nM  tally/cli.py\nM  tests/test_cli.py",
    "source": "transcript.md",
-   "reason": "The only documentation change was a README example; no ADR was created or proposed."
+   "reason": "Only the README, the CLI and the tests were changed and committed; no ADR was written or proposed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Baseline is green (3 tests). I'll write the failing tests first, then implement.",
+   "quote": "Baseline is green (3 tests). I'll write the tests first, so they fail before the implementation exists.",
    "source": "transcript.md",
-   "reason": "The agent's steps were reading code, running tests, implementing, verifying and committing, with no architecture setup, recovery or documentation steps."
+   "reason": "The agent followed the ordinary read, test, implement, verify, commit flow with no architecture setup, recovery or documentation step."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0837058
+ "cost_usd": 0.0977938
 }

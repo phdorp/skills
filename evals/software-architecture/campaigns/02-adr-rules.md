@@ -72,3 +72,22 @@ change (a context pointer the agent sees on every turn), tested with S02.
 
 `adr.parse` ended a field at any heading, so a `### Format` subheading emptied the Decision
 field and failed `five_fields` (branch S02-r2). Fixed with `test_subheadings_stay_inside_their_field`.
+
+## Final branch runs (commit a2955c4, after the final review)
+
+The review found the skill's "edit only the ADRs the instruction names" blocked the supersede
+step; the fix allows "the ADR an accepted ADR replaces". All branch runs were re-run on it.
+
+| run | skill loaded | failed checks | failed criteria |
+|---|---|---|---|
+| S01-r1, S01-r2 | no | - | - |
+| S02-r1 | `sa:domain-modeling` | - | - |
+| S02-r2 | no | `status_proposed` | J1, J3 |
+| S03-r1, S03-r2 | `sa:domain-modeling` | - | - |
+
+Across all branch S02 runs the skill loaded in 2 of 6; every loaded run complied, every
+unloaded run but one accepted its own ADR or cited a requirement that does not exist. The
+loophole stays open: the pointer, not the rule.
+
+The grader now also fails S03 runs that rewrite ADR-0001, 0004 or 0005 beyond their Status;
+`baseline/S03-r2` (rewrote ADR-0004's Context, failure 5) is caught by it.

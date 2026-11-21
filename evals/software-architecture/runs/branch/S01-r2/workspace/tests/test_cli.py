@@ -1,7 +1,7 @@
 import io
 import tempfile
 import unittest
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import redirect_stdout
 from pathlib import Path
 
 from tally.cli import count_words, format_counts, main
@@ -15,38 +15,37 @@ class CountWords(unittest.TestCase):
     def test_ranks_by_count_then_alphabetically(self):
         self.assertEqual(format_counts({"b": 1, "a": 1, "c": 3}), ["c 3", "a 1", "b 1"])
 
-    def test_top_keeps_only_most_frequent(self):
-        counts = {"b": 1, "a": 1, "c": 3, "d": 2}
-        self.assertEqual(format_counts(counts, top=2), ["c 3", "d 2"])
+    def test_top_keeps_only_the_most_frequent(self):
+        self.assertEqual(format_counts({"b": 1, "a": 1, "c": 3}, top=2), ["c 3", "a 1"])
 
     def test_top_larger_than_vocabulary_keeps_all(self):
-        self.assertEqual(format_counts({"a": 1}, top=5), ["a 1"])
+        self.assertEqual(format_counts({"b": 1, "a": 2}, top=10), ["a 2", "b 1"])
 
 
 class Main(unittest.TestCase):
-    def _run(self, text, argv_extra):
+    def test_prints_every_word(self):
         path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text(text)
+        path.write_text("b a b")
         out = io.StringIO()
         with redirect_stdout(out):
-            code = main([str(path), *argv_extra])
-        return code, out.getvalue()
+            self.assertEqual(main([str(path)]), 0)
+        self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def test_prints_every_word(self):
-        code, out = self._run("b a b", [])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "b 2\na 1\n")
+    def test_top_prints_only_n_words(self):
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("b a b c c c")
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(main(["--top", "2", str(path)]), 0)
+        self.assertEqual(out.getvalue(), "c 3\nb 2\n")
 
-    def test_top_prints_only_n_most_frequent(self):
-        code, out = self._run("b a b c c c d", ["--top", "2"])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "c 3\nb 2\n")
-
-    def test_top_rejects_non_positive(self):
-        for bad in ("0", "-1", "x"):
-            with self.subTest(bad=bad), redirect_stderr(io.StringIO()):
+    def test_top_rejects_non_positive_values(self):
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("a")
+        for value in ("0", "-1", "x"):
+            with self.subTest(value=value), redirect_stdout(io.StringIO()):
                 with self.assertRaises(SystemExit) as cm:
-                    self._run("a", ["--top", bad])
+                    main(["--top", value, str(path)])
                 self.assertEqual(cm.exception.code, 2)
 
 

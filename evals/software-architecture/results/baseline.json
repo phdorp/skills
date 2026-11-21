@@ -15,7 +15,7 @@
   },
   "S03": {
    "runs": 2,
-   "score": 0.5,
+   "score": 0.4,
    "judge": 0.0,
    "cost_usd": 0.017
   }
@@ -98,12 +98,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.004s\n\nOK\n"
+     "detail": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.003s\n\nOK\n"
     },
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -409,13 +409,13 @@
     },
     {
      "name": "others_unchanged",
-     "pass": true,
-     "detail": ""
+     "pass": false,
+     "detail": "0004 (beyond its Status)"
     }
    ],
-   "passed": 3,
+   "passed": 2,
    "total": 5,
-   "score": 0.6,
+   "score": 0.4,
    "valid": true,
    "judge": {
     "criteria": [

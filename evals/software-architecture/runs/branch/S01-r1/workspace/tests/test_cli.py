@@ -25,39 +25,36 @@ class Main(unittest.TestCase):
             self.assertEqual(main([str(path)]), 0)
         self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def _run(self, text, argv_extra):
+    def run_main(self, argv):
         path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text(text)
+        path.write_text("c a c b b b d")
         out = io.StringIO()
         with redirect_stdout(out):
-            code = main([str(path), *argv_extra])
-        return code, out.getvalue()
+            status = main([str(path), *argv])
+        return status, out.getvalue()
 
     def test_top_prints_only_most_frequent_words(self):
-        code, out = self._run("c c c b b a d", ["--top", "2"])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "c 3\nb 2\n")
+        status, out = self.run_main(["--top", "2"])
+        self.assertEqual(status, 0)
+        self.assertEqual(out, "b 3\nc 2\n")
 
     def test_top_larger_than_vocabulary_prints_all_words(self):
-        code, out = self._run("b a b", ["--top", "10"])
-        self.assertEqual(out, "b 2\na 1\n")
+        status, out = self.run_main(["--top", "10"])
+        self.assertEqual(status, 0)
+        self.assertEqual(out, "b 3\nc 2\na 1\nd 1\n")
 
     def test_top_zero_prints_nothing(self):
-        code, out = self._run("b a b", ["--top", "0"])
-        self.assertEqual(code, 0)
+        status, out = self.run_main(["--top", "0"])
+        self.assertEqual(status, 0)
         self.assertEqual(out, "")
 
-    def test_top_rejects_negative_number(self):
-        with self.assertRaises(SystemExit) as ctx, redirect_stdout(io.StringIO()), \
-                redirect_stderr(io.StringIO()):
-            self._run("b a b", ["--top", "-1"])
-        self.assertEqual(ctx.exception.code, 2)
-
-    def test_top_rejects_non_integer(self):
-        with self.assertRaises(SystemExit) as ctx, redirect_stdout(io.StringIO()), \
-                redirect_stderr(io.StringIO()):
-            self._run("b a b", ["--top", "many"])
-        self.assertEqual(ctx.exception.code, 2)
+    def test_negative_top_is_rejected(self):
+        err = io.StringIO()
+        with self.assertRaises(SystemExit) as cm, redirect_stdout(io.StringIO()), \
+                redirect_stderr(err):
+            self.run_main(["--top=-1"])
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("must be >= 0", err.getvalue())
 
 
 if __name__ == "__main__":
