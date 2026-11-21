@@ -79,9 +79,10 @@ with the agents' wording: [campaigns/](campaigns/).
 | S03 lifecycle | 0.400 | 0.250 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 0.875 | 2 of 2 (slash) |
+| S07 setup-documented (two turns) | 0.071 | 0.000 | 0.857 | 0.875 | 2 of 2 (slash) |
 
-Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50–1.90). A turn takes 20–60 s.
+Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
 - S01: no run loaded a skill on either arm. It shows an ordinary change stays ordinary, not
   that the skills stay quiet once loaded.
@@ -104,6 +105,12 @@ Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50�
   produced the R-list, measured goals, section 5's building-block table and a proposed
   ADR-0001. All branch runs of S01–S05 were
   re-run then, with the three new skills visible.
+- S07 (ticket 05, [campaign](campaigns/05-setup-documented.md)): on `main`, turn 1 rewrote or
+  duplicated the README's architecture and wrote new ADRs into the slot the "made centrally"
+  ADR needs. On the branch, documents stay in place and legacy ADRs become
+  `accepted (legacy)`; two loopholes stay open (an unmeasured goal filed in both S07 runs,
+  single proposal items dropped in two runs). Every branch run was re-run then with clean
+  isolation; S06 and S07 judge scores dropped from 1.000 to 0.875 on those dropped items.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
@@ -115,6 +122,11 @@ Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50�
 - Scenario prompts must carry the architect's answers up front: a `-p` run cannot answer
   questions, so a run that stops to ask ends there.
 - Two runs per scenario cannot detect small effects.
+- Runs share `HOME` with the machine's Claude installation: an agent can search
+  `~/.claude` (baseline S07-r2 found "other projects' transcripts" and did not open them).
+- The account's usage limit can cut a run off mid-turn; the run then fails isolation on its
+  exit code and must be re-run.
+- Spec story 16 (a multi-context repo with `GLOSSARY-MAP.md`) has no fixture.
 - Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 in early runs, 2 of 2 in the ticket 04 re-run). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the
   model alone.
