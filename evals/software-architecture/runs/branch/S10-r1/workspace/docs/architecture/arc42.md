@@ -8,19 +8,20 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | ID | requirement | rank | status | reason |
 |---|---|---|---|---|
-| R-1 | The library simulates one room heated by a thermostat over 24 h (86400 s) and makes the room temperature trace available as a result. | 1 | active | Shapes `System`, `Room` and `Thermostat` and the run length. |
-| R-2 | Every class in HeatingLib passes `checkModel` in OpenModelica with no errors. | 2 | active | A library-wide quality bar on every change. |
-| R-3 | A room or a controller can be replaced by another model with the same connectors, and only the `System` declaration that names it changes. | 3 | active | Extensibility the code only partly supports today: `Thermostat` reads `HeatingLib.roomHeatCapacity` directly. |
-
-Gap check at setup: time behaviour, interoperability of the output format, and functional
-completeness were asked about. The architect named no further requirement.
+| R-1 | Simulate a heated room over a day and show its temperature. | 1 | active | Purpose of the product; its structure follows from it. |
+| R-2 | Swap the room or the controller for another variant without touching the rest. | 2 | active | Constrains the interfaces and dependencies between blocks. |
+| R-3 | Every model checks in OpenModelica without errors. | 3 | active | Applies to every block; the check gate is architectural. |
 
 ### Quality goals
 
 | ID | goal (ISO/IEC 25010) | from | scenario |
 |---|---|---|---|
-| QG-1 | Maintainability: testability | R-2 | QS-1 |
-| QG-2 | Flexibility: replaceability | R-3 | QS-2 |
+| QG-2 | Maintainability: modifiability | R-2 | QS-2 |
+| QG-3 | Maintainability: testability | R-3 | QS-3 |
+
+QG-1 (Functional suitability: functional correctness, from R-1) is open: it has no measure yet. Open question: what is the intended room temperature after 24 h with the default parameters?
+
+Gap review: the architect was asked about interoperability, time behaviour and fail safe, and answered that nothing is missing. No further goals.
 
 ### Stakeholders
 
@@ -28,91 +29,83 @@ completeness were asked about. The architect named no further requirement.
 
 *As found, unconfirmed.*
 
-- The models are Modelica and are simulated and checked with OpenModelica (`omc`), as `README.md` and `tests/check.mos` show.
-- All quantities use SI units (see section 8).
+- The models are Modelica, checked and simulated with OpenModelica (`omc`). The check runs from the project root with `omc tests/check.mos` (README, `tests/check.mos`).
+- No third-party library is used; the code relies only on Modelica built-ins (`der`, `min`, `max`) and its own package.
 
 ## 3. Context and scope
 
 *As found, unconfirmed.*
 
-- Inside the system: the HeatingLib package, its four classes (`Interfaces`, `Room`, `Thermostat`, `System`) and the package constant `roomHeatCapacity`.
-- Outside the system: the outdoor temperature (`Room.T_amb`, default 273.15 K) and the set point (`Thermostat.T_set`, default 293.15 K), both parameters; the OpenModelica tool that runs the models. No external system is connected at run time.
+Inside the system: the `HeatingLib` package. Outside it: OpenModelica (`omc`), which loads, checks and simulates the models, and whoever starts a run (the check script or a user at the `omc` prompt). HeatingLib talks to no other system: there are no sensors and no external data feeds. The outdoor temperature `T_amb` is a parameter of `Room`, not a connection.
 
 ## 4. Solution strategy
 
 *As found, unconfirmed.*
 
-- The room is a lumped model: one heat capacity for the room air (C = 5e5 J/K) and one loss conductance to the outdoors (G = 150 W/K).
-- The controller is proportional only, with gain k = C / τ, so that without wall losses the gap to the set point closes with time constant τ = 1800 s. It has no integral term.
-- The heater power is limited to the interval [0, Q_max] with Q_max = 3000 W.
-- The blocks are connected through typed connectors defined in `Interfaces`.
+- **The room is one lumped heat-storing node** with a single loss conductance to the outdoors (`Room`). Traces to R-1.
+- **The controller is proportional with saturation:** `Q = min(Q_max, max(0, k (T_set − T)))`, with `k = roomHeatCapacity / tau` (`Thermostat`). Traces to R-1.
+- **Blocks meet only at connectors,** and `System` composes them by connections (`Interfaces`, `System`). Traces to R-2.
+- **One check script covers the whole package,** but it checks only `System` (`tests/check.mos`). Traces to R-3; see Risks.
 
 ## 5. Building block view
 
 *As found, unconfirmed.*
 
-| block | responsibility | may use |
-|---|---|---|
-| `Interfaces` | connector and unit types shared by all blocks | none |
-| `Room` | lumped room air: stores heat, loses it through the walls to `T_amb`; outputs its temperature `T`, takes heating power `Q_heat` | `Interfaces`; the package constant `roomHeatCapacity` (default of `C`) |
-| `Thermostat` | proportional controller: takes the measured temperature `T`, outputs the heating power `Q` with the set point `T_set` | `Interfaces`; the package constant `roomHeatCapacity` (for the gain `k`) |
-| `System` | composition of one `Room` and one `Thermostat`, connected in a loop | `Room`, `Thermostat` |
-| `HeatingLib` (package) | the constant `roomHeatCapacity` = 5e5 J/K | none |
+| block | responsibility | in | out | may use |
+|---|---|---|---|---|
+| `Interfaces` | connector and unit types shared by all blocks | none | none | nothing |
+| `Room` | lumped room air: stores heat, loses it through the walls | `Q_heat` (`HeatFlowInput`) | `T` (`TemperatureOutput`) | `Interfaces`; `HeatingLib.roomHeatCapacity` (default of `C`) |
+| `Thermostat` | proportional heating controller with a set point | `T` (`TemperatureInput`) | `Q` (`HeatFlowOutput`) | `Interfaces`; `HeatingLib.roomHeatCapacity` (in `k`) |
+| `System` | a room heated by a thermostat-controlled heater | none | none | `Room`, `Thermostat` |
+| `HeatingLib` (package) | constant `roomHeatCapacity` = 5e5 J/K, read by `Room` and `Thermostat` | none | none | nothing |
+
+`System` connects `room.T` to `thermostat.T` and `thermostat.Q` to `room.Q_heat`. `roomHeatCapacity` is the one shared constant; see [ADR 0003](../adr/0003-blocks-read-shared-room-heat-capacity-constant.md).
 
 ## 6. Runtime view
 
 *As found, unconfirmed.*
 
-The simulation of `System` runs for 86400 s. The initial equation sets the room to `T_start`
-(288.15 K). At each step `Thermostat` computes `Q = min(Q_max, max(0, k · (T_set − T)))` from
-the measured `T`, and `Room` integrates `C · dT/dt = Q − G · (T − T_amb)`.
+One-day run of `System` (`StopTime = 86400` s, default parameters): the room starts at 288.15 K (15 °C). The thermostat demands heat `Q` from the set point 293.15 K (20 °C), with `k` ≈ 277.8 W/K and `Q_max` = 3000 W. The room integrates `C · dT/dt = Q − G (T − T_amb)` with `G` = 150 W/K and `T_amb` = 273.15 K.
 
-A scratch run with OpenModelica's default solver (dassl, tolerance 1e-6) gave:
+Scratch run (not in the repo): 288.15 K at 0 s, 286.23 K at 1 h, 286.14 K at 24 h. The 24 h value is the closed-form steady state of this balance, so the simulation matches its equations.
 
-| time | room temperature |
-|---|---|
-| 0 s | 288.15 K (15.0 °C) |
-| 1800 s | 286.57 K (13.4 °C) |
-| 7200 s | 286.14 K (13.0 °C) |
-| 86400 s | 286.14 K (13.0 °C), heater power 1948 W |
-
-The room settles at 13.0 °C against a set point of 20 °C (see section 11).
+Check run: `omc tests/check.mos` loads the package and runs `checkModel` on `HeatingLib.System` only.
 
 ## 7. Deployment view
 
 *As found, unconfirmed.*
 
-The code says nothing about deployment beyond the command in `README.md`: `omc tests/check.mos`, run from the project root on the developer's machine.
+No deployment: the library is a set of `.mo` files, run locally with OpenModelica (`omc`). Setup is described in the README.
 
 ## 8. Crosscutting concepts
 
 *As found, unconfirmed.*
 
-- **Units:** SI throughout. Temperatures are stored in K and displayed in °C (`Interfaces.Temperature`, `displayUnit = "degC"`). Every other quantity carries a `unit` attribute (J/K, W/K, s, W).
-- **Naming:** `T` for a temperature, `Q` for a heat power, parameters with an underscore (`T_set`, `T_amb`, `T_start`, `Q_max`, `Q_heat`); the physical symbols `C`, `G`, `k` and `tau` follow textbook usage.
-- **Error handling and logging:** none found. The library has no assertions; errors surface through `checkModel` and `getErrorString()`.
-- **Shared values:** the package constant `roomHeatCapacity` is read by two blocks (see section 11).
+- **Units:** SI throughout. Temperatures in K, displayed as degC (`Interfaces.Temperature`); heat flow in W (`HeatFlowRate`); time in s (`tau`); heat capacity in J/K; conductance in W/K. Parameters carry `unit` attributes. See [ADR 0004](../adr/0004-units-si-temperatures-in-kelvin.md).
+- **Naming:** blocks in UpperCamelCase (`Room`, `Thermostat`, `System`); parameters and variables use short symbols (`T_set`, `Q_max`, `T_amb`) or camelCase (`roomHeatCapacity`).
+- **Shared constants:** `roomHeatCapacity` is the only package constant. See [ADR 0003](../adr/0003-blocks-read-shared-room-heat-capacity-constant.md).
+- **Error handling and logging:** none in the code.
+- **Result output:** `simulate` writes a `.mat` file with its default name; no project format is fixed.
 
 ## 9. Architecture decisions
 
-ADRs live in `docs/adr/`. The [Record architecture decisions](../adr/0001-record-architecture-decisions.md)
-ADR (`0001`, status `accepted 2026-11-21`) lists the decisions made centrally.
+ADRs live in `../adr/` (that is, `docs/adr/`). The ADR that records the line between central and local decisions is [0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md), accepted 2026-11-21.
 
 ## 10. Quality requirements
 
 | ID | goal | stimulus | environment | response | measure |
 |---|---|---|---|---|---|
-| QS-1 | QG-1 | a change to any class is submitted | normal development, before merge | every class in HeatingLib is checked with `checkModel`; a class that fails is reported | 100% of the library's classes pass `checkModel` with no errors |
-| QS-2 | QG-2 | a room variant with a different heat capacity replaces `Room` | normal development | only `System.mo` changes; the controller gain follows the replaced room's capacity | 0 lines changed outside `System.mo`; controller gain equals the replaced room's C / tau |
+| QS-2 | QG-2 | a Room or Thermostat variant with the same connectors replaces the original | a swap test in the project | only the variant's file changes; the other blocks behave as before | 0 files changed outside the swapped block in a swap test |
+| QS-3 | QG-3 | `checkModel` is run on every model of HeatingLib | OpenModelica, the project's version | each model reports success with no error | 100% of models pass (4 of 4 today; `tests/check.mos` covers only `System`) |
 
 ## 11. Risks and technical debt
 
 *As found, unconfirmed.*
 
-1. **Hidden coupling through a package constant.** `Room` (default of `C`) and `Thermostat` (gain `k`) both read `HeatingLib.roomHeatCapacity`. This contradicts the second item of the accepted ADR 0001 and makes QS-2 fail: a room with another capacity leaves the controller gain unchanged.
-2. **Steady-state offset.** With proportional control only, the room settles at 286.1 K (13.0 °C) against a 20 °C set point. This bears on R-1; the measure for its functional correctness is still open.
-3. **Incomplete checks.** `tests/check.mos` checks `HeatingLib.System` only. `Room` and `Thermostat` pass `checkModel` when checked alone, but no script checks them, and the `Interfaces` package is never checked. QS-1 is not met as the scripts stand.
-4. **No output format.** Nothing in the code defines how the temperature trace is made available; OpenModelica writes its default `.mat` result file. R-1 depends on this, and the output format is an open item of ADR 0001.
+- **Controller offset:** the proportional-only controller settles 7 K below the set point (13.0 °C against 20 °C after 24 h). Threatens R-1 and QG-1, which is still open.
+- **Hidden coupling:** `Room`'s default `C` and `Thermostat`'s gain `k` both read `roomHeatCapacity`. A `Room` variant with another heat capacity changes the controller gain with no change in `Thermostat`. Threatens R-2 and QG-2 (QS-2). See [ADR 0003](../adr/0003-blocks-read-shared-room-heat-capacity-constant.md).
+- **Check coverage:** `tests/check.mos` checks only `System`. A broken `Room` or `Thermostat` is not caught by the script. Threatens R-3 and QG-3 (QS-3).
+- **No temperature output:** "show its temperature" is met only by the `.mat` file that `simulate` writes. Threatens R-1.
 
 ## 12. Glossary
 

@@ -9,7 +9,7 @@ My requirements:
 
 ### assistant
 
-I'll load the two skills the setup depends on and look at the project first.
+I'll load the skills this setup depends on and look at the project first.
 
 ### tool_use Skill
 
@@ -39,19 +39,33 @@ Launching skill: sa:quality-requirements
 Launching skill: sa:domain-modeling
 ```
 
-### tool_use Bash
+### tool_use Skill
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -20 && find . -path ./.git -prune -o -type f -print | head -200",
- "description": "Inspect project files and git history"
+ "skill": "sa:add-requirements"
 }
 ```
 
 ### tool_result
 
 ```
-7b84602 fixture
+Launching skill: sa:add-requirements
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100",
+ "description": "Inspect project files and git state"
+}
+```
+
+### tool_result
+
+```
+2c4ab8a fixture
 ./README.md
 ./pantry/__main__.py
 ./pantry/dates.py
@@ -63,16 +77,12 @@ Launching skill: sa:domain-modeling
 ./tests/__init__.py
 ```
 
-### assistant
-
-Both skills are loaded. Next I'll read the code, the README, and the setup reference files.
-
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in README.md pantry/__init__.py pantry/__main__.py pantry/cli.py pantry/model.py pantry/store.py pantry/dates.py tests/test_pantry.py; do echo \"=== $f\"; cat -n \"$f\"; done",
- "description": "Print project README and source files"
+ "command": "for f in README.md pantry/*.py tests/test_pantry.py; do echo \"=== $f\"; cat \"$f\"; done",
+ "description": "Read README and all Python source and tests"
 }
 ```
 
@@ -80,164 +90,169 @@ Both skills are loaded. Next I'll read the code, the README, and the setup refer
 
 ```
 === README.md
-     1	# pantry
-     2	
-     3	A command-line tool that remembers what is in your pantry and tells you what expires soon.
-     4	
-     5	```sh
-     6	python3 -m pantry add "Milk" 2026-11-25
-     7	python3 -m pantry add "Yoghurt" +3d
-     8	python3 -m pantry list --soon 7
-     9	python3 -m pantry remove "Milk"
-    10	```
-    11	
-    12	Items are kept in `~/.pantry.jsonl` (override with `PANTRY_FILE`).
-    13	
-    14	Run the tests with `python3 -m unittest`.
+# pantry
+
+A command-line tool that remembers what is in your pantry and tells you what expires soon.
+
+```sh
+python3 -m pantry add "Milk" 2026-11-25
+python3 -m pantry add "Yoghurt" +3d
+python3 -m pantry list --soon 7
+python3 -m pantry remove "Milk"
+```
+
+Items are kept in `~/.pantry.jsonl` (override with `PANTRY_FILE`).
+
+Run the tests with `python3 -m unittest`.
 === pantry/__init__.py
-     1	"""pantry: remember what is in the pantry and what expires soon."""
+"""pantry: remember what is in the pantry and what expires soon."""
 === pantry/__main__.py
-     1	import sys
-     2	
-     3	from pantry import cli
-     4	
-     5	sys.exit(cli.main(sys.argv[1:]))
+import sys
+
+from pantry import cli
+
+sys.exit(cli.main(sys.argv[1:]))
 === pantry/cli.py
-     1	"""Command line: add, list, remove. Exit 0 on success, 1 on a user error, 2 on bad usage."""
-     2	import argparse
-     3	import sys
-     4	from datetime import date, timedelta
-     5	
-     6	from pantry import dates, store
-     7	from pantry.model import Item
-     8	
-     9	
-    10	def main(argv):
-    11	    ap = argparse.ArgumentParser(prog="pantry")
-    12	    sub = ap.add_subparsers(dest="cmd", required=True)
-    13	    a = sub.add_parser("add")
-    14	    a.add_argument("name")
-    15	    a.add_argument("expires")
-    16	    ls = sub.add_parser("list")
-    17	    ls.add_argument("--soon", type=int, metavar="DAYS")
-    18	    r = sub.add_parser("remove")
-    19	    r.add_argument("name")
-    20	    try:
-    21	        args = ap.parse_args(argv)
-    22	    except SystemExit as e:
-    23	        return 0 if e.code == 0 else 2
-    24	    if args.cmd == "add":
-    25	        try:
-    26	            expires = dates.parse(args.expires)
-    27	        except ValueError:
-    28	            print(f"pantry: not a date: {args.expires}", file=sys.stderr)
-    29	            return 1
-    30	        store.add(Item(args.name, expires))
-    31	    elif args.cmd == "remove":
-    32	        if args.name not in {i.name for i in store.items()}:
-    33	            print(f"pantry: no such item: {args.name}", file=sys.stderr)
-    34	            return 1
-    35	        store.remove(args.name)
-    36	    else:
-    37	        items = sorted(store.items(), key=lambda i: (i.expires, i.name.lower()))
-    38	        if args.soon is not None:
-    39	            limit = date.today() + timedelta(days=args.soon)
-    40	            items = [i for i in items if i.expires <= limit]
-    41	        for i in items:
-    42	            print(f"{i.expires.isoformat()}  {i.name}")
-    43	    return 0
+"""Command line: add, list, remove. Exit 0 on success, 1 on a user error, 2 on bad usage."""
+import argparse
+import sys
+from datetime import date, timedelta
+
+from pantry import dates, store
+from pantry.model import Item
+
+
+def main(argv):
+    ap = argparse.ArgumentParser(prog="pantry")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    a = sub.add_parser("add")
+    a.add_argument("name")
+    a.add_argument("expires")
+    ls = sub.add_parser("list")
+    ls.add_argument("--soon", type=int, metavar="DAYS")
+    r = sub.add_parser("remove")
+    r.add_argument("name")
+    try:
+        args = ap.parse_args(argv)
+    except SystemExit as e:
+        return 0 if e.code == 0 else 2
+    if args.cmd == "add":
+        try:
+            expires = dates.parse(args.expires)
+        except ValueError:
+            print(f"pantry: not a date: {args.expires}", file=sys.stderr)
+            return 1
+        store.add(Item(args.name, expires))
+    elif args.cmd == "remove":
+        if args.name not in {i.name for i in store.items()}:
+            print(f"pantry: no such item: {args.name}", file=sys.stderr)
+            return 1
+        store.remove(args.name)
+    else:
+        items = sorted(store.items(), key=lambda i: (i.expires, i.name.lower()))
+        if args.soon is not None:
+            limit = date.today() + timedelta(days=args.soon)
+            items = [i for i in items if i.expires <= limit]
+        for i in items:
+            print(f"{i.expires.isoformat()}  {i.name}")
+    return 0
+=== pantry/dates.py
+"""Dates as users type them: 2026-11-25, today, tomorrow, +3d, +2w."""
+import re
+from datetime import date, timedelta
+
+RELATIVE = re.compile(r"^\+(\d+)([dw])$")
+
+
+def parse(text, today=None):
+    today = today or date.today()
+    text = text.strip().lower()
+    if text == "today":
+        return today
+    if text == "tomorrow":
+        return today + timedelta(days=1)
+    m = RELATIVE.match(text)
+    if m:
+        n = int(m.group(1))
+        return today + timedelta(days=n if m.group(2) == "d" else 7 * n)
+    return date.fromisoformat(text)
 === pantry/model.py
-     1	"""An item in the pantry and the events that change the pantry."""
-     2	from dataclasses import dataclass
-     3	from datetime import date
-     4	
-     5	
-     6	@dataclass(frozen=True)
-     7	class Item:
-     8	    name: str
-     9	    expires: date
-    10	
-    11	    def to_record(self):
-    12	        return {"op": "add", "name": self.name, "expires": self.expires.isoformat()}
-    13	
-    14	
-    15	def removal(name):
-    16	    return {"op": "remove", "name": name}
-    17	
-    18	
-    19	def replay(records):
-    20	    """The items left after applying add and remove records in order."""
-    21	    items = {}
-    22	    for r in records:
-    23	        if r["op"] == "add":
-    24	            items[r["name"]] = Item(r["name"], date.fromisoformat(r["expires"]))
-    25	        elif r["op"] == "remove":
-    26	            items.pop(r["name"], None)
-    27	    return list(items.values())
+"""An item in the pantry and the events that change the pantry."""
+from dataclasses import dataclass
+from datetime import date
+
+
+@dataclass(frozen=True)
+class Item:
+    name: str
+    expires: date
+
+    def to_record(self):
+        return {"op": "add", "name": self.name, "expires": self.expires.isoformat()}
+
+
+def removal(name):
+    return {"op": "remove", "name": name}
+
+
+def replay(records):
+    """The items left after applying add and remove records in order."""
+    items = {}
+    for r in records:
+        if r["op"] == "add":
+            items[r["name"]] = Item(r["name"], date.fromisoformat(r["expires"]))
+        elif r["op"] == "remove":
+            items.pop(r["name"], None)
+    return list(items.values())
 === pantry/store.py
-     1	"""The pantry file: one JSON record per line, only ever appended to."""
-     2	import json
-     3	import os
-     4	from pathlib import Path
-     5	
-     6	from pantry import model
-     7	
-     8	
-     9	def path():
-    10	    return Path(os.environ.get("PANTRY_FILE", Path.home() / ".pantry.jsonl"))
-    11	
-    12	
-    13	def _append(record):
-    14	    with open(path(), "a", encoding="utf-8") as f:
-    15	        f.write(json.dumps(record) + "\n")
-    16	        f.flush()
-    17	        os.fsync(f.fileno())
-    18	
-    19	
-[... 4158 chars cut]
+"""The pantry file: one JSON record per line, only ever appended to."""
+import json
+import os
+from pathlib import Path
+
+from pantry import model
+
+
+def path():
+    return Path(os.environ.get("PANTRY_FILE", Path.home() / ".pantry.jsonl"))
+
+
+def _append(record):
+    with open(path(), "a", encoding="utf-8") as f:
+        f.write(json.dumps(record) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+
+
+def _records():
+    p = path()
+    if not p.exists():
+        return []
+    out = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        try:
+            out.append(json.loads(lin
+[... 2660 chars cut]
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cd /tmp/sa-arm-j07o5oe6/sa/skills && ls -R setup-architecture add-requirements quality-requirements domain-modeling && for f in setup-architecture/references/*.md quality-requirements/references/*.md domain-modeling/ADR-FORMAT.md domain-modeling/GLOSSARY-FORMAT.md; do echo \"=== $f\"; cat \"$f\"; done",
- "description": "List and read skill reference files"
+ "command": "ls -la /tmp/sa-arm-inbaeiw2/sa/skills/setup-architecture/references/ && cat /tmp/sa-arm-inbaeiw2/sa/skills/setup-architecture/references/arc42-skeleton.md && echo ==== && cat /tmp/sa-arm-inbaeiw2/sa/skills/setup-architecture/references/made-centrally-adr.md && echo ==== && cat /tmp/sa-arm-inbaeiw2/sa/skills/setup-architecture/references/recovery.md",
+ "description": "Read setup-architecture reference templates"
 }
 ```
 
 ### tool_result
 
 ```
-add-requirements:
-SKILL.md
-
-domain-modeling:
-ADR-FORMAT.md
-GLOSSARY-FORMAT.md
-SKILL.md
-agents
-
-domain-modeling/agents:
-openai.yaml
-
-quality-requirements:
-SKILL.md
-references
-
-quality-requirements/references:
-iso-25010.md
-quality-scenario.md
-
-setup-architecture:
-SKILL.md
-references
-
-setup-architecture/references:
-arc42-skeleton.md
-made-centrally-adr.md
-recovery.md
-=== setup-architecture/references/arc42-skeleton.md
+total 20
+drwxrwxr-x 2 root root 4096 Nov 21 22:42 .
+drwxrwxr-x 3 root root 4096 Nov 21 22:42 ..
+-rw-rw-r-- 1 root root 2983 Nov 21 22:42 arc42-skeleton.md
+-rw-rw-r-- 1 root root 1652 Nov 21 22:42 made-centrally-adr.md
+-rw-rw-r-- 1 root root 3359 Nov 21 22:42 recovery.md
 # arc42 skeleton
 
 Write `docs/architecture/arc42.md` with these twelve sections, in this order, each as a level-2
@@ -293,7 +308,7 @@ content lives nowhere yet starts empty, as in a fresh project.
 At setup, sections 1, 5 and 10 get their empty tables and sections 9 and 12 their links in the
 first turn. Rows follow once the architect confirms; section 5's rows follow once building
 blocks are decided.
-=== setup-architecture/references/made-centrally-adr.md
+====
 # "Record architecture decisions" ADR
 
 The ADR that draws the line between decisions the architect makes centrally and decisions left
@@ -310,207 +325,215 @@ proposed
 ## Context
 
 The architect decides the architecture; contributors and agents build it. <One sentence on
-what this product needs from th
-[... 13886 chars cut]
+what this product needs from that line, citing the R- and QG-IDs it serves, e.g. "Sightings
+must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2)".>
+
+## Decision
+
+We record architecture decisions as AD
+[... 4262 chars cut]
 ```
 
 ### assistant
 
-The project has source and tests but no architecture documentation, so this is the undocumented case. Next I'll read the `add-requirements` triage steps the setup depends on, and check the code against requirement 2 (crash safety) before writing anything.
+The project is undocumented: source and tests exist, but no architecture document, and the README covers usage and storage only. Before writing anything, I'll run the tests, check a crash-recovery path I suspect in `store.py`, and read the scenario and ADR format references.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat /tmp/sa-arm-j07o5oe6/sa/skills/add-requirements/SKILL.md; echo ===TESTS; cd /tmp/sa-eval-da75ctnu/project && python3 -m unittest 2>&1 | tail -5; echo ===CRASHCHECK; d=$(mktemp -d) && cd /tmp/sa-eval-da75ctnu/project && PANTRY_FILE=$d/p.jsonl python3 -m pantry add Rice 2027-06-01 && printf '{\"op\": \"add\", \"na' >> $d/p.jsonl && PANTRY_FILE=$d/p.jsonl python3 -m pantry add Milk 2026-11-25 && PANTRY_FILE=$d/p.jsonl python3 -m pantry list; echo \"exit=$?\"; cat $d/p.jsonl",
- "description": "Read add-requirements triage and test crash-recovery behaviour"
+ "command": "python3 -m unittest 2>&1 | tail -5; echo \"--- crash repro (torn line, then a new add)\"; mkdir -p /tmp/pantry-repro && cat > /tmp/pantry-repro/repro.py <<'EOF'\nimport os, sys, tempfile\nfrom pathlib import Path\nfrom datetime import date\nsys.path.insert(0, sys.argv[1])\nfrom pantry import store\nfrom pantry.model import Item\nf = Path(tempfile.mkdtemp()) / \"p.jsonl\"\nos.environ[\"PANTRY_FILE\"] = str(f)\nstore.add(Item(\"Rice\", date(2027, 6, 1)))\nwith open(f, \"a\") as h:\n    h.write('{\"op\": \"add\", \"na')          # crash mid-write, no newline\nstore.add(Item(\"Milk\", date(2026, 11, 25)))  # next run appends\nprint(\"file:\", f.read_text().splitlines())\nprint(\"items:\", [i.name for i in store.items()])\nEOF\npython3 -I /tmp/pantry-repro/repro.py /tmp/sa-eval-hpvye1xc/project; echo \"--- refs\"; cat /tmp/sa-arm-inbaeiw2/sa/skills/setup-architecture/../quality-requirements/references/quality-scenario.md; echo ====; cat /tmp/sa-arm-inbaeiw2/sa/skills/domain-modeling/ADR-FORMAT.md",
+ "description": "Run tests, reproduce torn-write append, read format refs"
 }
 ```
 
 ### tool_result
 
 ```
----
-name: add-requirements
-description: Use when the architect brings new requirements for a project that has an architecture (`docs/architecture/arc42.md`).
-metadata:
-  opencode/autoinvoke: false
----
+...
+----------------------------------------------------------------------
+Ran 5 tests in 0.032s
 
-# Add Requirements
+OK
+--- crash repro (torn line, then a new add)
+file: ['{"op": "add", "name": "Rice", "expires": "2027-06-01"}', '{"op": "add", "na{"op": "add", "name": "Milk", "expires": "2026-11-25"}']
+items: ['Rice']
+--- refs
+# Quality scenario
 
-The architect brings new requirements; you check each against the architecture, propose what
-should happen to it, and apply only the outcomes the architect confirms. Requirement procedures
-(the R-list format, ranking, quality goals) live in `quality-requirements`; ADRs live in
-`domain-modeling`. Load both before you change any file.
+A quality goal is testable only through a scenario (Bass, Clements and Kazman, *Software
+Architecture in Practice*; arc42 section 10). Each part answers one question:
 
-## Precondition
-
-Read `docs/architecture/arc42.md`. Without it, offer to run `setup-architecture` first and stop.
-
-## 1. Check each requirement
-
-Read the whole R-list (arc42 section 1), the quality goals, the stakeholders, the constraints
-(section 2), and every accepted ADR in the project's ADR directory (`domain-modeling`). Then, for each new requirement:
-
-1. **Duplicate:** compare it with every R-list row, `deferred` and `rejected` rows included.
-   Name the row it repeats.
-2. **Consistency:** name each active requirement it conflicts with, by R-ID.
-3. **Direction:** name each conflict with section 1's goals and stakeholders, a top quality
-   goal, a section 2 constraint, or an accepted ADR, by its ID or number.
-4. **Outcome:** propose one of four, with a one-line reason:
-
-| outcome | when | what confirming it changes |
+| part | answers | example (QG: Reliability: fault tolerance, from R-2) |
 |---|---|---|
-| system-level | it shapes the architecture | a new R-list row, `active` |
-| feature-level | it fits inside an existing requirement | an issue citing that parent R-ID; no R-list row |
-| deferred | the architect may want it later | a new R-list row, `deferred`, with their reason |
-| rejected | it conflicts with the direction | a new R-list row, `rejected`, with their reason |
+| source | who or what causes the stimulus (when it matters) | the operating system |
+| stimulus | what happens | the process is killed with SIGKILL during `add` |
+| artifact | which part is affected (when it matters) | the note store |
+| environment | under which conditions | normal operation |
+| response | what the system does | the note is either fully stored or absent; the store still opens |
+| measure | the number that decides whether the goal is met | 0 unreadable stores in 100 trials |
 
-A duplicate gets no outcome of its own: propose "no new row" and name the row it repeats.
+The measure is a count, a time, a share or a limit someone can check. "Fast", "robust" or
+"easy" is not a measure: ask the architect for the number, or for the observation that would
+show the goal is met, and keep the goal open until they give one.
 
-Done when every new requirement has its findings and a proposed outcome.
+## arc42 section 10 row
 
-## 2. Ask the architect
+```markdown
+| ID | goal | stimulus | environment | response | measure |
+|---|---|---|---|---|---|
+| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the note is either fully stored or absent; the store still opens | 0 unreadable stores in 100 trials |
+```
 
-Show one table (requirement, findings by ID, proposed outcome and reason) and ask the architect
-to confirm or change each outcome. Offer a sharper wording where it helps, as a proposal.
+Fold source and artifact into the stimulus when they need saying. Each `QS-n` names its
+`QG-n`, and the goal's row in section 1 names its `QS-n` back.
+====
+# ADR Format
 
-This step changes no file: no R-list row, ADR, issue or code. It ends with the question. When
-the architect's message already gives an outcome for every requirement, that is the
-confirmation: go to step 3 with their outcomes, and name in your report any finding that
-contradicts one of them.
+ADRs live in the project's ADR directory as `NNNN-slug.md`, numbered one above the highest
+existing number. That directory is the one where the project already keeps its ADRs (such as
+`docs/decisions/`), or `docs/adr/`, created when the first ADR is needed. ADRs stay where they
+are; a new ADR goes beside them. When and with which status to write one:
+[SKILL.md](./SKILL.md#architectural-decisions).
 
-## 3. Apply the confirmed outcomes
+## Template
 
-Existing R-list rows stay exactly as they are: ID, wording, rank, status and reason. A new
-requirement that repeats a deferred or rejected row changes nothing in that row; say in your
-report that it was asked for again.
+Nygard's five fields, all required:
 
-- **System-level:** append a row with the next free R-ID (one past the highest, deferred and
-  rejected rows included), the architect's wording, status `active`, and a rank proposed
-  through `quality-requirements` › Rank. Then run
-  `quality-requirements` › Goal impact.
-- **Conflict with an accepted ADR:** draft a superseding ADR through `domain-modeling`. It is
-  `proposed`, and the ADR it replaces stays `accepted`. Work that depends on the change waits
-  for the architect's approval of the new ADR: change no code for it.
-- **Feature-level:** file an issue in the tracker named in `docs/agents/issue-tracker.md`, or,
-  without one, as `.scratch/requirements/issues/NN-<slug>.md`. It cites the parent R-ID; it
-  continues through `triage`.
-- **Deferred or rejected:** append a row with the next free R-ID, that status, and the
-  architect's reason in one line.
-- **Duplicate:** no new row.
+```md
+# {N}. {Short title of the decision}
 
-Done when every confirmed outcome is applied and nothing else changed.
+## Status
 
-## 4. Report
+{proposed | accepted YYYY-MM-DD | rejected YYYY-MM-DD: reason | superseded by ADR-NNNN}
 
-List the rows you added, the issues you filed, the ADRs you drafted, and every question still
-open for the architect: the proposed ranks to set, each goal-impact question, and each ADR
-waiting for approval together with the work that waits for it ("<the change> waits until
-you accept ADR-NNNN").
+## Context
 
-| Thou
-[... 1009 chars cut]
+{The forces at play: the requirements and quality goals the decision serves, cited by ID
+(R-n, QG-n, QS-n) where the project has them, otherwise named in words; constraints; the ADR
+this one replaces, if any.}
+
+## Decision
+
+{What we will do, in active voice: "We will …".}
+
+## Consequences
+
+{What becomes easier and harder, including effects on other ADRs and the work that follows.}
+```
+
+The Status field's first line is the status. Keep every ADR short: a few sentences per field.
+
+## What qualifies
+
+Examples of decisions that meet the rule in SKILL.md:
+
+- **Architectural shape.** "The write model is event-sourced, the read model is projected into Postgres."
+- **Integration between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
+- **Technology with lock-in.** Database, message bus, auth provider, deployment target; not every library.
+- **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
+- **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
+- **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
 ```
 
 ### assistant
 
-Two findings before I write anything. The existing tests pass. But the crash check shows a real defect against requirement 2: after a torn line, the next append is glued onto it, so `Milk` is reported as added (exit 0) and then vanishes from `list`. The existing test misses this because it never appends after the torn line.
+The tests pass, but the repro confirms a real defect. After a crash leaves a partial line with no trailing newline, the next `add` is appended onto that same line, so the new item is silently lost. That violates requirement 2. I'll record it as a risk and leave the code alone, since setup changes no code.
 
-Now I'll write the skeleton, the only file this turn changes.
+Writing the skeleton now, the only file this turn touches.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md",
- "content": "# pantry: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nNo ADR exists yet. The ADRs will live in [`../adr/`](../adr/). The decision list that says which\ndecisions the architect makes centrally is the ADR \"Record architecture decisions\", to be written\nas `0001-record-architecture-decisions.md` once the architect confirms the list.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md",
+ "content": "# pantry: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe ADRs live in [`docs/adr/`](../adr/). The list of decisions the architect makes centrally is in [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (proposed, awaiting approval; created when confirmed).\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "rm -rf pantry/__pycache__ pantry/../tests/__pycache__ && git status --short",
- "description": "Remove test cache files and show git status"
-}
-```
-
-### tool_result
-
-```
-?? docs/
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-I've written the skeleton at `docs/architecture/arc42.md`. It is the only file changed, and the README and code are untouched. The project has code but no architecture documentation, so this is the undocumented case. Recovering the architecture from the code waits until you approve the decision-list ADR.
+The skeleton is in place at `docs/architecture/arc42.md`. This is the first turn, so the architecture is not yet decided. Here is my proposal for you to confirm or change.
 
-**Something to know first:** requirement 2 is not met today. I reproduced it: a file whose last line was cut short, followed by a normal `add`, makes the new item disappear from `list`, while `add` still reports success. The next append is glued onto the torn line, and the reader drops the whole line. The current test does not catch this because it never appends after the torn line. This is a storage decision for you, so I have not changed the code.
+## Situation
 
-## Triage (proposal)
+The project is **undocumented**: source and tests exist, and the README covers usage and the storage location but not how the system is built. Architecture is recovered from the code only after you approve the "Record architecture decisions" ADR below.
 
-| ID | requirement | outcome | reason |
-|---|---|---|---|
-| R-1 | Add items with an expiry date; list what expires soon, from the command line | system-level | The product's core function; it fixes what the store holds. |
-| R-2 | No item is lost if the machine crashes mid-write | system-level | Shapes the storage format and write path. Currently fails, see above. |
-| R-3 | Runs with only the Python standard library | system-level | A third-party-dependency decision; the central list covers it. |
-| R-4 | A new command touches only `cli.py` and at most one new module | system-level | Constrains module boundaries and how features are added. |
+## Triage of your four requirements
 
-No duplicates, and no conflicts between the four. Wording sharpenings I would offer:
-- R-2: "An item whose add returned success survives a crash at any point; a crash never makes earlier items unreadable."
-- R-4: "A new command changes `cli.py` and at most one new module; it changes no existing module."
+Against an empty R-list there are no duplicates and no conflicts among them, so the outcome is the only question.
+
+| Req | Proposed outcome | Reason |
+|---|---|---|
+| 1. Add items with expiry, list what expires soon, from the CLI | system-level | It is the product's core function and fixes the CLI surface. |
+| 2. No item lost if the machine crashes mid-write | system-level | It fixes the storage design: durable, append-only writes. |
+| 3. Standard library only | system-level | A dependency rule. It also fits section 2 (Constraints) if you want it recorded there too. |
+| 4. A new command touches only `cli.py` and at most one new module | system-level | It fixes the module boundaries, so it is architectural and not a feature detail. |
+
+Please confirm or reword. Wording I would suggest for 4: "Adding a command changes at most `cli.py` and one new module."
 
 ## Rank (proposed)
 
-1. R-2: losing data is the worst failure, and the current code breaks it.
-2. R-1: the function the product exists for.
-3. R-3: a constraint on everything else, cheap to keep.
-4. R-4: a maintainability goal; it bends if R-2 needs a shared write helper.
+1. **R-1**: the core function, which everything else serves.
+2. **R-2**: data loss is the worst failure mode.
+3. **R-3**: a constraint that bounds every other choice.
+4. **R-4**: a change-locality rule; it yields to R-2 if a fix needs a second module.
 
-Tie-breaker question: if only one of R-1 and R-2 can be fully met, which?
+Conflicts: none found. Near-ties to settle:
+- "If only one of R-1 and R-2 can be fully met, which?"
+- "If a crash-safety fix needs a second new module, does R-2 win over R-4?"
 
 ## Quality goals (candidates)
 
-- **Reliability: recoverability** (from R-2). Stimulus: the process is killed during `add`. Response: the item is fully stored or absent, and earlier items still read back. Measure: *open question*. Would "0 acknowledged items missing in 100 kill-during-add trials" be the number you want?
-- **Maintainability: modifiability** (from R-4). Stimulus: a new command is added. Measure: "at most 2 files changed, `cli.py` plus one new module; 0 changes to `store.py` or `model.py`." Confirm this measure?
-- **Functional suitability: functional correctness** (from R-1). Measure: *open question*. What must `list --soon N` return that proves it right?
-- **Flexibility: adaptability** (from R-3). Measure: *open question*. Which Python versions must it run on?
+| Candidate | From | Scenario (measure) |
+|---|---|---|
+| QG-1 Reliability: fault tolerance | R-2 | Process killed with SIGKILL during `add`, then another `add` runs. Measure: 0 lost items in 100 trials. |
+| QG-2 Functional suitability: functional correctness | R-1 | Items with expiry ≤ today + N appear in `list --soon N`. Measure: 0 misses in a test corpus. |
+| QG-3 Portability: installability | R-3 | Runs on a clean Python 3 install with no pip step. Measure: 0 non-stdlib imports. |
+| QG-4 Maintainability: modifiability | R-4 | Adding a command changes ≤ 2 files. Measure: 0 changes outside `cli.py` and one new module in the next added command. |
+
+Open questions:
+- **QG-3:** what is the minimum Python version? The code uses `date.fromisoformat`, which needs 3.7+.
+- **QG-1:** the measure above is my proposal. Is 100 kill trials the right bar?
+- **R-1:** what does "soon" default to when `--soon` is omitted? The code then lists everything.
 
 ## Gap questions
 
-- Did you leave out **Security: confidentiality**? For example, should the pantry file be readable only by its owner?
-- Did you leave out **Interaction capability: user error protection**? For example, should `remove` ask for confirmation?
+- Did you leave out **Security: confidentiality**? The pantry file `~/.pantry.jsonl` is plain text and readable by other users on a shared machine.
+- Did you leave out **Performance efficiency: time behaviour**? How many items should `list` handle?
+- Did you leave out **Interaction capability: operability**, such as machine-readable output for scripts?
 
-## Decisions made centrally (draft ADR 0001)
+The code also has `remove` and relative dates (`+3d`, `+2w`) that none of your requirements names. Are these part of R-1, or should they be separate?
 
-The draft "Record architecture decisions" ADR goes in `docs/adr/0001-record-architecture-decisions.md`, status `proposed`. Its list:
+## A defect found in the code (recorded in section 11 once you confirm the section)
 
-- Storage format: the append-only JSON-lines file, `~/.pantry.jsonl` or `PANTRY_FILE`, with add and remove records. This is where R-2 gets decided.
-- Dependency rule: `cli` → `store` → `model`; `dates` used by `cli` only.
-- Interfaces between blocks: the `store` API (`add`, `remove`, `items`) and the `Item` record.
-- Versioning of the CLI (subcommands, exit codes 0/1/2) and of the file format.
-- Crosscutting conventions: error reporting on stderr with exit codes; dates stored as ISO 8601.
-- Third-party dependencies: none (R-3).
+I reproduced it: `store.py` appends with no newline check. After a crash leaves a partial line, the next `add` is written onto that same line. `replay` then skips the merged line, and the new item is silently lost. This violates R-2 today. The existing test covers reading past a torn line, not appending after one. I changed no code.
 
-Left to the building blocks: argparse details, internal helpers, test layout.
+## Decisions made centrally: draft for ADR-0001
 
-## Questions for you
+Proposed file: `docs/adr/0001-record-architecture-decisions.md`, status `proposed`. No ADR directory exists yet, so 0001 is the first number.
 
-1. Confirm or change the triage outcomes, the wording, and the rank.
-2. Confirm the two goal measures, and answer the four open questions.
-3. Answer the two gap questions.
-4. Confirm or change the decision list above.
+Decided centrally (needs an ADR you accept):
+- Storage format: append-only JSON Lines file, replayed on read (`~/.pantry.jsonl`, overridable by `PANTRY_FILE`).
+- Durability rule: each record is fsynced before a command returns.
+- Dependency rule: stdlib only; `cli` may use `store` and `dates`; `store` may use `model`; `model` uses nothing.
+- Interface versioning: CLI command syntax and exit codes (0 success, 1 user error, 2 bad usage).
+- Conventions: ISO-8601 dates in the file and in output.
 
-Once you confirm, I'll write the R-list, the goals and scenarios, and the ADR as `proposed`. The R-2 storage decision is yours to make before any fix.
+Left to the building blocks: parsing internals, helper names, test layout.
+
+## What is written and what waits
+
+- **Written:** `docs/architecture/arc42.md` with all 12 sections, empty tables in 1, 5 and 10, the link in 9 to ADR-0001, and the glossary line in 12. The link in 9 points at a file that does not exist until you confirm the ADR.
+- **Waiting for you:** approval of the ADR-0001 text. Until then, sections 2–8 and 11 stay empty and the architecture is not recovered from the code.
+
+Do you confirm the four outcomes, the rank, the goal candidates and their measures, and the ADR-0001 list? Which of those do you want changed?
 
 ### result (success)
 
@@ -522,13 +545,13 @@ out" questions: no, nothing is missing. Write it down.
 
 ### assistant
 
-I'll record the confirmed triage, rank, the one goal with a measure, the centrally decided list, and the gap answers. The three goals without measures stay open. First I'll re-read the arc42 file so I can update it.
+Confirmed. I'll write the R-list, the goals and scenarios, and the ADR-0001 draft as `proposed`. The file is already in context, but I'll read it before editing.
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md"
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md"
 }
 ```
 
@@ -572,67 +595,130 @@ I'll record the confirmed triage, rank, the one goal with a measure, the central
 35	
 36	## 9. Architecture decisions
 37	
-38	No ADR exists yet. The ADRs will live in [`../adr/`](../adr/). The decision list that says which
-39	decisions the architect makes centrally is the ADR "Record architecture decisions", to be written
-40	as `0001-record-architecture-decisions.md` once the architect confirms the list.
+38	The ADRs live in [`docs/adr/`](../adr/). The list of decisions the architect makes centrally is in [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (proposed, awaiting approval; created when confirmed).
+39	
+40	## 10. Quality requirements
 41	
-42	## 10. Quality requirements
-43	
-44	| ID | goal | stimulus | environment | response | measure |
-45	|---|---|---|---|---|---|
+42	| ID | goal | stimulus | environment | response | measure |
+43	|---|---|---|---|---|---|
+44	
+45	## 11. Risks and technical debt
 46	
-47	## 11. Risks and technical debt
+47	## 12. Glossary
 48	
-49	## 12. Glossary
+49	`GLOSSARY.md` is created with the first resolved term.
 50	
-51	`GLOSSARY.md` is created with the first resolved term.
-52	
 ```
 
-### tool_use Write
+### tool_use Edit
 
 ```json
 {
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md",
- "content": "# pantry: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 2 | active | The product's core function; it fixes what the store holds. |\n| R-2 | No item is lost if the machine crashes mid-write. | 1 | active | Shapes the storage format and write path. |\n| R-3 | Runs with only the Python standard library. | 3 | active | A third-party-dependency decision; the central list covers it. |\n| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Constrains module boundaries and how features are added. |\n\nGap check: the architect left out Security: confidentiality and Interaction capability: user\nerror protection. No requirement was added.\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Maintainability: modifiability | R-4 | QS-1 |\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nNo ADR is accepted yet. The ADRs live in [`../adr/`](../adr/). The decision list that says which\ndecisions the architect makes centrally is the ADR\n[0001 Record architecture decisions](../adr/0001-record-architecture-decisions.md), status\n`proposed` until the architect approves its text.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | a new command is added | normal development | the change touches cli.py and at most one new module; store.py and model.py are unchanged | at most 2 files changed; 0 changes to store.py or model.py |\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md",
+ "old_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n",
+ "new_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 1 | active | Core function; fixes the CLI surface. |\n| R-2 | No item is lost if the machine crashes mid-write. | 2 | active | Data loss is the worst failure; fixes durable, append-only storage. |\n| R-3 | Runs with only the Python standard library. | 3 | active | Dependency rule that bounds every other choice. |\n| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Change-locality rule; yields to R-2 if a crash-safety fix needs a second module. |\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |\n| QG-2 | Functional suitability: functional correctness | R-1 | QS-2 |\n| QG-3 | Portability: installability | R-3 | QS-3 |\n| QG-4 | Maintainability: modifiability | R-4 | QS-4 |\n"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
-### tool_use Write
+### tool_use Edit
 
 ```json
 {
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0001-record-architecture-decisions.md",
- "content": "# 1. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. Pantry's items must\nsurvive a crash mid-write (R-2), the program must run with only the Python standard library\n(R-3), and a new command must stay within cli.py and at most one new module (R-4, QG-1).\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/adr/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- Storage format: the append-only JSON-lines file of add and remove records, at `~/.pantry.jsonl`\n  or the path in `PANTRY_FILE`.\n- Dependency rule: `cli` uses `store` and `dates`; `store` uses `model`; no other edges.\n- Interfaces between blocks: the `store` functions `add`, `remove` and `items`, and the `Item`\n  record.\n- Versioning of the CLI: its subcommands and exit codes (0 success, 1 user error, 2 bad usage);\n  and of the file format.\n- Crosscutting conventions: user errors go to stderr with exit code 1; dates are stored as\n  ISO 8601.\n- Third-party dependencies: none (R-3).\n\nLeft to the building blocks (no ADR):\n\n- argparse details, internal helpers, and the test layout.\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted. The fix for R-2\ndepends on the storage decision above, so it waits for this ADR and for the storage decision\nit covers.\n"
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md",
+ "old_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n",
+ "new_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | the process is killed with SIGKILL during `add`, and a further `add` then runs | normal operation | the earlier item is either fully stored or absent; the store still opens; the further add is not lost | 0 lost items in 100 kill-during-add trials followed by a further add |\n| QS-2 | QG-2 | `list --soon N` is run over a corpus of items with varied expiry dates | normal operation | every item with expiry on or before today + N is listed, sorted by expiry | 0 misses in a test corpus |\n| QS-3 | QG-3 | the tool is installed on a clean Python 3 with no pip step | fresh interpreter | every command runs | 0 non-standard-library imports |\n| QS-4 | QG-4 | a new command is added | normal development | only `cli.py` and at most one new module change | 0 changes outside `cli.py` and one new module in the next added command |\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/adr/0001-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0001-record-architecture-decisions.md",
+ "content": "# 0001. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. Pantry must not lose\nan item when the machine crashes mid-write (R-2, QG-1), must run with only the Python standard\nlibrary (R-3, QG-3), must keep each new command within `cli.py` and one new module (R-4, QG-4),\nand must list expiring items correctly (R-1, QG-2).\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/adr/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- Storage format: an append-only JSON Lines file, one record per line, replayed on read; the\n  default path is `~/.pantry.jsonl`, overridable by `PANTRY_FILE` (R-2).\n- Durability: each record is fsynced before a command reports success (R-2).\n- Dependencies: the Python standard library only (R-3).\n- Building-block interfaces and dependency rule: `cli` may use `dates` and `store`; `store` may\n  use `model`; `model` uses nothing. Each new command adds at most one module (R-4).\n- CLI interface: command names, arguments and exit codes (0 success, 1 user error, 2 bad usage)\n  are versioned; changing them needs an ADR.\n- Conventions: dates are ISO 8601 in the file and in output.\n\nLeft to the building blocks (no ADR):\n\n- parsing internals in `dates.py`, helper names, test layout, output formatting details.\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted. Accepting this ADR\nalso unblocks recovering the as-is architecture from the code. Changes to the write path of the\nstorage format fall under the storage and durability items above.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0001-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "git status --short && rm -rf /tmp/pantry-repro",
+ "description": "Confirm only docs changed and remove repro scratch"
+}
+```
+
+### tool_result
+
+```
+?? docs/
+?? pantry/__pycache__/
+?? tests/__pycache__/
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "rm -rf pantry/__pycache__ tests/__pycache__ && git status --short",
+ "description": "Remove test-run bytecode caches I created"
+}
+```
+
+### tool_result
+
+```
+?? docs/
 ```
 
 ### assistant
 
-The setup is written, except for the ADR waiting on your approval. Two files changed in `docs/`, and no code was touched:
+The architecture documentation is written for the confirmed items. ADR-0001 is written but still `proposed`: it needs your approval of its text before anything else moves.
 
-- **`docs/architecture/arc42.md`**: your four requirements in the confirmed order (R-2 first, then R-1, R-3, R-4), with their confirmed triage outcome, all `active`. Also QG-1 (Maintainability: modifiability, from R-4) with its scenario QS-1, and the gap-check answer that nothing is missing.
-- **`docs/adr/0001-record-architecture-decisions.md`**: the central decision list you confirmed, status `proposed`.
+**Files written** (only under `docs/`; no code changed)
+- `docs/architecture/arc42.md`
+  - **Section 1:** R-list with R-1 to R-4, all `active`, ranked 1 to 4 as you confirmed. Quality goals QG-1 to QG-4. R-1 keeps your wording, and the sharper wording I proposed for R-4 is not adopted.
+  - **Section 10:** scenarios QS-1 to QS-4, one per goal, with the measures as proposed.
+  - **Section 9:** link to ADR-0001, which now exists.
+- `docs/adr/0001-record-architecture-decisions.md`, status `proposed`, with the decisions list you confirmed.
 
-**Open, not written:** the goals for recoverability (R-2), functional correctness (R-1), and adaptability (R-3). They have no measure yet, so they are not rows. The measures I proposed for them were questions, and you did not answer those, so the three stay open.
+**Goals and measures.** All four goals have a checkable measure, so none is left open. QG-2's "test corpus" has no size yet, but its measure is a count of misses and can be checked.
 
-**Wording:** the R-list uses your original sentences. The sharper versions I offered were a proposal, and you did not confirm them, so I did not apply them.
+**Your answers.** Nothing is missing from the gap list, so none of those characteristics became a goal. I've recorded that only in this message, not in the document.
 
-**Waiting on you:** approve the text of ADR 0001. Its status stays `proposed` until you do. Until then, the R-2 fix waits, because it depends on the storage decision in that ADR. Once you approve, I'll recover the as-is architecture from the code, and that draft is for you to review section by section.
+**Still open for you**
+- R-1: what "soon" means when `--soon` is omitted. The code lists everything then.
+- QG-3: the minimum Python version. The code needs 3.7 or later.
+- `remove` and the relative dates (`+3d`, `+2w`) are in the code and README but in no requirement. Are they part of R-1, or separate?
+- Whether R-3 should also be recorded in section 2 (Constraints). You didn't answer this.
 
-**Not yet recorded:** the R-2 defect from my last message is not in section 11, since you did not confirm it as a risk. Say so and I'll add it there.
+**What waits for your approval of ADR-0001**
+- Recovering the architecture from the code, and filling sections 2–8 and 11.
+- Any work on the listed decisions. The defect below touches the storage write path, so its fix waits too.
+
+**Defect for section 11, to be recorded when recovery runs.** After a crash leaves a partial line, the next `add` is appended onto that line. The item is then silently dropped on read. I reproduced this. It violates R-2 today. The existing test covers reading past a torn line but not appending after one. I changed no code.
+
+Do you approve ADR-0001's text as written? If you do, I'll mark it `accepted` and start the recovery.
 
 ### result (success)
 
@@ -643,179 +729,324 @@ architecture from the code. I'm offline after this, so finish without asking me 
 
 ### assistant
 
-I'll accept ADR 0001 with its approved text, recover sections 2–8 and 11 from the code, and propose one ADR per listed decision the code actually makes. I read the code in full earlier, so the recovery draws on that reading.
+Recovery runs in the order the skill gives: accept ADR-0001 first, then read the code, then fill the sections and draft the ADRs. I'll read the two files I'm about to change and write the six new ADR drafts in one batch.
+
+### tool_use Read
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0001-record-architecture-decisions.md"
+}
+```
+
+### tool_result
+
+```
+1	# 0001. Record architecture decisions
+2	
+3	## Status
+4	
+5	proposed
+6	
+7	## Context
+8	
+9	The architect decides the architecture; contributors and agents build it. Pantry must not lose
+10	an item when the machine crashes mid-write (R-2, QG-1), must run with only the Python standard
+11	library (R-3, QG-3), must keep each new command within `cli.py` and one new module (R-4, QG-4),
+12	and must list expiring items correctly (R-1, QG-2).
+13	
+14	## Decision
+15	
+16	We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
+17	
+18	Decided centrally (needs an ADR the architect accepts):
+19	
+20	- Storage format: an append-only JSON Lines file, one record per line, replayed on read; the
+21	  default path is `~/.pantry.jsonl`, overridable by `PANTRY_FILE` (R-2).
+22	- Durability: each record is fsynced before a command reports success (R-2).
+23	- Dependencies: the Python standard library only (R-3).
+24	- Building-block interfaces and dependency rule: `cli` may use `dates` and `store`; `store` may
+25	  use `model`; `model` uses nothing. Each new command adds at most one module (R-4).
+26	- CLI interface: command names, arguments and exit codes (0 success, 1 user error, 2 bad usage)
+27	  are versioned; changing them needs an ADR.
+28	- Conventions: dates are ISO 8601 in the file and in output.
+29	
+30	Left to the building blocks (no ADR):
+31	
+32	- parsing internals in `dates.py`, helper names, test layout, output formatting details.
+33	
+34	## Consequences
+35	
+36	Work that depends on a decision on the list waits until its ADR is accepted. Accepting this ADR
+37	also unblocks recovering the as-is architecture from the code. Changes to the write path of the
+38	storage format fall under the storage and durability items above.
+39	
+```
+
+### tool_use Read
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md"
+}
+```
+
+### tool_result
+
+```
+1	# pantry: architecture
+2	
+3	Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
+4	
+5	## 1. Introduction and goals
+6	
+7	### Requirements overview
+8	
+9	| ID | requirement | rank | status | reason |
+10	|---|---|---|---|---|
+11	| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 1 | active | Core function; fixes the CLI surface. |
+12	| R-2 | No item is lost if the machine crashes mid-write. | 2 | active | Data loss is the worst failure; fixes durable, append-only storage. |
+13	| R-3 | Runs with only the Python standard library. | 3 | active | Dependency rule that bounds every other choice. |
+14	| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Change-locality rule; yields to R-2 if a crash-safety fix needs a second module. |
+15	
+16	### Quality goals
+17	
+18	| ID | goal (ISO/IEC 25010) | from | scenario |
+19	|---|---|---|---|
+20	| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
+21	| QG-2 | Functional suitability: functional correctness | R-1 | QS-2 |
+22	| QG-3 | Portability: installability | R-3 | QS-3 |
+23	| QG-4 | Maintainability: modifiability | R-4 | QS-4 |
+24	
+25	### Stakeholders
+26	
+27	## 2. Constraints
+28	
+29	## 3. Context and scope
+30	
+31	## 4. Solution strategy
+32	
+33	## 5. Building block view
+34	
+35	| block | responsibility | may use |
+36	|---|---|---|
+37	
+38	## 6. Runtime view
+39	
+40	## 7. Deployment view
+41	
+42	## 8. Crosscutting concepts
+43	
+44	## 9. Architecture decisions
+45	
+46	The ADRs live in [`docs/adr/`](../adr/). The list of decisions the architect makes centrally is in [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (proposed, awaiting approval; created when confirmed).
+47	
+48	## 10. Quality requirements
+49	
+50	| ID | goal | stimulus | environment | response | measure |
+51	|---|---|---|---|---|---|
+52	| QS-1 | QG-1 | the process is killed with SIGKILL during `add`, and a further `add` then runs | normal operation | the earlier item is either fully stored or absent; the store still opens; the further add is not lost | 0 lost items in 100 kill-during-add trials followed by a further add |
+53	| QS-2 | QG-2 | `list --soon N` is run over a corpus of items with varied expiry dates | normal operation | every item with expiry on or before today + N is listed, sorted by expiry | 0 misses in a test corpus |
+54	| QS-3 | QG-3 | the tool is installed on a clean Python 3 with no pip step | fresh interpreter | every command runs | 0 non-standard-library imports |
+55	| QS-4 | QG-4 | a new command is added | normal development | only `cli.py` and at most one new module change | 0 changes outside `cli.py` and one new module in the next added command |
+56	
+57	## 11. Risks and technical debt
+58	
+59	## 12. Glossary
+60	
+61	`GLOSSARY.md` is created with the first resolved term.
+62	
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0002-append-only-jsonl-storage.md",
+ "content": "# 0002. Store pantry items in an append-only JSON Lines file\n\n## Status\n\nproposed\n\n## Context\n\nFound in `pantry/store.py` and `pantry/model.py`. Items must survive a crash mid-write (R-2,\nQG-1), with only the standard library (R-3, QG-3).\n\n## Decision\n\nWe will keep pantry items in an append-only JSON Lines file, one record per line. Records are\n`add` (name, expiry as an ISO date) and `remove` (name). The current items are the result of\nreplaying the records in order: the last `add` for a name sets its expiry, and `remove` drops\nthe name. The default path is `~/.pantry.jsonl`; `PANTRY_FILE` overrides it.\n\n## Consequences\n\nWrites never rewrite earlier lines, so a crash can damage only the last one. The file grows\nwith every command and is read in full each time (section 11). The torn-line defect in\nsection 11 is not fixed by this ADR. A fix that changes the record format needs its own ADR.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0002-append-only-jsonl-storage.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0003-fsync-each-record.md",
+ "content": "# 0003. Fsync each record before a command reports success\n\n## Status\n\nproposed\n\n## Context\n\nFound in `store._append`: each record is flushed and passed to `os.fsync` before the function\nreturns. Serves R-2 and QG-1.\n\n## Decision\n\nWe will fsync each appended record before the command reports success (exit 0).\n\n## Consequences\n\nEach command waits for the disk. An item whose `add` returned success is written to disk, as far\nas the file's data goes. The directory entry is not fsynced when the file is first created\n(section 11), so this decision does not yet cover that case; closing it is a separate decision.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0003-fsync-each-record.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0004-standard-library-only.md",
+ "content": "# 0004. Use only the Python standard library\n\n## Status\n\nproposed\n\n## Context\n\nFound in the imports of every module: `argparse`, `dataclasses`, `datetime`, `json`, `os`,\n`pathlib`, `re`, `sys`. The tests use `unittest`. Serves R-3 and QG-3.\n\n## Decision\n\nWe will use only the Python standard library, in the package and in its tests. No third-party\ndependency is declared or installed.\n\n## Consequences\n\nInstallation needs no pip step (QG-3). Richer date parsing, if ever needed, is written by hand.\nThe minimum Python version is an open question in section 2; the code needs Python 3.7 or later.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0004-standard-library-only.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0005-building-block-dependencies.md",
+ "content": "# 0005. Building-block dependencies\n\n## Status\n\nproposed\n\n## Context\n\nFound in the imports of `pantry/`. Serves R-4 (a new command touches only `cli.py` and at most\none new module) and QG-4.\n\n## Decision\n\nWe will keep these dependencies between building blocks:\n\n- `cli` may use `dates`, `store` and `model`.\n- `store` may use `model`.\n- `dates` and `model` use no other pantry module.\n- `__main__` uses only `cli`.\n\nA new command adds at most one module.\n\n## Consequences\n\nAdding a command changes `cli.py` and at most one new module. `cli` imports `model` to build\n`Item` objects. The text of ADR-0001 names only `dates` and `store` for `cli`. ADR-0001 is\naccepted as written and is not changed here; whether `cli` may use `model` is the architect's\ndecision, and a change to it needs a new ADR.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0005-building-block-dependencies.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0006-cli-commands-and-exit-codes.md",
+ "content": "# 0006. Command-line interface and exit codes\n\n## Status\n\nproposed\n\n## Context\n\nFound in `pantry/cli.py`. Serves R-1 (add items and list what expires soon, from the command\nline) and QG-2.\n\n## Decision\n\nWe will provide three commands: `add NAME EXPIRES`, `list [--soon DAYS]` and `remove NAME`.\nExit codes are 0 on success, 1 on a user error (a date that does not parse, or removing an\nunknown name), and 2 on bad usage. `list` prints one line per item: `YYYY-MM-DD  NAME`, sorted\nby expiry and then by name, case-insensitively.\n\n## Consequences\n\nScripts can rely on the exit codes and the line format. The code has no versioning mechanism for\nthe CLI. ADR-0001 says changes to these are versioned and need an ADR; whether that applies to\nexisting behaviour is the architect's decision.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0006-cli-commands-and-exit-codes.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0007-iso-dates.md",
+ "content": "# 0007. Dates are ISO 8601 calendar dates\n\n## Status\n\nproposed\n\n## Context\n\nFound in `model.py` (`isoformat` and `fromisoformat`), `dates.py` and the output of `cli.py`.\nServes R-1 and QG-2.\n\n## Decision\n\nWe will store and print dates as ISO 8601 calendar dates (`YYYY-MM-DD`). Users may type an ISO\ndate, `today`, `tomorrow`, `+Nd` or `+Nw`. Relative forms resolve to an absolute date when the\ncommand runs.\n\n## Consequences\n\nA stored date keeps its meaning on any later day. Times of day are not supported. Relative\ndates resolve against the local date of the machine at the time of the command.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-hpvye1xc/project/docs/adr/0007-iso-dates.md (file state is current in your context — no need to Read it back)
+```
+
+### assistant
+
+The six proposed ADRs are written. Next I'll accept ADR-0001 by changing only its Status line, and fill the arc42 sections from the code, marked as found but unconfirmed.
 
 ### tool_use Edit
 
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0001-record-architecture-decisions.md",
- "old_string": "## Status\n\nproposed",
- "new_string": "## Status\n\naccepted 2026-11-21"
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/adr/0001-record-architecture-decisions.md",
+ "old_string": "## Status\n\nproposed\n",
+ "new_string": "## Status\n\naccepted 2026-11-21\n"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-da75ctnu/project/docs/adr/0001-record-architecture-decisions.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-hpvye1xc/project/docs/adr/0001-record-architecture-decisions.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0002-storage-format.md",
- "content": "# 2. Store pantry items in an append-only JSON-lines file\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code: `pantry/store.py:13-30` appends one JSON record per line and reads all records\nback; `pantry/model.py:19-27` replays them into items. Serves R-2 (no item lost on a crash\nmid-write) and R-3 (standard library only). The format does not meet R-2 as it stands: a line cut\nshort by a crash makes the next append unreadable, so an item that reported success is lost. See\narc42 section 11.\n\n## Decision\n\nWe will keep pantry items in an append-only file with one JSON record per line, `add` or `remove`,\nat `~/.pantry.jsonl` or the path in `PANTRY_FILE`. We will rebuild the items by replaying the\nrecords in order, and fsync each append.\n\n## Consequences\n\nWhether this format can meet R-2 is the open storage decision; the fix waits for it. Any change\nto the record shape or the file location is a change to this ADR's decision and to the data\nfiles users already have.\n"
+ "file_path": "/tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md",
+ "content": "# pantry: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 1 | active | Core function; fixes the CLI surface. |\n| R-2 | No item is lost if the machine crashes mid-write. | 2 | active | Data loss is the worst failure; fixes durable, append-only storage. |\n| R-3 | Runs with only the Python standard library. | 3 | active | Dependency rule that bounds every other choice. |\n| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Change-locality rule; yields to R-2 if a crash-safety fix needs a second module. |\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |\n| QG-2 | Functional suitability: functional correctness | R-1 | QS-2 |\n| QG-3 | Portability: installability | R-3 | QS-3 |\n| QG-4 | Maintainability: modifiability | R-4 | QS-4 |\n\n### Stakeholders\n\n## 2. Constraints\n\n*As found, unconfirmed.*\n\n- Standard library only (R-3); see [ADR-0004](../adr/0004-standard-library-only.md).\n- Python 3. No version is pinned. The code needs 3.7 or later (`dataclasses`, `date.fromisoformat`).\n- Runs from the source tree as `python3 -m pantry`. No packaging metadata was found.\n\n## 3. Context and scope\n\n*As found, unconfirmed.*\n\nThe system is the `pantry` package. Outside it:\n\n- **The user**, at a shell, who runs `python3 -m pantry <command>`.\n- **The pantry file**, `~/.pantry.jsonl` or the path in the `PANTRY_FILE` environment variable,\n  on the local file system.\n- **The system clock**, read through `date.today()` for relative dates and for `list --soon`.\n\n## 4. Solution strategy\n\n*As found, unconfirmed.*\n\n- **Append-only log, state by replay** (R-2, QG-1): every change is a record appended to the\n  pantry file, and the items are rebuilt from the records on each run. See\n  [ADR-0002](../adr/0002-append-only-jsonl-storage.md) and\n  [ADR-0003](../adr/0003-fsync-each-record.md).\n- **Thin command layer over pure modules** (R-4, QG-4): `cli` parses and prints. `dates` parses\n  user dates, `model` defines the item and the replay, and `store` does the file I/O. See\n  [ADR-0005](../adr/0005-building-block-dependencies.md).\n- **Standard library only** (R-3, QG-3). See [ADR-0004](../adr/0004-standard-library-only.md).\n\n## 5. Building block view\n\n*As found, unconfirmed.*\n\n| block | responsibility | may use |\n|---|---|---|\n| `cli` (`pantry/cli.py`, entry point `pantry/__main__.py`) | parse the three commands, print output, map errors to exit codes | `dates`, `store`, `model` |\n| `dates` (`pantry/dates.py`) | turn user date text into a `date`: ISO, `today`, `tomorrow`, `+Nd`, `+Nw` | none |\n| `store` (`pantry/store.py`) | locate the pantry file, append records with fsync, read and skip unparsable lines | `model` |\n| `model` (`pantry/model.py`) | the `Item` and the record shapes, and `replay` | none |\n\n`pantry/__init__.py` holds only the package docstring. The tests (`tests/test_pantry.py`) call\n`cli.main` and the modules directly, with a temporary `PANTRY_FILE`; they are not a block.\n\n## 6. Runtime view\n\n*As found, unconfirmed.*\n\n- **`add NAME EXPIRES`:** `cli` calls `dates.parse`, then `store.add`, which appends one\n  `add` record and fsyncs it. Exit 0.\n- **`remove NAME`:** `cli` reads the names through `store.items`. If the name is absent it prints\n  an error and exits 1. Otherwise `store.remove` appends a `remove` record. Exit 0.\n- **`list [--soon DAYS]`:** `store.items` reads the whole file, skips lines that do not parse, and\n  replays the records. `cli` sorts by expiry, then by name case-insensitively. With `--soon`, it\n  keeps items expiring on or before today plus DAYS. It prints `YYYY-MM-DD  NAME` per line.\n- **Errors:** an unparsable date prints `pantry: not a date: …` to stderr and exits 1. Bad usage is\n  reported by `argparse` and exits 2. `--help` exits 0.\n\n## 7. Deployment view\n\n*As found, unconfirmed.*\n\nA single user's machine. The code runs from the source tree with `python3 -m pantry`. No\ninstaller, `setup.py` or `pyproject.toml` was found. The data lives in one file per user, at\n`~/.pantry.jsonl` or at `PANTRY_FILE`.\n\n## 8. Crosscutting concepts\n\n*As found, unconfirmed.*\n\n- **Error handling:** user errors print one line to stderr and exit 1. Usage errors exit 2 (see\n  [ADR-0006](../adr/0006-cli-commands-and-exit-codes.md)). Unparsable lines in the pantry file are\n  skipped without a message (`store._records`); see section 11.\n- **Naming:** an item's name is its identity. `add` with an existing name replaces that item's\n  expiry, and `remove` matches the name exactly, case-sensitively. `list` sorts names\n  case-insensitively.\n- **Dates:** ISO 8601 in the file and in output ([ADR-0007](../adr/0007-iso-dates.md)). Relative\n  forms resolve at command time against the machine's local date. `+Nw` is 7 days.\n- **Units:** `--soon` and `+Nd` count days.\n- **Configuration:** the `PANTRY_FILE` environment variable overrides the file path.\n- **Testing:** `unittest` (`python3 -m unittest`). The tests use a temporary file for each test.\n\n## 9. Architecture decisions\n\nThe ADRs live in [`docs/adr/`](../adr/). The list of decisions the architect makes centrally is in [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (accepted 2026-11-21). The decisions the code already makes are drafted as proposed ADRs 0002–0007, awaiting approval.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | the process is killed with SIGKILL during `add`, and a further `add` then runs | normal operation | the earlier item is either fully stored or absent; the store still opens; the further add is not lost | 0 lost items in 100 kill-during-add trials followed by a further add |\n| QS-2 | QG-2 | `list --soon N` is run over a corpus of items with varied expiry dates | normal operation | every item with expiry on or before today + N is listed, sorted by expiry | 0 misses in a test corpus |\n| QS-3 | QG-3 | the tool is installed on a clean Python 3 with no pip step | fresh interpreter | every command runs | 0 non-standard-library imports |\n| QS-4 | QG-4 | a new command is added | normal development | only `cli.py` and at most one new module change | 0 changes outside `cli.py` and one new module in the next added command |\n\n## 11. Risks and technical debt\n\n*As found, unconfirmed.*\n\n- **Torn last line merges with the next record** (threatens R-2, QG-1). A crash that leaves a\n  partial line with no newline is followed by the next `add` on the same line, and that record\n  is then skipped on read. Reproduced on 2026-11-21. The test suite covers reading past a torn\n  line, not appending after one.\n- **Silent skipping of unparsable lines** (threatens R-2). Any bad line is dropped without a\n  message, including corruption in the middle of the file.\n- **Directory not fsynced on first create** (threatens R-2). [ADR-0003](../adr/0003-fsync-each-record.md)\n  covers the file's data only. Found by reading; not reproduced.\n- **No file lock** (threatens R-2). Two processes appending at once are not ruled out. Found by\n  reading; not reproduced.\n- **Whole file read on every command, no compaction** (technical debt). The file grows with\n  every `add` and `remove`.\n- **One item per name** (open question for the architect). A second `add` of the same name\n  replaces the first item's date without warning. Intended or not is not stated anywhere.\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/adr/0002-storage-format.md (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-hpvye1xc/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0003-dependency-rule.md",
- "content": "# 3. Dependency rule between the building blocks\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code: `pantry/cli.py:6-7` imports `dates`, `store` and `model`; `pantry/store.py:6`\nimports `model`; `pantry/__main__.py:3` imports `cli`; `dates` and `model` import nothing from\npantry. Serves R-4 (a new command touches only cli.py and at most one new module) and QG-1.\n\n## Decision\n\nWe will let `__main__` use `cli`; `cli` use `store`, `dates` and `model`; and `store` use `model`.\n`dates` and `model` use nothing else in pantry.\n\n## Consequences\n\nThe approved central list (ADR 0001) says `cli` uses `store` and `dates`, with no other edges. The\ncode also has `cli` → `model`, which that list does not name. The architect must decide whether the\nedge stays, which changes this ADR or the central list. Until then, a new command may use `model`\nfrom `cli`.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/adr/0003-dependency-rule.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0004-block-interfaces.md",
- "content": "# 4. Interfaces between the building blocks\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code: `pantry/store.py:33-42` defines `add(item)`, `remove(name)` and `items()`;\n`pantry/model.py:6-16` defines the `Item(name, expires)` record with `to_record()` and the\n`removal(name)` record; `pantry/model.py:19` defines `replay(records)`; `pantry/dates.py:8` defines\n`parse(text, today=None)`. Serves R-4 (a new command touches only cli.py and at most one new module)\nand QG-1.\n\n## Decision\n\nWe will expose the store to other blocks only through `add`, `remove` and `items`, and pass items\nbetween blocks as `Item` records. We will expose `dates.parse` as the only date-text entry point.\n\n## Consequences\n\nA change to the `Item` record or to the record shape in `model.py` reaches `store.py` and every\ncaller of `items()`. A new command that needs only these functions stays inside cli.py.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/adr/0004-block-interfaces.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0005-crosscutting-conventions.md",
- "content": "# 5. Crosscutting conventions: errors and dates\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code: `pantry/cli.py:1` documents the exit codes; `pantry/cli.py:27-29` and `:33`\nprint user errors to stderr with the `pantry:` prefix; `pantry/cli.py:23` maps argparse errors to\nexit code 2; `pantry/model.py:12` and `pantry/store.py:15` write dates as ISO 8601. Serves R-1 (the\nadd and list commands report errors and show dates the user can read).\n\n## Decision\n\nWe will report user errors on stderr with the prefix `pantry:` and exit with code 1. We will exit\nwith code 2 on bad command-line usage. We will store and show dates as ISO 8601 `YYYY-MM-DD`.\n\n## Consequences\n\nAny new command follows these conventions, which keeps its errors and exit codes the same as the\nexisting ones.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/adr/0005-crosscutting-conventions.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/adr/0006-standard-library-only.md",
- "content": "# 6. Use only the Python standard library\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code: every import in `pantry/` is from the standard library (`argparse`,\n`dataclasses`, `datetime`, `json`, `os`, `pathlib`, `re`, `sys`); the tests use only `unittest` and\nthe standard library. There is no packaging file for third-party dependencies. Serves R-3 (runs with\nonly the Python standard library).\n\n## Decision\n\nWe will use no third-party packages. We will run on the Python standard library alone.\n\n## Consequences\n\nAdding any package requires a new ADR that supersedes this one. The minimum Python version is not\nrecorded anywhere in the code (see arc42 section 2).\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-da75ctnu/project/docs/adr/0006-standard-library-only.md (file state is current in your context — no need to Read it back)
-```
-
-### assistant
-
-Now the arc42 file: sections 2–8 and 11 filled with what the code shows, each marked as found and unconfirmed, and section 9 updated to the new ADR statuses.
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md",
- "content": "# pantry: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 2 | active | The product's core function; it fixes what the store holds. |\n| R-2 | No item is lost if the machine crashes mid-write. | 1 | active | Shapes the storage format and write path. |\n| R-3 | Runs with only the Python standard library. | 3 | active | A third-party-dependency decision; the central list covers it. |\n| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Constrains module boundaries and how features are added. |\n\nGap check: the architect left out Security: confidentiality and Interaction capability: user\nerror protection. No requirement was added.\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Maintainability: modifiability | R-4 | QS-1 |\n\n### Stakeholders\n\n## 2. Constraints\n\n*As found, unconfirmed.*\n\n- Python 3 with the standard library only (`docs/adr/0006-standard-library-only.md`).\n- Items are kept in `~/.pantry.jsonl` unless `PANTRY_FILE` names another file (README).\n- The code records no minimum Python version.\n\n## 3. Context and scope\n\n*As found, unconfirmed.*\n\nThe system is a command-line program that a user runs in a terminal (`python3 -m pantry`). Its only\nexternal dependency is the local file that holds the records. The code talks to no network service\nand to no other program.\n\n## 4. Solution strategy\n\n*As found, unconfirmed.*\n\n- The pantry file is an append-only log of `add` and `remove` records; the items are the result of\n  replaying the log in order (`docs/adr/0002-storage-format.md`). Each append is fsynced, which\n  aims at R-2; section 11 records where that aim falls short.\n- Each command is a short path from the command line to one of the building blocks in section 5\n  (section 6).\n\n## 5. Building block view\n\n*As found, unconfirmed.*\n\n| block | responsibility | may use |\n|---|---|---|\n| `pantry/__main__.py` | entry point for `python3 -m pantry`; passes arguments to `cli` and exits with its code | `cli` |\n| `pantry/cli.py` | parses commands, prints results and user errors, sets exit codes | `store`, `dates`, `model` |\n| `pantry/store.py` | reads and appends records in the pantry file | `model` |\n| `pantry/model.py` | the `Item` and the add and remove records; replays records into items | none |\n| `pantry/dates.py` | parses date text as the user types it (ISO, `today`, `tomorrow`, `+Nd`, `+Nw`) | none |\n\nThe tests in `tests/` use every block and are not a block themselves.\n\nThe rules that bind these blocks are in `docs/adr/0003-dependency-rule.md`. The code has an edge\nfrom `cli` to `model` that the approved central list does not name.\n\n## 6. Runtime view\n\n*As found, unconfirmed.*\n\n- **add:** `cli` parses the name and the expiry; `dates.parse` turns the expiry into a date;\n  `store.add` builds the `Item` record and appends it, then fsyncs.\n- **list:** `store.items` reads every line of the file, skips any line that is not JSON, and\n  replays the records; `cli` sorts the items by expiry then name, filters with `--soon DAYS` when\n  given, and prints one line per item.\n- **remove:** `cli` checks that the name is present through `store.items`; then `store.remove`\n  appends a removal record. The check and the append are two steps, not one.\n\n## 7. Deployment view\n\n*As found, unconfirmed.*\n\nThe program runs on one machine, from the repository or wherever the package is copied, with\n`python3 -m pantry`. The data is one file per user, in the home directory by default. The\nrepository has no packaging file (`pyproject.toml`, `setup.py`) and no install step.\n\n## 8. Crosscutting concepts\n\n*As found, unconfirmed.*\n\n- **Errors:** user errors go to stderr with the prefix `pantry:` and exit 1; bad usage exits 2\n  (`docs/adr/0005-crosscutting-conventions.md`).\n- **Dates:** stored and printed as ISO 8601 (`YYYY-MM-DD`); typed as ISO, `today`, `tomorrow`,\n  `+Nd` or `+Nw`.\n- **Names:** an item's identity is its exact name (case-sensitive for `remove`); `list` sorts names\n  ignoring case.\n- **Encoding:** the pantry file is UTF-8.\n- **Versioning:** none found. The records and the file carry no version field.\n- **Testing:** `unittest`, in `tests/test_pantry.py`; the five tests pass.\n\n## 9. Architecture decisions\n\nThe decision list is [ADR 0001 Record architecture decisions](../adr/0001-record-architecture-decisions.md),\naccepted 2026-11-21. The ADRs recovered from the code are\n[0002](../adr/0002-storage-format.md) to [0006](../adr/0006-standard-library-only.md), all\n`proposed` until the architect approves them.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | a new command is added | normal development | the change touches cli.py and at most one new module; store.py and model.py are unchanged | at most 2 files changed; 0 changes to store.py or model.py |\n\n## 11. Risks and technical debt\n\n*As found, unconfirmed.*\n\n- **Torn line makes the next add disappear (threatens R-2).** A line cut short by a crash is\n  not terminated by a newline, so the next append is written onto it. `store.py:29` then drops\n  the whole line, and the new item is lost. `add` still reports success. Reproduced; the\n  existing test `test_a_torn_last_line_is_skipped` does not append after the torn line.\n- **Any unreadable line is skipped silently (threatens R-2).** `store.py:27-29` skips any line\n  that is not JSON, not only a torn last line. Damage in the middle of the file loses records\n  without a message.\n- **The new file's directory entry is not fsynced (threatens R-2).** `store.py:14-17` fsyncs the\n  file, not its directory. A crash just after the first `add` could lose the file. Not reproduced.\n- **A repeated name replaces the earlier item (threatens R-1).** `model.py:24` keys items by name,\n  so a second `add` of the same name replaces the first expiry without a message.\n- **Removed items stay in the file (debt).** Removals are appended, never compacted, so every\n  `list` reads the whole history (`store.py:20-30`).\n- **No versioning of the file or the CLI (debt).** The records and commands carry no version; a\n  format change would break existing files.\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-da75ctnu/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
-
-### assistant
-
-Next I'll confirm the changes are limited to `docs/`, the tests still pass, and the links resolve.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "python3 -m unittest 2>&1 | tail -3; rm -rf pantry/__pycache__ tests/__pycache__; git status --short; ls docs/adr; for f in $(grep -oE '\\.\\./adr/[0-9a-z-]+\\.md' docs/architecture/arc42.md | sort -u); do test -f \"docs/architecture/$f\" && echo \"ok $f\" || echo \"MISSING $f\"; done",
- "description": "Run tests, clean caches, and check changes and links"
+ "command": "git status --short && git diff --stat && ls docs/adr docs/architecture",
+ "description": "Confirm changes are limited to docs"
 }
 ```
 
 ### tool_result
 
 ```
-Ran 5 tests in 0.033s
-
-OK
 ?? docs/
+docs/adr:
 0001-record-architecture-decisions.md
-0002-storage-format.md
-0003-dependency-rule.md
-0004-block-interfaces.md
-0005-crosscutting-conventions.md
-0006-standard-library-only.md
-ok ../adr/0001-record-architecture-decisions.md
-ok ../adr/0002-storage-format.md
-ok ../adr/0006-standard-library-only.md
+0002-append-only-jsonl-storage.md
+0003-fsync-each-record.md
+0004-standard-library-only.md
+0005-building-block-dependencies.md
+0006-cli-commands-and-exit-codes.md
+0007-iso-dates.md
+
+docs/architecture:
+arc42.md
 ```
 
 ### assistant
 
-The architecture is recovered and documented under `docs/`. ADR 0001 is accepted as written, and the code, tests, and git state are unchanged, with all changes under `docs/`. The 5 tests still pass.
+The architecture is recovered from the code. ADR-0001 is accepted, and the recovered sections and six new ADRs are waiting for your review. Only files under `docs/` changed; no code was touched.
 
-**Files**
-- `docs/adr/0001-record-architecture-decisions.md`: status `accepted 2026-11-21`. Only the Status line changed.
-- `docs/architecture/arc42.md`: sections 2–8 and 11 filled from the code, each marked *As found, unconfirmed*. Section 9 now says ADR 0001 is accepted and 0002–0006 are proposed.
-- `docs/adr/0002` to `0006`, all `proposed`:
-  - 0002: storage format (append-only JSON lines)
-  - 0003: dependency rule
-  - 0004: block interfaces
-  - 0005: crosscutting conventions (errors, dates)
-  - 0006: standard library only
+**ADR-0001** is now `accepted 2026-11-21`. Only its Status line changed.
 
-**Decisions I made on your behalf**
-- **No ADR for versioning.** The code has no version field for the file or the CLI, so the code makes no versioning decision. It is recorded as debt in section 11 instead.
-- **Dependency rule:** I wrote the code's actual edges. The approved list says `cli` uses only `store` and `dates`, but the code also has `cli` → `model`. ADR 0003 says so, and the architect needs to decide which is right.
+**arc42.md:** sections 2–8 and 11 are filled and each starts with *As found, unconfirmed.* Sections 1, 9, 10 and 12 are unchanged apart from the section 9 note on the new ADRs.
+- **Blocks (section 5):** `cli` (with the `__main__` entry point), `dates`, `store`, `model`. The tests are not a block.
+- **Risks (section 11):**
+  - A torn last line merges with the next record and that record is dropped. I reproduced this on 2026-11-21. It violates R-2.
+  - Unparsable lines are skipped silently.
+  - The directory is not fsynced on first create.
+  - No file lock.
+  - The whole file is read on every command, with no compaction.
+  - Adding an existing name silently replaces its date. Whether that is intended is an open question.
 
-**Findings in section 11 (none fixed; the code is unchanged)**
-- **Torn line loses the next item (R-2):** reproduced. After a crash cuts a line short, the next `add` is written onto that line. The reader drops the whole line, and the new item disappears, though `add` reported success. The existing test does not cover this.
-- Any unreadable line is skipped silently, including damage in the middle of the file.
-- The new file's directory entry is not fsynced, so a crash just after the first add could lose the file. Not reproduced.
-- A repeated name silently replaces the earlier item's expiry (R-1).
-- Removed items are never compacted, so every `list` reads the whole history.
+**Proposed ADRs (0002–0007), all `proposed`:**
+- 0002 append-only JSON Lines storage
+- 0003 fsync each record
+- 0004 standard library only
+- 0005 building-block dependencies
+- 0006 CLI commands and exit codes
+- 0007 ISO dates
 
-**Waiting for the architect**
-- Approve or reject ADRs 0002–0006 and confirm or correct each recovered section.
-- Decide the `cli` → `model` edge.
-- Decide the storage question for R-2. The fix for the torn-line defect waits for that decision.
-- Three goals still have no measure and stay open: recoverability (R-2), functional correctness (R-1), adaptability (R-3).
+**Two things you should check:**
+- **My ADR-0001 text is wrong about `cli`.** It says `cli` may use `dates` and `store`, but `cli` also imports `model`. You approved that text, so I left it alone and noted the difference in ADR-0005. Deciding whether `cli` may use `model` is yours. If the answer changes the decision, that needs a new ADR.
+- **ADR-0006 describes CLI versioning that the code does not have.** The code has no versioning mechanism. The ADR records only the exit codes and the command shapes, and notes the gap.
+
+**Still open for you:**
+- Whether `cli` may use `model` (see above).
+- Whether the CLI versioning rule in ADR-0001 applies to existing behaviour.
+- Whether a second `add` of the same name should replace the first item.
+- `R-1`: what "soon" means when `--soon` is omitted.
+- `QG-3`: the minimum Python version.
+- Whether `remove` and the relative dates belong to R-1.
+- Whether R-3 should also be recorded in section 2. The Constraints section already names it, so this may be done.
+
+**Not done:** the torn-line defect is recorded as a risk but not fixed. The architect decides when, and any fix that changes the record format needs its own ADR. The proposed ADRs 0002–0007 each wait for your approval, and the risks in section 11 wait for your decision.
 
 ### result (success)

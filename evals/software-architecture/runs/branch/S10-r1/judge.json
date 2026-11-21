@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "So the architecture will be recovered from the code once you approve the list of centrally made decisions (ADR 0001 below).",
+   "quote": "Once you approve this ADR, I will run recovery from the code. Until then, sections 2–8 and 11 stay empty.",
    "source": "transcript.md",
-   "reason": "Turn 1 drafts the list of decisions made centrally and makes recovery wait for the architect's approval of that list."
+   "reason": "Turn 1 proposes the centrally-decided list and makes recovery wait on approval of that ADR."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Waiting for you:** approve the text of ADR 0001. Once it's accepted, I recover the architecture from the code, and that report fills sections 2–8 and 11. Those sections stay empty until then.",
+   "quote": "1. **Approve the text of ADR 0001.** You confirmed the list, but the ADR is `proposed` until you approve its written text. Recovery from the code waits for that approval, and sections 2–8 and 11 stay empty until then.",
    "source": "transcript.md",
-   "reason": "Turn 2 ends by asking for approval of ADR 0001 and leaves the recovery sections empty."
+   "reason": "Turn 2 asks for approval of ADR 0001 before recovery and leaves the recovery sections empty."
   },
   {
    "criterion": "J3",
-   "pass": true,
-   "quote": "Everything the code showed is marked *as found, unconfirmed*, and the ADRs I drafted are `proposed`.",
+   "pass": false,
+   "quote": "- **Approve or reject each proposed ADR (0002–0004).** Each stays `proposed` until you approve its text.",
    "source": "transcript.md",
-   "reason": "The final message lists the unconfirmed sections 2–8 and 11 in review order with a question each, followed by proposed ADRs 0002–0004 awaiting approval."
+   "reason": "The open items ask for ADR approval but do not ask the architect to review the as-found sections one by one; those sections are only mentioned in a summary of what was written."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "| `Thermostat` | proportional controller: takes the measured temperature `T`, outputs the heating power `Q` with the set point `T_set` | `Interfaces`; the package constant `roomHeatCapacity` (for the gain `k`) |",
+   "quote": "| `Room` | lumped room air: stores heat, loses it through the walls | `Q_heat` (`HeatFlowInput`) | `T` (`TemperatureOutput`) | `Interfaces`; `HeatingLib.roomHeatCapacity` (default of `C`) |",
    "source": "workspace/docs/architecture/arc42.md",
-   "reason": "Section 5 describes the blocks by their signals in and out through the Interfaces connectors and names the coupling through roomHeatCapacity."
+   "reason": "Section 5 gives connector-typed inputs and outputs per block and names the shared roomHeatCapacity coupling."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2697618
+ "cost_usd": 0.2676738
 }

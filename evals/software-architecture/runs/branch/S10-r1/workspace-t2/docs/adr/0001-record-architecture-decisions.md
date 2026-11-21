@@ -6,9 +6,7 @@ proposed
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. HeatingLib must
-stay checkable on every change (R-2, QG-1) and let a room or a controller be replaced without
-touching the rest (R-3, QG-2), so the choices that cross block boundaries need a central record.
+The architect decides the architecture; contributors and agents build it. HeatingLib must keep its blocks swappable without touching the rest (R-2, QG-2) and every model must check in OpenModelica (R-3, QG-3), so the decisions that cross block boundaries are made centrally. The product itself is the simulation of a heated room over a day (R-1).
 
 ## Decision
 
@@ -16,21 +14,18 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- Blocks connect only through the connector types in `Interfaces`; only `System` names concrete
-  blocks.
-- A block gets a value owned by another block through a connector or a parameter set in
-  `System`, never by reading another block's package constant.
-- Units: SI, with temperatures stored in K and displayed in °C.
-- The output format of the temperature trace (R-1).
-- Third-party dependencies: OpenModelica as the only tool.
-- Versioning of public model and connector names, if other projects will use the library.
+- Connector types and the dependency rule between blocks: blocks are connected only through the connectors in `Interfaces`, and no block reads another block's internals.
+- Shared parameters and constants: whether blocks may read package constants such as `roomHeatCapacity`. Today `Room` and `Thermostat` both do, which is the coupling against R-2.
+- Units: SI, with Kelvin internally and degC for display only.
+- Result output format: the `.mat` file that `simulate` writes.
+- Third-party libraries: none in use yet; adding one is central.
 
 Left to the building blocks (no ADR):
 
-- Equations inside a block, parameter defaults, the layout of `tests/`, and `package.order`.
+- Equations inside `Room` and `Thermostat`.
+- Parameter defaults.
+- Test file layout.
 
 ## Consequences
 
-Work that depends on a decision on the list above waits until its ADR is accepted. The
-current coupling through `HeatingLib.roomHeatCapacity` contradicts the second item and must
-change once that item is accepted.
+Work that depends on a decision on the list waits until its ADR is accepted. In particular, removing the constant coupling between `Room` and `Thermostat` waits for a decision on shared constants.

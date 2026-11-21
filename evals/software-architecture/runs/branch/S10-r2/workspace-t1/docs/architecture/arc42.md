@@ -35,8 +35,7 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 9. Architecture decisions
 
-The architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR
-"Record architecture decisions" is written once the architect confirms the setup proposal.
+ADRs will live in `../adr/` (`docs/adr/`), created with the first ADR. The "Record architecture decisions" ADR is proposed and is not written yet; it links here once it exists.
 
 ## 10. Quality requirements
 

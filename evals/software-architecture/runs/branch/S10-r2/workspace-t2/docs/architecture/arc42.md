@@ -8,9 +8,11 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | ID | requirement | rank | status | reason |
 |---|---|---|---|---|
-| R-1 | Simulate a heated room over 24 h and output its temperature trajectory. | 1 | active | Fixes the model structure and the simulation output; `System.mo` already does this. |
-| R-2 | A room or a controller can be replaced by another variant with the same connectors, without editing `System` or the other block. | 2 | active | Sets the interfaces and the dependency rule. The current `Thermostat.mo` reads `HeatingLib.roomHeatCapacity` directly, which breaks this. |
-| R-3 | Every model in HeatingLib passes OpenModelica `checkModel` with no errors. | 3 | active | Sets the testability bar. Room, Thermostat and System pass today; `tests/check.mos` checks only System. |
+| R-1 | Simulate a heated room over a day and show its temperature. | 1 | active | — |
+| R-2 | Swap the room or the controller for another variant without touching the rest. | 3 | active | — |
+| R-3 | Every model checks in OpenModelica without errors. | 2 | active | — |
+
+Gap check (confirmed by the architect): no further characteristics are missing.
 
 ### Quality goals
 
@@ -19,15 +21,7 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | QG-2 | Flexibility: replaceability | R-2 | QS-1 |
 | QG-3 | Maintainability: testability | R-3 | QS-2 |
 
-QG-1 (Functional suitability: functional correctness, from R-1) is open: no measure yet. The
-architect has to name the tolerance against the expected temperature curve.
-
 ### Stakeholders
-
-### Gap check
-
-Asked about time behaviour, interoperability and safety. The architect left nothing out; no
-new requirement came from it.
 
 ## 2. Constraints
 
@@ -48,15 +42,14 @@ new requirement came from it.
 
 ## 9. Architecture decisions
 
-The architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR
-"Record architecture decisions" is written once the architect confirms the setup proposal.
+ADRs live in `../adr/`. The list of decisions made centrally is [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (status proposed, awaiting the architect's approval of its text).
 
 ## 10. Quality requirements
 
 | ID | goal | stimulus | environment | response | measure |
 |---|---|---|---|---|---|
-| QS-1 | QG-2 | a room variant with a different heat capacity is swapped in | normal development | only the swapped block changes; `System` and the controller are untouched | 0 edits to `System` and to the controller |
-| QS-2 | QG-3 | `checkModel` runs on every model in the package | normal development, OpenModelica | no errors reported for any model | 0 models with errors |
+| QS-1 | QG-2 | a replacement `Room` or `Thermostat` variant is substituted in `System` | the rest of the library unchanged | `System` and the other block are unchanged | 0 changed lines outside the replaced block |
+| QS-2 | QG-3 | the check script runs over all models in `HeatingLib` | normal project state | each model is reported, and the script exits non-zero on any error | 0 models with errors |
 
 ## 11. Risks and technical debt
 

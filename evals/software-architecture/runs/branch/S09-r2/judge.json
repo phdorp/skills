@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Since this project is undocumented, recovering the architecture from the code waits until you approve this ADR's text.",
+   "quote": "Once you confirm, I write the R-list, the goals, and the ADR as `proposed`. The ADR's status changes only when you approve its text. Recovering the architecture from the code waits for that approval.",
    "source": "transcript.md",
-   "reason": "Turn 1 drafts the central decision list and explicitly defers recovery until the architect approves it."
+   "reason": "Turn 1 proposes the draft ADR 0001 list of central decisions and explicitly defers recovery until that approval."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Approve or change the text of ADR-0001 (`docs/adr/0001-record-architecture-decisions.md`). Once it is accepted, I can recover the architecture from the code as the next step.",
+   "quote": "**Next:** approve or change ADR 0001's text. Only after that do I recover the architecture from the code into sections 2 to 8 and 11.",
    "source": "transcript.md",
-   "reason": "Turn 2 only writes confirmed rows and the proposed ADR, then ends by asking for ADR-0001 approval before recovery."
+   "reason": "Turn 2 writes only confirmed items and the proposed ADR, recovers nothing, and ends by asking for ADR 0001 approval."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**Sections to review (all *as found, unconfirmed*)**",
+   "quote": "**Sections marked *as found, unconfirmed*** (review in this order):",
    "source": "transcript.md",
-   "reason": "The final message lists each as-found section for review and then the proposed ADRs 0002–0007, each with its approval question."
+   "reason": "The final message lists each as-found section in review order and then the proposed ADRs 0002-0009 with their questions."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.26829780000000003
+ "cost_usd": 0.2805258
 }

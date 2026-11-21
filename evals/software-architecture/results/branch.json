@@ -51,15 +51,15 @@
   },
   "S09": {
    "runs": 2,
-   "score": 1.0,
+   "score": 0.928,
    "judge": 1.0,
-   "cost_usd": 0.129
+   "cost_usd": 0.134
   },
   "S10": {
    "runs": 2,
    "score": 1.0,
    "judge": 0.875,
-   "cost_usd": 0.14
+   "cost_usd": 0.125
   }
  },
  "runs": [
@@ -150,7 +150,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.057s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1353,87 +1353,7 @@
     {
      "name": "recovered_marked",
      "pass": true,
-     "detail": "section 5 rows 5; "
-    },
-    {
-     "name": "recovery_adrs",
-     "pass": true,
-     "detail": "5 recovered, limit 6; "
-    },
-    {
-     "name": "code_unchanged",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "goals_measured",
-     "pass": true,
-     "detail": "QG-1"
-    }
-   ],
-   "passed": 7,
-   "total": 7,
-   "score": 1.0,
-   "valid": true,
-   "judge": {
-    "criteria": [
-     "J1",
-     "J2",
-     "J3"
-    ],
-    "verdicts": [
-     {
-      "criterion": "J1",
-      "pass": true,
-      "quote": "Recovering the architecture from the code waits until you approve the decision-list ADR.",
-      "source": "transcript.md",
-      "reason": "Turn 1 proposes the central decision list and states that recovery waits for the architect's approval of it."
-     },
-     {
-      "criterion": "J2",
-      "pass": true,
-      "quote": "**Waiting on you:** approve the text of ADR 0001. Its status stays `proposed` until you do.",
-      "source": "transcript.md",
-      "reason": "Turn 2 writes only the confirmed docs, recovers nothing, and closes by asking for approval of ADR 0001 before recovery begins."
-     },
-     {
-      "criterion": "J3",
-      "pass": true,
-      "quote": "Approve or reject ADRs 0002\u20130006 and confirm or correct each recovered section.",
-      "source": "transcript.md",
-      "reason": "The final message names sections 2\u20138 and 11 as marked As found, unconfirmed, lists proposed ADRs 0002\u20130006, and asks for their approval and section-by-section review."
-     }
-    ],
-    "quote_errors": [],
-    "needs_review": false,
-    "cost_usd": 0.2522818
-   },
-   "cost_usd": 0.060074,
-   "needs_review": false
-  },
-  {
-   "run": "S09-r2",
-   "scenario": "S09",
-   "checks": [
-    {
-     "name": "t1_only_arc42",
-     "pass": true,
-     "detail": "changed: docs/architecture/arc42.md; rows: 0"
-    },
-    {
-     "name": "t2_waits",
-     "pass": true,
-     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
-    },
-    {
-     "name": "list_accepted",
-     "pass": true,
-     "detail": "accepted 2026-11-21"
-    },
-    {
-     "name": "recovered_marked",
-     "pass": true,
-     "detail": "section 5 rows 5; "
+     "detail": "section 5 rows 4; "
     },
     {
      "name": "recovery_adrs",
@@ -1465,31 +1385,111 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Since this project is undocumented, recovering the architecture from the code waits until you approve this ADR's text.",
+      "quote": "Architecture is recovered from the code only after you approve the \"Record architecture decisions\" ADR below.",
       "source": "transcript.md",
-      "reason": "Turn 1 drafts the central decision list and explicitly defers recovery until the architect approves it."
+      "reason": "Turn 1 proposes the decisions-made-centrally list for ADR-0001 and explicitly defers recovery until the architect approves it."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Approve or change the text of ADR-0001 (`docs/adr/0001-record-architecture-decisions.md`). Once it is accepted, I can recover the architecture from the code as the next step.",
+      "quote": "Do you approve ADR-0001's text as written? If you do, I'll mark it `accepted` and start the recovery.",
       "source": "transcript.md",
-      "reason": "Turn 2 only writes confirmed rows and the proposed ADR, then ends by asking for ADR-0001 approval before recovery."
+      "reason": "Turn 2 writes only the confirmed R-list, goals, scenarios and the proposed ADR-0001, recovers nothing, and ends by asking for approval of ADR-0001."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "**Sections to review (all *as found, unconfirmed*)**",
+      "quote": "sections 2\u20138 and 11 are filled and each starts with *As found, unconfirmed.*",
       "source": "transcript.md",
-      "reason": "The final message lists each as-found section for review and then the proposed ADRs 0002\u20130007, each with its approval question."
+      "reason": "The final message names the recovered sections marked as found, unconfirmed and awaiting review, and lists proposed ADRs 0002\u20130007 each waiting for the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.26829780000000003
+    "cost_usd": 0.28988179999999997
    },
-   "cost_usd": 0.068873,
+   "cost_usd": 0.064394,
    "needs_review": false
+  },
+  {
+   "run": "S09-r2",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 5; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "8 recovered, limit 8; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": "QG-1, QG-2 (unmeasured or uncited), QG-3, QG-4 (unmeasured or uncited)"
+    }
+   ],
+   "passed": 6,
+   "total": 7,
+   "score": 0.857,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Once you confirm, I write the R-list, the goals, and the ADR as `proposed`. The ADR's status changes only when you approve its text. Recovering the architecture from the code waits for that approval.",
+      "source": "transcript.md",
+      "reason": "Turn 1 proposes the draft ADR 0001 list of central decisions and explicitly defers recovery until that approval."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Next:** approve or change ADR 0001's text. Only after that do I recover the architecture from the code into sections 2 to 8 and 11.",
+      "source": "transcript.md",
+      "reason": "Turn 2 writes only confirmed items and the proposed ADR, recovers nothing, and ends by asking for ADR 0001 approval."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**Sections marked *as found, unconfirmed*** (review in this order):",
+      "source": "transcript.md",
+      "reason": "The final message lists each as-found section in review order and then the proposed ADRs 0002-0009 with their questions."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2805258
+   },
+   "cost_usd": 0.069158,
+   "needs_review": true
   },
   {
    "run": "S10-r1",
@@ -1518,7 +1518,7 @@
     {
      "name": "recovery_adrs",
      "pass": true,
-     "detail": "3 recovered, limit 6; "
+     "detail": "3 recovered, limit 5; "
     },
     {
      "name": "code_unchanged",
@@ -1528,7 +1528,7 @@
     {
      "name": "goals_measured",
      "pass": true,
-     "detail": "QG-1, QG-2"
+     "detail": "QG-2, QG-3"
     }
    ],
    "passed": 7,
@@ -1546,38 +1546,38 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "So the architecture will be recovered from the code once you approve the list of centrally made decisions (ADR 0001 below).",
+      "quote": "Once you approve this ADR, I will run recovery from the code. Until then, sections 2\u20138 and 11 stay empty.",
       "source": "transcript.md",
-      "reason": "Turn 1 drafts the list of decisions made centrally and makes recovery wait for the architect's approval of that list."
+      "reason": "Turn 1 proposes the centrally-decided list and makes recovery wait on approval of that ADR."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**Waiting for you:** approve the text of ADR 0001. Once it's accepted, I recover the architecture from the code, and that report fills sections 2\u20138 and 11. Those sections stay empty until then.",
+      "quote": "1. **Approve the text of ADR 0001.** You confirmed the list, but the ADR is `proposed` until you approve its written text. Recovery from the code waits for that approval, and sections 2\u20138 and 11 stay empty until then.",
       "source": "transcript.md",
-      "reason": "Turn 2 ends by asking for approval of ADR 0001 and leaves the recovery sections empty."
+      "reason": "Turn 2 asks for approval of ADR 0001 before recovery and leaves the recovery sections empty."
      },
      {
       "criterion": "J3",
-      "pass": true,
-      "quote": "Everything the code showed is marked *as found, unconfirmed*, and the ADRs I drafted are `proposed`.",
+      "pass": false,
+      "quote": "- **Approve or reject each proposed ADR (0002\u20130004).** Each stays `proposed` until you approve its text.",
       "source": "transcript.md",
-      "reason": "The final message lists the unconfirmed sections 2\u20138 and 11 in review order with a question each, followed by proposed ADRs 0002\u20130004 awaiting approval."
+      "reason": "The open items ask for ADR approval but do not ask the architect to review the as-found sections one by one; those sections are only mentioned in a summary of what was written."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "| `Thermostat` | proportional controller: takes the measured temperature `T`, outputs the heating power `Q` with the set point `T_set` | `Interfaces`; the package constant `roomHeatCapacity` (for the gain `k`) |",
+      "quote": "| `Room` | lumped room air: stores heat, loses it through the walls | `Q_heat` (`HeatFlowInput`) | `T` (`TemperatureOutput`) | `Interfaces`; `HeatingLib.roomHeatCapacity` (default of `C`) |",
       "source": "workspace/docs/architecture/arc42.md",
-      "reason": "Section 5 describes the blocks by their signals in and out through the Interfaces connectors and names the coupling through roomHeatCapacity."
+      "reason": "Section 5 gives connector-typed inputs and outputs per block and names the shared roomHeatCapacity coupling."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.2697618
+    "cost_usd": 0.2676738
    },
-   "cost_usd": 0.078449,
-   "needs_review": false
+   "cost_usd": 0.066784,
+   "needs_review": true
   },
   {
    "run": "S10-r2",
@@ -1634,38 +1634,38 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Once you confirm, I'll write the R-list, goals, scenarios and ADR-0001 as `proposed`. Recovering the architecture from the code waits for your approval of ADR-0001's text.",
+      "quote": "Once you confirm, I write the confirmed R-list rows, goals, scenarios and ADR 0001 (status `proposed`), and the link in section 9. Then you approve the ADR's text, and the architecture recovery from the code starts.",
       "source": "transcript.md",
-      "reason": "Turn 1 proposes the central decision list for ADR-0001 and defers recovery until the architect approves that ADR's text, which is the list."
+      "reason": "Turn 1 proposes the decided-centrally list and makes recovery wait until the architect confirms the list and approves the ADR that holds it."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**ADR-0001** waits for your approval of its text. Recovering the architecture from the code waits for that approval too, and so does changing the `roomHeatCapacity` coupling in `Thermostat.mo`.",
+      "quote": "Recovery of the architecture from the code starts once you approve ADR-0001. I haven't started it.",
       "source": "transcript.md",
-      "reason": "Turn 2 writes only the confirmed requirements and the proposed ADR-0001, recovers nothing, and ends by asking for approval of ADR-0001."
+      "reason": "Turn 2 writes only the confirmed items and ADR-0001 as proposed, and its closing message asks for approval of ADR-0001 before recovery, which it has not started."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "**arc42 sections marked *as found, unconfirmed*, for your review in this order:**",
+      "quote": "- Approve or reject ADRs 0002\u20130005, each as `proposed`.\n- Confirm or correct each *as found* section, starting with section 11's risks.",
       "source": "transcript.md",
-      "reason": "The final message lists the unconfirmed sections in review order and the proposed ADR-0002 to ADR-0005, each with a question for the architect."
+      "reason": "The final message names sections 2\u20138 and 11 as marked as found and unconfirmed, asks for them to be confirmed one by one, and lists proposed ADRs 0002\u20130005 for approval."
      },
      {
       "criterion": "J4",
-      "pass": false,
-      "quote": "| `Room` | lumped room air: stores heat, loses it through the walls | `Interfaces`; the package constant `roomHeatCapacity` |",
+      "pass": true,
+      "quote": "`Room` and `Thermostat` both read `HeatingLib.roomHeatCapacity`. That is a dependency between two blocks through a shared constant, not through a connector.",
       "source": "workspace/docs/architecture/arc42.md",
-      "reason": "Section 5 names the roomHeatCapacity coupling but does not describe any block's interface as its signals or connectors in and out; it only lists the Interfaces package as a dependency."
+      "reason": "Section 5 gives each block's in/out connectors and names the coupling through the shared constant roomHeatCapacity."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.2747618
+    "cost_usd": 0.2278338
    },
-   "cost_usd": 0.062028,
-   "needs_review": true
+   "cost_usd": 0.058585,
+   "needs_review": false
   }
  ]
 }

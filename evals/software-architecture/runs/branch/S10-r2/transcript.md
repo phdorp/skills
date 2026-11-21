@@ -8,30 +8,7 @@ have. My requirements:
 
 ### assistant
 
-I'll start by reading the project and the two skills the setup depends on.
-
-### tool_use Bash
-
-```json
-{
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200",
- "description": "Inspect repo state and file list"
-}
-```
-
-### tool_result
-
-```
-bad28c0 fixture
-./README.md
-./HeatingLib/package.order
-./HeatingLib/System.mo
-./HeatingLib/Thermostat.mo
-./HeatingLib/Interfaces.mo
-./HeatingLib/Room.mo
-./HeatingLib/package.mo
-./tests/check.mos
-```
+I'll start by loading the two skills the setup depends on and looking at what the project contains.
 
 ### tool_use Skill
 
@@ -61,16 +38,39 @@ Launching skill: sa:quality-requirements
 Launching skill: sa:domain-modeling
 ```
 
+### tool_use Bash
+
+```json
+{
+ "command": "git status --short && git log --oneline | head -20 && find . -path ./.git -prune -o -type f -print | head -200",
+ "description": "Show git status, history, and project files"
+}
+```
+
+### tool_result
+
+```
+fd442ef fixture
+./README.md
+./HeatingLib/package.order
+./HeatingLib/System.mo
+./HeatingLib/Thermostat.mo
+./HeatingLib/Interfaces.mo
+./HeatingLib/Room.mo
+./HeatingLib/package.mo
+./tests/check.mos
+```
+
 ### assistant
 
-Both skills are loaded. Next I'll read the Modelica sources, the README, and the test script, to see whether any architecture documentation already exists.
+Both skills are loaded. The project has Modelica sources but no architecture docs yet, so I'll read the README and the library files next.
 
 ### tool_use Bash
 
 ```json
 {
  "command": "for f in README.md HeatingLib/package.order HeatingLib/package.mo HeatingLib/System.mo HeatingLib/Thermostat.mo HeatingLib/Interfaces.mo HeatingLib/Room.mo tests/check.mos; do echo \"=== $f\"; cat \"$f\"; echo; done",
- "description": "Print README, package files, and Modelica models"
+ "description": "Print README, library sources, and check script"
 }
 ```
 
@@ -164,20 +164,21 @@ checkModel(HeatingLib.System); getErrorString();
 
 ### assistant
 
-The project has Modelica sources and a README that only covers the product and how to run it, so this is an undocumented project. Next I'll read the setup references and the requirement triage the proposal depends on.
+The README only describes the product and how to run the check, so the project counts as undocumented. Before writing anything I need the skeleton, the made-centrally list, the add-requirements triage, and the ADR format.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "S=/tmp/sa-arm-hzyhti2z/sa/skills; cat $S/setup-architecture/references/arc42-skeleton.md; echo ======; cat $S/setup-architecture/references/made-centrally-adr.md; echo ======; cat $S/add-requirements/SKILL.md; echo ======; cat $S/domain-modeling/ADR-FORMAT.md; echo ======; cat $S/quality-requirements/references/iso-25010.md | head -80",
- "description": "Read setup, triage, and ADR reference files"
+ "command": "cd /tmp/sa-arm-chqp2x3l/sa/skills && for f in setup-architecture/references/arc42-skeleton.md setup-architecture/references/made-centrally-adr.md add-requirements/SKILL.md domain-modeling/ADR-FORMAT.md quality-requirements/references/quality-scenario.md quality-requirements/references/iso-25010.md setup-architecture/references/recovery.md; do echo \"=== $f\"; cat \"$f\"; echo; done",
+ "description": "Read skill reference templates"
 }
 ```
 
 ### tool_result
 
 ```
+=== setup-architecture/references/arc42-skeleton.md
 # arc42 skeleton
 
 Write `docs/architecture/arc42.md` with these twelve sections, in this order, each as a level-2
@@ -233,7 +234,8 @@ content lives nowhere yet starts empty, as in a fresh project.
 At setup, sections 1, 5 and 10 get their empty tables and sections 9 and 12 their links in the
 first turn. Rows follow once the architect confirms; section 5's rows follow once building
 blocks are decided.
-======
+
+=== setup-architecture/references/made-centrally-adr.md
 # "Record architecture decisions" ADR
 
 The ADR that draws the line between decisions the architect makes centrally and decisions left
@@ -259,59 +261,60 @@ We record architecture decisions as ADRs in `<the project's ADR directory>`, in 
 
 Decided centrally (needs an ADR the architect accepts):
 
-- <items from the default list below, made concrete for this product>
-
-Left to the building blocks (no ADR):
-
-- <internal helpers, structure inside one bloc
-[... 10958 chars cut]
+- <items from the default list below, made concrete fo
+[... 16159 chars cut]
 ```
 
 ### assistant
 
-I have the templates I need. Two more checks: the quality-scenario table format, and whether `omc` is installed here so I can see what the current check actually reports.
+I have what I need. The project is undocumented: source files exist, no architecture docs do. Turn one writes only the skeleton. I'll create the file and leave the R-list, goals, and ADRs for your confirmation.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat /tmp/sa-arm-hzyhti2z/sa/skills/quality-requirements/references/quality-scenario.md; echo ====; which omc && cd /tmp/sa-eval-md2obb7e/project && timeout 120 omc tests/check.mos 2>&1 | tail -20",
- "description": "Read scenario template and try OpenModelica check"
+ "command": "mkdir -p /tmp/sa-eval-ycm1g720/project/docs/architecture && ls /tmp/sa-eval-ycm1g720/project/docs",
+ "description": "Create architecture docs directory"
 }
 ```
 
 ### tool_result
 
 ```
-# Quality scenario
-
-A quality goal is testable only through a scenario (Bass, Clements and Kazman, *Software
-Architecture in Practice*; arc42 section 10). Each part answers one question:
-
-| part | answers | example (QG: Reliability: fault tolerance, from R-2) |
-|---|---|---|
-| source | who or what causes the stimulus (when it matters) | the operating system |
-| stimulus | what happens | the process is killed with SIGKILL during `add` |
-| artifact | which part is affected (when it matters) | the note store |
-| environment | under which conditions | normal operation |
-| response | what the system does | the note is either fully stored or absent; the store still opens |
-| measure | the number that decides whether the goal is met | 0 unreadable stores in 100 trials |
-
-The measure is a count, a time, a share or a limit someone can check. "Fast", "robust" or
-"easy" is not a measure: ask the architect for the number, or for the observation that would
-show the goal is met, and keep the goal open until they give one.
-
-## arc42 section 10 row
-
-```markdown
-| ID | goal | stimulus | environment | response | measure |
-|---|---|---|---|---|---|
-| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the note is either fully stored or absent; the store still opens | 0 unreadable stores in 100 trials |
+architecture
 ```
 
-Fold source and artifact into the stimulus when they need saying. Each `QS-n` names its
-`QG-n`, and the goal's row in section 1 names its `QS-n` back.
-====
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md",
+ "content": "# HeatingLib: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nADRs will live in `../adr/` (`docs/adr/`), created with the first ADR. The \"Record architecture decisions\" ADR is proposed and is not written yet; it links here once it exists.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
+```
+
+### assistant
+
+The skeleton is written. Before I send the proposal, I'll check whether OpenModelica is installed and what the existing check reports, since requirement 3 depends on it.
+
+### tool_use Bash
+
+```json
+{
+ "command": "(command -v omc && timeout 170 omc tests/check.mos; echo \"exit=$?\") 2>&1 | tail -30",
+ "description": "Run existing OpenModelica check script"
+}
+```
+
+### tool_result
+
+```
 /usr/bin/omc
 true
 ""
@@ -319,136 +322,71 @@ true
 Class HeatingLib.System has 4 equation(s) and 4 variable(s).
 2 of these are trivial equation(s)."
 ""
+exit=0
 ```
 
 ### assistant
 
-`omc` is installed and `System` checks cleanly. Requirement 3 asks about every model, so I'll check each one, running from a scratch directory so the repo stays untouched.
+The architecture skeleton is in place at `docs/architecture/arc42.md`, and nothing else changed. The project is undocumented: the README covers the product and how to run the check, not how the system is built. Your three requirements are proposals until you confirm them.
 
-### tool_use Bash
+## Triage (proposed; the R-list is empty, so IDs are provisional)
 
-```json
-{
- "command": "mkdir -p /tmp/heatinglib-scratch && cd /tmp/heatinglib-scratch && P=/tmp/sa-eval-md2obb7e/project/HeatingLib/package.mo && cat > /tmp/heatinglib-scratch/all.mos <<EOF\nloadFile(\"$P\"); getErrorString();\ncheckModel(HeatingLib.Room); getErrorString();\ncheckModel(HeatingLib.Thermostat); getErrorString();\ncheckModel(HeatingLib.System); getErrorString();\nEOF\ntimeout 180 omc /tmp/heatinglib-scratch/all.mos 2>&1 | tail -30",
- "description": "Check each model in a scratch directory"
-}
-```
+| Req | Proposed outcome | Reason |
+|---|---|---|
+| 1. Simulate a heated room over a day and show its temperature | system-level | It defines what the system is. Partly present: `System.mo` sets `StopTime = 86400`, but nothing shows the temperature. `check.mos` only checks. |
+| 2. Swap the room or controller without touching the rest | system-level | It shapes the interfaces. **Not met today:** `System.mo` names the concrete types `Room` and `Thermostat`, so a swap means editing `System`. `Thermostat.mo` also reads `HeatingLib.roomHeatCapacity`, so a room variant with a different heat capacity leaves the controller's gain wrong. |
+| 3. Every model checks in OpenModelica without errors | system-level | It is a cross-cutting testability rule. **Not met as written:** `check.mos` checks only `HeatingLib.System`, not `Room`, `Thermostat` or `Interfaces`. It also prints errors without exiting non-zero. I ran it: `omc tests/check.mos` completes for `System` and exits 0. |
 
-### tool_result
+No pairwise conflicts among the three.
 
-```
-true
-""
-"Check of HeatingLib.Room completed successfully.
-Class HeatingLib.Room has 2 equation(s) and 2 variable(s).
-1 of these are trivial equation(s)."
-""
-"Check of HeatingLib.Thermostat completed successfully.
-Class HeatingLib.Thermostat has 2 equation(s) and 2 variable(s).
-1 of these are trivial equation(s)."
-""
-"Check of HeatingLib.System completed successfully.
-Class HeatingLib.System has 4 equation(s) and 4 variable(s).
-2 of these are trivial equation(s)."
-""
-Shell cwd was reset to /tmp/sa-eval-md2obb7e/project
-```
+## Rank (proposed, you set the order)
 
-### assistant
+1. R-1: it defines the product.
+2. R-3: it verifies every later change.
+3. R-2: it is a structural refactor that follows.
 
-All four checks pass today, so requirement 3 is met now but nothing enforces it: `tests/check.mos` only checks `System`. Next I'll write the skeleton, the only file this turn writes.
-
-### tool_use Bash
-
-```json
-{
- "command": "mkdir -p /tmp/sa-eval-md2obb7e/project/docs/architecture && rm -rf /tmp/heatinglib-scratch",
- "description": "Create the architecture docs directory and clear scratch files"
-}
-```
-
-### tool_result
-
-```
-(Bash completed with no output)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md",
- "content": "# HeatingLib: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR\n\"Record architecture decisions\" is written once the architect confirms the setup proposal.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
-```
-
-### assistant
-
-The skeleton is written and the proposal is below. Nothing else in the repo changed, and I haven't committed anything.
-
-## Setup, first turn: skeleton written, proposal for you to confirm
-
-**Situation:** undocumented. The project has Modelica sources and a README that only describes the product and how to run it. The architecture has to be recovered from the code once you approve the "Record architecture decisions" ADR.
-
-**Written:** `docs/architecture/arc42.md`, the twelve arc42 sections with empty tables for 1, 5 and 10 and the links for 9 and 12. No ADRs, no R-list rows, no goals yet.
-
-### Triage of your three requirements
-
-| ID | proposed wording | outcome | reason |
-|---|---|---|---|
-| R-1 | Simulate a heated room over 24 h and output its temperature trajectory. | system-level | Fixes the model structure and the simulation output. `System.mo` already does this. |
-| R-2 | A room or a controller can be replaced by another variant with the same connectors, without editing `System` or the other block. | system-level | Sets the interfaces and the dependency rule. **Conflict in the code:** `Thermostat.mo` reads `HeatingLib.roomHeatCapacity` directly, so a room with a different heat capacity leaves the controller gain wrong and forces an edit to the controller. |
-| R-3 | Every model in HeatingLib passes OpenModelica `checkModel` with no errors. | system-level | Sets the testability bar. I ran `checkModel` on `Room`, `Thermostat` and `System` today: all pass. `tests/check.mos` checks only `System`, so nothing guards the other models. |
-
-### Proposed rank
-
-1. R-1 (proposed): the core function; the others have nothing to act on without it.
-2. R-2 (proposed): structural rule that the current code already breaks.
-3. R-3 (proposed): a gate that protects R-1 and R-2 as they grow.
-
-No direct conflicts between R-1, R-2 and R-3. Near-tie tie-breakers:
-- If only one of R-2 and R-3 can be fully met, which?
+Tie-breakers, please:
 - If only one of R-1 and R-2 can be fully met, which?
+- If only one of R-2 and R-3 can be fully met, which?
 
-### Candidate quality goals
+## Quality goals
 
-- **QG-1, Functional suitability: functional correctness** (from R-1). Scenario: a 24 h run of `System` at default parameters. Measure: **open question:** what tolerance against the expected temperature curve (for example the first-order response with the parameters in `Room.mo` and `Thermostat.mo`) would show R-1 is met?
-- **QG-2, Flexibility: replaceability** (from R-2). Scenario: a room variant with a different heat capacity is swapped in. Measure proposed: 0 edits to `System` and to the controller. Confirm?
-- **QG-3, Maintainability: testability** (from R-3). Scenario: `checkModel` runs on every model in the package. Measure proposed: 0 models with errors. Confirm?
+- **QG-1 Functional suitability: functional correctness** (from R-1). Open question, no measure yet: what result would show R-1 is met? For example, a temperature value at a given time for the default parameters.
+- **QG-2 Flexibility: replaceability** (from R-2). Proposed scenario:
+  - Stimulus: a replacement `Room` or `Thermostat` variant is substituted in `System`.
+  - Response: `System` and the other block are unchanged.
+  - Measure: 0 changed lines outside the replaced block.
+- **QG-3 Maintainability: testability** (from R-3). Proposed scenario:
+  - Stimulus: the check script runs over all models in `HeatingLib`.
+  - Response: it reports each model and exits non-zero on any error.
+  - Measure: 0 models with errors, across all models.
 
-### Gap questions
+## Gap questions
 
-- Did you leave out a **time behaviour** limit, such as how long the 24 h run may take?
-- Did you leave out **interoperability**: does anything consume the temperature output, and in which format (CSV, plot file)? This is an output-format decision, so it would go on the ADR list.
-- Did you leave out a **safety** limit, such as a maximum room temperature beyond the heater's `Q_max`?
+- Performance efficiency, time behaviour: must one simulated day finish within a time limit?
+- Compatibility, interoperability: must the temperature output be read by other tools? If yes, that also fixes the output format (see ADR below).
 
-### Decisions made centrally: draft list for ADR-0001
+## Decisions made centrally: draft for "Record architecture decisions"
 
-ADR number 0001, "Record architecture decisions", in `docs/adr/`. Proposed central decisions:
+This will be `docs/adr/0001-record-architecture-decisions.md`, status `proposed`. Its Context will cite R-1, R-2, R-3, QG-2 and QG-3 once confirmed.
 
-- Interfaces between blocks and the dependency rule. Blocks read only their connectors and their own parameters; no block reads another block's constant. This covers the `roomHeatCapacity` coupling.
-- Units and quantities: SI, temperature in K, `displayUnit` for °C (already in `Interfaces.Temperature`).
-- Naming and package layout (`HeatingLib`, `package.order`).
-- Output and export format of the simulation result (open, see the gap question above).
-- Third-party dependencies: OpenModelica is the only tool; the Modelica Standard Library is not used.
+Decided centrally (needs an ADR):
+- Dependency rule: blocks connect only through the connectors in `Interfaces`; no block reads another block's parameters or constants. Today `Thermostat` reads `HeatingLib.roomHeatCapacity`.
+- Ownership of the shared constant `roomHeatCapacity`: who may read it.
+- Units: SI, temperatures in K, power in W, heat capacity in J/K.
+- Format of the simulated temperature output.
+- Tooling dependency: OpenModelica for simulation and checks. Any added Modelica library goes through this decision.
 
-Left to the building blocks: equations and parameter defaults inside one model, and the test layout.
+Left to the building blocks (no ADR): equations inside `Room` and `Thermostat`, parameter defaults, the internal structure of each block, and the layout of the check script.
 
-### What I need from you
+## What I need from you
 
-1. Confirm or change the three triage outcomes and wording.
-2. Set the rank, or answer the tie-breakers.
-3. Confirm QG-1 to QG-3, and answer the open measure for QG-1.
-4. Answer the three gap questions.
-5. Confirm or change the central decision list for ADR-0001.
+1. Confirm or change the triage, the rank and the tie-breakers.
+2. Confirm or change the three goals, and give the measure for QG-1.
+3. Answer the two gap questions.
+4. Confirm or change the central-decision list above.
 
-Once you confirm, I'll write the R-list, goals, scenarios and ADR-0001 as `proposed`. Recovering the architecture from the code waits for your approval of ADR-0001's text.
+Once you confirm, I write the confirmed R-list rows, goals, scenarios and ADR 0001 (status `proposed`), and the link in section 9. Then you approve the ADR's text, and the architecture recovery from the code starts.
 
 ### result (success)
 
@@ -460,86 +398,21 @@ out" questions: no, nothing is missing. Write it down.
 
 ### assistant
 
-The architect confirmed the triage, the rank, QG-2 and QG-3 with their measures, the central decision list, and "nothing missing" for the gap questions. QG-1 has no measure, so it stays open. I'll read the current skeleton, then write the confirmed parts.
+Confirmed items are being written now: the R-list, the goals with measures (QG-2 and QG-3), the gap answers, and ADR 0001. QG-1 stays open, so it gets no row.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "mkdir -p /tmp/sa-eval-md2obb7e/project/docs/adr && ls /tmp/sa-eval-md2obb7e/project/docs",
- "description": "Create ADR directory and list docs"
+ "command": "mkdir -p /tmp/sa-eval-ycm1g720/project/docs/adr && ls /tmp/sa-eval-ycm1g720/project/docs/adr",
+ "description": "Create ADR directory"
 }
 ```
 
 ### tool_result
 
 ```
-adr
-architecture
-```
-
-### tool_use Read
-
-```json
-{
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md"
-}
-```
-
-### tool_result
-
-```
-1	# HeatingLib: architecture
-2	
-3	Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
-4	
-5	## 1. Introduction and goals
-6	
-7	### Requirements overview
-8	
-9	| ID | requirement | rank | status | reason |
-10	|---|---|---|---|---|
-11	
-12	### Quality goals
-13	
-14	| ID | goal (ISO/IEC 25010) | from | scenario |
-15	|---|---|---|---|
-16	
-17	### Stakeholders
-18	
-19	## 2. Constraints
-20	
-21	## 3. Context and scope
-22	
-23	## 4. Solution strategy
-24	
-25	## 5. Building block view
-26	
-27	| block | responsibility | may use |
-28	|---|---|---|
-29	
-30	## 6. Runtime view
-31	
-32	## 7. Deployment view
-33	
-34	## 8. Crosscutting concepts
-35	
-36	## 9. Architecture decisions
-37	
-38	The architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR
-39	"Record architecture decisions" is written once the architect confirms the setup proposal.
-40	
-41	## 10. Quality requirements
-42	
-43	| ID | goal | stimulus | environment | response | measure |
-44	|---|---|---|---|---|---|
-45	
-46	## 11. Risks and technical debt
-47	
-48	## 12. Glossary
-49	
-50	`GLOSSARY.md` is created with the first resolved term.
-51	
+(Bash completed with no output)
 ```
 
 ### tool_use Edit
@@ -547,16 +420,16 @@ architecture
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md",
- "old_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n",
- "new_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Simulate a heated room over 24 h and output its temperature trajectory. | 1 | active | Fixes the model structure and the simulation output; `System.mo` already does this. |\n| R-2 | A room or a controller can be replaced by another variant with the same connectors, without editing `System` or the other block. | 2 | active | Sets the interfaces and the dependency rule. The current `Thermostat.mo` reads `HeatingLib.roomHeatCapacity` directly, which breaks this. |\n| R-3 | Every model in HeatingLib passes OpenModelica `checkModel` with no errors. | 3 | active | Sets the testability bar. Room, Thermostat and System pass today; `tests/check.mos` checks only System. |\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-2 | Flexibility: replaceability | R-2 | QS-1 |\n| QG-3 | Maintainability: testability | R-3 | QS-2 |\n\nQG-1 (Functional suitability: functional correctness, from R-1) is open: no measure yet. The\narchitect has to name the tolerance against the expected temperature curve.\n\n### Stakeholders\n\n### Gap check\n\nAsked about time behaviour, interoperability and safety. The architect left nothing out; no\nnew requirement came from it.\n"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md",
+ "old_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|",
+ "new_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Simulate a heated room over a day and show its temperature. | 1 | active | — |\n| R-2 | Swap the room or the controller for another variant without touching the rest. | 3 | active | — |\n| R-3 | Every model checks in OpenModelica without errors. | 2 | active | — |\n\nGap check (confirmed by the architect): no further characteristics are missing.\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-2 | Flexibility: replaceability | R-2 | QS-1 |\n| QG-3 | Maintainability: testability | R-3 | QS-2 |"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
 ### tool_use Edit
@@ -564,56 +437,89 @@ The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updat
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md",
- "old_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n",
- "new_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-2 | a room variant with a different heat capacity is swapped in | normal development | only the swapped block changes; `System` and the controller are untouched | 0 edits to `System` and to the controller |\n| QS-2 | QG-3 | `checkModel` runs on every model in the package | normal development, OpenModelica | no errors reported for any model | 0 models with errors |\n"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md",
+ "old_string": "ADRs will live in `../adr/` (`docs/adr/`), created with the first ADR. The \"Record architecture decisions\" ADR is proposed and is not written yet; it links here once it exists.",
+ "new_string": "ADRs live in `../adr/`. The list of decisions made centrally is [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (status proposed, awaiting the architect's approval of its text)."
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Edit
+
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md",
+ "old_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|",
+ "new_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-2 | a replacement `Room` or `Thermostat` variant is substituted in `System` | the rest of the library unchanged | `System` and the other block are unchanged | 0 changed lines outside the replaced block |\n| QS-2 | QG-3 | the check script runs over all models in `HeatingLib` | normal project state | each model is reported, and the script exits non-zero on any error | 0 models with errors |"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0001-record-architecture-decisions.md",
- "content": "# 1. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. HeatingLib needs\nthe line drawn so that a room or a controller can be swapped without touching the rest (R-2,\nQG-2) and so that every model passes OpenModelica checks (R-3, QG-3), while the one-day\nsimulation of a room stays in place (R-1).\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/adr/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- Interfaces between blocks and the dependency rule: blocks communicate only through the\n  connectors in `HeatingLib.Interfaces`; no block reads another block's constant\n  (`Thermostat` currently reads `HeatingLib.roomHeatCapacity`, which this rule forbids).\n- Units and quantities: SI, temperature in K internally, `displayUnit` for °C.\n- Naming and package layout: the `HeatingLib` package, its model and block names, and\n  `package.order`.\n- Output and export format of the simulation result: open, no format chosen yet.\n- Third-party dependencies: OpenModelica is the only tool; the Modelica Standard Library is\n  not used.\n\nLeft to the building blocks (no ADR):\n\n- Equations and parameter defaults inside one model.\n- Test layout (`tests/check.mos`).\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted. Changing the\n`roomHeatCapacity` coupling in `Thermostat` waits for the interface rule to be accepted.\n"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/adr/0001-record-architecture-decisions.md",
+ "content": "# 1. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. HeatingLib must\nsimulate a heated room over a day and show its temperature (R-1), let a room or controller\nvariant be swapped without touching the rest (R-2, QG-2), and have every model check in\nOpenModelica without errors (R-3, QG-3). The line below decides what those depend on.\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/adr/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- Dependency rule and interfaces: blocks connect only through the connectors in `Interfaces`;\n  no block reads another block's parameters or constants. Today `Thermostat` reads\n  `HeatingLib.roomHeatCapacity`.\n- Ownership of the shared constant `HeatingLib.roomHeatCapacity`: who may read it.\n- Units: SI; temperatures in K, power in W, heat capacity in J/K.\n- Format of the simulated temperature output.\n- Tooling dependency: OpenModelica for simulation and checks. Any added Modelica library is\n  decided through this list.\n\nLeft to the building blocks (no ADR):\n\n- Equations inside `Room` and `Thermostat`, parameter defaults, the internal structure of each\n  block, and the layout of the check script.\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted. None of the\ncentral items has its own ADR yet; each is written when work needs it. Among others, changing\nhow `Thermostat` gets the room's heat capacity, typed component declarations in `System` for\nR-2, and the output format wait for those ADRs.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-md2obb7e/project/docs/adr/0001-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-ycm1g720/project/docs/adr/0001-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "git status --short && ls docs/adr docs/architecture",
+ "description": "Confirm changed files in working tree"
+}
+```
+
+### tool_result
+
+```
+?? docs/
+docs/adr:
+0001-record-architecture-decisions.md
+
+docs/architecture:
+arc42.md
 ```
 
 ### assistant
 
-The architect's confirmations are written down. Two things still wait on you: the measure for QG-1, and approval of ADR-0001.
+The confirmed items are written. Only files under `docs/` changed, and no code was touched.
 
 **Written**
-
 - `docs/architecture/arc42.md`:
-  - R-1, R-2 and R-3 are active with ranks 1, 2 and 3, and the reasons from the triage.
-  - QG-2 (Flexibility: replaceability, from R-2) and QG-3 (Maintainability: testability, from R-3) are in section 1, with their scenarios QS-1 and QS-2 in section 10.
-  - A short gap-check note in section 1: time behaviour, interoperability and safety were asked, nothing was left out, and no new requirement came from it.
-- `docs/adr/0001-record-architecture-decisions.md`: status `proposed`, with the central decision list you confirmed. Its Context cites R-1, R-2, R-3, QG-2 and QG-3.
+  - R-list in your confirmed order: R-1 (rank 1), R-3 (rank 2), R-2 (rank 3), all `active`. The rows keep your wording. None of the three is feature-level, so no issues were filed.
+  - Gap check recorded in section 1: nothing missing.
+  - Goals: QG-2 (Flexibility: replaceability, from R-2, scenario QS-1) and QG-3 (Maintainability: testability, from R-3, scenario QS-2). Both measures are as proposed: 0 changed lines outside the replaced block, and 0 models with errors with the script exiting non-zero.
+  - Section 9 links to ADR-0001.
+  - Section 10 holds QS-1 and QS-2.
+- `docs/adr/0001-record-architecture-decisions.md`: status `proposed`. It lists the five central decisions you confirmed and the building-block items left out of central decisions.
 
-**Still open**
+**Open**
+- QG-1 (Functional suitability: functional correctness, from R-1) has no row and no scenario. It stays open until you give a measure, for example a temperature at a given time for the default parameters.
+- ADR-0001 waits for your approval of its text. Until you approve it, these wait too: changing how `Thermostat` gets the room's heat capacity, typed component declarations in `System` for R-2, and the output format. Each gets its own ADR when work needs it.
+- Recovery of the architecture from the code starts once you approve ADR-0001. I haven't started it.
 
-- **QG-1** (Functional suitability: functional correctness, from R-1) has no row yet. The measure is the tolerance against the expected temperature curve. Without it, the goal stays open.
-- **ADR-0001** waits for your approval of its text. Recovering the architecture from the code waits for that approval too, and so does changing the `roomHeatCapacity` coupling in `Thermostat.mo`.
-
-**Things you should know**
-
-- **QS-1 fails today.** `Thermostat.mo` reads `HeatingLib.roomHeatCapacity` directly, so swapping in a room with a different heat capacity forces an edit to the controller. I did not change the code, since code is ordinary work after the ADR is accepted.
-- **QS-2 is not automated.** Room, Thermostat and System pass `checkModel` today, but `tests/check.mos` checks only `System`. Nothing enforces the zero-errors measure yet.
-
-Nothing is committed.
+I kept the goal IDs QG-2 and QG-3 as proposed, so QG-1 is absent from the table until you give it a measure. Tell me if you want them renumbered.
 
 ### result (success)
 
@@ -624,168 +530,13 @@ architecture from the code. I'm offline after this, so finish without asking me 
 
 ### assistant
 
-The approval means ADR-0001 becomes `accepted`. Before recovering, I'll read the recovery procedure.
-
-### tool_use Bash
-
-```json
-{
- "command": "cat /tmp/sa-arm-hzyhti2z/sa/skills/setup-architecture/references/recovery.md",
- "description": "Read the architecture recovery procedure"
-}
-```
-
-### tool_result
-
-```
-# Recovery: an undocumented project after the list is approved
-
-Recovery turns code into a draft of its as-is architecture for the architect to review. It
-starts in the turn in which the architect approves the "Record architecture decisions" ADR,
-because that ADR's list decides which findings become ADRs. Everything you write is *found*,
-not *decided*: the architect decides it by confirming it, section by section and ADR by ADR.
-
-## 1. Accept the approved ADR
-
-Mark the "Record architecture decisions" ADR `accepted YYYY-MM-DD` with today's date, as
-`domain-modeling` describes. Its text stays exactly as the architect approved it; a decision you
-would add to its list goes into your report as a proposal.
-
-Done when its Status is the only line that changed.
-
-## 2. Read the code
-
-List what the code shows: its modules or blocks, what each one uses, its entry points, its
-storage and data formats, its dependencies, its conventions (errors, units, naming). For
-dataflow code (Modelica, Simulink, signal graphs) read it in its own terms with
-`codebase-design` › Paradigms: blocks, signals and connectors as their interfaces, and coupling
-through connections and shared parameters or constants.
-
-Done when every source file belongs to a block you can name, with what it uses.
-
-## 3. Fill arc42 with what you found
-
-Fill sections 2–8 and 11 of `docs/architecture/arc42.md` with what the code shows; section 5
-gets one row per block, with its responsibility and what it may use (for dataflow code: its
-signals in and out). Start each section you fill with the line:
-
-```markdown
-*As found, unconfirmed.*
-```
-
-The marker stays until the architect confirms that section. A section the code says nothing
-about stays empty. Sections 1, 9, 10 and 12 hold what the architect confirmed and carry no marker.
-
-Done when every section you filled starts with the marker.
-
-## 4. Propose ADRs for listed decisions
-
-For each decision on the accepted list that the code has already made, write one ADR in the
-project's ADR directory, next free number, status `proposed`. Its Context says the decision was
-found in the code, names where, and cites the R- and QG-IDs it serves; its Decision states what
-the code does. A decision off the list (an algorithm inside one block, a helper, a test layout,
-the form of an equation) goes into arc42 only.
-
-Done when each listed decision the code made has exactly one proposed ADR, and no ADR covers an
-off-list decision.
-
-## 5. Leave the code as it is
-
-Recovery documents the code; it changes no file outside the documentation. What looks wrong (a
-race, a hidden coupling, a missing check) goes into section 11 as a risk, for the architect to
-decide on later.
-
-Done when `git status` shows changes only under `docs/` (and `GLOSSARY.md`).
-
-## 6. Report
-
-End with:
-
-- the sections marked *as found, unconfirmed*, in the order the architect should review them,
-  each with one line on what it claims;
-- the proposed ADRs, each with the question it asks the architect ("keep the append-only file?");
-- the risks you put in section 11.
-
-Done when the architect can confirm or correct each section and approve or reject each ADR from
-your message.
-```
-
-### assistant
-
-The procedure is clear. Before I write section 11, I want to check a suspicion from the thermostat equation: a proportional-only controller with these numbers may settle below the set point. I'll simulate it in a scratch directory and then accept ADR-0001.
-
-### tool_use Bash
-
-```json
-{
- "command": "mkdir -p /tmp/heatinglib-sim && cd /tmp/heatinglib-sim && cat > run.mos <<'EOF'\nloadFile(\"/tmp/sa-eval-md2obb7e/project/HeatingLib/package.mo\"); getErrorString();\nr := simulate(HeatingLib.System, stopTime=86400, outputFormat=\"csv\"); getErrorString();\nprint(r.resultFile);\nEOF\ntimeout 300 omc run.mos 2>&1 | tail -8; F=$(ls /tmp/heatinglib-sim/*.csv 2>/dev/null | head -1); echo \"csv: $F\"; if [ -n \"$F\" ]; then head -1 \"$F\" | tr ',' '\\n' | nl | head -20; fi",
- "description": "Simulate the one-day system in scratch directory"
-}
-```
-
-### tool_result
-
-```
-    timeSimCode = 0.0016235680000000001,
-    timeTemplates = 0.001977613,
-    timeCompile = 0.874980024,
-    timeSimulation = 0.016003776,
-    timeTotal = 0.905787823
-end SimulationResult;
-""
-
-csv: /tmp/heatinglib-sim/HeatingLib.System_res.csv
-     1	"time"
-     2	"room.T"
-     3	"der(room.T)"
-     4	"thermostat.Q"
-     5	"room.Q_heat"
-     6	"thermostat.T"
-Shell cwd was reset to /tmp/sa-eval-md2obb7e/project
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "cd /tmp/heatinglib-sim && F=HeatingLib.System_res.csv && tail -1 \"$F\" && awk -F, 'NR>1 && (NR%1000==2){printf \"%s  T=%.2f degC  Q=%.1f W\\n\", $1, $2-273.15, $4}' \"$F\" | head -3 && awk -F, 'NR>1{t=$2; q=$4; if(t>mx)mx=t; if(q>mq)mq=q} END{printf \"max room T=%.2f degC, max Q=%.1f W\\n\", mx-273.15, mq}' \"$F\"",
- "description": "Summarise room temperature and heater power from result"
-}
-```
-
-### tool_result
-
-```
-86400,286.1370129885084,-1.279418484045891e-12,1948.051947636552,1948.051947636552,286.1370129885084
-0  T=15.00 degC  Q=1388.9 W
-max room T=15.00 degC, max Q=1948.1 W
-Shell cwd was reset to /tmp/sa-eval-md2obb7e/project
-```
-
-### assistant
-
-The simulation confirms it: the room settles at 286.14 K (about 13 °C) and never reaches the 20 °C set point. The heater's 1948 W stays under its 3000 W limit, so this is steady-state offset, not saturation. Now I'll read the two files I'm about to change.
-
-### tool_use Bash
-
-```json
-{
- "command": "rm -rf /tmp/heatinglib-sim; cd /tmp/sa-eval-md2obb7e/project && git status --short",
- "description": "Clear simulation scratch and check repo status"
-}
-```
-
-### tool_result
-
-```
-?? docs/
-```
+Approved. I'll set the ADR status first, then read the current arc42 file so I can fill its sections in one pass.
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md"
 }
 ```
 
@@ -802,262 +553,167 @@ The simulation confirms it: the room settles at 286.14 K (about 13 °C) and neve
 8	
 9	| ID | requirement | rank | status | reason |
 10	|---|---|---|---|---|
-11	| R-1 | Simulate a heated room over 24 h and output its temperature trajectory. | 1 | active | Fixes the model structure and the simulation output; `System.mo` already does this. |
-12	| R-2 | A room or a controller can be replaced by another variant with the same connectors, without editing `System` or the other block. | 2 | active | Sets the interfaces and the dependency rule. The current `Thermostat.mo` reads `HeatingLib.roomHeatCapacity` directly, which breaks this. |
-13	| R-3 | Every model in HeatingLib passes OpenModelica `checkModel` with no errors. | 3 | active | Sets the testability bar. Room, Thermostat and System pass today; `tests/check.mos` checks only System. |
+11	| R-1 | Simulate a heated room over a day and show its temperature. | 1 | active | — |
+12	| R-2 | Swap the room or the controller for another variant without touching the rest. | 3 | active | — |
+13	| R-3 | Every model checks in OpenModelica without errors. | 2 | active | — |
 14	
-15	### Quality goals
+15	Gap check (confirmed by the architect): no further characteristics are missing.
 16	
-17	| ID | goal (ISO/IEC 25010) | from | scenario |
-18	|---|---|---|---|
-19	| QG-2 | Flexibility: replaceability | R-2 | QS-1 |
-20	| QG-3 | Maintainability: testability | R-3 | QS-2 |
-21	
-22	QG-1 (Functional suitability: functional correctness, from R-1) is open: no measure yet. The
-23	architect has to name the tolerance against the expected temperature curve.
-24	
-25	### Stakeholders
-26	
-27	### Gap check
-28	
-29	Asked about time behaviour, interoperability and safety. The architect left nothing out; no
-30	new requirement came from it.
-31	
-32	## 2. Constraints
-33	
-34	## 3. Context and scope
-35	
-36	## 4. Solution strategy
-37	
-38	## 5. Building block view
-39	
-40	| block | responsibility | may use |
-41	|---|---|---|
-42	
-43	## 6. Runtime view
-44	
-45	## 7. Deployment view
-46	
-47	## 8. Crosscutting concepts
-48	
-49	## 9. Architecture decisions
-50	
-51	The architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR
-52	"Record architecture decisions" is written once the architect confirms the setup proposal.
-53	
-54	## 10. Quality requirements
-55	
-56	| ID | goal | stimulus | environment | response | measure |
-57	|---|---|---|---|---|---|
-58	| QS-1 | QG-2 | a room variant with a different heat capacity is swapped in | normal development | only the swapped block changes; `System` and the controller are untouched | 0 edits to `System` and to the controller |
-59	| QS-2 | QG-3 | `checkModel` runs on every model in the package | normal development, OpenModelica | no errors reported for any model | 0 models with errors |
-60	
-61	## 11. Risks and technical debt
-62	
-63	## 12. Glossary
-64	
-65	`GLOSSARY.md` is created with the first resolved term.
-66	
-```
-
-### tool_use Read
-
-```json
-{
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0001-record-architecture-decisions.md"
-}
-```
-
-### tool_result
-
-```
-1	# 1. Record architecture decisions
-2	
-3	## Status
-4	
-5	proposed
-6	
-7	## Context
-8	
-9	The architect decides the architecture; contributors and agents build it. HeatingLib needs
-10	the line drawn so that a room or a controller can be swapped without touching the rest (R-2,
-11	QG-2) and so that every model passes OpenModelica checks (R-3, QG-3), while the one-day
-12	simulation of a room stays in place (R-1).
-13	
-14	## Decision
-15	
-16	We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
-17	
-18	Decided centrally (needs an ADR the architect accepts):
-19	
-20	- Interfaces between blocks and the dependency rule: blocks communicate only through the
-21	  connectors in `HeatingLib.Interfaces`; no block reads another block's constant
-22	  (`Thermostat` currently reads `HeatingLib.roomHeatCapacity`, which this rule forbids).
-23	- Units and quantities: SI, temperature in K internally, `displayUnit` for °C.
-24	- Naming and package layout: the `HeatingLib` package, its model and block names, and
-25	  `package.order`.
-26	- Output and export format of the simulation result: open, no format chosen yet.
-27	- Third-party dependencies: OpenModelica is the only tool; the Modelica Standard Library is
-28	  not used.
+17	### Quality goals
+18	
+19	| ID | goal (ISO/IEC 25010) | from | scenario |
+20	|---|---|---|---|
+21	| QG-2 | Flexibility: replaceability | R-2 | QS-1 |
+22	| QG-3 | Maintainability: testability | R-3 | QS-2 |
+23	
+24	### Stakeholders
+25	
+26	## 2. Constraints
+27	
+28	## 3. Context and scope
 29	
-30	Left to the building blocks (no ADR):
+30	## 4. Solution strategy
 31	
-32	- Equations and parameter defaults inside one model.
-33	- Test layout (`tests/check.mos`).
-34	
-35	## Consequences
+32	## 5. Building block view
+33	
+34	| block | responsibility | may use |
+35	|---|---|---|
 36	
-37	Work that depends on a decision on the list waits until its ADR is accepted. Changing the
-38	`roomHeatCapacity` coupling in `Thermostat` waits for the interface rule to be accepted.
-39	
+37	## 6. Runtime view
+38	
+39	## 7. Deployment view
+40	
+41	## 8. Crosscutting concepts
+42	
+43	## 9. Architecture decisions
+44	
+45	ADRs live in `../adr/`. The list of decisions made centrally is [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (status proposed, awaiting the architect's approval of its text).
+46	
+47	## 10. Quality requirements
+48	
+49	| ID | goal | stimulus | environment | response | measure |
+50	|---|---|---|---|---|---|
+51	| QS-1 | QG-2 | a replacement `Room` or `Thermostat` variant is substituted in `System` | the rest of the library unchanged | `System` and the other block are unchanged | 0 changed lines outside the replaced block |
+52	| QS-2 | QG-3 | the check script runs over all models in `HeatingLib` | normal project state | each model is reported, and the script exits non-zero on any error | 0 models with errors |
+53	
+54	## 11. Risks and technical debt
+55	
+56	## 12. Glossary
+57	
+58	`GLOSSARY.md` is created with the first resolved term.
+59	
+```
+
+### tool_use Edit
+
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/adr/0001-record-architecture-decisions.md",
+ "old_string": "## Status\n\nproposed",
+ "new_string": "## Status\n\naccepted 2026-11-21"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-ycm1g720/project/docs/adr/0001-record-architecture-decisions.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-I have the current text of both files. Next I'll accept ADR-0001 (the only line that changes), write the four ADRs the code already makes decisions for, and fill sections 2–8 and 11 marked as found.
-
-### tool_use Edit
-
-```json
-{
- "replace_all": false,
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0001-record-architecture-decisions.md",
- "old_string": "## Status\n\nproposed\n",
- "new_string": "## Status\n\naccepted 2026-11-21\n"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-md2obb7e/project/docs/adr/0001-record-architecture-decisions.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
+ADR-0001 is now accepted. Next I'll write the recovered sections into arc42, each marked as found and unconfirmed, and update section 9's status line to match.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0002-interfaces-and-dependency-rule.md",
- "content": "# 2. Interfaces and dependency rule between blocks\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, not decided by the architect: `HeatingLib/Interfaces.mo` defines the\nconnectors that `Room`, `Thermostat` and `System` use. But `Room.mo` and `Thermostat.mo` also\nread the package constant `HeatingLib.roomHeatCapacity` (`package.mo`), so the two blocks depend\non each other through a shared value, not only through connectors. This decision is on the\naccepted list (\"Interfaces between blocks and the dependency rule\"), and the code's coupling\nworks against R-2 and QG-2.\n\n## Decision\n\nBlocks connect through the connectors in `HeatingLib.Interfaces`: the room exposes `T` and takes\n`Q_heat`; the thermostat takes `T` and gives `Q`; `System` wires them. `Room` and `Thermostat` also\nread the package constant `roomHeatCapacity`, which the code does today.\n\n## Consequences\n\nA room with another heat capacity changes the controller's gain (`k = roomHeatCapacity / tau`),\nso swapping the room alone is not possible; QS-1 is not met. The architect decides whether the\nshared constant stays, or moves into a connector or a parameter. Either choice supersedes this\nADR. Changing the `Thermostat` coupling waits for this ADR's acceptance.\n"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md",
+ "content": "# HeatingLib: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Simulate a heated room over a day and show its temperature. | 1 | active | — |\n| R-2 | Swap the room or the controller for another variant without touching the rest. | 3 | active | — |\n| R-3 | Every model checks in OpenModelica without errors. | 2 | active | — |\n\nGap check (confirmed by the architect): no further characteristics are missing.\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-2 | Flexibility: replaceability | R-2 | QS-1 |\n| QG-3 | Maintainability: testability | R-3 | QS-2 |\n\n### Stakeholders\n\n## 2. Constraints\n\n*As found, unconfirmed.*\n\n- The model is written in Modelica and simulated and checked with OpenModelica (`omc`); the check script and the README both use it.\n- The simulation runs for one day: `System` sets `StopTime = 86400` s.\n\n## 3. Context and scope\n\n*As found, unconfirmed.*\n\nThe system is the `HeatingLib` package. It has no runtime connections to other systems. Around it:\n\n- OpenModelica (`omc`) runs the check script `tests/check.mos` and the simulation.\n- The outdoor temperature `Room.T_amb` is a parameter, not a live input.\n\n## 4. Solution strategy\n\n*As found, unconfirmed.*\n\n- The room is one lumped heat store: heat capacity `C`, loss to outdoors through conductance `G`.\n- Heating is proportional control: `Thermostat` demands `k · (T_set − T)`, clamped to 0 … `Q_max`, with `k = C / tau`. The gain uses the room's heat capacity, which is why the constant is shared (see section 5).\n- Blocks exchange signals only through the typed connectors in `Interfaces`; `System` wires them with `connect`.\n\n## 5. Building block view\n\n*As found, unconfirmed.*\n\n| block | responsibility | in | out | may use |\n|---|---|---|---|---|\n| `Interfaces` (package) | connectors and the unit types shared by all blocks | — | — | — |\n| `Room` (model) | stores heat and loses it through the walls | `Q_heat` | `T` | `Interfaces`, `HeatingLib.roomHeatCapacity` (default for `C`) |\n| `Thermostat` (block) | proportional heating control with a set point | `T` | `Q` | `Interfaces`, `HeatingLib.roomHeatCapacity` (gain `k`) |\n| `System` (model) | connects one room and one thermostat in a closed loop | — | — | `Room`, `Thermostat`, `Interfaces` |\n| `HeatingLib` (package) | holds the shared constant `roomHeatCapacity` (5e5 J/K) | — | — | — |\n| `tests/check.mos` (script) | checks `HeatingLib.System` with `omc` | — | — | `HeatingLib` package |\n\n`Room` and `Thermostat` both read `HeatingLib.roomHeatCapacity`. That is a dependency between two blocks through a shared constant, not through a connector. See the risk in section 11.\n\n## 6. Runtime view\n\n*As found, unconfirmed.*\n\n`System` is simulated for 86400 s. The room starts at `T_start` (288.15 K). At each step the thermostat turns the measured `T` into a heating demand `Q`, and the room integrates `C · dT/dt = Q − G · (T − T_amb)`. The code produces no output beyond the default simulation result; it has no step that shows the temperature.\n\n## 7. Deployment view\n\n*As found, unconfirmed.*\n\nNothing is deployed. The library is run locally with `omc`, as the README describes.\n\n## 8. Crosscutting concepts\n\n*As found, unconfirmed.*\n\n- Units: SI. Temperatures are in K (with `displayUnit = \"degC\"` in `Interfaces`), power in W, heat capacity in J/K. Each parameter carries its unit.\n- Naming: blocks and packages are capitalised; parameters use short physics symbols (`C`, `G`, `T_set`, `Q_max`).\n- Errors: the code has no error handling. The check script prints errors through `getErrorString()` and does not exit non-zero when there are any.\n\n## 9. Architecture decisions\n\nADRs live in `../adr/`. The list of decisions made centrally is [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (status accepted 2026-11-21).\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-2 | a replacement `Room` or `Thermostat` variant is substituted in `System` | the rest of the library unchanged | `System` and the other block are unchanged | 0 changed lines outside the replaced block |\n| QS-2 | QG-3 | the check script runs over all models in `HeatingLib` | normal project state | each model is reported, and the script exits non-zero on any error | 0 models with errors |\n\n## 11. Risks and technical debt\n\n*As found, unconfirmed.*\n\n- **Hidden coupling through `roomHeatCapacity`.** `Thermostat` takes its gain from the package constant, not from the room it controls. A room variant with a different heat capacity leaves the controller's gain wrong, and the swap needs edits outside the swapped block. Threatens R-2, QG-2.\n- **`System` names concrete types.** `System` declares `Room room` and `Thermostat thermostat`, so swapping either one means editing `System`. Threatens R-2, QG-2.\n- **The check script covers one model and cannot fail.** `tests/check.mos` runs `checkModel` on `HeatingLib.System` only; `Room`, `Thermostat` and `Interfaces` are not checked. It prints errors but exits 0 either way. Threatens R-3, QG-3.\n- **No step shows the temperature.** Nothing in the code produces or plots the simulated temperature; the `StopTime` is the only part of R-1 in place. Threatens R-1.\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-md2obb7e/project/docs/adr/0002-interfaces-and-dependency-rule.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0003-units-and-quantities.md",
- "content": "# 3. Units and quantities\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, not decided by the architect: `HeatingLib/Interfaces.mo` types temperature\nand heat flow with quantity and unit annotations (`Temperature` in K, `displayUnit = \"degC\"`;\n`HeatFlowRate` in W), and parameters carry units (`J/K`, `W/K`, `s`). This is on the accepted\nlist (\"Units and quantities\"). It serves R-1, whose output is a temperature trajectory. QG-1 is\nstill open, so it is not cited by ID.\n\n## Decision\n\nQuantities use SI: temperature in K internally, heat flow in W, and time in s. Each unit is\ndeclared with a `unit` or `quantity` annotation; temperatures carry `displayUnit = \"degC\"` for\ndisplay.\n\n## Consequences\n\nUnits checked by OpenModelica are only as strict as these annotations; `Real` parameters without\na unit annotation are not checked. Changing any unit waits for this ADR's acceptance.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-md2obb7e/project/docs/adr/0003-units-and-quantities.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0004-naming-and-package-layout.md",
- "content": "# 4. Naming and package layout\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, not decided by the architect: everything lives in the package `HeatingLib`\n(`package.mo`), one class per file, each file begins with `within HeatingLib;`, and\n`package.order` lists the load order. This is on the accepted list (\"Naming and package\nlayout\"). It serves R-3 and QG-3: `tests/check.mos` loads the package by its path.\n\n## Decision\n\nClasses are named in the `HeatingLib` package, one class per file, each file starts with\n`within HeatingLib;`, and `package.order` lists the files in load order.\n\n## Consequences\n\nAdding a model means adding a file and a line in `package.order`. Renaming a class or file\nchanges `tests/check.mos` and any dependent `within` clause. Changing this layout waits for this\nADR's acceptance.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-md2obb7e/project/docs/adr/0004-naming-and-package-layout.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/adr/0005-third-party-dependencies.md",
- "content": "# 5. Third-party dependencies\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, not decided by the architect: `README.md` and `tests/check.mos` use\nOpenModelica (`omc`) as the only tool. No file imports another library, and the Modelica\nStandard Library is not used. This is on the accepted list (\"Third-party dependencies\"). It\nserves R-3 and QG-3.\n\n## Decision\n\nWe check and simulate HeatingLib with OpenModelica (`omc`), and we depend on no other library.\n\n## Consequences\n\nAny other Modelica tool would need the checks to be ported. Adding a library, such as the\nModelica Standard Library, waits for this ADR's acceptance.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-md2obb7e/project/docs/adr/0005-third-party-dependencies.md (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-ycm1g720/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-The ADRs are in place. Now the arc42 sections: 2–8 and 9 in one edit, then section 11.
+Next, the four proposed ADRs for the listed decisions the code has already made. The output-format decision isn't in the code, so it gets no ADR.
 
-### tool_use Edit
+### tool_use Write
 
 ```json
 {
- "replace_all": false,
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md",
- "old_string": "## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR\n\"Record architecture decisions\" is written once the architect confirms the setup proposal.\n",
- "new_string": "## 2. Constraints\n\n*As found, unconfirmed.*\n\n- The model is written in Modelica and checked with OpenModelica (`omc`) (`README.md`,\n  `tests/check.mos`).\n\n## 3. Context and scope\n\n*As found, unconfirmed.*\n\nThe system is one room with a heater and a thermostat, simulated for one day (86400 s). The\noutdoor temperature `T_amb` is a constant parameter. Nothing outside the model is connected:\nthe output is the simulation result, which the user reads.\n\n## 4. Solution strategy\n\n*As found, unconfirmed.*\n\n- A lumped room: one heat capacity, with heat loss through the walls to a constant outdoor\n  temperature.\n- A proportional controller with a set point and a heater power limit.\n- Blocks connected through typed connectors (`HeatingLib/Interfaces.mo`).\n\n## 5. Building block view\n\n*As found, unconfirmed.*\n\n| block | responsibility | may use |\n|---|---|---|\n| `HeatingLib` (package) | holds the shared constant `roomHeatCapacity` (5e5 J/K) | none |\n| `Interfaces` | connectors and unit types for temperature and heat flow | none |\n| `Room` | lumped room air: stores heat, loses it through the walls | `Interfaces`; the package constant `roomHeatCapacity` |\n| `Thermostat` | proportional controller with set point and power limit | `Interfaces`; the package constant `roomHeatCapacity` |\n| `System` | connects `Room` and `Thermostat`; sets the one-day stop time | `Room`, `Thermostat` |\n| `tests/check.mos` | checks the package and `System` with `omc` | `HeatingLib` |\n\n## 6. Runtime view\n\n*As found, unconfirmed.*\n\n`System` runs for 86400 s. The room starts at 288.15 K (15 °C). At each step the thermostat\nreads the room temperature `T` and gives `Q = min(Q_max, max(0, k * (T_set - T)))`, where\n`k = roomHeatCapacity / tau`. The room integrates `C * der(T) = Q_heat - G * (T - T_amb)`.\n\nSimulated once with `omc` at the default parameters: the room stays at 15 °C and falls to\n286.14 K (about 13 °C) by the end of the day; the heater runs at 1948 W at the end, below its\n3000 W limit. The set point (20 °C) is never reached (see section 11).\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n*As found, unconfirmed.*\n\n- Units: SI. Temperature in K internally with `displayUnit = \"degC\"`; heat flow in W; time\n  in s (`HeatingLib/Interfaces.mo`, unit annotations on parameters).\n- Naming: the `HeatingLib` package, one class per file, each file starts with `within HeatingLib;`\n  (`package.order` for load order).\n- Error handling and logging: none in the code.\n\n## 9. Architecture decisions\n\nThe architecture decisions are recorded as ADRs in [`../adr/`](../adr/). The ADR\n[Record architecture decisions](../adr/0001-record-architecture-decisions.md) is accepted\n2026-11-21.\n"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/adr/0002-blocks-connect-only-through-interfaces.md",
+ "content": "# 2. Blocks connect only through the connectors in Interfaces\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, unconfirmed. `System.mo` wires `Room` and `Thermostat` with `connect` on\nthe typed connectors of `Interfaces.mo`; `Room` and `Thermostat` use no other block's\nconnectors. Serves R-2 and QG-2 (swap a block without touching the rest). The dependency rule\nis on the central list (`ADR-0001`). One deviation is found: `Thermostat` reads a package\nconstant, which the rule forbids; see ADR-0003.\n\n## Decision\n\nWe will connect blocks only through the connectors in `Interfaces`, and no block will read\nanother block's parameters or constants.\n\n## Consequences\n\n`Thermostat`'s read of `HeatingLib.roomHeatCapacity` breaks this rule. Fixing it waits for\nthe architect's decision on ADR-0003. `System` names its components by concrete type; whether\nthat changes is a separate question for R-2.\n"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-ycm1g720/project/docs/adr/0002-blocks-connect-only-through-interfaces.md (file state is current in your context — no need to Read it back)
 ```
 
-### tool_use Edit
+### tool_use Write
 
 ```json
 {
- "replace_all": false,
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md",
- "old_string": "## 11. Risks and technical debt\n\n## 12. Glossary",
- "new_string": "## 11. Risks and technical debt\n\n*As found, unconfirmed.*\n\n- **Hidden coupling through a shared constant:** `Room` and `Thermostat` both read\n  `roomHeatCapacity`. Swapping the room changes the controller gain, so QS-1 (QG-2) is not met.\n- **Steady-state offset:** the proportional controller settles at about 13 °C, below the 20 °C\n  set point. Simulated: the room falls from 15 °C to 286.14 K (about 13 °C), and the heater\n  stays under its limit. This may be intended behaviour, but nothing in the code says so. It\n  touches QG-1, which has no measure yet.\n- **Partial checks:** `tests/check.mos` checks only `System`. QS-2 (QG-3), which asks for every\n  model, is not enforced; `Room` and `Thermostat` pass when checked by hand.\n- **No behaviour test:** nothing compares a simulated trajectory with an expected value, so QG-1\n  has no test behind it.\n\n## 12. Glossary"
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/adr/0003-shared-constant-room-heat-capacity.md",
+ "content": "# 3. Shared constant roomHeatCapacity lives in the package and is read by Room and Thermostat\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, unconfirmed. `HeatingLib/package.mo` defines `roomHeatCapacity = 5e5` J/K.\n`Room.mo` uses it as the default for `C`; `Thermostat.mo` uses it for the gain\n`k = roomHeatCapacity / tau`, with a comment saying so. Serves R-2 and QG-2. The ownership of\nthe constant is on the central list (`ADR-0001`).\n\n## Decision\n\nWe will keep `roomHeatCapacity` in the `HeatingLib` package, and only `Room` will read it.\n\n## Consequences\n\nThis decision contradicts the code: `Thermostat` reads the constant too. Under this decision\n`Thermostat` would get the heat capacity from its room (a connector or a parameter), not from\nthe package. That change waits for this ADR's acceptance and for ADR-0002.\n"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-ycm1g720/project/docs/adr/0003-shared-constant-room-heat-capacity.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/adr/0004-si-units-with-kelvin-temperatures.md",
+ "content": "# 4. Units are SI, with temperatures in kelvin\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, unconfirmed. `Interfaces.mo` types temperatures as `Real` in K\n(`unit = \"K\"`, `min = 0`, with `displayUnit = \"degC\"` for display), power as `Real` in W, and\n`Room.mo` and `Thermostat.mo` carry units on their parameters (J/K, W/K, s). Serves R-1 and\nR-2, since blocks must agree on units to be swapped. Units are a crosscutting convention on\nthe central list (`ADR-0001`).\n\n## Decision\n\nWe will use SI units everywhere: temperatures in kelvin, power in watts, heat capacity in\nJ/K, conductance in W/K, time in seconds.\n\n## Consequences\n\nAny block added or swapped follows this convention. Display in degrees Celsius is allowed\nonly through `displayUnit`.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-ycm1g720/project/docs/adr/0004-si-units-with-kelvin-temperatures.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-ycm1g720/project/docs/adr/0005-openmodelica-as-the-only-tool-dependency.md",
+ "content": "# 5. OpenModelica is the only tool dependency\n\n## Status\n\nproposed\n\n## Context\n\nFound in the code, unconfirmed. `README.md` and `tests/check.mos` run the library with `omc`\n(OpenModelica). The code imports no Modelica library; the Modelica Standard Library is not\nused. Serves R-3 and QG-3 (every model checks in OpenModelica). Third-party dependencies are\non the central list (`ADR-0001`).\n\n## Decision\n\nWe will simulate and check the library with OpenModelica, and add no Modelica library without\na new ADR.\n\n## Consequences\n\nAdding a library, or a second tool, needs its own ADR first. The check script is a building\nblock of its own (arc42 section 5) and is not decided here.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-ycm1g720/project/docs/adr/0005-openmodelica-as-the-only-tool-dependency.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-Section 6 has an error I need to fix: the room starts at 15 °C and falls, it doesn't "stay at 15 °C". I'll correct that and then check that only `docs/` changed.
-
-### tool_use Edit
-
-```json
-{
- "replace_all": false,
- "file_path": "/tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md",
- "old_string": "Simulated once with `omc` at the default parameters: the room stays at 15 °C and falls to\n286.14 K (about 13 °C) by the end of the day;",
- "new_string": "Simulated once with `omc` at the default parameters: the room starts at 15 °C and falls to\n286.14 K (about 13 °C) by the end of the day;"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
+Four ADRs are written. Last, I'll confirm that only `docs/` changed and that the code still checks.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && ls docs/adr docs/architecture && grep -n \"^Status\\|accepted\\|proposed\" docs/adr/*.md | head -20 && cd /tmp/sa-eval-md2obb7e/project && timeout 120 omc tests/check.mos 2>&1 | tail -3; git status --short",
- "description": "Verify changed files and re-run project check"
+ "command": "git status --short && git status --short -- HeatingLib tests README.md && echo \"code unchanged\" && timeout 170 omc tests/check.mos 2>&1 | tail -3",
+ "description": "Verify only docs changed and the check still passes"
 }
 ```
 
@@ -1065,68 +721,42 @@ The file /tmp/sa-eval-md2obb7e/project/docs/architecture/arc42.md has been updat
 
 ```
 ?? docs/
-docs/adr:
-0001-record-architecture-decisions.md
-0002-interfaces-and-dependency-rule.md
-0003-units-and-quantities.md
-0004-naming-and-package-layout.md
-0005-third-party-dependencies.md
-
-docs/architecture:
-arc42.md
-docs/adr/0004-naming-and-package-layout.md:5:proposed
-docs/adr/0004-naming-and-package-layout.md:11:`package.order` lists the load order. This is on the accepted list ("Naming and package
-docs/adr/0002-interfaces-and-dependency-rule.md:5:proposed
-docs/adr/0002-interfaces-and-dependency-rule.md:13:accepted list ("Interfaces between blocks and the dependency rule"), and the code's coupling
-docs/adr/0001-record-architecture-decisions.md:5:accepted 2026-11-21
-docs/adr/0001-record-architecture-decisions.md:37:Work that depends on a decision on the list waits until its ADR is accepted. Changing the
-docs/adr/0001-record-architecture-decisions.md:38:`roomHeatCapacity` coupling in `Thermostat` waits for the interface rule to be accepted.
-docs/adr/0003-units-and-quantities.md:5:proposed
-docs/adr/0003-units-and-quantities.md:11:`HeatFlowRate` in W), and parameters carry units (`J/K`, `W/K`, `s`). This is on the accepted
-docs/adr/0005-third-party-dependencies.md:5:proposed
-docs/adr/0005-third-party-dependencies.md:11:Standard Library is not used. This is on the accepted list ("Third-party dependencies"). It
+code unchanged
 Class HeatingLib.System has 4 equation(s) and 4 variable(s).
 2 of these are trivial equation(s)."
 ""
-?? docs/
 ```
 
 ### assistant
 
-Recovery is done. ADR-0001 is accepted as approved, and the rest of the architecture is recovered from the code. Only `docs/` changed, and `omc tests/check.mos` still passes.
+The architecture recovery is finished. Only `docs/` changed. The code is untouched, and `omc tests/check.mos` still completes for `HeatingLib.System`.
 
-**ADR-0001** is `accepted 2026-11-21`. Its text is unchanged apart from the status line.
+**Done**
+- ADR-0001 is `accepted 2026-11-21`. Its text is unchanged apart from the status line.
+- `docs/architecture/arc42.md`:
+  - Sections 2–8 and 11 are filled, each marked *As found, unconfirmed.*
+  - Sections 1, 9, 10 and 12 hold only confirmed content and carry no marker.
+  - Section 5 lists the blocks with in/out connectors and what each may use.
+- Four proposed ADRs for the central decisions the code already makes:
+  - 0002: blocks connect only through `Interfaces`
+  - 0003: `roomHeatCapacity` lives in the package and is read by `Room` only
+  - 0004: SI units, temperatures in kelvin
+  - 0005: OpenModelica is the only tool dependency
 
-**arc42 sections marked *as found, unconfirmed*, for your review in this order:**
+**Found, not decided**
+- The code contradicts ADR-0003: `Thermostat` reads `roomHeatCapacity`, which ADR-0002 forbids.
+- The output-format decision has no ADR, because the code makes no choice there. Only OpenModelica's default result file exists.
+- Section 11 lists four risks:
+  - the `roomHeatCapacity` coupling (R-2, QG-2)
+  - `System` naming concrete types (R-2, QG-2)
+  - the check script covers only `System` and cannot fail (R-3, QG-3)
+  - nothing shows the temperature (R-1)
 
-1. **§5 Building block view:** `HeatingLib` package, `Interfaces`, `Room`, `Thermostat`, `System`, `tests/check.mos`, with what each uses.
-2. **§11 Risks** (listed below).
-3. **§6 Runtime view:** one simulated day. The room starts at 15 °C, and the thermostat and room equations are as in the code.
-4. **§4 Solution strategy:** lumped room, proportional controller with power limit, typed connectors.
-5. **§8 Crosscutting:** SI units with °C display, the naming and file layout. No error handling or logging exists.
-6. **§2 Constraints:** Modelica, checked with OpenModelica.
-7. **§3 Context and scope:** one room, one day, constant outdoor temperature, no external systems.
+**Waiting for your decision**
+- Approve or reject ADRs 0002–0005, each as `proposed`.
+- Confirm or correct each *as found* section, starting with section 11's risks.
+- Until you accept ADR-0002 and ADR-0003, changing how `Thermostat` gets the heat capacity waits.
 
-§7 Deployment stays empty because the code says nothing about it.
-
-**Proposed ADRs from the code** (all `proposed`; each question is for you to answer):
-
-- **ADR-0002 Interfaces and dependency rule.** `Room` and `Thermostat` both read `roomHeatCapacity`. Question: keep the shared constant, or move it into a connector or parameter?
-- **ADR-0003 Units and quantities.** SI, K internally, °C for display. Question: confirm this as the convention?
-- **ADR-0004 Naming and package layout.** One class per file, `within HeatingLib;`, `package.order`. Question: confirm this layout?
-- **ADR-0005 Third-party dependencies.** OpenModelica only, no Modelica Standard Library. Question: confirm OpenModelica as the only tool?
-
-The accepted list also has "Output and export format". The code makes no choice there, so it gets no ADR and stays open.
-
-**Risks in §11** (found, not fixed):
-
-- **Hidden coupling:** `Room` and `Thermostat` share `roomHeatCapacity`. Swapping the room changes the controller gain, so QS-1 is not met.
-- **Steady-state offset:** I simulated `System` with `omc` at default parameters. The room starts at 15 °C and settles at 286.14 K (about 13 °C). The heater peaks at 1948 W, under its 3000 W limit, so the 20 °C set point is never reached. This may be intended behaviour, but nothing in the code says so. QG-1 has no measure yet, so this bears on it directly.
-- **Partial checks:** `tests/check.mos` checks only `System`, so QS-2 is not enforced.
-- **No behaviour test:** nothing compares a trajectory with an expected value.
-
-**Still open for you:** QG-1's measure, the ADR-0002 to ADR-0005 questions above, and the offset question.
-
-Nothing is committed.
+I made no code changes. Fixing the risks in section 11 is ordinary work after your decisions.
 
 ### result (success)

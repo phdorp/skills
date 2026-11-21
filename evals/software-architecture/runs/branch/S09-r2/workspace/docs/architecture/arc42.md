@@ -8,19 +8,19 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | ID | requirement | rank | status | reason |
 |---|---|---|---|---|
-| R-1 | Users add an item with an expiry date and list the items expiring within N days, from the command line. | 1 | active | Defines the product; shapes the CLI and the store. |
-| R-2 | No item whose add or remove succeeded is lost if the machine crashes during a write. | 2 | active | Sets how every write is made durable. |
-| R-3 | The tool runs on the Python standard library alone, with no third-party packages. | 3 | active | Rules out third-party dependencies. |
-| R-4 | Adding a new command changes only `cli.py` and at most one new module. | 4 | active | Sets the building-block boundaries and the dependency rule. |
+| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 2 | active | It is the product's purpose and fixes the storage and CLI shape. |
+| R-2 | No item is lost if the machine crashes mid-write. | 1 | active | It decides how every write is made durable. |
+| R-3 | Runs with only the Python standard library. | 3 | active | It limits every block's dependencies. |
+| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | It sets the module structure and the dependency rule. |
 
 ### Quality goals
 
 | ID | goal (ISO/IEC 25010) | from | scenario |
 |---|---|---|---|
-| QG-1 | Functional suitability: functional correctness | R-1 | QS-1 |
-| QG-2 | Reliability: recoverability | R-2 | QS-2 |
+| QG-1 | Reliability: recoverability | R-2 | QS-1 |
+| QG-2 | Maintainability: modifiability | R-4 | QS-2 |
 | QG-3 | Flexibility: installability | R-3 | QS-3 |
-| QG-4 | Maintainability: modifiability | R-4 | QS-4 |
+| QG-4 | Functional suitability: functional correctness | R-1 | QS-4 |
 
 ### Stakeholders
 
@@ -28,25 +28,35 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 *As found, unconfirmed.*
 
-- Standard library only: every import in `pantry/` comes from the standard library (see the ADR proposed for third-party dependencies).
-- The pantry file is `~/.pantry.jsonl`, or the path in `PANTRY_FILE`.
-- No Python version is declared in the repository. The code uses `dataclasses` and `pathlib`, so it needs Python 3.7 or later.
+- Standard library only: no package outside the standard library is imported anywhere in `pantry/` or `tests/`.
+- Python 3: the code uses `dataclasses` and `date.fromisoformat`, so 3.7 or later. The minimum version is not confirmed.
+- Data lives under the user's home directory (`~/.pantry.jsonl`), overridable with `PANTRY_FILE`.
 
 ## 3. Context and scope
 
 *As found, unconfirmed.*
 
-- Inside the system: the `pantry` package, run as `python3 -m pantry`.
-- Outside the system: the user typing commands; the pantry file on the local disk (`PANTRY_FILE` or `~/.pantry.jsonl`); the system clock (`date.today()`), which gives the meaning of relative dates and of `list --soon`.
+The pantry command, run from a terminal. Outside it: the file at `store.path()` (`PANTRY_FILE`, or `~/.pantry.jsonl`), the system clock (`date.today()`), and the command line, stdout and stderr. The system makes no network calls.
+
+The "Out of scope" subsection below is the architect's answer and carries no marker.
+
+### Out of scope
+
+Confirmed by the architect as not wanted:
+
+- protecting the pantry file from other users on the machine (confidentiality);
+- list speed for large files (time behaviour);
+- importing or exporting the pantry, such as to CSV (interoperability);
+- interactive confirmation before `remove` (user error protection); errors are reported with exit codes and messages only.
 
 ## 4. Solution strategy
 
 *As found, unconfirmed.*
 
-- The pantry file is an append-only log of add and remove records. The items are derived by replaying the log (R-2, QG-2).
-- Each record is flushed and fsynced when it is written (R-2, QG-2).
-- Only the standard library is used (R-3, QG-3).
-- The date parsing (`dates`) and the item model (`model`) know nothing of files or commands. The command line (`cli`) only composes them, and `store` is the only block that touches the file (R-4, QG-4).
+- **Append-only event log.** Each add and remove is one appended line; the current pantry is the replay of the log (`model.replay`). Serves QG-1: no in-place rewrite that a crash could corrupt.
+- **Flush and fsync each append** before the command returns (`store._append`). Serves QG-1.
+- **One plain file, no database, standard library only.** Serves QG-3.
+- **Dates are parsed once, at input,** and stored as absolute ISO dates. Serves QG-4.
 
 ## 5. Building block view
 
@@ -54,57 +64,62 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | block | responsibility | may use |
 |---|---|---|
-| `pantry/__main__.py` | entry point: passes the arguments to `cli.main` and exits with its code | `cli` |
-| `pantry/cli.py` | command parsing; user-facing errors and exit codes; sorting and filtering for `list` | `dates`, `store`, `model` |
-| `pantry/store.py` | the pantry file: appends records, reads them back, skips lines it cannot parse | `model` |
-| `pantry/model.py` | `Item`, the add and remove records, and the replay of records into items | standard library only |
-| `pantry/dates.py` | parses user date text (`YYYY-MM-DD`, `today`, `tomorrow`, `+Nd`, `+Nw`) into a date | standard library only |
+| `pantry/__main__.py` | entry point for `python3 -m pantry`; passes argv to `cli.main` and exits with its result | `cli` |
+| `pantry/cli.py` | parses commands and flags, prints results, maps errors to exit codes | `dates`, `store`, `model` |
+| `pantry/store.py` | reads and appends the pantry file; skips lines that do not parse; exposes `add`, `remove`, `items` | `model` |
+| `pantry/model.py` | the `Item` type, the record format, and replay of records into current items | standard library only |
+| `pantry/dates.py` | parses date input: ISO dates, `today`, `tomorrow`, `+Nd`, `+Nw` | standard library only |
+
+`tests/test_pantry.py` exercises these blocks through their functions. It is not a building block.
 
 ## 6. Runtime view
 
 *As found, unconfirmed.*
 
-- `add NAME DATE`: `cli.main` parses the date with `dates.parse`, builds an `Item`, and `store.add` appends its add record and fsyncs the file.
-- `list [--soon DAYS]`: `store.items` reads every line of the file, skipping lines that do not parse; `model.replay` keeps the last record per name; `cli` sorts by expiry, then name, and filters to the window.
-- `remove NAME`: `cli` reads the items to check that the name exists, then `store.remove` appends a remove record. Exit 1 if it does not exist.
+- **`add NAME EXPIRES`:** `cli` parses `EXPIRES` with `dates.parse`; on failure it prints to stderr and exits 1. Otherwise `store.add` appends an add record, flushed and fsynced, and the command exits 0.
+- **`remove NAME`:** `cli` checks `NAME` against `store.items()`; if absent, it prints to stderr and exits 1. Otherwise `store.remove` appends a remove record.
+- **`list [--soon DAYS]`:** `store.items()` replays the whole file. `cli` sorts by expiry, then name case-insensitively, keeps items expiring on or before today plus `DAYS` if given, and prints `ISO-DATE  NAME` per line.
 
 ## 7. Deployment view
 
 *As found, unconfirmed.*
 
-The tool runs from a checkout of this repository, as `python3 -m pantry`. The repository has no packaging file (no `pyproject.toml` or `setup.py`), so no installed form exists.
+Run from the source tree as `python3 -m pantry`. The repository has no packaging file (no `setup.py` or `pyproject.toml`). Tests run with `python3 -m unittest`. Data is on the local disk of the machine, at the path in section 3.
 
 ## 8. Crosscutting concepts
 
 *As found, unconfirmed.*
 
-- Errors: a user error prints one line `pantry: <message>` to stderr and exits 1. Bad usage exits 2 (argparse). Unparseable lines in the pantry file are skipped with no message.
-- Dates: calendar dates without time, in ISO form. Relative dates are counted from the local date (`date.today()`). `tomorrow` is one day; `+Nw` is seven times N days.
-- Names: an item is identified by its exact name. Adding an existing name replaces its expiry date. Removing deletes by exact name. Sorting ignores case.
-- Text: the pantry file is UTF-8, one JSON object per line.
+- **Errors:** user errors print `pantry: <message>` to stderr and exit 1. Bad usage exits 2 with the argparse message on stderr.
+- **Durability:** each append is flushed and fsynced. The directory is not fsynced (section 11).
+- **Records:** one JSON object per line, with keys `op`, `name` and `expires`. Dates are ISO calendar dates with no time or zone.
+- **Dates:** the local calendar date from `date.today()`. Relative input is resolved when the item is added and stored as an absolute date.
+- **Names:** item names are exact strings. `remove` and replay match them case-sensitively; `list` sorts them case-insensitively.
+- **Naming:** lowercase module names; `Item` for the item class; `to_record`, `removal` and `replay` in `model`.
 
 ## 9. Architecture decisions
 
-The ADRs live in `../adr/`. The list of decisions made centrally is in
-[0001. Record architecture decisions](../adr/0001-record-architecture-decisions.md).
+ADRs live in [`../adr/`](../adr/). The ADR [Record architecture decisions](../adr/0001-record-architecture-decisions.md) is `accepted`. The as-found decisions are proposed in ADR 0002 to 0009, each waiting for the architect's approval.
 
 ## 10. Quality requirements
 
 | ID | goal | stimulus | environment | response | measure |
 |---|---|---|---|---|---|
-| QS-1 | QG-1 | after `add` of items with valid dates, `list --soon N` is run | normal operation | the output lists exactly the items whose expiry is on or before today + N, sorted by expiry | 0 mismatches over a test set of items spread across the window |
-| QS-2 | QG-2 | the process is killed with SIGKILL at random points during `add` or `remove` | normal operation | every command that exited 0 is present afterwards and no earlier item is lost; the store still opens | 0 lost acknowledged writes in 200 kill trials |
-| QS-3 | QG-3 | the tool is run on a clean Python 3 install | normal operation | every command runs | runs every command with 0 non-stdlib packages installed |
-| QS-4 | QG-4 | a developer adds a new command | normal operation | the change touches only `cli.py` and at most one new module | 100% of added commands within that limit, checked in review or a test |
+| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the interrupted item is either fully stored or absent; items stored before the crash stay readable | 0 acknowledged items lost in 100 SIGKILL trials during `add` |
+| QS-2 | QG-2 | a new command is added to the CLI | normal operation | the change touches `cli.py` and at most one new module | a new command's diff touches only `cli.py` and at most one new module |
+| QS-3 | QG-3 | the tool is run on a fresh Python 3 install with no pip | normal operation | the tool runs with no install step | 0 non-standard-library imports |
+| QS-4 | QG-4 | `list --soon DAYS` is run against items with mixed expiry dates | normal operation | every item expiring within DAYS is listed, none later, sorted by expiry | every item expiring within N days is listed, none later, sorted by expiry |
 
 ## 11. Risks and technical debt
 
 *As found, unconfirmed.*
 
-- **Torn line followed by an append loses the next record** (reproduced). A crash mid-write leaves a partial line with no newline; the next `add` lands on that line and is skipped on read. Threatens R-2.
-- **Silent skipping of unparseable lines.** Any damaged line hides its record without a message, so the loss is invisible. Threatens R-2.
-- **New file not made durable.** `store` fsyncs the file but not its directory, so a crash just after the first `add` may lose the file. Not reproduced; no crash test exists. Threatens R-2.
-- **Unbounded growth.** The file is never compacted and every command reads all of it. No goal covers it yet.
+1. **A new record is glued onto a partial line (verified).** After a crash leaves a partial line with no newline, the next `add` appends onto it. Both records end up on one line, and the new item is lost on read. Threatens R-2 and QS-1. A probe confirmed it: an item acknowledged after a torn write was missing from `store.items()`.
+2. **Corrupt lines in the middle of the file are skipped silently** (`store._records`). Threatens R-2. The architect has already accepted this in ADR 0001's consequences; it is listed here for review.
+3. **A record that is valid JSON but lacks a key raises an error on read** (`model.replay`), so every `list` and `remove` fails until the file is repaired. Threatens R-1. Found by reading; not run.
+4. **The directory is not fsynced when the file is created.** A crash just after the first add may lose the file's directory entry. Threatens R-2. Found by reading; not run.
+5. **Nothing guards against two processes appending at once.** Threatens R-2. Found by reading; not run.
+6. **Technical debt: no compaction.** The file grows with every add and remove, and every command reads all of it. The architect has said list speed is out of scope, so this is debt, not a goal.
 
 ## 12. Glossary
 

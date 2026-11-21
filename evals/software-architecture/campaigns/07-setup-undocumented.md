@@ -81,3 +81,41 @@ Gate: not met (S10-r2 J4; S06-r2 J1).
 `| block | responsibility | in | out | may use |`, and a shared constant is a `may use` entry
 plus a sentence under the table. S06-r2's slip is outside this ticket's change and is recorded
 as an open loophole, not fixed here. The S09 and S10 branch runs were replaced.
+
+## GREEN: skills at `39cb1f4` (2026-11-21, 2 runs each, clean isolation)
+
+All four runs started with `/sa:setup-architecture`, kept one session over three turns and
+loaded `sa:domain-modeling` and `sa:quality-requirements` (r1 of each also `sa:add-requirements`).
+S06 and S07 keep their runs at `1868390`: the fix touches only `references/recovery.md`, which
+the fresh and documented situations do not reach.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S09-r1 | - | - |
+| S09-r2 | `goals_measured` | - |
+| S10-r1 | - | J3 |
+| S10-r2 | - | - |
+
+Every run wrote only the skeleton in turn 1, wrote ADR-0001 `proposed` in turn 2 and stopped:
+"Recovery from the code waits for that approval, and sections 2–8 and 11 stay empty until
+then." (S10-r1). In turn 3 each accepted ADR-0001 with only its Status changed, marked every
+filled section *As found, unconfirmed.*, wrote 2–3 `proposed` ADRs for listed decisions and
+left the code alone; S10-r1 noted the room settling 7 K below its set point as a risk, not a fix.
+Both S10 runs fill the `in`/`out` columns (J4).
+
+Open loopholes:
+
+1. S09-r2 filed QG-4 with a measure that states no number ("every item expiring within N days
+   is listed, none later, sorted by expiry"): ticket 05's "unmeasured goal filed" loophole,
+   recurring under `quality-requirements`.
+2. S10-r1's final message lists the proposed ADRs for approval but names the as-found sections
+   only in a summary ("sections 2–8 and 11 are filled from the code, each starting with *As
+   found, unconfirmed.*"), not as a review list (J3; `recovery.md` step 6).
+3. S06-r2 (first attempt) ranked requirements without reasons (J1).
+
+Credit: `t1_only_arc42`, `t2_waits`, `list_accepted`, `recovered_marked`, `recovery_adrs`,
+`goals_measured` and J1–J4 went RED → GREEN. `code_unchanged` went RED → GREEN only through
+documentation written outside `docs/`; no baseline run changed code, so "change no code" gets
+no GREEN credit. With 2 runs per arm, J3's per-section review list is not reliable.
+
+Gate: not met in full (open loopholes 1–3); one loophole round spent.

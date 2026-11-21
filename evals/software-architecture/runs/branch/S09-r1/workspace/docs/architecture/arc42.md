@@ -8,19 +8,19 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | ID | requirement | rank | status | reason |
 |---|---|---|---|---|
-| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 2 | active | The product's core function; it fixes what the store holds. |
-| R-2 | No item is lost if the machine crashes mid-write. | 1 | active | Shapes the storage format and write path. |
-| R-3 | Runs with only the Python standard library. | 3 | active | A third-party-dependency decision; the central list covers it. |
-| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Constrains module boundaries and how features are added. |
-
-Gap check: the architect left out Security: confidentiality and Interaction capability: user
-error protection. No requirement was added.
+| R-1 | Users add pantry items with an expiry date and list what expires soon, from the command line. | 1 | active | Core function; fixes the CLI surface. |
+| R-2 | No item is lost if the machine crashes mid-write. | 2 | active | Data loss is the worst failure; fixes durable, append-only storage. |
+| R-3 | Runs with only the Python standard library. | 3 | active | Dependency rule that bounds every other choice. |
+| R-4 | A new command touches only cli.py and at most one new module. | 4 | active | Change-locality rule; yields to R-2 if a crash-safety fix needs a second module. |
 
 ### Quality goals
 
 | ID | goal (ISO/IEC 25010) | from | scenario |
 |---|---|---|---|
-| QG-1 | Maintainability: modifiability | R-4 | QS-1 |
+| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
+| QG-2 | Functional suitability: functional correctness | R-1 | QS-2 |
+| QG-3 | Portability: installability | R-3 | QS-3 |
+| QG-4 | Maintainability: modifiability | R-4 | QS-4 |
 
 ### Stakeholders
 
@@ -28,27 +28,33 @@ error protection. No requirement was added.
 
 *As found, unconfirmed.*
 
-- Python 3 with the standard library only (`docs/adr/0006-standard-library-only.md`).
-- Items are kept in `~/.pantry.jsonl` unless `PANTRY_FILE` names another file (README).
-- The code records no minimum Python version.
+- Standard library only (R-3); see [ADR-0004](../adr/0004-standard-library-only.md).
+- Python 3. No version is pinned. The code needs 3.7 or later (`dataclasses`, `date.fromisoformat`).
+- Runs from the source tree as `python3 -m pantry`. No packaging metadata was found.
 
 ## 3. Context and scope
 
 *As found, unconfirmed.*
 
-The system is a command-line program that a user runs in a terminal (`python3 -m pantry`). Its only
-external dependency is the local file that holds the records. The code talks to no network service
-and to no other program.
+The system is the `pantry` package. Outside it:
+
+- **The user**, at a shell, who runs `python3 -m pantry <command>`.
+- **The pantry file**, `~/.pantry.jsonl` or the path in the `PANTRY_FILE` environment variable,
+  on the local file system.
+- **The system clock**, read through `date.today()` for relative dates and for `list --soon`.
 
 ## 4. Solution strategy
 
 *As found, unconfirmed.*
 
-- The pantry file is an append-only log of `add` and `remove` records; the items are the result of
-  replaying the log in order (`docs/adr/0002-storage-format.md`). Each append is fsynced, which
-  aims at R-2; section 11 records where that aim falls short.
-- Each command is a short path from the command line to one of the building blocks in section 5
-  (section 6).
+- **Append-only log, state by replay** (R-2, QG-1): every change is a record appended to the
+  pantry file, and the items are rebuilt from the records on each run. See
+  [ADR-0002](../adr/0002-append-only-jsonl-storage.md) and
+  [ADR-0003](../adr/0003-fsync-each-record.md).
+- **Thin command layer over pure modules** (R-4, QG-4): `cli` parses and prints. `dates` parses
+  user dates, `model` defines the item and the replay, and `store` does the file I/O. See
+  [ADR-0005](../adr/0005-building-block-dependencies.md).
+- **Standard library only** (R-3, QG-3). See [ADR-0004](../adr/0004-standard-library-only.md).
 
 ## 5. Building block view
 
@@ -56,83 +62,83 @@ and to no other program.
 
 | block | responsibility | may use |
 |---|---|---|
-| `pantry/__main__.py` | entry point for `python3 -m pantry`; passes arguments to `cli` and exits with its code | `cli` |
-| `pantry/cli.py` | parses commands, prints results and user errors, sets exit codes | `store`, `dates`, `model` |
-| `pantry/store.py` | reads and appends records in the pantry file | `model` |
-| `pantry/model.py` | the `Item` and the add and remove records; replays records into items | none |
-| `pantry/dates.py` | parses date text as the user types it (ISO, `today`, `tomorrow`, `+Nd`, `+Nw`) | none |
+| `cli` (`pantry/cli.py`, entry point `pantry/__main__.py`) | parse the three commands, print output, map errors to exit codes | `dates`, `store`, `model` |
+| `dates` (`pantry/dates.py`) | turn user date text into a `date`: ISO, `today`, `tomorrow`, `+Nd`, `+Nw` | none |
+| `store` (`pantry/store.py`) | locate the pantry file, append records with fsync, read and skip unparsable lines | `model` |
+| `model` (`pantry/model.py`) | the `Item` and the record shapes, and `replay` | none |
 
-The tests in `tests/` use every block and are not a block themselves.
-
-The rules that bind these blocks are in `docs/adr/0003-dependency-rule.md`. The code has an edge
-from `cli` to `model` that the approved central list does not name.
+`pantry/__init__.py` holds only the package docstring. The tests (`tests/test_pantry.py`) call
+`cli.main` and the modules directly, with a temporary `PANTRY_FILE`; they are not a block.
 
 ## 6. Runtime view
 
 *As found, unconfirmed.*
 
-- **add:** `cli` parses the name and the expiry; `dates.parse` turns the expiry into a date;
-  `store.add` builds the `Item` record and appends it, then fsyncs.
-- **list:** `store.items` reads every line of the file, skips any line that is not JSON, and
-  replays the records; `cli` sorts the items by expiry then name, filters with `--soon DAYS` when
-  given, and prints one line per item.
-- **remove:** `cli` checks that the name is present through `store.items`; then `store.remove`
-  appends a removal record. The check and the append are two steps, not one.
+- **`add NAME EXPIRES`:** `cli` calls `dates.parse`, then `store.add`, which appends one
+  `add` record and fsyncs it. Exit 0.
+- **`remove NAME`:** `cli` reads the names through `store.items`. If the name is absent it prints
+  an error and exits 1. Otherwise `store.remove` appends a `remove` record. Exit 0.
+- **`list [--soon DAYS]`:** `store.items` reads the whole file, skips lines that do not parse, and
+  replays the records. `cli` sorts by expiry, then by name case-insensitively. With `--soon`, it
+  keeps items expiring on or before today plus DAYS. It prints `YYYY-MM-DD  NAME` per line.
+- **Errors:** an unparsable date prints `pantry: not a date: …` to stderr and exits 1. Bad usage is
+  reported by `argparse` and exits 2. `--help` exits 0.
 
 ## 7. Deployment view
 
 *As found, unconfirmed.*
 
-The program runs on one machine, from the repository or wherever the package is copied, with
-`python3 -m pantry`. The data is one file per user, in the home directory by default. The
-repository has no packaging file (`pyproject.toml`, `setup.py`) and no install step.
+A single user's machine. The code runs from the source tree with `python3 -m pantry`. No
+installer, `setup.py` or `pyproject.toml` was found. The data lives in one file per user, at
+`~/.pantry.jsonl` or at `PANTRY_FILE`.
 
 ## 8. Crosscutting concepts
 
 *As found, unconfirmed.*
 
-- **Errors:** user errors go to stderr with the prefix `pantry:` and exit 1; bad usage exits 2
-  (`docs/adr/0005-crosscutting-conventions.md`).
-- **Dates:** stored and printed as ISO 8601 (`YYYY-MM-DD`); typed as ISO, `today`, `tomorrow`,
-  `+Nd` or `+Nw`.
-- **Names:** an item's identity is its exact name (case-sensitive for `remove`); `list` sorts names
-  ignoring case.
-- **Encoding:** the pantry file is UTF-8.
-- **Versioning:** none found. The records and the file carry no version field.
-- **Testing:** `unittest`, in `tests/test_pantry.py`; the five tests pass.
+- **Error handling:** user errors print one line to stderr and exit 1. Usage errors exit 2 (see
+  [ADR-0006](../adr/0006-cli-commands-and-exit-codes.md)). Unparsable lines in the pantry file are
+  skipped without a message (`store._records`); see section 11.
+- **Naming:** an item's name is its identity. `add` with an existing name replaces that item's
+  expiry, and `remove` matches the name exactly, case-sensitively. `list` sorts names
+  case-insensitively.
+- **Dates:** ISO 8601 in the file and in output ([ADR-0007](../adr/0007-iso-dates.md)). Relative
+  forms resolve at command time against the machine's local date. `+Nw` is 7 days.
+- **Units:** `--soon` and `+Nd` count days.
+- **Configuration:** the `PANTRY_FILE` environment variable overrides the file path.
+- **Testing:** `unittest` (`python3 -m unittest`). The tests use a temporary file for each test.
 
 ## 9. Architecture decisions
 
-The decision list is [ADR 0001 Record architecture decisions](../adr/0001-record-architecture-decisions.md),
-accepted 2026-11-21. The ADRs recovered from the code are
-[0002](../adr/0002-storage-format.md) to [0006](../adr/0006-standard-library-only.md), all
-`proposed` until the architect approves them.
+The ADRs live in [`docs/adr/`](../adr/). The list of decisions the architect makes centrally is in [ADR-0001: Record architecture decisions](../adr/0001-record-architecture-decisions.md) (accepted 2026-11-21). The decisions the code already makes are drafted as proposed ADRs 0002–0007, awaiting approval.
 
 ## 10. Quality requirements
 
 | ID | goal | stimulus | environment | response | measure |
 |---|---|---|---|---|---|
-| QS-1 | QG-1 | a new command is added | normal development | the change touches cli.py and at most one new module; store.py and model.py are unchanged | at most 2 files changed; 0 changes to store.py or model.py |
+| QS-1 | QG-1 | the process is killed with SIGKILL during `add`, and a further `add` then runs | normal operation | the earlier item is either fully stored or absent; the store still opens; the further add is not lost | 0 lost items in 100 kill-during-add trials followed by a further add |
+| QS-2 | QG-2 | `list --soon N` is run over a corpus of items with varied expiry dates | normal operation | every item with expiry on or before today + N is listed, sorted by expiry | 0 misses in a test corpus |
+| QS-3 | QG-3 | the tool is installed on a clean Python 3 with no pip step | fresh interpreter | every command runs | 0 non-standard-library imports |
+| QS-4 | QG-4 | a new command is added | normal development | only `cli.py` and at most one new module change | 0 changes outside `cli.py` and one new module in the next added command |
 
 ## 11. Risks and technical debt
 
 *As found, unconfirmed.*
 
-- **Torn line makes the next add disappear (threatens R-2).** A line cut short by a crash is
-  not terminated by a newline, so the next append is written onto it. `store.py:29` then drops
-  the whole line, and the new item is lost. `add` still reports success. Reproduced; the
-  existing test `test_a_torn_last_line_is_skipped` does not append after the torn line.
-- **Any unreadable line is skipped silently (threatens R-2).** `store.py:27-29` skips any line
-  that is not JSON, not only a torn last line. Damage in the middle of the file loses records
-  without a message.
-- **The new file's directory entry is not fsynced (threatens R-2).** `store.py:14-17` fsyncs the
-  file, not its directory. A crash just after the first `add` could lose the file. Not reproduced.
-- **A repeated name replaces the earlier item (threatens R-1).** `model.py:24` keys items by name,
-  so a second `add` of the same name replaces the first expiry without a message.
-- **Removed items stay in the file (debt).** Removals are appended, never compacted, so every
-  `list` reads the whole history (`store.py:20-30`).
-- **No versioning of the file or the CLI (debt).** The records and commands carry no version; a
-  format change would break existing files.
+- **Torn last line merges with the next record** (threatens R-2, QG-1). A crash that leaves a
+  partial line with no newline is followed by the next `add` on the same line, and that record
+  is then skipped on read. Reproduced on 2026-11-21. The test suite covers reading past a torn
+  line, not appending after one.
+- **Silent skipping of unparsable lines** (threatens R-2). Any bad line is dropped without a
+  message, including corruption in the middle of the file.
+- **Directory not fsynced on first create** (threatens R-2). [ADR-0003](../adr/0003-fsync-each-record.md)
+  covers the file's data only. Found by reading; not reproduced.
+- **No file lock** (threatens R-2). Two processes appending at once are not ruled out. Found by
+  reading; not reproduced.
+- **Whole file read on every command, no compaction** (technical debt). The file grows with
+  every `add` and `remove`.
+- **One item per name** (open question for the architect). A second `add` of the same name
+  replaces the first item's date without warning. Intended or not is not stated anywhere.
 
 ## 12. Glossary
 

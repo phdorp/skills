@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Once you confirm, I'll write the R-list, goals, scenarios and ADR-0001 as `proposed`. Recovering the architecture from the code waits for your approval of ADR-0001's text.",
+   "quote": "Once you confirm, I write the confirmed R-list rows, goals, scenarios and ADR 0001 (status `proposed`), and the link in section 9. Then you approve the ADR's text, and the architecture recovery from the code starts.",
    "source": "transcript.md",
-   "reason": "Turn 1 proposes the central decision list for ADR-0001 and defers recovery until the architect approves that ADR's text, which is the list."
+   "reason": "Turn 1 proposes the decided-centrally list and makes recovery wait until the architect confirms the list and approves the ADR that holds it."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**ADR-0001** waits for your approval of its text. Recovering the architecture from the code waits for that approval too, and so does changing the `roomHeatCapacity` coupling in `Thermostat.mo`.",
+   "quote": "Recovery of the architecture from the code starts once you approve ADR-0001. I haven't started it.",
    "source": "transcript.md",
-   "reason": "Turn 2 writes only the confirmed requirements and the proposed ADR-0001, recovers nothing, and ends by asking for approval of ADR-0001."
+   "reason": "Turn 2 writes only the confirmed items and ADR-0001 as proposed, and its closing message asks for approval of ADR-0001 before recovery, which it has not started."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**arc42 sections marked *as found, unconfirmed*, for your review in this order:**",
+   "quote": "- Approve or reject ADRs 0002–0005, each as `proposed`.\n- Confirm or correct each *as found* section, starting with section 11's risks.",
    "source": "transcript.md",
-   "reason": "The final message lists the unconfirmed sections in review order and the proposed ADR-0002 to ADR-0005, each with a question for the architect."
+   "reason": "The final message names sections 2–8 and 11 as marked as found and unconfirmed, asks for them to be confirmed one by one, and lists proposed ADRs 0002–0005 for approval."
   },
   {
    "criterion": "J4",
-   "pass": false,
-   "quote": "| `Room` | lumped room air: stores heat, loses it through the walls | `Interfaces`; the package constant `roomHeatCapacity` |",
+   "pass": true,
+   "quote": "`Room` and `Thermostat` both read `HeatingLib.roomHeatCapacity`. That is a dependency between two blocks through a shared constant, not through a connector.",
    "source": "workspace/docs/architecture/arc42.md",
-   "reason": "Section 5 names the roomHeatCapacity coupling but does not describe any block's interface as its signals or connectors in and out; it only lists the Interfaces package as a dependency."
+   "reason": "Section 5 gives each block's in/out connectors and names the coupling through the shared constant roomHeatCapacity."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2747618
+ "cost_usd": 0.2278338
 }

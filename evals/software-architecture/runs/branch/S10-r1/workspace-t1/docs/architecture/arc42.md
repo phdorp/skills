@@ -35,8 +35,7 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 9. Architecture decisions
 
-ADRs live in `docs/adr/`. The "Record architecture decisions" ADR is proposed as `0001` and is
-written once the architect confirms the proposal; the arc42 file links it then.
+ADRs live in `../adr/` (that is, `docs/adr/`); the directory does not exist yet. The "Record architecture decisions" ADR is proposed to the architect and not yet written.
 
 ## 10. Quality requirements
 
