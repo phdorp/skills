@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+"""Self-test of the grader.
+
+Usage:  python3 -I selftest.py
+
+Builds selftest/runs/{reference,empty,broken}/<scenario>-r<k> from reference/ and broken/, runs
+summarize.py over it (results in selftest/results/), then checks:
+- reference: every check passes;
+- empty dirs: every check fails, and the grader still returns a result;
+- each broken variant fails exactly the checks listed in EXPECT.
+Exit status 0 when every expectation holds.
+"""
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+
+EXPECT = {  # broken variant -> the exact set of checks it must fail
+    "S01-arc42": {"no_arc42"},                          # created docs/architecture/arc42.md
+    "S01-adr": {"no_new_adr"},                          # wrote docs/adr/0001-top-option.md
+    "S01-nofeature": {"feature_works"},                 # --top accepted but ignored
+    "S01-failingtest": {"tests_pass"},                  # an agent test asserts wrongly
+    "S01-uncommitted": {"committed"},                   # git log holds only the fixture commit
+    "S01-nagging": {"setup_suggested_at_most_once"},    # suggests setup-architecture twice
+}
+SCENARIOS = ("S01",)
+
+
+def build_tree(root):
+    if root.exists():
+        shutil.rmtree(root)
+    runs = root / "runs"
+    mapping = {}
+    for sc in SCENARIOS:
+        shutil.copytree(HERE / "reference" / sc, runs / "reference" / f"{sc}-r1")
+        (runs / "empty" / f"{sc}-r1").mkdir(parents=True)
+        variants = sorted(v for v in EXPECT if v.startswith(sc + "-"))
+        for k, v in enumerate(variants, 1):
+            shutil.copytree(HERE / "broken" / v, runs / "broken" / f"{sc}-r{k}")
+            mapping[f"{sc}-r{k}"] = v
+    return runs, mapping
+
+
+def main():
+    root = HERE / "selftest"
+    runs, mapping = build_tree(root)
+    proc = subprocess.run([sys.executable, "-I", str(HERE / "summarize.py"), str(runs)],
+                          capture_output=True, text=True)
+    print(proc.stdout)
+    if proc.returncode:
+        print(proc.stderr)
+        return 1
+    res = {arm: json.loads((root / "results" / f"{arm}.json").read_text())["runs"]
+           for arm in ("reference", "empty", "broken")}
+    ok, lines = True, ["## Self-test verdicts", "",
+                       "| case | expected to fail | actually failed | verdict |", "|---|---|---|---|"]
+    for arm in ("reference", "empty", "broken"):
+        for r in res[arm]:
+            failed = {c["name"] for c in r["checks"] if not c["pass"]}
+            names = {c["name"] for c in r["checks"]}
+            if arm == "reference":
+                case, want = f"reference/{r['scenario']}", set()
+            elif arm == "empty":
+                case, want = f"empty/{r['scenario']}", names
+            else:
+                case, want = f"broken/{mapping[r['run']]}", EXPECT[mapping[r["run"]]]
+            good = failed == want and r["total"] > 0
+            ok &= good
+            show = (lambda s: "all" if s == names and s else (", ".join(sorted(s)) or "-"))
+            lines.append(f"| {case} | {show(want)} | {show(failed)} | {'PASS' if good else 'FAIL'} |")
+    seen = {mapping[r["run"]] for r in res["broken"]}
+    for v in sorted(set(EXPECT) - seen):
+        ok = False
+        lines.append(f"| broken/{v} | {', '.join(sorted(EXPECT[v]))} | not graded | FAIL |")
+    lines += ["", "SELF-TEST " + ("PASSED" if ok else "FAILED")]
+    print("\n".join(lines))
+    return 0 if ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
