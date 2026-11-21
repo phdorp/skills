@@ -34,8 +34,10 @@ against the skills at `main`. Re-run it when the model or the skills change.
   this repository (keeps its `AGENTS.md` out), with a clean environment.
 - Judge: Claude Opus 5.5 (`claude-opus-5-5`), no tools, everything in the prompt.
 - The stream-json `init` event lists the plugins and skills a run saw. `run.py` checks it; a run
-  that saw a foreign plugin or a user skill is saved with `isolation_ok: false` and left out of
-  the scores.
+  that saw a foreign plugin, a user skill or any MCP server is saved with `isolation_ok: false`
+  and left out of the scores. Runs set `ENABLE_CLAUDEAI_MCP_SERVERS=false` and
+  `--strict-mcp-config`, because the account's claude.ai connectors otherwise load into
+  scenario runs (they reached 20 of 26 runs before 2026-11-21's fix).
 - 2 runs per scenario and arm.
 
 ## Run it

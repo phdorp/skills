@@ -143,6 +143,16 @@ class Isolation(unittest.TestCase):
         init["plugins"] = [p for p in init["plugins"] if p["path"] == "builtin"]
         self.assertNotEqual(run.check_isolation(init, self.plugin_dir, self.user), [])
 
+    def test_isolation_flags_mcp_server(self):
+        init = self._init("init-ok.json")
+        init["mcp_servers"] = [{"name": "claude.ai Claude Docs", "status": "pending", "source": "claudeai"}]
+        errors = run.check_isolation(init, self.plugin_dir, self.user)
+        self.assertTrue(any("Claude Docs" in e for e in errors), errors)
+
+    def test_child_runs_without_claudeai_connectors(self):
+        self.assertEqual(run._child_env()["ENABLE_CLAUDEAI_MCP_SERVERS"], "false")
+        self.assertIn("--strict-mcp-config", run.claude_cmd("hi", Path("/p/sa")))
+
     def test_session_mismatch_fails_isolation(self):
         first, second = self._init("init-ok.json"), self._init("init-ok.json")
         second["session_id"] = "another-session"

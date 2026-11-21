@@ -143,6 +143,8 @@ def check_isolation(init, plugin_dir, user_skill_names):
     got = {s for s in skills if s.startswith(prefix)}
     errors += [f"arm skill missing: {s}" for s in sorted(expected - got)]
     errors += [f"unexpected arm skill: {s}" for s in sorted(got - expected)]
+    errors += [f"MCP server loaded: {m.get('name')} ({m.get('source', '?')})"
+               for m in init.get("mcp_servers", [])]
     errors += [f"user skill visible: {s}"
                for s in sorted((set(user_skill_names) - BUILTIN_COLLISIONS) & skills)]
     return errors
@@ -222,12 +224,13 @@ def new_run_dir(suite, arm, scenario_id, k):
 def _child_env():
     env = {k: os.environ[k] for k in CHILD_ENV_KEYS if k in os.environ}
     env["IS_SANDBOX"] = "1"
+    env["ENABLE_CLAUDEAI_MCP_SERVERS"] = "false"  # the account's claude.ai connectors stay out
     return env
 
 
 def claude_cmd(prompt, plugin_dir, resume=None):
     cmd = ["claude", "-p", prompt, "--model", MODEL, "--effort", EFFORT,
-           "--setting-sources", "project", "--plugin-dir", str(plugin_dir),
+           "--setting-sources", "project", "--plugin-dir", str(plugin_dir), "--strict-mcp-config",
            "--output-format", "stream-json", "--verbose", "--dangerously-skip-permissions"]
     return cmd + ["--resume", resume] if resume else cmd
 
