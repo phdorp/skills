@@ -5,9 +5,7 @@ description: Use when building, checking, or simulating Modelica models with Ope
 
 # OpenModelica projects
 
-This skill covers both a single model and a multi-module library. For a large project with
-several coupled modules, also use `design-dialogue` and `spec-and-plan` to settle the structure
-and requirements before writing equations.
+This skill covers both a single model and a multi-module library.
 
 The shell has OpenModelica 1.27 (`omc`) with the Modelica Standard Library 4.1.0 (offline), and
 python3. numpy, pandas and matplotlib are not always installed: check with
@@ -30,18 +28,20 @@ A model that simulates is not yet a correct model: most wrong results run fine. 
    that shows it (final or steady-state values, signs, bounds, conservation, a known analytic
    case). Compute every expected number with python3 before you simulate, never in your head (seen:
    a factor 2 lost in a tank's analytic solution); when it disagrees with the simulation, check the
-   formula first (a second derivation, a limit), then the model. In a project, keep them as a
-   checklist in NOTES.md under "Requirements", each with the check that covers it (an assert in
-   a test model) and whether it passes.
-2. Write a coarse plan into PLAN.md before any code: the structure (packages, interfaces, which
-   parts are exchangeable) and 5-10 one-line steps. Break a step down into small ones (one file
-   or class each, with the check that shows it works) only when you start it. Equations,
-   frames, sign conventions and decisions go into PLAN.md's Notes as soon as you have them.
-   Don't write the code in your thinking. Look up every library class you use (see "Look up
-   library classes") instead of writing its name, parameters or connectors from memory: names
-   change between versions.
+   formula first (a second derivation, a limit), then the model.
+2. Only for a library of several files: keep the requirements as a checklist in NOTES.md under
+   "Requirements", each with the check that covers it (an assert in a test model) and whether it
+   passes, and write a coarse plan into PLAN.md before any code: the structure (packages,
+   interfaces, connector sign conventions, which parts are exchangeable) and 5-10 one-line steps.
+   Break a step down only when you start it. Equations, frames, sign conventions and decisions go
+   into PLAN.md's Notes as soon as you have them. When the structure itself is still open (several
+   coupled modules, unclear interfaces), settle it first with `design-dialogue` and
+   `spec-and-plan`. A single model or file needs neither file: go on with step 3 (seen in the
+   benchmark: on one-file tasks the plan files cost turns and changed no result).
 3. Write a minimal model first and simulate it. Only continue once it simulates without errors
-   or warnings.
+   or warnings. Don't write the code in your thinking. Look up every library class you use (see
+   "Look up library classes") instead of writing its name, parameters or connectors from memory:
+   names change between versions.
 4. Add one component or variant at a time, writing each in its own file operation, and check
    again after each addition. Fix errors before adding anything else. Keep files short: one class
    or a few functions per file. Split a file over ~150 lines into classes rather than writing it
