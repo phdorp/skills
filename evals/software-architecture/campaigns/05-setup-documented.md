@@ -54,7 +54,8 @@ First S06/S07 round (commit 7ad6170): S07 passed every check in both runs, but n
 mapped documents stay where they are (J1). S06-r1 ranked R-2…R-5 without reasons (J1) and
 filed a goal from the feature-level item ("R-6 (issue under R-1)"); S06-r2 filed two measured
 goals and left the rest open, which the reply asked for, so `goals_measured` now accepts
-1–5 goals (self-test `S06-twogoals`).
+1–5 goals (self-test `S06-twogoals`). That run was replaced by the re-run below before it was
+committed; the self-test case is the only kept evidence.
 
 Loophole round (commit c6c2ac2): the proposal now asks for a reason per rank, derives goals from
 system-level requirements only, and says each mapped document "stays where and as it is".

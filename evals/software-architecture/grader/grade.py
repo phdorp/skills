@@ -381,8 +381,17 @@ def s06(run_dir):
 
 
 DECISIONS = Path("docs") / "decisions"
-LEGACY = {"0001": "one json file", "0002": "checked locally"}
-README_SENTENCE = "`cli` calls `catalog`, never the file directly."
+# Each legacy ADR's decision as the fixture states it; the upgrade must keep it word for word.
+LEGACY = {"0001": "We keep the whole catalog in one JSON file, written to a temporary file and "
+                  "renamed into place",
+          "0002": "ISBNs are checked locally with their check digit before a book is stored; "
+                  "no online lookup."}
+# Text that lives in the README or a legacy ADR; arc42 links to it and never repeats it.
+COPIES = ["`cli` calls `catalog`, never the file directly."] + list(LEGACY.values())
+
+
+def _plain(s):
+    return _norm(s.replace("`", "")).lower()
 
 
 def _t1_untouched(t1, base):
@@ -418,7 +427,7 @@ def s07(run_dir):
         a = adr.parse(found[0]) if found else None
         cited = adr.ids(a.fields.get("context", "")) if a else set()
         if not (a and five_fields(a) and a.status.startswith("accepted (legacy)")
-                and cited and cited <= known and phrase in _norm(a.fields.get("decision", "")).lower()):
+                and cited and cited <= known and _plain(phrase) in _plain(a.fields.get("decision", ""))):
             legacy_bad.append(f"{prefix} ({a.status if a else 'missing'})")
     a3 = adr.parse(ws / new_adrs[0]) if len(new_adrs) == 1 else None
     return [
@@ -427,7 +436,7 @@ def s07(run_dir):
               "; ".join(x for x in (", ".join(missing), " | ".join(readme_lost)[:200], ", ".join(code)) if x)),
         check("arc42_links_existing", heads == list(range(1, 13)) and "README.md" in text
               and "decisions/" in text, str(heads)),
-        check("no_copy", bool(text) and _norm(README_SENTENCE) not in _norm(text)),
+        check("no_copy", bool(text) and not any(_plain(c) in _plain(text) for c in COPIES)),
         check("legacy_upgraded", not legacy_bad, ", ".join(legacy_bad)),
         check("made_centrally_next", a3 is not None and new_adrs[0].startswith("docs/decisions/0003-")
               and "record architecture decisions" in a3.title.lower() and a3.status.startswith("proposed")

@@ -20,10 +20,11 @@ goals, Gap question). ADRs follow `domain-modeling`. Load both before you write 
 | what the project holds | situation |
 |---|---|
 | no source files and no architecture documentation | fresh |
-| architecture documentation: an arc42 file, `docs/architecture/`, or an ADR directory | documented |
+| architecture documentation in any form: an arc42 file, `docs/architecture/`, an ADR directory, or a README, wiki or design-doc section that describes the parts of the system or why it is built the way it is | documented |
 | source files without architecture documentation | undocumented |
 
-A README that only describes the product idea is not architecture documentation. This version
+A README that only describes the product idea or how to run it is not architecture
+documentation; a README section on how the system is built is. This version
 handles fresh and documented projects. For an undocumented project, tell the architect which
 situation you found and that this setup does not handle it yet, and stop.
 

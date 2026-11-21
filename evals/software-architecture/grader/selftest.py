@@ -80,6 +80,8 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S07-adrdir": {"made_centrally_next"},              # new docs/adr/0001-record-...
     "S07-code": {"docs_kept"},                          # changed shelf/cli.py
     "S07-readmelink": set(),                            # README line added, nothing removed
+    "S07-copiedadr": {"no_copy"},                       # ADR-0001's decision copied into arc42
+    "S07-shortened": {"legacy_upgraded"},               # ADR-0002's decision cut to "checked locally"
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07")
 
