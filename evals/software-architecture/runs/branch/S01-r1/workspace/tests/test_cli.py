@@ -25,9 +25,9 @@ class Main(unittest.TestCase):
             self.assertEqual(main([str(path)]), 0)
         self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def test_top_prints_only_most_frequent_words(self):
+    def test_top_prints_only_the_most_frequent_words(self):
         path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("c c c b b a d")
+        path.write_text("b a b c c c")
         out = io.StringIO()
         with redirect_stdout(out):
             self.assertEqual(main(["--top", "2", str(path)]), 0)
@@ -41,11 +41,11 @@ class Main(unittest.TestCase):
             self.assertEqual(main(["--top", "10", str(path)]), 0)
         self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def test_top_rejects_non_positive_values(self):
+    def test_top_must_be_positive(self):
         path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("a")
-        for bad in ("0", "-1", "x"):
-            with self.subTest(bad=bad), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+        path.write_text("b a b")
+        for bad in ("0", "-1", "two"):
+            with self.subTest(top=bad), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
                 with self.assertRaises(SystemExit) as cm:
                     main(["--top", bad, str(path)])
                 self.assertEqual(cm.exception.code, 2)

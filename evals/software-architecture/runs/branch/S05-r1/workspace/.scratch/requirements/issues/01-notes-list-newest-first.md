@@ -1,9 +1,9 @@
-# `notes list` shows the newest notes first
+# Notes list shows the newest notes first
 
-Parent requirement: R-1 (users add, list and search notes from the command line).
+Parent requirement: R-1 (Users add, list and search notes from the command line.)
 
-Source: user interviews this week.
+Source: user interviews this week, requirement 4: `notes list` shows the newest notes first.
 
-Behaviour: `notes list` prints the newest notes first.
+Triage outcome: feature-level (set by the architect). It fits inside R-1, so there is no R-list row.
 
-Status: filed by `add-requirements`; continues through triage.
+Status: ready for `triage` before any work starts.

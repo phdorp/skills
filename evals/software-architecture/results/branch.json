@@ -11,13 +11,13 @@
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.019
+   "cost_usd": 0.018
   },
   "S03": {
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.015
+   "cost_usd": 0.016
   },
   "S04": {
    "runs": 2,
@@ -29,12 +29,93 @@
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.028
+   "cost_usd": 0.022
+  },
+  "S06": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.067
   }
  },
  "runs": [
   {
    "run": "S01-r1",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.003s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Validation (my choice):** `--top` must be a positive integer. `0`, negative values and non-numbers exit with code 2 and an argparse error. You didn't specify this, so say if you'd rather `--top 0` print nothing.",
+      "source": "transcript.md",
+      "reason": "The agent's own decisions concerned feature behaviour, and no quality goals, scenarios or ISO 25010 characteristics appear in its messages or files."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **README:** added a short `--top` usage example.",
+      "source": "transcript.md",
+      "reason": "The only documentation change was a README usage example; no ADR was created or proposed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The change is small, so I'll go test-first: add failing tests for `--top`, confirm they fail, then implement.",
+      "source": "transcript.md",
+      "reason": "The agent followed an ordinary read-test-implement-verify-commit workflow with no architecture setup, recovery or documentation steps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0895698
+   },
+   "cost_usd": 0.007474,
+   "needs_review": false
+  },
+  {
+   "run": "S01-r2",
    "scenario": "S01",
    "checks": [
     {
@@ -82,105 +163,30 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Small codebase: a single `main()` in `tally/cli.py` and one test class for `main`. I'll write the failing tests first, then implement.",
+      "quote": "I added `--top N` to the tally CLI and committed it as `2bff3fd`. All 6 tests pass with `python3 -m unittest`.",
       "source": "transcript.md",
-      "reason": "The agent went straight to tests and implementation and never mentioned quality goals, scenarios or ISO 25010 characteristics."
+      "reason": "The final report and the files contain only feature, test and README content, with no quality goals, scenarios or ISO 25010 characteristics."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "- **`README.md`**: a usage example for `--top`.",
+      "quote": "The `__pycache__/` directories created by running the tests are untracked and not committed. I didn't add a `.gitignore` since you didn't ask for one.",
       "source": "transcript.md",
-      "reason": "The only documentation change was a README usage example; no ADR was created or proposed."
+      "reason": "The agent wrote no ADR file and its report never proposes one."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "All 6 tests pass and the CLI behaves correctly by hand. The rejection test prints argparse's usage text to stderr, so I'll silence that and then commit.",
+      "quote": "The project is small: one CLI module, one test file, and a README. I'll write the failing tests first, then implement.",
       "source": "transcript.md",
-      "reason": "The steps were read, test, implement, verify and commit, with no architecture setup, recovery or documentation step."
+      "reason": "Every step was reading code, testing, implementing, verifying or committing, with no architecture setup, recovery or documentation step."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0937938
+    "cost_usd": 0.0843058
    },
-   "cost_usd": 0.0077522400000000005,
-   "needs_review": false
-  },
-  {
-   "run": "S01-r2",
-   "scenario": "S01",
-   "checks": [
-    {
-     "name": "tests_pass",
-     "pass": true,
-     "detail": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.003s\n\nOK\n"
-    },
-    {
-     "name": "feature_works",
-     "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
-    },
-    {
-     "name": "committed",
-     "pass": true,
-     "detail": "2 commits"
-    },
-    {
-     "name": "no_arc42",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "no_new_adr",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "setup_suggested_at_most_once",
-     "pass": true,
-     "detail": "0 mentions"
-    }
-   ],
-   "passed": 6,
-   "total": 6,
-   "score": 1.0,
-   "valid": true,
-   "judge": {
-    "criteria": [
-     "J1",
-     "J2",
-     "J3"
-    ],
-    "verdicts": [
-     {
-      "criterion": "J1",
-      "pass": true,
-      "quote": "I chose \"positive integer\" for N, which is my call since the request didn't say what to do with 0 or negative values.",
-      "source": "transcript.md",
-      "reason": "The agent only made a plain input-validation decision and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
-     },
-     {
-      "criterion": "J2",
-      "pass": true,
-      "quote": "I'll document the option in the README, then commit.",
-      "source": "transcript.md",
-      "reason": "The only documentation the agent wrote was a README usage example; it created and proposed no ADR."
-     },
-     {
-      "criterion": "J3",
-      "pass": true,
-      "quote": "Baseline is green (3 tests). I'll write the tests first, watch them fail, then implement.",
-      "source": "transcript.md",
-      "reason": "The run followed a normal read-test-implement-verify-commit flow with no architecture setup, recovery or documentation steps."
-     }
-    ],
-    "quote_errors": [],
-    "needs_review": false,
-    "cost_usd": 0.0865018
-   },
-   "cost_usd": 0.0073976,
+   "cost_usd": 0.007271,
    "needs_review": false
   },
   {
@@ -190,12 +196,12 @@
     {
      "name": "one_new_adr",
      "pass": true,
-     "detail": "0004-export-notes-as-jsonl-via-notes-export.md"
+     "detail": "0004-export-notes-as-json-via-export-command.md"
     },
     {
      "name": "next_number",
      "pass": true,
-     "detail": "0004-export-notes-as-jsonl-via-notes-export.md"
+     "detail": "0004-export-notes-as-json-via-export-command.md"
     },
     {
      "name": "five_fields",
@@ -205,12 +211,12 @@
     {
      "name": "status_proposed",
      "pass": true,
-     "detail": "proposed"
+     "detail": "proposed 2026-11-21"
     },
     {
      "name": "cites_ids",
      "pass": true,
-     "detail": "R-2, R-3"
+     "detail": "QG-1, QG-2, QS-3, R-2, R-3"
     },
     {
      "name": "others_unchanged",
@@ -237,30 +243,30 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "I drafted the export decision as ADR-0004 and left it `proposed`. It needs your approval before the team builds it.",
+      "quote": "The export decision is written up as ADR-0004, but it is `proposed`, not accepted.",
       "source": "transcript.md",
-      "reason": "The final message presents ADR-0004 as proposed and waiting for the architect's approval."
+      "reason": "The final message explicitly presents ADR-0004 as proposed and awaiting the architect's approval."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "The record-decisions ADR (0002) puts both \"import and export formats\" and \"CLI command names\" on the central list, so this needs an ADR.",
+      "quote": "The ADR-0002 list says import/export formats and CLI command names and exit codes are decided centrally, so this needs an ADR.",
       "source": "transcript.md",
-      "reason": "The agent read ADR-0002 (cat of docs/adr/*.md) and relied on its central list before writing the ADR."
+      "reason": "The agent read ADR-0002 and the arc42 document with its cat loop before drafting, and then acted on ADR-0002's list."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Constraints: standard library only (R-3);\nexport only reads, so it must not change the store (R-2);",
-      "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-notes-export.md",
-      "reason": "The Context cites requirement IDs R-3 and R-2 as forces the decision serves, though the backup need itself is named only in words."
+      "quote": "must not lose any note (R-2, QG-1), must run with only the standard library (R-3, QG-2)",
+      "source": "workspace/docs/adr/0004-export-notes-as-json-via-export-command.md",
+      "reason": "The ADR's Context cites the requirements and quality goals it serves by ID."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1318178
+    "cost_usd": 0.13611379999999998
    },
-   "cost_usd": 0.00924624,
+   "cost_usd": 0.00993,
    "needs_review": false
   },
   {
@@ -270,12 +276,12 @@
     {
      "name": "one_new_adr",
      "pass": true,
-     "detail": "0004-export-notes-as-json-lines.md"
+     "detail": "0004-export-notes-as-csv.md"
     },
     {
      "name": "next_number",
      "pass": true,
-     "detail": "0004-export-notes-as-json-lines.md"
+     "detail": "0004-export-notes-as-csv.md"
     },
     {
      "name": "five_fields",
@@ -290,7 +296,7 @@
     {
      "name": "cites_ids",
      "pass": true,
-     "detail": "R-1, R-2, R-3"
+     "detail": "QG-1, QG-2, QS-1, R-2, R-3"
     },
     {
      "name": "others_unchanged",
@@ -317,30 +323,30 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "I wrote ADR 0004 and it is `proposed`, not accepted. Under ADR-0002, the team can't build the export until you accept it, so one approval is needed before work starts tomorrow.",
+      "quote": "The export decision is recorded as ADR-0004, with status `proposed`.",
       "source": "transcript.md",
-      "reason": "The final message explicitly presents the ADR as proposed and awaiting the architect's acceptance."
+      "reason": "The final message presents the ADR as proposed and asks the architect to approve it before the team builds it."
      },
      {
       "criterion": "J2",
       "pass": true,
       "quote": "=== docs/adr/0002-record-architecture-decisions.md",
       "source": "transcript.md",
-      "reason": "The agent printed ADR-0002 in full before drafting the decision and then applied its list of centrally decided topics."
+      "reason": "The agent printed ADR-0002 with cat before writing ADR-0004."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Users want to back up their notes and move them to other tools (R-2: no note is lost; R-1: core\nuse).",
-      "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
-      "reason": "The ADR's Context names the requirements it serves by ID (R-2, R-1), though the fit is loose and the agent flags that no dedicated export requirement exists."
+      "quote": "Users keep their notes for years (R-2, QG-1) and want to back them up and move them to other",
+      "source": "workspace/docs/adr/0004-export-notes-as-csv.md",
+      "reason": "The ADR's Context cites requirement and quality-goal IDs (R-2, QG-1, R-3, QG-2, QS-1)."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1397898
+    "cost_usd": 0.1290858
    },
-   "cost_usd": 0.00926151,
+   "cost_usd": 0.008442,
    "needs_review": false
   },
   {
@@ -355,12 +361,12 @@
     {
      "name": "rejected_kept_with_reason",
      "pass": true,
-     "detail": "rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3."
+     "detail": "rejected 2026-11-21: a server database contradicts R-3; we will not run a second storage engine."
     },
     {
      "name": "supersede_new_adr",
      "pass": true,
-     "detail": "0006-store-one-json-file-per-note.md"
+     "detail": "0006-store-each-note-as-a-json-file.md"
     },
     {
      "name": "old_status",
@@ -386,23 +392,23 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3.",
+      "quote": "rejected 2026-11-21: a server database contradicts R-3; we will not run a second storage engine.",
       "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
-      "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the architect's reason, and added ADR-0006 for the move off SQLite, leaving ADR-0001 through ADR-0003 unchanged."
+      "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the given reason and added ADR-0006 for the JSON move, and the git status shows no other decision files changed."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "It starts as `proposed` because you stated the decision but did not approve the record.",
+      "quote": "- **ADR-0001 (SQLite):** unchanged, still `accepted`. It is only marked superseded once ADR-0006 is accepted.",
       "source": "transcript.md",
-      "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 under 'Waiting for you' for the architect's approval."
+      "reason": "ADR-0006 is left as proposed, ADR-0001 is not superseded, and the final message lists ADR-0006 under 'Waiting for your approval'."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1094978
+    "cost_usd": 0.1213738
    },
-   "cost_usd": 0.00748313,
+   "cost_usd": 0.007563,
    "needs_review": false
   },
   {
@@ -417,12 +423,12 @@
     {
      "name": "rejected_kept_with_reason",
      "pass": true,
-     "detail": "rejected 2026-11-21: a server database contradicts R-3."
+     "detail": "rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3"
     },
     {
      "name": "supersede_new_adr",
      "pass": true,
-     "detail": "0006-store-one-json-file-per-note.md"
+     "detail": "0006-store-notes-as-json-files.md"
     },
     {
      "name": "old_status",
@@ -448,23 +454,23 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": " M docs/adr/0004-write-notes-atomically.md\n M docs/adr/0005-add-postgresql-backend.md\n?? docs/adr/0006-store-one-json-file-per-note.md",
+      "quote": "- **ADR-0005** (PostgreSQL backend): `proposed` \u2192 `rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3`. The file stays.",
       "source": "transcript.md",
-      "reason": "Only ADR-0004 (accepted), ADR-0005 (rejected citing R-3) and the new ADR-0006 changed; no other decision record was modified."
+      "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the given reason, and added ADR-0006 for the SQLite move, leaving ADR-0001 through ADR-0003 unchanged."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "- **ADR-0006**, \"Store one JSON file per note\": approve it to replace SQLite.",
+      "quote": "- **ADR-0001** (SQLite): unchanged and still `accepted 2026-10-01`. Under the ADR rules it changes to `superseded by ADR-0006` only once ADR-0006 is accepted.",
       "source": "transcript.md",
-      "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 as waiting for the architect's approval."
+      "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 under 'Waiting for your approval'."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1250018
+    "cost_usd": 0.1339418
    },
-   "cost_usd": 0.007775550000000001,
+   "cost_usd": 0.008254,
    "needs_review": false
   },
   {
@@ -502,37 +508,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Repeats **R-4** (deferred: \"needs a server; revisit next year\").",
+      "quote": "Duplicate of **R-4** (deferred: \"needs a server; revisit next year\").",
       "source": "transcript.md",
-      "reason": "The agent explicitly identifies the sync requirement as a repeat of the deferred R-4."
+      "reason": "The agent explicitly identifies the sync requirement as a duplicate of the deferred R-4."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Conflicts with **R-3** and the section 2 constraint (standard library only).",
+      "quote": "Conflicts with **R-3** (stdlib only), the **section 2 constraint** (standard library only)",
       "source": "transcript.md",
-      "reason": "The agent names R-3 and the standard-library-only constraint as conflicting with the pip/rich requirement."
+      "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the pip/rich requirement."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Conflicts with **ADR-0001** (accepted; SQLite file \"cannot be read or repaired with a text editor\").",
+      "quote": "Conflicts with **ADR-0001** (accepted; a binary SQLite file that \"cannot be read or repaired with a text editor\").",
       "source": "transcript.md",
       "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "Confirm the outcomes (or change any of them), and I'll apply them.",
+      "quote": "I checked all five against arc42 and ADRs 0001\u20130003 but changed no files. The skill requires your confirmation of each outcome before I apply anything.",
       "source": "transcript.md",
-      "reason": "The agent gave one outcome per requirement (keep deferred, rejected, system-level, feature-level, rejected), changed no files, and asked the architect to confirm first."
+      "reason": "The agent proposes an outcome per requirement (#1 kept under deferred R-4, #2 rejected, #3 system-level, #4 feature-level, #5 rejected) and asks for confirmation without modifying files."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1073498
+    "cost_usd": 0.1098898
    },
-   "cost_usd": 0.00927186,
+   "cost_usd": 0.009363,
    "needs_review": false
   },
   {
@@ -570,37 +576,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Repeats **R-4** (deferred: \"needs a server; revisit next year\").",
+      "quote": "| 1 | Notes sync between laptop and desktop | Duplicate of **R-4**",
       "source": "transcript.md",
-      "reason": "The agent explicitly identifies the sync requirement as a repeat of the deferred R-4 and proposes no new row."
+      "reason": "The agent explicitly identifies requirement 1 as a duplicate of the deferred R-4 and proposes no new row."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Conflicts with **R-3** (stdlib only), the section 2 stdlib constraint and **QS-2** (works without installing anything).",
+      "quote": "Conflicts with **R-3** (active, stdlib only) and \u00a72 constraint.",
       "source": "transcript.md",
-      "reason": "The agent names R-3 and the standard-library-only constraint as conflicting with the rich/pip requirement."
+      "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the rich/pip requirement."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Conflicts with **ADR-0001** (accepted) and with item 5.",
+      "quote": "Conflicts with accepted **ADR-0001**, which says the single SQLite file",
       "source": "transcript.md",
       "reason": "The agent names ADR-0001 (SQLite storage) as conflicting with the text-editor requirement."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "I checked all five requirements against the architecture but changed no files. The procedure ends at this question until you confirm an outcome for each requirement.",
+      "quote": "1. **Confirm or change each outcome** in the table above.",
       "source": "transcript.md",
-      "reason": "The agent proposes one outcome per requirement (keep deferred R-4, rejected, system-level, feature-level, system-level) and asks the architect to confirm before changing anything."
+      "reason": "The agent proposes an outcome for all five requirements, changes nothing, and asks the architect to confirm first."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.12319379999999999
+    "cost_usd": 0.1103898
    },
-   "cost_usd": 0.012751210000000002,
+   "cost_usd": 0.012155,
    "needs_review": false
   },
   {
@@ -625,7 +631,7 @@
     {
      "name": "superseding_adr",
      "pass": true,
-     "detail": "0004-store-notes-in-a-text-editor-readable-format.md"
+     "detail": "0004-store-notes-as-plain-text.md"
     },
     {
      "name": "goals_unchanged",
@@ -662,30 +668,30 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "## Goal impact (questions, nothing added to the goal or scenario tables)",
+      "quote": "Proposed: add QG-4 (Security: confidentiality) with a scenario, for example \"a stolen laptop's store is read without the key \u2192 0 note plaintext recovered.\" Not added; you decide.",
       "source": "transcript.md",
-      "reason": "The final message puts QG-4 Security: confidentiality forward as a question with a proposed scenario and asks 'What measure?', and the quality-goal tables in arc42.md are unchanged."
+      "reason": "The final message proposes a security quality goal with scenario and measure and leaves the decision to the architect without adding it."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Proposed order of the active requirements: R-1 (1), R-2 (2), R-3 (3), R-7 (4), R-8 (5). The existing ranks are unchanged.",
+      "quote": "1. Set the ranks. R-7 (4) and R-8 (5) are proposals only.",
       "source": "transcript.md",
-      "reason": "The agent proposes ranks for R-7 and R-8 and then writes 'Please set the order yourself.'"
+      "reason": "The agent proposes ranks 4 and 5 for the new active requirements and asks the architect to set them."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Changing the storage code waits until you accept ADR-0004. No code has changed.",
+      "quote": "4. ADR-0004 cannot be accepted until its file layout and atomic-write method are decided. Storage work waits until you accept it.",
       "source": "transcript.md",
-      "reason": "The agent states that storage-dependent work waits for the proposed ADR-0004 to be accepted."
+      "reason": "The agent states that storage work waits for acceptance of the new ADR-0004."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1389418
+    "cost_usd": 0.1209858
    },
-   "cost_usd": 0.01274943,
+   "cost_usd": 0.012727,
    "needs_review": false
   },
   {
@@ -710,7 +716,7 @@
     {
      "name": "superseding_adr",
      "pass": true,
-     "detail": "0004-store-notes-as-text-files.md"
+     "detail": "0004-replace-sqlite-with-text-storage.md"
     },
     {
      "name": "goals_unchanged",
@@ -720,7 +726,7 @@
     {
      "name": "feature_routed",
      "pass": true,
-     "detail": ".scratch/requirements/issues/01-notes-list-newest-first.md"
+     "detail": ".scratch/requirements/issues/01-list-newest-first.md"
     },
     {
      "name": "ranks_marked_proposed",
@@ -747,14 +753,14 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "R-8 touches confidentiality, which no goal covers. Should I add a goal for it? A candidate measure would be \"a store file copied off a stolen laptop shows zero note text.\"",
+      "quote": "Question: add QG-4, Security: confidentiality, with a scenario? A possible measure is \"0 plaintext note bytes in the store after a write\", but you have to set it.",
       "source": "transcript.md",
-      "reason": "The agent asks whether a confidentiality goal is needed and proposes a measure, without adding the goal."
+      "reason": "The agent asks whether a security goal is needed and proposes a measure, without adding a goal row."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "I proposed the order R-1, R-2, R-3 (yours), then R-7 at 4 and R-8 at 5. Please set the order.",
+      "quote": "**Ranks to set:** R-7 at 4 and R-8 at 5 are my proposals. Please set the order",
       "source": "transcript.md",
       "reason": "The agent proposes ranks for R-7 and R-8 and asks the architect to set the order."
      },
@@ -763,14 +769,190 @@
       "pass": true,
       "quote": "The storage work waits until you accept it.",
       "source": "transcript.md",
-      "reason": "The final message says the storage work waits for ADR-0004 to be accepted."
+      "reason": "The final message says that storage work waits for approval of ADR-0004."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1319978
+    "cost_usd": 0.1106018
    },
-   "cost_usd": 0.015070860000000002,
+   "cost_usd": 0.00927,
+   "needs_review": false
+  },
+  {
+   "run": "S06-r1",
+   "scenario": "S06",
+   "checks": [
+    {
+     "name": "t1_only_skeleton",
+     "pass": true,
+     "detail": "new: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "headings",
+     "pass": true,
+     "detail": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+    },
+    {
+     "name": "rlist",
+     "pass": true,
+     "detail": "R-1 active, R-2 active, R-3 active, R-4 active, R-5 active"
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QG-4"
+    },
+    {
+     "name": "adr_0001",
+     "pass": true,
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-3', 'QG-4', 'R-1', 'R-3', 'R-4', 'R-5']"
+    },
+    {
+     "name": "section9_links_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-list-latest-first.md"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Confirm or change the triage outcomes and the wording of R-1 to R-5.",
+      "source": "transcript.md",
+      "reason": "The turn-1 message gives a triage outcome for all six requirements, a ranking with reasons, and candidate goals citing R-IDs with scenarios, and it asks the architect to confirm."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "1. **R-5 \"fast\":** what number would show it is met?",
+      "source": "transcript.md",
+      "reason": "The speed requirement is kept as an open question asking for a measure, and no performance goal is filed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "- Security (confidentiality): should sighting locations be protected from other users on the same machine?",
+      "source": "transcript.md",
+      "reason": "The agent asks gap questions about characteristics no requirement supports, and no goal for them appears in the final goal table."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "The architecture setup is written. ADR-0001 is `proposed` and waits for your approval of its text.",
+      "source": "transcript.md",
+      "reason": "The final message states that ADR-0001 waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1661458
+   },
+   "cost_usd": 0.032245,
+   "needs_review": false
+  },
+  {
+   "run": "S06-r2",
+   "scenario": "S06",
+   "checks": [
+    {
+     "name": "t1_only_skeleton",
+     "pass": true,
+     "detail": "new: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "headings",
+     "pass": true,
+     "detail": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+    },
+    {
+     "name": "rlist",
+     "pass": true,
+     "detail": "R-1 active, R-2 active, R-3 active, R-4 active, R-5 active"
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QG-4"
+    },
+    {
+     "name": "adr_0001",
+     "pass": true,
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-2', 'R-3']"
+    },
+    {
+     "name": "section9_links_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-list-latest-first.md"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Please confirm and rank the top three to five. I'd keep all four.",
+      "source": "transcript.md",
+      "reason": "Turn 1 gives triage outcomes for all six requirements, a ranking with a reason per ranked item, candidate goals citing R-IDs with scenarios, and asks the architect to confirm."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Open question (no measure yet, so no goal row): Performance efficiency: time behaviour, from R-5.",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "The 'fast' requirement is kept as an open question with no goal row and no invented measure."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "sightings of sensitive species, such as nesting owls, could be used to find them. Do you want location hiding or coarsening?",
+      "source": "transcript.md",
+      "reason": "The agent asks gap questions about unsupported characteristics (confidentiality, user error protection, learnability) and files no goals for them."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "**ADR-0001 is waiting for your approval** of its text.",
+      "source": "transcript.md",
+      "reason": "The final message states that ADR-0001 awaits the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1870378
+   },
+   "cost_usd": 0.03487,
    "needs_review": false
   }
  ]

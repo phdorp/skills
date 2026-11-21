@@ -290,7 +290,8 @@ def s05(run_dir):
 
 
 SECTION_HEAD = re.compile(r"^## (\d{1,2})\.?\s+\S", re.M)
-DIGIT = re.compile(r"\d")
+# A measure states a number: digits, or a number word ("all three OSes", "every sighting").
+DIGIT = re.compile(r"\d|\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|all|every|none)\b", re.I)
 QG_ID = re.compile(r"\bQG-\d+\b")
 QS_ID = re.compile(r"\bQS-\d+\b")
 R_ANY = re.compile(r"\bR-\d+\b")

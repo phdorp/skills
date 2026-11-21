@@ -10,7 +10,16 @@ Please integrate them into the project.
 
 ### assistant
 
-I'll load the two skills the procedure requires and read the architecture doc first.
+I'll start with the precondition: the architecture doc, and the skills this procedure depends on.
+
+### tool_use Bash
+
+```json
+{
+ "command": "ls -la && ls -la docs docs/architecture docs/adr docs/agents 2>/dev/null; git status --short | head",
+ "description": "List project layout and git status"
+}
+```
 
 ### tool_use Skill
 
@@ -18,6 +27,40 @@ I'll load the two skills the procedure requires and read the architecture doc fi
 {
  "skill": "sa:quality-requirements"
 }
+```
+
+### tool_result
+
+```
+total 32
+drwxr-xr-x 6 root root 4096 Nov 21 13:44 .
+drwx------ 3 root root 4096 Nov 21 13:44 ..
+drwxr-xr-x 8 root root 4096 Nov 21 13:44 .git
+-rw-r--r-- 1 root root  149 Nov 21 11:54 GLOSSARY.md
+-rw-r--r-- 1 root root  330 Nov 21 11:54 README.md
+drwxr-xr-x 4 root root 4096 Nov 21 11:54 docs
+drwxr-xr-x 2 root root 4096 Nov 21 11:54 notes
+drwxr-xr-x 2 root root 4096 Nov 21 11:54 tests
+docs:
+total 16
+drwxr-xr-x 4 root root 4096 Nov 21 11:54 .
+drwxr-xr-x 6 root root 4096 Nov 21 13:44 ..
+drwxr-xr-x 2 root root 4096 Nov 21 11:55 adr
+drwxr-xr-x 2 root root 4096 Nov 21 11:55 architecture
+
+docs/adr:
+total 20
+drwxr-xr-x 2 root root 4096 Nov 21 11:55 .
+drwxr-xr-x 4 root root 4096 Nov 21 11:54 ..
+-rw-r--r-- 1 root root  478 Nov 21 11:55 0001-use-sqlite-for-storage.md
+-rw-r--r-- 1 root root  817 Nov 21 11:55 0002-record-architecture-decisions.md
+-rw-r--r-- 1 root root  419 Nov 21 11:55 0003-cli-reaches-storage-only-through-store.md
+
+docs/architecture:
+total 12
+drwxr-xr-x 2 root root 4096 Nov 21 11:55 .
+drwxr-xr-x 4 root root 4096 Nov 21 11:54 ..
+-rw-r--r-- 1 root root 2674 Nov 21 11:55 arc42.md
 ```
 
 ### tool_result
@@ -40,11 +83,15 @@ Launching skill: sa:quality-requirements
 Launching skill: sa:domain-modeling
 ```
 
+### assistant
+
+Both skills are loaded. Next I'll read arc42 and the existing ADRs, which the triage needs.
+
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-lr5jhh95/project/docs/architecture/arc42.md"
+ "file_path": "/tmp/sa-eval-pr8jni_v/project/docs/architecture/arc42.md"
 }
 ```
 
@@ -128,144 +175,136 @@ Launching skill: sa:domain-modeling
 75	
 ```
 
-### assistant
-
-Both skills are loaded and arc42 is read. Next I need the ADRs, the issue-tracker setting, and the glossary.
-
-### tool_use Bash
+### tool_use Read
 
 ```json
 {
- "command": "ls -la docs docs/adr docs/agents 2>/dev/null; echo ---; for f in docs/adr/*.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo ---; cat docs/agents/issue-tracker.md 2>/dev/null; echo ---; ls .scratch 2>/dev/null; git status --short; git log --oneline | head -5",
- "description": "List ADRs, tracker config, and repo state"
+ "file_path": "/tmp/sa-eval-pr8jni_v/project/docs/adr/0001-use-sqlite-for-storage.md"
 }
 ```
 
 ### tool_result
 
 ```
-docs:
-total 16
-drwxr-xr-x 4 root root 4096 Nov 21 11:54 .
-drwxr-xr-x 6 root root 4096 Nov 21 13:12 ..
-drwxr-xr-x 2 root root 4096 Nov 21 11:55 adr
-drwxr-xr-x 2 root root 4096 Nov 21 11:55 architecture
+1	# 1. Use SQLite for storage
+2	
+3	## Status
+4	
+5	accepted 2026-10-01
+6	
+7	## Context
+8	
+9	Notes must survive crashes (R-2, QG-1, QS-1) and the program may use only the Python standard
+10	library (R-3, QG-2). The standard library ships `sqlite3`, whose transactions are atomic.
+11	
+12	## Decision
+13	
+14	Store all notes in one SQLite database file, by default `~/.notes.db`.
+15	
+16	## Consequences
+17	
+18	Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
+19	repaired with a text editor.
+20	
+```
 
-docs/adr:
-total 20
-drwxr-xr-x 2 root root 4096 Nov 21 11:55 .
-drwxr-xr-x 4 root root 4096 Nov 21 11:54 ..
--rw-r--r-- 1 root root  478 Nov 21 11:55 0001-use-sqlite-for-storage.md
--rw-r--r-- 1 root root  817 Nov 21 11:55 0002-record-architecture-decisions.md
--rw-r--r-- 1 root root  419 Nov 21 11:55 0003-cli-reaches-storage-only-through-store.md
----
-=== docs/adr/0001-use-sqlite-for-storage.md
-# 1. Use SQLite for storage
+### tool_use Read
 
-## Status
+```json
+{
+ "file_path": "/tmp/sa-eval-pr8jni_v/project/docs/adr/0002-record-architecture-decisions.md"
+}
+```
 
-accepted 2026-10-01
+### tool_result
 
-## Context
+```
+1	# 2. Record architecture decisions
+2	
+3	## Status
+4	
+5	accepted 2026-10-01
+6	
+7	## Context
+8	
+9	The architect decides the architecture; contributors and agents implement it. We need a line
+10	between decisions the architect makes centrally and decisions left to whoever builds a block
+11	(R-1, QG-3).
+12	
+13	## Decision
+14	
+15	We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
+16	
+17	Decided centrally (needs an ADR the architect accepts):
+18	
+19	- the storage engine and the on-disk format;
+20	- the dependency rule between blocks: `cli` → `store` → `model`;
+21	- import and export formats;
+22	- CLI command names and exit codes;
+23	- third-party dependencies.
+24	
+25	Left to the building blocks (no ADR): internal helpers, SQL query structure, test layout.
+26	
+27	## Consequences
+28	
+29	Work that depends on a decision on the list waits until its ADR is accepted.
+30	
+```
 
-Notes must survive crashes (R-2, QG-1, QS-1) and the program may use only the Python standard
-library (R-3, QG-2). The standard library ships `sqlite3`, whose transactions are atomic.
+### tool_use Read
 
-## Decision
+```json
+{
+ "file_path": "/tmp/sa-eval-pr8jni_v/project/docs/adr/0003-cli-reaches-storage-only-through-store.md"
+}
+```
 
-Store all notes in one SQLite database file, by default `~/.notes.db`.
+### tool_result
 
-## Consequences
-
-Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
-repaired with a text editor.
-
-=== docs/adr/0002-record-architecture-decisions.md
-# 2. Record architecture decisions
-
-## Status
-
-accepted 2026-10-01
-
-## Context
-
-The architect decides the architecture; contributors and agents implement it. We need a line
-between decisions the architect makes centrally and decisions left to whoever builds a block
-(R-1, QG-3).
-
-## Decision
-
-We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
-
-Decided centrally (needs an ADR the architect accepts):
-
-- the storage engine and the on-disk format;
-- the dependency rule between blocks: `cli` → `store` → `model`;
-- import and export formats;
-- CLI command names and exit codes;
-- third-party dependencies.
-
-Left to the building blocks (no ADR): internal helpers, SQL query structure, test layout.
-
-## Consequences
-
-Work that depends on a decision on the list waits until its ADR is accepted.
-
-=== docs/adr/0003-cli-reaches-storage-only-through-store.md
-# 3. CLI reaches storage only through the store module
-
-## Status
-
-accepted 2026-10-01
-
-## Context
-
-Contributors should be able to swap the storage engine by changing one module (QG-3, QS-3).
-
-## Decision
-
-Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
-`Store` class and the `Note` value.
-
-## Consequences
-
-Any new command that reads or writes notes goes through `Store`.
-
----
----
-c714155 fixture
+```
+1	# 3. CLI reaches storage only through the store module
+2	
+3	## Status
+4	
+5	accepted 2026-10-01
+6	
+7	## Context
+8	
+9	Contributors should be able to swap the storage engine by changing one module (QG-3, QS-3).
+10	
+11	## Decision
+12	
+13	Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
+14	`Store` class and the `Note` value.
+15	
+16	## Consequences
+17	
+18	Any new command that reads or writes notes goes through `Store`.
+19	
 ```
 
 ### assistant
 
-I've checked the requirements against the architecture and the accepted ADRs. I haven't changed any files: the procedure needs your confirmation of each outcome first, and your message didn't give one.
+I checked all five against arc42 and ADRs 0001–0003 but changed no files. The skill requires your confirmation of each outcome before I apply anything. Your message asks me to integrate them but does not state an outcome for each, so I need your answer first.
 
-**Proposed outcomes** (new row IDs assume table order: R-6, R-7, R-8, and only for rows that get one)
+| # | Requirement | Findings | Proposed outcome and reason |
+|---|---|---|---|
+| 1 | Notes sync between laptop and desktop | Duplicate of **R-4** (deferred: "needs a server; revisit next year"). | **No new row.** It repeats R-4, and I'll report that it was asked again. |
+| 2 | `pip install notes-cli`, using `rich` for coloured output | Conflicts with **R-3** (stdlib only), the **section 2 constraint** (standard library only), **ADR-0002** (third-party dependencies are decided centrally), and **QS-2** (0 install steps). The name `notes-cli` also differs from the `notes` command that ADR-0002 and section 8 use. | **rejected**: it conflicts with the stdlib-only constraint. Alternative: `deferred`, if you want to revisit it once R-3 changes. |
+| 3 | Notes can be read and edited with any text editor | Conflicts with **ADR-0001** (accepted; a binary SQLite file that "cannot be read or repaired with a text editor"). Conflicts with **R-2 / QS-1** (crash safety comes from SQLite transactions). Conflicts with #5 (encrypted notes cannot be edited as text). | **system-level**, proposed rank `4 (proposed)`, provisionally **R-7**. It changes the on-disk format, so I would draft **ADR-0004** as `proposed` and leave ADR-0001 `accepted`. The storage change waits until you accept ADR-0004. |
+| 4 | `notes list` shows the newest notes first | Part of **R-1** (list exists). No conflicts. | **feature-level**: an issue citing R-1, filed at `.scratch/requirements/issues/NN-newest-first.md`. No tracker is configured (`docs/agents/issue-tracker.md` does not exist). |
+| 5 | Notes are encrypted at rest | The standard library has no cipher, so this needs a third-party library. That conflicts with **R-3**, the **section 2 constraint**, and **ADR-0002**. It also conflicts with #3. No quality goal covers confidentiality. | **rejected** under the current constraint. It becomes system-level only if you relax section 2, which is your decision. |
 
-| # | Requirement | Findings | Proposed outcome | Reason |
-|---|---|---|---|---|
-| 1 | Notes sync between laptop and desktop | Repeats **R-4** (deferred: "needs a server; revisit next year"). | **No new row** | It is a repeat request. R-4 stays as it is, and I'll report it. |
-| 2 | Install with `pip install notes-cli`, colour via `rich` | Conflicts with **R-3** and the section 2 constraint (standard library only). Conflicts with **QS-2** (measure: 0 install steps) and **ADR-0002** (third-party dependencies are decided centrally). | **Rejected** → R-6 | Adding `rich` conflicts with R-3. |
-| 3 | Read and edit with any text editor | Conflicts with **ADR-0001** (accepted; SQLite file "cannot be read or repaired with a text editor"). Conflicts with #5. Needs an atomic save so **R-2 / QS-1** still hold. | **System-level** → R-7, `active`, rank `4 (proposed)`. Draft **ADR-0004** (proposed) superseding ADR-0001. | It changes the storage, so it needs a new row and an ADR. ADR-0001 stays `accepted` until ADR-0004 is accepted. |
-| 4 | `notes list` shows newest first | Fits inside **R-1**. No conflicts. | **Feature-level**: issue citing R-1 | It changes one existing command and has no architecture effect. |
-| 5 | Notes encrypted at rest | Conflicts with **R-3** and the section 2 constraint (the standard library has no cipher). Conflicts with **ADR-0002** (a third-party library needs a central decision). Conflicts with #3 (encrypted notes can't be edited in a text editor). A lost key would make notes unreadable, against the stakeholder goal "keep notes for years without losing any" and **QS-1**. Confidentiality has no goal (open question). | **Rejected** → R-8 | It conflicts with the current direction (R-3). |
+If you confirm the proposals, the provisional IDs are R-6 (#2, rejected), R-7 (#3, active) and R-8 (#5, rejected).
 
-**Proposed wording** (for your decision, rows unchanged)
-- #2: "Installable with `pip install notes-cli`, with no third-party dependencies; coloured output uses only the standard library."
-- #3: "Notes are stored as plain text that any text editor can read and edit, and an interrupted save never leaves a partly written note."
+Goal impact, as questions only:
+- #3 strains QG-1 / QS-1 (fault tolerance), because a plain-text file can be left half-written.
+- #5 touches confidentiality, which no goal covers. Should I add a security goal with a scenario? I would only ask this if you keep #5 as system-level.
 
-**Questions for you**
-1. Do you confirm or change each outcome above?
-2. Rank for R-7: I propose 4 (proposed), after R-1 to R-3. Please set the order.
-3. Conflict between R-7 and R-8: if only one of them can be fully met, which one?
-4. If you relax R-3 to allow third-party libraries, #2 and #5 would be reconsidered. Do you want that? It would be a superseding ADR for ADR-0002 and a change to the section 2 constraint, and it is your decision.
-5. Goal impact for R-7 (if confirmed): it touches **QG-1** (save must stay atomic) and **QG-3** (storage still changes only in `store.py`). Proposed measure, as a question: "R-7 implies a text file that stays readable after a crash. Add it to QS-1 with 0 unreadable notes in 100 SIGKILL trials?"
-6. Confidentiality for #5 has no goal. Only needed if you revisit #5.
-7. No issue tracker is configured (`docs/agents/issue-tracker.md` is missing), so for #4 I would file `.scratch/requirements/issues/01-list-newest-first.md`. Is that fine?
-8. R-4's reason says "revisit next year", and #1 repeats it now. Do you want to revisit R-4 early? That's your decision, and I won't change R-4 either way.
-
-**Waiting, once confirmed:** ADR-0004 (plain-text storage) must be accepted before any storage work starts. Its question is: "Do you approve replacing SQLite storage (ADR-0001) with plain-text storage?"
-
-Confirm the outcomes (or change any of them), and I'll apply them.
+Questions for you:
+1. Do you confirm each outcome above, or change any? For #2 and #5, do you want `rejected` or `deferred`?
+2. Tie-breaker: if only one of R-2 and #3 can be fully met, which one? (R-2 is what gives crash safety, and #3 needs a plain-text format.)
+3. What rank should R-7 take? I propose 4, after R-1 to R-3.
+4. R-4 was deferred with "revisit next year", and it is now 2026-11-21. Do you want to revisit it now? That is a question for you only; I won't change the row.
 
 ### result (success)

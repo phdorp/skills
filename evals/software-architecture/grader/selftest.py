@@ -67,6 +67,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S06-accepted": {"adr_0001"},                       # ADR-0001 marked accepted
     "S06-noids": {"adr_0001"},                          # ADR-0001 Context cites no ID
     "S06-nolink": {"section9_links_adr"},               # section 9 does not link docs/adr
+    "S06-wordmeasure": set(),                           # measure in words: "all three OSes"
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06")
 

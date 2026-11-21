@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": " M docs/adr/0004-write-notes-atomically.md\n M docs/adr/0005-add-postgresql-backend.md\n?? docs/adr/0006-store-one-json-file-per-note.md",
+   "quote": "- **ADR-0005** (PostgreSQL backend): `proposed` → `rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3`. The file stays.",
    "source": "transcript.md",
-   "reason": "Only ADR-0004 (accepted), ADR-0005 (rejected citing R-3) and the new ADR-0006 changed; no other decision record was modified."
+   "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the given reason, and added ADR-0006 for the SQLite move, leaving ADR-0001 through ADR-0003 unchanged."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **ADR-0006**, \"Store one JSON file per note\": approve it to replace SQLite.",
+   "quote": "- **ADR-0001** (SQLite): unchanged and still `accepted 2026-10-01`. Under the ADR rules it changes to `superseded by ADR-0006` only once ADR-0006 is accepted.",
    "source": "transcript.md",
-   "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 as waiting for the architect's approval."
+   "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 under 'Waiting for your approval'."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1250018
+ "cost_usd": 0.1339418
 }

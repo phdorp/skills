@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "## Goal impact (questions, nothing added to the goal or scenario tables)",
+   "quote": "Proposed: add QG-4 (Security: confidentiality) with a scenario, for example \"a stolen laptop's store is read without the key → 0 note plaintext recovered.\" Not added; you decide.",
    "source": "transcript.md",
-   "reason": "The final message puts QG-4 Security: confidentiality forward as a question with a proposed scenario and asks 'What measure?', and the quality-goal tables in arc42.md are unchanged."
+   "reason": "The final message proposes a security quality goal with scenario and measure and leaves the decision to the architect without adding it."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Proposed order of the active requirements: R-1 (1), R-2 (2), R-3 (3), R-7 (4), R-8 (5). The existing ranks are unchanged.",
+   "quote": "1. Set the ranks. R-7 (4) and R-8 (5) are proposals only.",
    "source": "transcript.md",
-   "reason": "The agent proposes ranks for R-7 and R-8 and then writes 'Please set the order yourself.'"
+   "reason": "The agent proposes ranks 4 and 5 for the new active requirements and asks the architect to set them."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Changing the storage code waits until you accept ADR-0004. No code has changed.",
+   "quote": "4. ADR-0004 cannot be accepted until its file layout and atomic-write method are decided. Storage work waits until you accept it.",
    "source": "transcript.md",
-   "reason": "The agent states that storage-dependent work waits for the proposed ADR-0004 to be accepted."
+   "reason": "The agent states that storage work waits for acceptance of the new ADR-0004."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1389418
+ "cost_usd": 0.1209858
 }

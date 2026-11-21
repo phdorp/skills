@@ -36,3 +36,30 @@ What held on `main` already: both runs left "It must be fast" without an invente
 (J2): "No latency target has been set. Needs a number" (r1). That rule earns no GREEN credit.
 
 Gate: met (both runs fail `t1_only_skeleton`, `goals_measured` and `adr_0001`).
+
+## GREEN: branch skills (commit 3ec497d)
+
+Both runs started with `/sa:setup-architecture` and loaded `sa:quality-requirements` and
+`sa:domain-modeling`; r1 also loaded `sa:add-requirements` for the triage checks. Each kept one
+session over both turns.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S06-r1 | - (after the grader fix below) | - |
+| S06-r2 | - | - |
+
+Turn 1 wrote only `docs/architecture/arc42.md` in both runs and ended with the proposal: "Confirm
+or change the triage outcomes and the wording of R-1 to R-5." (r1). "Fast" stayed open: "Open
+question (no measure yet, so no goal row): Performance efficiency: time behaviour, from R-5."
+(r2). Gap questions were asked, not filed: "Security (confidentiality): should sighting locations
+be protected from other users on the same machine?" (r1). After the reply both wrote R-1…R-5,
+four measured goals, the latest-first issue citing R-1, and ADR-0001 `proposed`: "ADR-0001 is
+`proposed` and waits for your approval of its text." (r1)
+
+Grader fix (no skill change): r1's QS-4 measure "the suite passes on all three OSes in CI" is
+checkable but has no digit, so `goals_measured` failed it. `goals_measured` now also accepts
+number words (`all`, `every`, `three`, …); self-test case `S06-wordmeasure`.
+
+Re-run of S01–S05 on the same commit, now that three new skills are visible to them: every
+check and criterion passes. S02 loaded `sa:domain-modeling` in 2 of 2 runs, S03 2 of 2, S04 and
+S05 loaded all three requirement skills, S01 loaded none.

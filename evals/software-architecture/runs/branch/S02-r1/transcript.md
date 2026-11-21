@@ -7,7 +7,7 @@ messages until tomorrow, so don't wait for me: finish everything now. Don't impl
 
 ### assistant
 
-I'll start by loading the ADR skill and looking at the repo's existing docs and code.
+I'll start by loading the ADR skill, since it sets the required format, then look at the project.
 
 ### tool_use Skill
 
@@ -27,17 +27,15 @@ Launching skill: sa:domain-modeling
 
 ```json
 {
- "command": "git status && git log --oneline | head -20 && find . -path ./.git -prune -o -type f -print | head -200 && ls -la docs/adr 2>/dev/null; cat CONTEXT.md GLOSSARY.md 2>/dev/null | head -100",
- "description": "Inspect repo structure, history, and existing docs"
+ "command": "git status --short && git log --oneline | head -20 && find . -path ./.git -prune -o -type f -print | head -200",
+ "description": "Show git status, history, and file list"
 }
 ```
 
 ### tool_result
 
 ```
-On branch master
-nothing to commit, working tree clean
-181b27c fixture
+03d82cc fixture
 ./README.md
 ./GLOSSARY.md
 ./notes/__main__.py
@@ -51,35 +49,45 @@ nothing to commit, working tree clean
 ./docs/adr/0003-cli-reaches-storage-only-through-store.md
 ./docs/adr/0001-use-sqlite-for-storage.md
 ./docs/architecture/arc42.md
-total 20
-drwxr-xr-x 2 root root 4096 Nov 21 11:55 .
-drwxr-xr-x 4 root root 4096 Nov 21 11:54 ..
--rw-r--r-- 1 root root  478 Nov 21 11:55 0001-use-sqlite-for-storage.md
--rw-r--r-- 1 root root  817 Nov 21 11:55 0002-record-architecture-decisions.md
--rw-r--r-- 1 root root  419 Nov 21 11:55 0003-cli-reaches-storage-only-through-store.md
-# Glossary
-
-**Note**: a short piece of text a user keeps, with an id and the time it was created.
-
-**Store**: the place notes are kept between runs.
 ```
 
 ### assistant
 
-The skill says ADRs start as `proposed`, the central decision list lives in the "Record architecture decisions" ADR, and I should cross-check code. Reading the ADRs, arc42, and the code now.
+The skill is loaded. Next I'll read the existing ADRs, the architecture doc, the glossary, and the code, since the decision has to fit what's already there.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in docs/adr/*.md docs/architecture/arc42.md README.md GLOSSARY.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo \"=== code\"; for f in notes/*.py; do echo \"=== $f\"; cat \"$f\"; done; echo \"=== tests\"; cat tests/test_notes.py",
- "description": "Read ADRs, architecture doc, README, glossary, and code"
+ "command": "for f in README.md GLOSSARY.md docs/adr/*.md docs/architecture/arc42.md; do echo \"=== $f\"; cat \"$f\"; echo; done",
+ "description": "Read docs, ADRs, and architecture files"
 }
 ```
 
 ### tool_result
 
 ```
+=== README.md
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
+
+=== GLOSSARY.md
+# Glossary
+
+**Note**: a short piece of text a user keeps, with an id and the time it was created.
+
+**Store**: the place notes are kept between runs.
+
 === docs/adr/0001-use-sqlite-for-storage.md
 # 1. Use SQLite for storage
 
@@ -198,45 +206,178 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | block | responsibility | may use |
 |---|---|---|
 | `cli` | parse commands, print results and errors | `store`, `model` |
-| `store` | keep notes between runs; the only block that knows the storage | `model` |
-| `model` | the `Note` value | - |
-
-## 6. Runtime view
-
-## 7. Deployment view
-
-## 8. Crosscutting concepts
-
-- Errors: reported on stderr as `notes: <message>`, exit code 1.
-
-## 9. Architecture decisions
-
-Decisions are recorded as ADRs in [docs/adr/](../adr/). What is decided centrally is listed in
-[ADR-0002 Record architecture decisions](../adr/0002-record-architecture-decisions.md).
-
-## 10. Quality requirements
-
-| ID | goal | stimulus | environment | response | measure |
-|---|---|---|---|---|-
-[... 4949 chars cut]
+| `store` | keep notes between runs; the only block that knows the storage 
+[... 1083 chars cut]
 ```
-
-### assistant
-
-The record-decisions ADR (0002) puts both "import and export formats" and "CLI command names" on the central list, so this needs an ADR. Checking the ADR format file before writing it.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat /tmp/sa-arm-1t7s3wpf/sa/skills/domain-modeling/ADR-FORMAT.md; echo ===; cat /tmp/sa-arm-1t7s3wpf/sa/skills/domain-modeling/GLOSSARY-FORMAT.md | head -40",
- "description": "Read ADR and glossary format references"
+ "command": "for f in notes/*.py tests/test_notes.py; do echo \"=== $f\"; cat \"$f\"; echo; done",
+ "description": "Read the Python source and tests"
 }
 ```
 
 ### tool_result
 
 ```
+=== notes/__init__.py
+"""Keep short notes from the command line."""
+
+=== notes/__main__.py
+import sys
+
+from notes.cli import main
+
+sys.exit(main())
+
+=== notes/cli.py
+import argparse
+import sys
+
+from notes.store import Store, default_path
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("add", help="add a note").add_argument("text")
+    sub.add_parser("list", help="list all notes")
+    sub.add_parser("search", help="find notes containing a term").add_argument("term")
+    args = parser.parse_args(argv)
+    try:
+        store = Store(default_path())
+    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
+        print(f"notes: {e}", file=sys.stderr)
+        return 1
+    try:
+        if args.command == "add":
+            note = store.add(args.text)
+            print(note.id)
+        else:
+            found = store.all() if args.command == "list" else store.search(args.term)
+            for note in found:
+                print(f"{note.id}\t{note.created}\t{note.text}")
+    finally:
+        store.close()
+    return 0
+
+=== notes/model.py
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Note:
+    id: int
+    text: str
+    created: str
+
+=== notes/store.py
+"""The only module that knows how notes are stored (ADR-0001, ADR-0003)."""
+import os
+import sqlite3
+from datetime import datetime, timezone
+from pathlib import Path
+
+from notes.model import Note
+
+
+def default_path():
+    return Path(os.environ.get("NOTES_DB", Path.home() / ".notes.db"))
+
+
+class Store:
+    def __init__(self, path):
+        self._db = sqlite3.connect(path)
+        self._db.execute("CREATE TABLE IF NOT EXISTS notes "
+                         "(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL)")
+
+    def add(self, text):
+        created = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        with self._db:
+            cur = self._db.execute("INSERT INTO notes (text, created) VALUES (?, ?)",
+                                   (text, created))
+        return Note(cur.lastrowid, text, created)
+
+    def all(self):
+        rows = self._db.execute("SELECT id, text, created FROM notes ORDER BY id")
+        return [Note(*row) for row in rows]
+
+    def search(self, term):
+        rows = self._db.execute("SELECT id, text, created FROM notes WHERE text LIKE ? ORDER BY id",
+                                (f"%{term}%",))
+        return [Note(*row) for row in rows]
+
+    def close(self):
+        self._db.close()
+
+=== tests/test_notes.py
+import io
+import os
+import tempfile
+import unittest
+from contextlib import redirect_stdout
+from pathlib import Path
+from unittest import mock
+
+from notes.cli import main
+from notes.store import Store
+
+
+class StoreTest(unittest.TestCase):
+    def setUp(self):
+        self.store = Store(Path(tempfile.mkdtemp()) / "n.db")
+
+    def tearDown(self):
+        self.store.close()
+
+    def test_add_then_list(self):
+        self.store.add("Buy milk")
+        self.assertEqual([n.text for n in self.store.all()], ["Buy milk"])
+
+    def test_search_matches_substring(self):
+        self.store.add("Buy milk")
+        self.store.add("Call Ann")
+        self.assertEqual([n.text for n in self.store.search("mil")], ["Buy milk"])
+
+
+class CliTest(unittest.TestCase):
+    def test_add_and_search(self):
+        db = Path(tempfile.mkdtemp()) / "n.db"
+        with mock.patch.dict(os.environ, {"NOTES_DB": str(db)}):
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(main(["add", "Buy milk"]), 0)
+            out = io.StringIO()
+            with redirect_stdout(out):
+                self.assertEqual(main(["search", "milk"]), 0)
+        self.assertIn("Buy milk", out.getvalue())
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+### assistant
+
+The ADR-0002 list says import/export formats and CLI command names and exit codes are decided centrally, so this needs an ADR. I'll check the format guides and the test baseline before drafting.
+
+### tool_use Bash
+
+```json
+{
+ "command": "cd /tmp/sa-arm-vvddzkv9/sa/skills/domain-modeling && ls && cat ADR-FORMAT.md GLOSSARY-FORMAT.md 2>/dev/null; cd /tmp/sa-eval-165k_3o2/project && python3 -m unittest 2>&1 | tail -3",
+ "description": "Read ADR and glossary format guides, run tests"
+}
+```
+
+### tool_result
+
+```
+ADR-FORMAT.md
+GLOSSARY-FORMAT.md
+SKILL.md
+agents
 # ADR Format
 
 ADRs live in `docs/adr/` as `NNNN-slug.md`, numbered one above the highest existing number.
@@ -281,7 +422,6 @@ Examples of decisions that meet the rule in SKILL.md:
 - **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
 - **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
 - **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
-===
 # GLOSSARY.md Format
 
 ## Structure
@@ -321,63 +461,120 @@ _Avoid_: Client, buyer, account
 
 ```md
 # Glossary Map
+
+## Contexts
+
+- `src/ordering/GLOSSARY.md` (a module-level glossary): receives and tracks customer orders
+- `src/billing/GLOSSARY.md`: generates invoices and processes payments
+- `src/fulfillment/GLOSSARY.md`: manages warehouse picking and shipping
+
+## Relationships
+
+- **Ordering → Fulfillment**: Ordering emits `OrderPlaced` events; Fulfillment consumes them to start picking
+- **Fulfillment → Billing**: Fulfillment emits `ShipmentDispatched` events; Billing consumes them to generate invoices
+- **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
+```
+
+The skill infers which structure applies:
+
+- If `GLOSSARY-MAP.md` exists, read it to find contexts
+- If only a root `GLOSSARY.md` exists, single context
+- If neither exists, create a root `GLOSSARY.md` lazily when the first term is resolved
+
+When multiple contexts exist, infer which one the cu
+[... 66 chars cut]
 ```
 
 ### assistant
 
-Writing the ADR now. The status is `proposed` because you're the architect and haven't approved it. Storage (ADR-0001/0003) and arc42 stay unchanged.
+The baseline is green (3 tests pass). Writing ADR-0004 as `proposed`, since the architect has not approved it. The content follows the decided-centrally list in ADR-0002 and the constraints in ADR-0001 through ADR-0003.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-xt8h8frh/project/docs/adr/0004-export-notes-as-jsonl-via-notes-export.md",
- "content": "# 4. Export notes as JSON Lines via `notes export`\n\n## Status\n\nproposed\n\n## Context\n\nUsers want to back up their notes and move them to other tools. This is not yet a requirement\nID in arc42 section 1; it is named here in words and awaits the architect's decision on whether\nto add it as an R-n.\n\nThe export format and the CLI command name are on the central list in\n[ADR-0002](0002-record-architecture-decisions.md). Constraints: standard library only (R-3);\nexport only reads, so it must not change the store (R-2); the database is reached only through\n`Store` ([ADR-0003](0003-cli-reaches-storage-only-through-store.md)). The note fields (`id`,\n`text`, `created`) are fixed by the `Note` value and the storage format in\n[ADR-0001](0001-use-sqlite-for-storage.md).\n\n## Decision\n\nWe will export notes as JSON Lines: UTF-8 text, one JSON object per line, one line per note, in\nascending `id` order. Each object has exactly these fields: `id` (integer), `text` (string),\n`created` (string, ISO 8601 UTC, as stored).\n\nWe will add the command `notes export`. It writes the export to standard output, and the user\nredirects it to a file (`python3 -m notes export > notes.jsonl`). It takes no other options. It\nreads all notes through `Store.all()`. It exits 0 on success; on error it prints\n`notes: <message>` to stderr and exits 1, as arc42 section 8 requires.\n\n## Consequences\n\n- Easier: JSON escapes newlines and quotes, so any note text round-trips exactly. The `json`\n  module is in the standard library. One line per note works with line-based tools and diffs.\n  Writing to stdout leaves file paths and overwrite rules to the user's shell.\n- Harder: spreadsheets do not open JSON Lines directly. A CSV format is not part of this\n  decision and would need its own decision.\n- The export file is plain, unencrypted text of every note. Users must protect it themselves.\n- A failed export can leave a partial file. The exit code 1 is the only signal, so backups must\n  check it.\n- Restoring from an export (import) is not decided here. Import formats are on the central list\n  in ADR-0002, so restore needs its own ADR before it is built.\n- No change to storage ([ADR-0001](0001-use-sqlite-for-storage.md),\n  [ADR-0003](0003-cli-reaches-storage-only-through-store.md)) and no new `Store` method. arc42\n  section 5 (building blocks) is unchanged. The new command is one more entry under the command\n  names decided in ADR-0002.\n"
+ "file_path": "/tmp/sa-eval-165k_3o2/project/docs/adr/0004-export-notes-as-json-via-export-command.md",
+ "content": "# 4. Export notes as one JSON document through an `export` command\n\n## Status\n\nproposed 2026-11-21\n\n## Context\n\nUsers ask to export their notes to back them up and to move them to other tools. The export\nmust not lose any note (R-2, QG-1), must run with only the standard library (R-3, QG-2), and\nmust keep the storage behind `Store` (ADR-0003, QS-3). Import and export formats and CLI\ncommand names and exit codes are decided centrally (ADR-0002). The architect has not yet\nconfirmed \"export notes for backup and move to other tools\" as a numbered requirement; this\nADR cites R-2 and R-3 until it is.\n\n## Decision\n\nWe will export all notes as one UTF-8 JSON document:\n\n```json\n{\n  \"format\": \"notes-export\",\n  \"version\": 1,\n  \"notes\": [\n    {\"id\": 1, \"text\": \"Buy milk\", \"created\": \"2026-11-21T09:00:00+00:00\"}\n  ]\n}\n```\n\n`created` is the ISO 8601 UTC string the store already holds. The document is written with\ntwo-space indentation.\n\nWe will add the command `python3 -m notes export`:\n\n- with no option, it writes the document to standard output, so `notes export > backup.json`\n  works;\n- with `-o PATH`, it writes to `PATH`. It refuses to overwrite an existing file and writes to\n  a temporary file in the same directory, then renames it into place, so a failed export never\n  leaves a partial file;\n- exit code 0 on success; exit code 1 on any error, reported on stderr as `notes: <message>`\n  (arc42 section 8).\n\nThe serialisation lives in a new module `notes/export.py`. It takes `Note` values and returns\ntext; it does not touch SQLite. `cli` gets the notes from `Store.all()`.\n\nWe will not add a `--format` option now. CSV, Markdown, and a copy of the SQLite file were\nconsidered and rejected: CSV has no version field and needs fragile escaping for multi-line\ntext; Markdown cannot be read back reliably; a copy of the SQLite file ties users to the\nstorage engine (ADR-0001), which is the opposite of moving to other tools.\n\n## Consequences\n\nUsers get a plain-text, self-describing backup that any tool can read, and the `version` field\nlets a later import command check what it reads.\n\n`cli` gains a dependency on `export`, and `export` depends only on `model`. The dependency rule\nin ADR-0002 (`cli` → `store` → `model`) becomes `cli` → `export` → `model` alongside it. arc42\nsection 5 needs a row for `export` once this ADR is accepted.\n\nThe export loads all notes into memory. That is fine for short notes; it would need revisiting\nat a much larger scale.\n\nImport is not part of this decision. A new ADR will cover it, and it must check `version`.\n\nNo accepted ADR is changed. ADR-0001 and ADR-0003 are unaffected because the export never\nopens the database file.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-xt8h8frh/project/docs/adr/0004-export-notes-as-jsonl-via-notes-export.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-165k_3o2/project/docs/adr/0004-export-notes-as-json-via-export-command.md (file state is current in your context — no need to Read it back)
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && python3 -m unittest -q 2>&1 | tail -3",
- "description": "Confirm only the new ADR changed and tests still pass"
+ "command": "python3 - <<'EOF'\nfrom pathlib import Path\np = Path(\"GLOSSARY.md\")\ns = p.read_text()\ns = s.rstrip(\"\\n\") + \"\\n\\n**Export**: a copy of all notes written as one file or to standard output, in a format other tools can read.\\n\"\np.write_text(s)\nEOF\ncat GLOSSARY.md && git status --short",
+ "description": "Add Export term to glossary and check git status"
 }
 ```
 
 ### tool_result
 
 ```
-?? docs/adr/0004-export-notes-as-jsonl-via-notes-export.md
-Ran 3 tests in 0.070s
+# Glossary
 
-OK
+**Note**: a short piece of text a user keeps, with an id and the time it was created.
+
+**Store**: the place notes are kept between runs.
+
+**Export**: a copy of all notes written as one file or to standard output, in a format other tools can read.
+ M GLOSSARY.md
+?? docs/adr/0004-export-notes-as-json-via-export-command.md
+?? notes/__pycache__/
+?? tests/__pycache__/
 ```
 
 ### assistant
 
-I drafted the export decision as ADR-0004 and left it `proposed`. It needs your approval before the team builds it. Nothing is implemented, nothing is committed, and the existing tests still pass.
+I'll remove the `__pycache__` directories my test run created, then confirm the ADR file is in place.
 
-**The decision** (`docs/adr/0004-export-notes-as-jsonl-via-notes-export.md`):
-- **Format:** JSON Lines, UTF-8, one object per note in ascending id order, with fields `id`, `text`, `created`. JSON escapes newlines and quotes, so note text round-trips exactly. It uses only the standard library.
-- **CLI:** `python3 -m notes export` writes to stdout and the user redirects it to a file. It takes no other options, reads through `Store.all()`, exits 0 on success, and exits 1 with `notes: <message>` on stderr on error.
+### tool_use Bash
 
-I chose this over CSV because CSV can't carry multi-line note text cleanly without quoting rules. I chose stdout over an `--output` flag to keep file-path and overwrite handling out of the CLI.
+```json
+{
+ "command": "rm -rf notes/__pycache__ tests/__pycache__ && git status --short && head -5 docs/adr/0004-export-notes-as-json-via-export-command.md",
+ "description": "Remove test caches and verify ADR header"
+}
+```
 
-**Why it's an ADR:** ADR-0002 puts both "import and export formats" and "CLI command names" on the central list.
+### tool_result
 
-**Open items for you:**
-1. **Approve or reject ADR-0004.** The team can't start until you do.
-2. **Backup requirement:** "back up and move to other tools" has no R-n in arc42 section 1. I named it in the ADR's Context in words and didn't add it. Decide whether it becomes a requirement.
-3. **Restore (import):** a backup is only useful if it can be restored, and import formats are also centrally decided. This ADR doesn't cover it, so it needs its own ADR.
-4. **Consequences to know about:** the export is unencrypted plaintext of all notes, and a failed run can leave a partial file, so backups must check the exit code.
+```
+ M GLOSSARY.md
+?? docs/adr/0004-export-notes-as-json-via-export-command.md
+# 4. Export notes as one JSON document through an `export` command
 
-Glossary: I didn't add a term, since "export" is a general concept rather than a domain term.
+## Status
+
+proposed 2026-11-21
+```
+
+### assistant
+
+The export decision is written up as ADR-0004, but it is `proposed`, not accepted. ADRs are only accepted when the architect approves them in the conversation, and you won't be reachable until tomorrow. The team can start the build once you approve it.
+
+**Decision**
+- **Format:** one UTF-8 JSON document with a `format` tag (`"notes-export"`), a `version` (`1`), and a `notes` list of `{id, text, created}`. It uses only the standard library and keeps the timestamps as stored.
+- **CLI:** `python3 -m notes export` writes to stdout, so `notes export > backup.json` works. `-o PATH` writes to a file. It refuses to overwrite an existing file and writes atomically, so a failed run never leaves a partial file. Exit code 0 on success, 1 on error with `notes: <message>` on stderr, which matches the existing convention.
+- **Structure:** a new `notes/export.py` that takes `Note` values and returns text. It never touches SQLite, so ADR-0003 holds and `Store` needs no changes.
+- **Rejected:** CSV (no version field, fragile escaping for multi-line text), Markdown (can't be read back reliably), and copying the SQLite file (ties users to the storage engine, the opposite of moving to other tools).
+
+**Also changed**
+- `GLOSSARY.md` gained an **Export** entry.
+- No accepted ADR was changed.
+- I didn't implement anything. Running the existing tests (3 passing) created `__pycache__` directories, which I removed.
+
+**Waiting for you**
+- **ADR-0004, "Export notes as one JSON document through an `export` command":** approve the JSON format and the `export` command with its flags and exit codes. This is the decision the team needs before building.
+
+**Things to settle when you approve**
+- **Requirement:** "export notes for backup and move to other tools" is not in arc42 section 1. The ADR cites R-2 and R-3 for now. If you want it as a numbered requirement, that's yours to add.
+- **arc42 section 5:** the block table needs an `export` row once the ADR is accepted. I didn't edit arc42, since that's the architect's document.
+- **Dependency rule:** the ADR adds `cli` → `export` → `model` next to ADR-0002's `cli` → `store` → `model`. You may want to confirm this edge.
 
 ### result (success)

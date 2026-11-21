@@ -1,0 +1,19 @@
+{
+ "scenario": "S06",
+ "arm": "branch",
+ "ref": "design/software-architecture-skill-set",
+ "sha": "3ec497d676cbaef5684139be99d24c40b9473112",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.03487,
+ "duration_s": 85.5,
+ "exit_code": 0,
+ "turns": 2,
+ "session_ids": [
+  "84e91ad4-3159-4721-8a34-1c99d440690e",
+  "84e91ad4-3159-4721-8a34-1c99d440690e"
+ ],
+ "invoked": true,
+ "isolation_ok": true,
+ "isolation_errors": []
+}

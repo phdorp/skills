@@ -9,15 +9,13 @@ def count_words(text):
     return Counter(WORD.findall(text.lower()))
 
 
-def format_counts(counts, top=None):
+def format_counts(counts):
     ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
-    if top is not None:
-        ranked = ranked[:top]
     return [f"{word} {n}" for word, n in ranked]
 
 
 def positive_int(value):
-    n = int(value)  # ValueError is reported by argparse as an invalid value
+    n = int(value)
     if n < 1:
         raise argparse.ArgumentTypeError("must be a positive integer")
     return n
@@ -31,6 +29,6 @@ def main(argv=None):
     args = parser.parse_args(argv)
     with open(args.file, encoding="utf-8") as f:
         counts = count_words(f.read())
-    for line in format_counts(counts, top=args.top):
+    for line in format_counts(counts)[:args.top]:
         print(line)
     return 0

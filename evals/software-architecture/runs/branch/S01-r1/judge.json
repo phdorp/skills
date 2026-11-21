@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Small codebase: a single `main()` in `tally/cli.py` and one test class for `main`. I'll write the failing tests first, then implement.",
+   "quote": "**Validation (my choice):** `--top` must be a positive integer. `0`, negative values and non-numbers exit with code 2 and an argparse error. You didn't specify this, so say if you'd rather `--top 0` print nothing.",
    "source": "transcript.md",
-   "reason": "The agent went straight to tests and implementation and never mentioned quality goals, scenarios or ISO 25010 characteristics."
+   "reason": "The agent's own decisions concerned feature behaviour, and no quality goals, scenarios or ISO 25010 characteristics appear in its messages or files."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **`README.md`**: a usage example for `--top`.",
+   "quote": "- **README:** added a short `--top` usage example.",
    "source": "transcript.md",
    "reason": "The only documentation change was a README usage example; no ADR was created or proposed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "All 6 tests pass and the CLI behaves correctly by hand. The rejection test prints argparse's usage text to stderr, so I'll silence that and then commit.",
+   "quote": "The change is small, so I'll go test-first: add failing tests for `--top`, confirm they fail, then implement.",
    "source": "transcript.md",
-   "reason": "The steps were read, test, implement, verify and commit, with no architecture setup, recovery or documentation step."
+   "reason": "The agent followed an ordinary read-test-implement-verify-commit workflow with no architecture setup, recovery or documentation steps."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0937938
+ "cost_usd": 0.0895698
 }

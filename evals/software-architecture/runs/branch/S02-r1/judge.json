@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "I drafted the export decision as ADR-0004 and left it `proposed`. It needs your approval before the team builds it.",
+   "quote": "The export decision is written up as ADR-0004, but it is `proposed`, not accepted.",
    "source": "transcript.md",
-   "reason": "The final message presents ADR-0004 as proposed and waiting for the architect's approval."
+   "reason": "The final message explicitly presents ADR-0004 as proposed and awaiting the architect's approval."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "The record-decisions ADR (0002) puts both \"import and export formats\" and \"CLI command names\" on the central list, so this needs an ADR.",
+   "quote": "The ADR-0002 list says import/export formats and CLI command names and exit codes are decided centrally, so this needs an ADR.",
    "source": "transcript.md",
-   "reason": "The agent read ADR-0002 (cat of docs/adr/*.md) and relied on its central list before writing the ADR."
+   "reason": "The agent read ADR-0002 and the arc42 document with its cat loop before drafting, and then acted on ADR-0002's list."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Constraints: standard library only (R-3);\nexport only reads, so it must not change the store (R-2);",
-   "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-notes-export.md",
-   "reason": "The Context cites requirement IDs R-3 and R-2 as forces the decision serves, though the backup need itself is named only in words."
+   "quote": "must not lose any note (R-2, QG-1), must run with only the standard library (R-3, QG-2)",
+   "source": "workspace/docs/adr/0004-export-notes-as-json-via-export-command.md",
+   "reason": "The ADR's Context cites the requirements and quality goals it serves by ID."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1318178
+ "cost_usd": 0.13611379999999998
 }

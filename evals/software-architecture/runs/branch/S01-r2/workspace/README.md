@@ -11,6 +11,6 @@ Prints one `word count` line per word, most frequent first, ties in alphabetical
 To print only the N most frequent words, pass `--top N`:
 
 ```sh
-python3 -m tally notes.txt --top 10
+python3 -m tally --top 10 notes.txt
 ```
 Run the tests with `python3 -m unittest`.

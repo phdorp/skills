@@ -8,14 +8,14 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "R-8 touches confidentiality, which no goal covers. Should I add a goal for it? A candidate measure would be \"a store file copied off a stolen laptop shows zero note text.\"",
+   "quote": "Question: add QG-4, Security: confidentiality, with a scenario? A possible measure is \"0 plaintext note bytes in the store after a write\", but you have to set it.",
    "source": "transcript.md",
-   "reason": "The agent asks whether a confidentiality goal is needed and proposes a measure, without adding the goal."
+   "reason": "The agent asks whether a security goal is needed and proposes a measure, without adding a goal row."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "I proposed the order R-1, R-2, R-3 (yours), then R-7 at 4 and R-8 at 5. Please set the order.",
+   "quote": "**Ranks to set:** R-7 at 4 and R-8 at 5 are my proposals. Please set the order",
    "source": "transcript.md",
    "reason": "The agent proposes ranks for R-7 and R-8 and asks the architect to set the order."
   },
@@ -24,10 +24,10 @@
    "pass": true,
    "quote": "The storage work waits until you accept it.",
    "source": "transcript.md",
-   "reason": "The final message says the storage work waits for ADR-0004 to be accepted."
+   "reason": "The final message says that storage work waits for approval of ADR-0004."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1319978
+ "cost_usd": 0.1106018
 }
