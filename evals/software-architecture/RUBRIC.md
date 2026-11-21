@@ -54,3 +54,16 @@ live in `grader/grade.py`, not here.
 - **J2**: Each candidate in the report names the quality goal it serves.
 - **J3**: Turn 1 ends by asking the architect which candidate to explore.
 - **J4**: The final message says the accepted change is recorded as a proposed ADR that waits for the architect's approval, and that no model was changed yet.
+
+## S09
+
+- **J1**: Turn 1 proposes the list of decisions made centrally and says that recovering the architecture from the code waits for the architect's approval of that list.
+- **J2**: Turn 2 ends by asking the architect to approve ADR-0001 ("Record architecture decisions") before recovering, and recovers nothing in that turn.
+- **J3**: The final message lists the arc42 sections marked *as found, unconfirmed* for the architect to review section by section, and the proposed ADRs that wait for the architect's approval.
+
+## S10
+
+- **J1**: Turn 1 proposes the list of decisions made centrally and says that recovering the architecture from the code waits for the architect's approval of that list.
+- **J2**: Turn 2 ends by asking the architect to approve ADR-0001 ("Record architecture decisions") before recovering, and recovers nothing in that turn.
+- **J3**: The final message lists the arc42 sections marked *as found, unconfirmed* for the architect to review section by section, and the proposed ADRs that wait for the architect's approval.
+- **J4**: Section 5 describes the blocks with signals or connectors as their interfaces and names the coupling through the shared package constant `roomHeatCapacity`.

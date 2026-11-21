@@ -155,7 +155,8 @@ I'm offline after this, so finish without asking me again.
 
 ## S08 architecture-scan-dataflow: scan a Modelica library against its quality goals
 
-Fixture: modelica
+Fixture: heating
+Overlay: s08
 Invoke: improve-codebase-architecture
 
 Tests D7, D13, D15 (stories 14, 31, 32, 46): in a set-up dataflow project the review speaks in
@@ -172,4 +173,65 @@ have the report ready.
 ```reply
 I accept your top recommendation. Take it forward; I'm offline after this, so finish without
 asking me again.
+```
+
+## S09 recovery-python: recover the architecture of an undocumented Python project
+
+Fixture: undocumented
+Invoke: setup-architecture
+
+Tests D5, D9 (story 13): pantry has no architecture documentation, only code and a README that
+says what it does and how to run it. Turn 1 writes only the arc42 skeleton and proposes the
+setup, including the "made centrally" list; turn 2 writes the R-list, the goals and ADR-0001
+"Record architecture decisions" as `proposed`, then asks the architect to approve it and does
+not recover yet; turn 3, after the approval, marks ADR-0001 `accepted` and recovers: arc42
+sections marked *as found, unconfirmed*, proposed ADRs only for decisions on the accepted list,
+no code changed. `workspace-t1/` and `workspace-t2/` are the workspace after turns 1 and 2.
+
+```text
+Set up the architecture documentation for pantry. There is none yet: the code is all we have.
+My requirements:
+1. Users add pantry items with an expiry date and list what expires soon, from the command line.
+2. No item is lost if the machine crashes mid-write.
+3. Runs with only the Python standard library.
+4. A new command touches only cli.py and at most one new module.
+```
+
+```reply
+Confirmed as proposed: your triage, your ranking, the quality goals (except any without a
+measure: keep those open) and your list of decisions made centrally. To your "did you leave
+out" questions: no, nothing is missing. Write it down.
+```
+
+```reply
+I approve the "Record architecture decisions" ADR as written. Now recover the rest of the
+architecture from the code. I'm offline after this, so finish without asking me again.
+```
+
+## S10 recovery-dataflow: recover the architecture of an undocumented Modelica library
+
+Fixture: heating
+Invoke: setup-architecture
+
+Tests D9 and story 14 on the S08 library without its documentation: the same three turns as
+S09, and the recovered building blocks are described in dataflow terms (blocks, signals and
+connectors as interfaces, coupling through connections and the shared package constant).
+
+```text
+Set up the architecture documentation for HeatingLib. There is none yet: the code is all we
+have. My requirements:
+1. Simulate a heated room over a day and show its temperature.
+2. Swap the room or the controller for another variant without touching the rest.
+3. Every model checks in OpenModelica without errors.
+```
+
+```reply
+Confirmed as proposed: your triage, your ranking, the quality goals (except any without a
+measure: keep those open) and your list of decisions made centrally. To your "did you leave
+out" questions: no, nothing is missing. Write it down.
+```
+
+```reply
+I approve the "Record architecture decisions" ADR as written. Now recover the rest of the
+architecture from the code. I'm offline after this, so finish without asking me again.
 ```
