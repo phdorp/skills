@@ -62,12 +62,19 @@ def _workspace_files(run_dir):
     return files
 
 
+def task_text(scenario):
+    """The prompt, then each architect reply the run sent after it."""
+    parts = [scenario.prompt.rstrip()]
+    parts += [f"--- architect's reply ---\n\n{r.rstrip()}" for r in scenario.replies]
+    return "\n\n".join(parts)
+
+
 def build_prompt(scenario, criteria, run_dir):
     run_dir = Path(run_dir)
     transcript = run_dir / "transcript.md"
     files = "\n".join(f"=== {name} ===\n{text}" for name, text in _workspace_files(run_dir))
     return ((HERE / "judge-prompt.md").read_text()
-            .replace("{{TASK}}", scenario.prompt.rstrip())
+            .replace("{{TASK}}", task_text(scenario))
             .replace("{{CRITERIA}}", "\n".join(f"- {c.id}: {c.text}" for c in criteria))
             .replace("{{TRANSCRIPT}}", transcript.read_text() if transcript.exists() else "(none)")
             .replace("{{FILES}}", files or "(no workspace files)"))

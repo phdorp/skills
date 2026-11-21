@@ -95,3 +95,32 @@ My triage, already decided: 1 is a duplicate of R-4, which stays deferred. 2 is 
 breaks R-3. 3 is system-level and replaces the SQLite decision. 4 is feature-level.
 5 is system-level. Apply this. I'm not available for questions today.
 ```
+
+## S06 setup-fresh: set up the architecture of a new project over two turns
+
+Fixture: fresh
+Invoke: setup-architecture
+
+Tests D1 (fresh), D3, D4, D5, D10 (stories 1–10): turn 1 writes only the arc42 skeleton and
+proposes triage, ranking, quality goals with scenarios, gap questions and the "made centrally"
+list; the architect's scripted reply (the `reply` block, sent with `--resume`) confirms the
+proposals; then the agent writes the R-list, 3–5 measured goals and ADR-0001 "Record
+architecture decisions" as `proposed`. `workspace-t1/` is the workspace after turn 1.
+
+```text
+Set up the architecture for birdlog, a command-line tool for logging bird sightings.
+My requirements:
+1. Birders log a sighting (species, place, time, count) from the command line.
+2. No sighting is ever lost, even if the laptop dies mid-write.
+3. Runs offline on Linux, macOS and Windows with nothing but Python installed.
+4. Sightings export to the eBird CSV format.
+5. It must be fast.
+6. `birdlog list` shows the latest sighting first.
+```
+
+```reply
+Your triage and your ranking are confirmed as proposed. The quality goals you proposed are
+confirmed in your order, except any you could not give a measure: keep those as open
+questions. To your "did you leave out" questions: no, nothing is missing. Write everything
+down now. I'm offline after this, so finish without asking me again.
+```

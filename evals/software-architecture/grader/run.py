@@ -24,7 +24,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 MODEL = "claude-haiku-5-5"
@@ -44,6 +44,7 @@ FIXTURE = re.compile(r"^Fixture:\s*(\S+)\s*$", re.M)
 OVERLAY = re.compile(r"^Overlay:\s*(\S+)\s*$", re.M)
 INVOKE = re.compile(r"^Invoke:\s*(\S+)\s*$", re.M)
 PROMPT = re.compile(r"^```text\n(.*?)^```\s*$", re.M | re.S)
+REPLY = re.compile(r"^```reply\n(.*?)^```\s*$", re.M | re.S)
 
 
 @dataclass
@@ -53,6 +54,7 @@ class Scenario:
     prompt: str
     overlay: str | None = None
     invoke: str | None = None
+    replies: list[str] = field(default_factory=list)
 
 
 def load_scenarios(tasks_md):
@@ -70,7 +72,8 @@ def load_scenarios(tasks_md):
         overlay, invoke = OVERLAY.search(body), INVOKE.search(body)
         scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0],
                                          overlay.group(1) if overlay else None,
-                                         invoke.group(1) if invoke else None)
+                                         invoke.group(1) if invoke else None,
+                                         REPLY.findall(body))
     return scenarios
 
 
@@ -108,6 +111,21 @@ def prepare_workspace(fixture_dir, overlay_dir=None):
     _git("-c", "user.name=eval", "-c", "user.email=eval@example.invalid", "commit", "-q",
          "--allow-empty", "-m", "fixture", cwd=ws)
     return ws
+
+
+def turn_errors(inits, plugin_dir, user_skill_names):
+    """Isolation errors over every turn's init event; all turns must share turn 1's session."""
+    errors = []
+    for k, init in enumerate(inits, 1):
+        if not init:
+            errors.append(f"turn {k}: no init event")
+            continue
+        errors += [e if k == 1 else f"turn {k}: {e}"
+                   for e in check_isolation(init, plugin_dir, user_skill_names)]
+        if k > 1 and inits[0] and init.get("session_id") != inits[0].get("session_id"):
+            errors.append(f"turn {k}: session {init.get('session_id')} is not turn 1's "
+                          f"{inits[0].get('session_id')}")
+    return errors
 
 
 def check_isolation(init, plugin_dir, user_skill_names):
@@ -168,6 +186,11 @@ def render_transcript(jsonl, prompt):
     return "\n\n".join(parts) + "\n"
 
 
+def render_turns(turns):
+    """One transcript of every (jsonl, prompt) turn, in order."""
+    return "\n".join(render_transcript(jsonl, prompt) for jsonl, prompt in turns)
+
+
 def fixture_dirs(scenario, suite=SUITE):
     """(fixture_dir, overlay_dir or None) of a scenario."""
     fixtures = Path(suite) / "fixtures"
@@ -187,10 +210,15 @@ def _child_env():
     return env
 
 
-def _claude(prompt, cwd, plugin_dir, out_jsonl):
+def claude_cmd(prompt, plugin_dir, resume=None):
     cmd = ["claude", "-p", prompt, "--model", MODEL, "--effort", EFFORT,
            "--setting-sources", "project", "--plugin-dir", str(plugin_dir),
            "--output-format", "stream-json", "--verbose", "--dangerously-skip-permissions"]
+    return cmd + ["--resume", resume] if resume else cmd
+
+
+def _claude(prompt, cwd, plugin_dir, out_jsonl, resume=None):
+    cmd = claude_cmd(prompt, plugin_dir, resume)
     start = time.time()
     with open(out_jsonl, "w") as out:
         try:
@@ -221,18 +249,34 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
     try:
         plugin_dir = export_arm(ref, tmp)
         ws = prepare_workspace(*fixture_dirs(scenario, suite))
-        jsonl = run_dir / "transcript.jsonl"
         prompt = build_prompt(scenario, plugin_dir)
-        code, duration = _claude(prompt, ws, plugin_dir, jsonl)
-        init, cost = _init_and_cost(jsonl)
-        errors = check_isolation(init, plugin_dir, _user_skill_names()) if init else ["no init event"]
-        (run_dir / "transcript.md").write_text(render_transcript(jsonl, prompt))
+        turns, inits, costs, duration, code = [], [], [], 0.0, None
+        for k, text in enumerate([prompt] + scenario.replies, 1):
+            if k > 1:
+                shutil.copytree(ws, run_dir / f"workspace-t{k - 1}",
+                                ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
+            jsonl = run_dir / ("transcript.jsonl" if k == 1 else f"transcript-t{k}.jsonl")
+            session = inits[0].get("session_id") if inits and inits[0] else None
+            if k > 1 and not session:
+                break
+            code, seconds = _claude(text, ws, plugin_dir, jsonl, resume=session)
+            init, cost = _init_and_cost(jsonl)
+            turns.append((jsonl, text))
+            inits.append(init)
+            costs.append(cost or 0)
+            duration += seconds
+        errors = turn_errors(inits, plugin_dir, _user_skill_names())
+        if len(turns) < 1 + len(scenario.replies):
+            errors.append(f"only {len(turns)} of {1 + len(scenario.replies)} turns ran")
+        cost = round(sum(costs), 6)
+        (run_dir / "transcript.md").write_text(render_turns(turns))
         (run_dir / "git-log.txt").write_text(_git("log", "--format=%H %s", cwd=ws))
         shutil.copytree(ws, run_dir / "workspace",
                         ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
         meta = {"scenario": scenario.id, "arm": arm, "ref": ref,
                 "sha": _git("rev-parse", ref).strip(), "model": MODEL, "effort": EFFORT,
-                "cost_usd": cost, "duration_s": duration, "exit_code": code,
+                "cost_usd": cost, "duration_s": round(duration, 1), "exit_code": code,
+                "turns": len(turns), "session_ids": [i.get("session_id") for i in inits],
                 "invoked": prompt != scenario.prompt,
                 "isolation_ok": not errors, "isolation_errors": errors}
         (run_dir / "meta.json").write_text(json.dumps(meta, indent=1) + "\n")

@@ -56,8 +56,19 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S05-extracol": set(),                              # an extra R-list column still parses
     "S05-rankfinal": {"ranks_marked_proposed"},         # new row ranked "4" as if the architect set it
     "S05-code": {"code_unchanged"},                     # started the storage change before ADR-0004
+    "S06-t1rows": {"t1_only_skeleton"},                 # wrote R-list rows in turn 1
+    "S06-t1adr": {"t1_only_skeleton"},                  # drafted ADR-0001 in turn 1
+    "S06-not1": {"t1_only_skeleton"},                   # single-turn run: no workspace-t1
+    "S06-heading": {"headings"},                        # section 7 heading missing
+    "S06-gapid": {"rlist"},                             # R-IDs skip R-5
+    "S06-latestrow": {"rlist", "feature_routed"},       # feature-level item filed as R-6
+    "S06-sixgoals": {"goals_measured"},                 # six quality goals
+    "S06-nomeasure": {"goals_measured"},                # QS-2 measure "fast enough"
+    "S06-accepted": {"adr_0001"},                       # ADR-0001 marked accepted
+    "S06-noids": {"adr_0001"},                          # ADR-0001 Context cites no ID
+    "S06-nolink": {"section9_links_adr"},               # section 9 does not link docs/adr
 }
-SCENARIOS = ("S01", "S02", "S03", "S04", "S05")
+SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06")
 
 
 def build_tree(root):

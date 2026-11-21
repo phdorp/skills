@@ -49,6 +49,14 @@ class LoadScenarios(unittest.TestCase):
         self.assertEqual((scenarios["S95"].invoke, scenarios["S94"].invoke),
                          ("add-requirements", None))
 
+    def test_load_scenarios_reads_replies(self):
+        p = self._write("## S93 x\n\nFixture: fresh\n\n```text\nGo.\n```\n\n```reply\nYes.\n```\n\n"
+                        "```reply\nMore.\n```\n\n## S92 y\n\nFixture: fresh\n\n```text\nGo.\n```\n")
+        scenarios = run.load_scenarios(p)
+        self.assertEqual(scenarios["S93"].prompt, "Go.\n")
+        self.assertEqual((scenarios["S93"].replies, scenarios["S92"].replies),
+                         (["Yes.\n", "More.\n"], []))
+
     def test_load_scenarios_rejects_section_without_fixture(self):
         p = self._write("## S99 thing\n\n```text\nDo it.\n```\n")
         with self.assertRaises(ValueError):
@@ -74,6 +82,14 @@ class BuildPrompt(unittest.TestCase):
     def test_build_prompt_plain_when_arm_lacks_skill(self):
         s = run.Scenario("S95", "setup", "Integrate these.\n", invoke="quality-requirements")
         self.assertEqual(run.build_prompt(s, self.plugin_dir), "Integrate these.\n")
+
+
+class ClaudeCmd(unittest.TestCase):
+    def test_claude_cmd_adds_resume(self):
+        cmd = run.claude_cmd("hi", Path("/p/sa"), resume="abc-123")
+        self.assertEqual(cmd[cmd.index("--resume") + 1], "abc-123")
+        self.assertEqual(cmd[cmd.index("-p") + 1], "hi")
+        self.assertNotIn("--resume", run.claude_cmd("hi", Path("/p/sa")))
 
 
 class Isolation(unittest.TestCase):
@@ -108,6 +124,17 @@ class Isolation(unittest.TestCase):
         init["plugins"] = [p for p in init["plugins"] if p["path"] == "builtin"]
         self.assertNotEqual(run.check_isolation(init, self.plugin_dir, self.user), [])
 
+    def test_session_mismatch_fails_isolation(self):
+        first, second = self._init("init-ok.json"), self._init("init-ok.json")
+        second["session_id"] = "another-session"
+        self.assertEqual(run.turn_errors([first, dict(first)], self.plugin_dir, self.user), [])
+        errors = run.turn_errors([first, second], self.plugin_dir, self.user)
+        self.assertTrue(any("session" in e for e in errors), errors)
+
+    def test_turn_without_init_fails_isolation(self):
+        errors = run.turn_errors([self._init("init-ok.json"), {}], self.plugin_dir, self.user)
+        self.assertTrue(any("turn 2" in e for e in errors), errors)
+
     def test_isolation_flags_missing_arm_skill(self):
         (self.plugin_dir / "skills" / "gamma").mkdir()
         errors = run.check_isolation(self._init("init-ok.json"), self.plugin_dir, self.user)
@@ -124,6 +151,12 @@ class Transcript(unittest.TestCase):
         self.assertIn("a.txt", md)
         self.assertIn("### assistant", md)
         self.assertIn("Done.", md)
+
+    def test_render_turns_in_order(self):
+        md = run.render_turns([(DATA / "stream-sample.jsonl", "First turn."),
+                               (DATA / "stream-sample.jsonl", "Second turn.")])
+        self.assertLess(md.index("### user\n\nFirst turn."), md.index("### user\n\nSecond turn."))
+        self.assertEqual(md.count("Done."), 2)
 
     def test_render_transcript_survives_truncated_stream(self):
         d = Path(tempfile.mkdtemp())

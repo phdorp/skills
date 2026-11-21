@@ -223,10 +223,16 @@ def _status(row):
 
 
 def _new_files(ws, base):
-    return [p for p in ws.rglob("*")
-            if p.is_file() and not (base / p.relative_to(ws)).exists()
-            and (p.relative_to(ws).parts[0] == "docs"
-                 or (p.relative_to(ws).parts[0] == ".scratch" and "issues" in p.parts))]
+    """New issue or spec files: under .scratch/**/issues/, or docs/ outside adr/ and architecture/."""
+    out = []
+    for p in ws.rglob("*"):
+        rel = p.relative_to(ws).parts
+        if not p.is_file() or (base / p.relative_to(ws)).exists():
+            continue
+        if (rel[0] == "docs" and rel[1:2] not in (("adr",), ("architecture",))) \
+                or (rel[0] == ".scratch" and "issues" in rel):
+            out.append(p)
+    return out
 
 
 def s05(run_dir):
@@ -283,7 +289,78 @@ def s05(run_dir):
     ]
 
 
-CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05}
+SECTION_HEAD = re.compile(r"^## (\d{1,2})\.?\s+\S", re.M)
+DIGIT = re.compile(r"\d")
+QG_ID = re.compile(r"\bQG-\d+\b")
+QS_ID = re.compile(r"\bQS-\d+\b")
+R_ANY = re.compile(r"\bR-\d+\b")
+
+
+def _rows(text, column):
+    return [r for r in arc42.table(text, "ID", column=column) if r.get("id", "").strip()]
+
+
+def _section(text, n):
+    heads = list(SECTION_HEAD.finditer(text))
+    for i, m in enumerate(heads):
+        if int(m.group(1)) == n:
+            return text[m.end():heads[i + 1].start() if i + 1 < len(heads) else len(text)]
+    return ""
+
+
+def _files(root):
+    return {p.relative_to(root).as_posix(): p.read_bytes()
+            for p in root.rglob("*") if p.is_file()} if root.is_dir() else {}
+
+
+def s06(run_dir):
+    ws, t1, base = run_dir / "workspace", run_dir / "workspace-t1", base_workspace("S06")
+    try:
+        before, after_t1 = _files(base), _files(t1)
+        new_t1 = sorted(k for k, v in after_t1.items() if before.get(k) != v)
+        routed_files = _new_files(ws, base)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    t1_text, text = _read(t1 / ARC42), _read(ws / ARC42)
+    t1_rows = sum(len(_rows(t1_text, c)) for c in ("requirement", "from", "stimulus"))
+    heads = [int(m.group(1)) for m in SECTION_HEAD.finditer(text)]
+    rows = _rows(text, "requirement")
+    rids = [r["id"] for r in rows]
+    statuses = {_status(r) for r in rows}
+    goals, scen = _rows(text, "from"), {r["id"]: r for r in _rows(text, "stimulus")}
+
+    def measured(g):
+        cited = set(R_ANY.findall(g.get("from", "")))
+        qs = QS_ID.findall(g.get("scenario", ""))
+        return (bool(cited) and cited <= set(rids) and bool(qs)
+                and all(q in scen and DIGIT.search(scen[q].get("measure", "")) for q in qs))
+
+    adrs = sorted((ws / "docs" / "adr").glob("*.md")) if (ws / "docs" / "adr").is_dir() else []
+    a = adr.parse(adrs[0]) if len(adrs) == 1 else None
+    known = set(rids) | {g["id"] for g in goals}
+    cited = adr.ids(a.fields.get("context", "")) if a else set()
+    routed = [p for p in routed_files
+              if "latest" in _read(p).lower() and set(R_ANY.findall(_read(p))) & set(rids)]
+    return [
+        check("t1_only_skeleton", t1.is_dir() and new_t1 == [ARC42.as_posix()] and t1_rows == 0,
+              f"new: {', '.join(new_t1)}; rows: {t1_rows}" if t1.is_dir() else "no workspace-t1"),
+        check("headings", heads == list(range(1, 13)), str(heads)),
+        check("rlist", len(rows) >= 4 and rids == [f"R-{i}" for i in range(1, len(rows) + 1)]
+              and statuses <= {"active", "deferred", "rejected"}
+              and not any("latest" in r.get("requirement", "").lower() for r in rows),
+              ", ".join(f"{r['id']} {_status(r)}" for r in rows)),
+        check("goals_measured", 3 <= len(goals) <= 5 and all(measured(g) for g in goals),
+              ", ".join(f"{g['id']}{'' if measured(g) else ' (unmeasured or uncited)'}" for g in goals)),
+        check("adr_0001", a is not None and adrs[0].name.startswith("0001-")
+              and "record architecture decisions" in a.title.lower() and five_fields(a)
+              and a.status.startswith("proposed") and bool(cited) and cited <= known,
+              f"{', '.join(p.name for p in adrs)}; status {a.status if a else '-'}; cites {sorted(cited)}"),
+        check("section9_links_adr", "adr/" in _section(text, 9)),
+        check("feature_routed", bool(routed), ", ".join(str(p.relative_to(ws)) for p in routed)),
+    ]
+
+
+CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06}
 
 
 def grade(scenario_id, run_dir):

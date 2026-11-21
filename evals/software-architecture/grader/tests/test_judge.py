@@ -27,6 +27,15 @@ class Rubric(unittest.TestCase):
         self.assertTrue(all(c.text for c in rubric["S01"]))
 
 
+class Task(unittest.TestCase):
+    def test_task_text_includes_replies(self):
+        s = run.Scenario("S93", "fresh", "Go.\n", replies=["Yes.\n"])
+        text = judge.task_text(s)
+        self.assertLess(text.index("Go."), text.index("--- architect's reply ---"))
+        self.assertLess(text.index("--- architect's reply ---"), text.index("Yes."))
+        self.assertEqual(judge.task_text(run.Scenario("S92", "fresh", "Go.\n")), "Go.")
+
+
 class Parse(unittest.TestCase):
     def test_parse_verdicts_takes_last_json_block(self):
         text = ('Example:\n```json\n[{"criterion": "J0"}]\n```\nVerdicts:\n```json\n'

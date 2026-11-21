@@ -33,3 +33,10 @@ live in `grader/grade.py`, not here.
 - **J1**: The final message asks the architect whether encryption needs a security quality goal (with a proposed scenario and measure, or an open question for the measure) instead of adding one.
 - **J2**: The agent proposes a rank for the new active requirements and asks the architect to set the order.
 - **J3**: The agent says that work depending on the storage change waits for the new ADR's approval.
+
+## S06
+
+- **J1**: The agent's last message of turn 1 (before the architect's reply) gives a triage outcome for each of the six requirements, a ranking with a reason for each, and candidate quality goals each citing requirement IDs or numbers with a scenario, and asks the architect to confirm.
+- **J2**: "It must be fast" is handled as an open question (the agent asks for a measure, or leaves the goal out as unmeasured), not filed as a goal with a measure the architect never gave.
+- **J3**: In turn 1 the agent asks at least one "did you leave out something like X?" question about a quality characteristic no requirement supports, and no quality goal for such a characteristic is filed.
+- **J4**: The agent's final message says ADR-0001 ("Record architecture decisions") waits for the architect's approval.
