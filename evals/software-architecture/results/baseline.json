@@ -30,6 +30,12 @@
    "score": 0.375,
    "judge": 0.0,
    "cost_usd": 0.046
+  },
+  "S06": {
+   "runs": 2,
+   "score": 0.0,
+   "judge": 0.25,
+   "cost_usd": 0.091
   }
  },
  "runs": [
@@ -115,7 +121,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.054s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -761,6 +767,182 @@
     "cost_usd": 0.24913780000000002
    },
    "cost_usd": 0.025677480000000003,
+   "needs_review": false
+  },
+  {
+   "run": "S06-r1",
+   "scenario": "S06",
+   "checks": [
+    {
+     "name": "t1_only_skeleton",
+     "pass": false,
+     "detail": "new: ARCHITECTURE.md, README.md, birdlog/__init__.py, birdlog/__main__.py, birdlog/cli.py, birdlog/ebird.py, birdlog/model.py, birdlog/paths.py, birdlog/store.py, pyproject.toml, tests/__init__.py, tests/test_birdlog.py; rows: 0"
+    },
+    {
+     "name": "headings",
+     "pass": false,
+     "detail": "[]"
+    },
+    {
+     "name": "rlist",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "adr_0001",
+     "pass": false,
+     "detail": "; status -; cites []"
+    },
+    {
+     "name": "section9_links_adr",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "The birdlog architecture is set up as a working stdlib-only skeleton. The six unit tests pass in UTC and Europe/Berlin, and the `add`, `list` and `export` commands work end to end. Nothing is committed yet.",
+      "source": "transcript.md",
+      "reason": "The turn-1 final message reports finished decisions with no triage, ranking, scenario-based quality goals or request for confirmation."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "| 5 | Fast | **Open question.** No latency target has been set. Needs a number, and a benchmark on a stated data size. | Open |",
+      "source": "workspace/ARCHITECTURE.md",
+      "reason": "Speed is recorded as an open question without an invented measure."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I did not propose a triage, a ranking, or a \"did you leave anything out\" list in this conversation, so I could not record those as confirmed.",
+      "source": "transcript.md",
+      "reason": "The agent admits it never asked any 'did you leave out' question."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "Nothing is committed. The working tree has the new files and the README change.",
+      "source": "transcript.md",
+      "reason": "The final message never mentions ADR-0001 or that it awaits the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2425178
+   },
+   "cost_usd": 0.039095,
+   "needs_review": false
+  },
+  {
+   "run": "S06-r2",
+   "scenario": "S06",
+   "checks": [
+    {
+     "name": "t1_only_skeleton",
+     "pass": false,
+     "detail": "new: .gitignore, ARCHITECTURE.md, pyproject.toml, src/birdlog/__init__.py, src/birdlog/__main__.py, src/birdlog/cli.py, src/birdlog/ebird.py, src/birdlog/store.py, tests/test_cli.py, tests/test_ebird.py, tests/test_store.py; rows: 0"
+    },
+    {
+     "name": "headings",
+     "pass": false,
+     "detail": "[]"
+    },
+    {
+     "name": "rlist",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "adr_0001",
+     "pass": false,
+     "detail": "; status -; cites []"
+    },
+    {
+     "name": "section9_links_adr",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "I didn't give a triage, a ranking, or a list of quality goals in my last message, and there's no \"did you leave out\" question in this conversation.",
+      "source": "transcript.md",
+      "reason": "Turn 1 ended with a design summary and open questions, with no triage, ranking, quality goals or request for confirmation."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "has been set, so **the target is open**.",
+      "source": "workspace/ARCHITECTURE.md",
+      "reason": "Speed is recorded with measured numbers only, and its target is explicitly left open rather than given an invented measure."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I did not propose a triage, a ranking, or a \"did you leave out\" list in my last message, and none of those appear in this conversation.",
+      "source": "transcript.md",
+      "reason": "Turn 1 asked no question about a missing quality characteristic."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "Everything is written down in `ARCHITECTURE.md` in the project, and the 12 tests still pass. Nothing is committed.",
+      "source": "transcript.md",
+      "reason": "The final message never mentions ADR-0001 or that it waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2756578
+   },
+   "cost_usd": 0.052371,
    "needs_review": false
   }
  ]
