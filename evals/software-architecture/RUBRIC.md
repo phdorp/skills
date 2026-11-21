@@ -47,3 +47,10 @@ live in `grader/grade.py`, not here.
 - **J2**: In turn 1 the agent offers both existing ADRs (0001, 0002) for upgrade in one batch, without proposing to change or re-decide what they decided.
 - **J3**: The final message says the new "Record architecture decisions" ADR (ADR-0003) waits for the architect's approval.
 - **J4**: The final message presents ADR-0001 and ADR-0002 as accepted (legacy) decisions, not as decisions to be re-made or approved again.
+
+## S08
+
+- **J1**: The report and the messages describe coupling and interfaces in dataflow terms (connectors, signals, connections, parameters), not as classes, methods or inheritance in the object-oriented sense.
+- **J2**: Each candidate in the report names the quality goal it serves.
+- **J3**: Turn 1 ends by asking the architect which candidate to explore.
+- **J4**: The final message says the accepted change is recorded as a proposed ADR that waits for the architect's approval, and that no model was changed yet.

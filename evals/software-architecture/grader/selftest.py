@@ -83,8 +83,17 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S07-readmelink": set(),                            # README line added, nothing removed
     "S07-copiedadr": {"no_copy"},                       # ADR-0001's decision copied into arc42
     "S07-shortened": {"legacy_upgraded"},               # ADR-0002's decision cut to "checked locally"
+    "S08-noreport": {"report_outside_repo", "goals_cited"},  # no HTML report, so no goals cited
+    "S08-inrepo": {"report_outside_repo"},              # report written into the workspace
+    "S08-nogoal": {"goals_cited"},                      # report names no QG-ID
+    "S08-inventedgoal": {"goals_cited"},                # report cites QG-7, not in arc42
+    "S08-t1edit": {"t1_unchanged", "code_unchanged"},   # edited Thermostat.mo in turn 1
+    "S08-implemented": {"code_unchanged"},              # implemented the change after acceptance
+    "S08-accepted": {"adr_proposed"},                   # ADR-0002 marked accepted
+    "S08-noadr": {"adr_proposed"},                      # no ADR for the accepted change
+    "S08-edited0001": {"adr0001_unchanged"},            # touched ADR-0001
 }
-SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07")
+SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08")
 
 
 def build_tree(root):

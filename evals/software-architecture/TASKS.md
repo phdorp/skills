@@ -152,3 +152,24 @@ measure: keep those open), where each existing document maps, and the upgrade of
 ADRs. To your "did you leave out" questions: no, nothing is missing. Write everything down now.
 I'm offline after this, so finish without asking me again.
 ```
+
+## S08 architecture-scan-dataflow: scan a Modelica library against its quality goals
+
+Fixture: modelica
+Invoke: improve-codebase-architecture
+
+Tests D7, D13, D15 (stories 14, 31, 32, 46): in a set-up dataflow project the review speaks in
+connectors, signals, connections and parameters; every candidate names the quality goal it
+serves by an existing `QG-n`; the report goes to the temp directory. When the architect accepts
+the top recommendation, the change becomes ADR-0002, `proposed`, and no model changes.
+`workspace-t1/` is the workspace after turn 1.
+
+```text
+Look for architecture improvements in HeatingLib. I'm not available for questions until you
+have the report ready.
+```
+
+```reply
+I accept your top recommendation. Take it forward; I'm offline after this, so finish without
+asking me again.
+```

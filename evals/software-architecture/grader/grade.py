@@ -446,7 +446,74 @@ def s07(run_dir):
     ]
 
 
-CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07}
+REPORT_NAME = re.compile(r"^architecture-review-.*\.html$")
+
+
+def _writes(run_dir):
+    """(file_path, content) of every Write tool call in the transcript, in order."""
+    p = Path(run_dir) / "transcript.md"
+    text = p.read_text(encoding="utf-8", errors="replace") if p.is_file() else ""
+    heads = list(HEADING.finditer(text))
+    out = []
+    for i, m in enumerate(heads):
+        if m.group(1) != "tool_use Write":
+            continue
+        body = text[m.end():heads[i + 1].start() if i + 1 < len(heads) else len(text)].strip()
+        if body.startswith("```json") and body.endswith("```"):
+            try:
+                data = json.loads(body[len("```json"):-3])
+            except ValueError:
+                continue
+            if isinstance(data, dict):
+                out.append((str(data.get("file_path", "")), str(data.get("content", ""))))
+    return out
+
+
+def written_file(run_dir, suffix):
+    """Content of the last Write call whose path ends with `suffix`, or None."""
+    found = [c for path, c in _writes(run_dir) if path.endswith(suffix)]
+    return found[-1] if found else None
+
+
+def _no_report(files):
+    return {k: v for k, v in files.items() if not REPORT_NAME.match(Path(k).name)}
+
+
+def s08(run_dir):
+    ws, t1, base = run_dir / "workspace", run_dir / "workspace-t1", base_workspace("S08")
+    try:
+        before, after, after_t1 = _files(base), _files(ws), _files(t1)
+        known = {g["id"] for g in _rows(_read(base / ARC42), "from")}
+        new = adr.new_adrs(ws, base)
+        changed = [p.name for p in adr.changed_adrs(ws, base)]
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    reports = [p for p, _ in _writes(run_dir) if REPORT_NAME.match(Path(p).name)]
+    html_in_ws = sorted(k for k in set(after) | set(after_t1) if k.endswith(".html"))
+    cited = set(QG_ID.findall(written_file(run_dir, ".html") or ""))
+    t1_changed = sorted(k for k in set(before) | set(_no_report(after_t1))
+                        if before.get(k) != _no_report(after_t1).get(k))
+    mo = lambda files: {k: v for k, v in files.items() if k.endswith(".mo")}
+    code = sorted(k for k in set(mo(before)) | set(mo(after)) if mo(before).get(k) != mo(after).get(k))
+    a = adr.parse(new[0]) if len(new) == 1 else None
+    goals = set(QG_ID.findall(a.fields.get("context", ""))) if a else set()
+    return [
+        check("report_outside_repo", bool(reports) and not html_in_ws,
+              f"writes: {', '.join(reports)}; in workspace: {', '.join(html_in_ws)}"),
+        check("goals_cited", bool(cited) and cited <= known, ", ".join(sorted(cited))),
+        check("t1_unchanged", t1.is_dir() and not t1_changed,
+              ", ".join(t1_changed) if t1.is_dir() else "no workspace-t1"),
+        check("code_unchanged", not code, ", ".join(code)),
+        check("adr_proposed", a is not None and new[0].name.startswith("0002-") and five_fields(a)
+              and a.status.startswith("proposed") and bool(goals) and goals <= known,
+              f"{', '.join(p.name for p in new)}; status {a.status if a else '-'}; cites {sorted(goals)}"),
+        check("adr0001_unchanged", "0001-record-architecture-decisions.md" not in changed,
+              ", ".join(changed)),
+    ]
+
+
+CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
+          "S08": s08}
 
 
 def grade(scenario_id, run_dir):
