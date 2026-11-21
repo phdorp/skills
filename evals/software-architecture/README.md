@@ -111,6 +111,6 @@ Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50�
 - Scenario prompts must carry the architect's answers up front: a `-p` run cannot answer
   questions, so a run that stops to ask ends there.
 - Two runs per scenario cannot detect small effects.
-- Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 before the imperative description, 2 of 2 since). A scenario
+- Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 in early runs, 2 of 2 in the ticket 04 re-run). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the
   model alone.
