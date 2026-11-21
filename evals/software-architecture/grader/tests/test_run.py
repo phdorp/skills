@@ -42,6 +42,13 @@ class LoadScenarios(unittest.TestCase):
         scenarios = run.load_scenarios(p)
         self.assertEqual((scenarios["S97"].overlay, scenarios["S96"].overlay), ("s97", None))
 
+    def test_load_scenarios_reads_optional_invoke(self):
+        p = self._write("## S95 x\n\nFixture: setup\nInvoke: add-requirements\n\n```text\nGo.\n```\n\n"
+                        "## S94 y\n\nFixture: setup\n\n```text\nGo.\n```\n")
+        scenarios = run.load_scenarios(p)
+        self.assertEqual((scenarios["S95"].invoke, scenarios["S94"].invoke),
+                         ("add-requirements", None))
+
     def test_load_scenarios_rejects_section_without_fixture(self):
         p = self._write("## S99 thing\n\n```text\nDo it.\n```\n")
         with self.assertRaises(ValueError):
@@ -51,6 +58,22 @@ class LoadScenarios(unittest.TestCase):
         p = self._write("## S99 thing\n\nFixture: plain\n\n```text\nA\n```\n\n```text\nB\n```\n")
         with self.assertRaises(ValueError):
             run.load_scenarios(p)
+
+
+class BuildPrompt(unittest.TestCase):
+    def setUp(self):
+        self.plugin_dir = Path(tempfile.mkdtemp()) / "sa"
+        (self.plugin_dir / "skills" / "add-requirements").mkdir(parents=True)
+        (self.plugin_dir / "skills" / "add-requirements" / "SKILL.md").write_text("x\n")
+
+    def test_build_prompt_prefixes_slash_when_arm_has_skill(self):
+        s = run.Scenario("S95", "setup", "Integrate these.\n", invoke="add-requirements")
+        self.assertEqual(run.build_prompt(s, self.plugin_dir),
+                         "/sa:add-requirements Integrate these.\n")
+
+    def test_build_prompt_plain_when_arm_lacks_skill(self):
+        s = run.Scenario("S95", "setup", "Integrate these.\n", invoke="quality-requirements")
+        self.assertEqual(run.build_prompt(s, self.plugin_dir), "Integrate these.\n")
 
 
 class Isolation(unittest.TestCase):

@@ -42,6 +42,7 @@ USER_SKILLS = Path.home() / ".claude" / "skills"
 SECTION = re.compile(r"^## (S\d+)\b.*$", re.M)
 FIXTURE = re.compile(r"^Fixture:\s*(\S+)\s*$", re.M)
 OVERLAY = re.compile(r"^Overlay:\s*(\S+)\s*$", re.M)
+INVOKE = re.compile(r"^Invoke:\s*(\S+)\s*$", re.M)
 PROMPT = re.compile(r"^```text\n(.*?)^```\s*$", re.M | re.S)
 
 
@@ -51,6 +52,7 @@ class Scenario:
     fixture: str
     prompt: str
     overlay: str | None = None
+    invoke: str | None = None
 
 
 def load_scenarios(tasks_md):
@@ -65,10 +67,18 @@ def load_scenarios(tasks_md):
             raise ValueError(f"{m.group(1)}: no 'Fixture:' line")
         if len(prompts) != 1:
             raise ValueError(f"{m.group(1)}: expected one ```text block, found {len(prompts)}")
-        overlay = OVERLAY.search(body)
+        overlay, invoke = OVERLAY.search(body), INVOKE.search(body)
         scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0],
-                                         overlay.group(1) if overlay else None)
+                                         overlay.group(1) if overlay else None,
+                                         invoke.group(1) if invoke else None)
     return scenarios
+
+
+def build_prompt(scenario, plugin_dir):
+    """The prompt, prefixed with `/sa:<invoke> ` when the arm has the user-invoked skill."""
+    if scenario.invoke and (Path(plugin_dir) / "skills" / scenario.invoke / "SKILL.md").is_file():
+        return f"/{PLUGIN_NAME}:{scenario.invoke} {scenario.prompt}"
+    return scenario.prompt
 
 
 def _git(*args, cwd=REPO_ROOT, **kw):
@@ -212,16 +222,18 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
         plugin_dir = export_arm(ref, tmp)
         ws = prepare_workspace(*fixture_dirs(scenario, suite))
         jsonl = run_dir / "transcript.jsonl"
-        code, duration = _claude(scenario.prompt, ws, plugin_dir, jsonl)
+        prompt = build_prompt(scenario, plugin_dir)
+        code, duration = _claude(prompt, ws, plugin_dir, jsonl)
         init, cost = _init_and_cost(jsonl)
         errors = check_isolation(init, plugin_dir, _user_skill_names()) if init else ["no init event"]
-        (run_dir / "transcript.md").write_text(render_transcript(jsonl, scenario.prompt))
+        (run_dir / "transcript.md").write_text(render_transcript(jsonl, prompt))
         (run_dir / "git-log.txt").write_text(_git("log", "--format=%H %s", cwd=ws))
         shutil.copytree(ws, run_dir / "workspace",
                         ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
         meta = {"scenario": scenario.id, "arm": arm, "ref": ref,
                 "sha": _git("rev-parse", ref).strip(), "model": MODEL, "effort": EFFORT,
                 "cost_usd": cost, "duration_s": duration, "exit_code": code,
+                "invoked": prompt != scenario.prompt,
                 "isolation_ok": not errors, "isolation_errors": errors}
         (run_dir / "meta.json").write_text(json.dumps(meta, indent=1) + "\n")
         shutil.rmtree(ws.parent, ignore_errors=True)

@@ -43,8 +43,19 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S03-edited0004": {"others_unchanged"},             # rewrote 0004's Context
     "S03-oldstatus": {"old_status"},                    # 0001 marked superseded too early
     "S03-edited0002": {"others_unchanged"},             # touched ADR-0002
+    "S04-edited": {"arc42_unchanged"},                  # added an unconfirmed R-6 row
+    "S04-adr": {"adrs_unchanged"},                      # wrote ADR-0004 before confirmation
+    "S04-code": {"code_unchanged"},                     # changed notes/cli.py
+    "S05-reworded": {"old_rows_kept"},                  # rewrote R-2's wording
+    "S05-syncrow": {"new_rows"},                        # added a row for the R-4 duplicate
+    "S05-noreason": {"new_rows"},                       # rejected row without a reason
+    "S05-ids": {"ids_next_free"},                       # new rows numbered R-7..R-9
+    "S05-accepted": {"superseding_adr"},                # new ADR marked accepted
+    "S05-goal": {"goals_unchanged"},                    # added QG-4 without confirmation
+    "S05-nofeature": {"feature_routed"},                # newest-first item not filed
+    "S05-extracol": set(),                              # an extra R-list column still parses
 }
-SCENARIOS = ("S01", "S02", "S03")
+SCENARIOS = ("S01", "S02", "S03", "S04", "S05")
 
 
 def build_tree(root):

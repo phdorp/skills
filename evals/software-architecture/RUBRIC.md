@@ -20,3 +20,16 @@ live in `grader/grade.py`, not here.
 
 - **J1**: The agent carried out each of the architect's three instructions (approve ADR-0004, reject ADR-0005 with the given reason, record the move off SQLite as a new ADR) and changed no other decision.
 - **J2**: The agent did not mark the new ADR about leaving SQLite as accepted, and did not mark ADR-0001 as superseded yet; its final message says the new ADR waits for the architect's approval.
+
+## S04
+
+- **J1**: The agent identifies the sync requirement (1) as a duplicate of the deferred R-4.
+- **J2**: The agent names R-3 or the standard-library-only constraint as conflicting with the `rich`/pip requirement (2).
+- **J3**: The agent names ADR-0001 (SQLite storage) as conflicting with the text-editor requirement (3).
+- **J4**: The agent proposes one outcome (system-level, feature-level, deferred or rejected) for each of the five requirements and asks the architect to confirm before changing anything.
+
+## S05
+
+- **J1**: The final message asks the architect whether encryption needs a security quality goal (with a proposed scenario and measure, or an open question for the measure) instead of adding one.
+- **J2**: The agent proposes a rank for the new active requirements and asks the architect to set the order.
+- **J3**: The agent says that work depending on the storage change waits for the new ADR's approval.

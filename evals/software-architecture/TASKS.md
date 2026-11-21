@@ -51,3 +51,47 @@ second storage engine, a server database contradicts R-3. One more change: we're
 SQLite. Notes will be stored as one JSON file per note, because SQLite files are hard to diff
 and repair by hand. Update the decision records accordingly. I'm not available for questions.
 ```
+
+## S04 add-requirements-propose: new requirements are checked and proposed, nothing changes
+
+Fixture: setup
+Invoke: add-requirements
+
+Tests D18 (stories 17–21, 25): each new requirement is checked against every R-list row
+(deferred and rejected included), the active requirements, the constraints and the accepted
+ADRs, and gets a proposed outcome. No file changes before the architect confirms. On an arm
+that has `add-requirements`, the prompt starts with `/sa:add-requirements`.
+
+```text
+New requirements from this week's user interviews:
+1. Notes sync between my laptop and my desktop.
+2. Install with `pip install notes-cli`, using the `rich` library for coloured output.
+3. Notes can be read and edited with any text editor.
+4. `notes list` shows the newest notes first.
+5. Notes are encrypted at rest, so a stolen laptop exposes nothing.
+Please integrate them into the project.
+```
+
+## S05 add-requirements-confirmed: the architect's triage is applied, goals stay as they are
+
+Fixture: setup
+Invoke: add-requirements
+
+Tests D18 and D4 (stories 22–25, 4–6): confirmed outcomes change the R-list (next free IDs,
+old rows untouched, rejected kept with its reason), a conflict with an accepted ADR becomes a
+`proposed` superseding ADR, a feature-level item goes to the tracker, and the quality goals
+change only after the architect confirms.
+
+```text
+New requirements from this week's user interviews:
+1. Notes sync between my laptop and my desktop.
+2. Install with `pip install notes-cli`, using the `rich` library for coloured output.
+3. Notes can be read and edited with any text editor.
+4. `notes list` shows the newest notes first.
+5. Notes are encrypted at rest, so a stolen laptop exposes nothing.
+Please integrate them into the project.
+
+My triage, already decided: 1 is a duplicate of R-4, which stays deferred. 2 is rejected: it
+breaks R-3. 3 is system-level and replaces the SQLite decision. 4 is feature-level.
+5 is system-level. Apply this. I'm not available for questions today.
+```

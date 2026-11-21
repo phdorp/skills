@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import adr  # noqa: E402
+import arc42  # noqa: E402
 import run  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
@@ -181,7 +182,99 @@ def s03(run_dir):
     ]
 
 
-CHECKS = {"S01": s01, "S02": s02, "S03": s03}
+ARC42 = Path("docs") / "architecture" / "arc42.md"
+R_ID = re.compile(r"^R-(\d+)$")
+R1 = re.compile(r"\bR-1\b")
+R_FIELDS = ("id", "requirement", "rank", "status", "reason")
+
+
+def _read(path):
+    return path.read_text(encoding="utf-8", errors="replace") if path.is_file() else ""
+
+
+def s04(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S04")
+    try:
+        arc_same = _read(ws / ARC42) == _read(base / ARC42) and (ws / ARC42).is_file()
+        adrs = [p.name for p in adr.new_adrs(ws, base) + adr.changed_adrs(ws, base)]
+        code = [p.name for p in _changed_py(ws, base, "notes")]
+        code += [p.name for p in sorted((base / "notes").glob("*.py"))
+                 if not (ws / "notes" / p.name).exists()]
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    return [
+        check("arc42_unchanged", arc_same),
+        check("adrs_unchanged", not adrs, ", ".join(adrs)),
+        check("code_unchanged", not code, ", ".join(code)),
+    ]
+
+
+def _norm(s):
+    return " ".join(s.split())
+
+
+def _status(row):
+    return row.get("status", "").strip("*_` ").lower()
+
+
+def _new_files(ws, base):
+    return [p for p in ws.rglob("*")
+            if p.is_file() and not (base / p.relative_to(ws)).exists()
+            and (p.relative_to(ws).parts[0] == "docs"
+                 or (p.relative_to(ws).parts[0] == ".scratch" and "issues" in p.parts))]
+
+
+def s05(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S05")
+    try:
+        text, old_text = _read(ws / ARC42), _read(base / ARC42)
+        old = arc42.table(old_text, "ID", column="requirement")
+        rows = arc42.table(text, "ID", column="requirement")
+        goals = [arc42.table(x, "ID", column=c) for x in (text, old_text) for c in ("from", "stimulus")]
+        new = adr.new_adrs(ws, base)
+        a1 = _find(ws, "0001")
+        routed = [p for p in _new_files(ws, base)
+                  if "newest" in _read(p).lower() and R1.search(_read(p))]
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    by_id = {r.get("id"): r for r in rows}
+    key = lambda r: tuple(_norm(r.get(f, "")) for f in R_FIELDS)
+    lost = [r["id"] for r in old if r["id"] not in by_id or key(by_id[r["id"]]) != key(r)]
+    old_ids = {r["id"] for r in old}
+    added = [r for r in rows if r.get("id") not in old_ids]
+
+    def one(word, status):
+        return [r for r in added if word in r.get("requirement", "").lower() and _status(r) == status]
+
+    rich = one("rich", "rejected")
+    reason = re.sub(r"[\W_]+", " ", rich[0].get("reason", "")).strip() if rich else ""
+    stray = [r["id"] for r in added if re.search(r"sync|newest", r.get("requirement", ""), re.I)]
+    nums = sorted(int(m.group(1)) for r in added if (m := R_ID.match(r.get("id", ""))))
+    top = max((int(m.group(1)) for r in old if (m := R_ID.match(r["id"]))), default=0)
+    a = adr.parse(new[0]) if len(new) == 1 else None
+    norm_rows = lambda rs: [{k: _norm(v) for k, v in r.items()} for r in rs]
+    return [
+        check("old_rows_kept", bool(old) and not lost, ", ".join(lost)),
+        check("new_rows", len(added) == 3 and len(one("encrypt", "active")) == 1
+              and len(one("text editor", "active")) == 1 and len(rich) == 1
+              and len(reason) >= 10 and not stray,
+              "; ".join(f"{r.get('id')} {_status(r)}" for r in added)),
+        check("ids_next_free", bool(added) and len(nums) == len(added)
+              and nums == list(range(top + 1, top + 1 + len(added))),
+              ", ".join(r.get("id", "") for r in added)),
+        check("superseding_adr",
+              a is not None and new[0].name.startswith("0004-") and five_fields(a)
+              and a.status.startswith("proposed") and bool(CITES_0001.search(_read(new[0])))
+              and a1 is not None and a1.status.startswith("accepted"),
+              ", ".join(p.name for p in new)),
+        check("goals_unchanged", bool(goals[2]) and bool(goals[3])
+              and norm_rows(goals[0]) == norm_rows(goals[2])
+              and norm_rows(goals[1]) == norm_rows(goals[3])),
+        check("feature_routed", bool(routed), ", ".join(str(p.relative_to(ws)) for p in routed)),
+    ]
+
+
+CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05}
 
 
 def grade(scenario_id, run_dir):
