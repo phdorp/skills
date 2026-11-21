@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "I added `--top N` to the tally CLI and committed it as `87bd00e` on `master`. All 7 tests pass: the original 3 plus 4 new ones.",
+   "quote": "Small codebase: a single `main()` in `tally/cli.py` and one test class for `main`. I'll write the failing tests first, then implement.",
    "source": "transcript.md",
-   "reason": "The final report covers only feature behaviour, validation, tests and README, with no quality goals asked for or invented anywhere."
+   "reason": "The agent went straight to tests and implementation and never mentioned quality goals, scenarios or ISO 25010 characteristics."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "M  README.md\nM  tally/cli.py\nM  tests/test_cli.py",
+   "quote": "- **`README.md`**: a usage example for `--top`.",
    "source": "transcript.md",
-   "reason": "Only the README, the CLI and the tests were changed and committed; no ADR was written or proposed."
+   "reason": "The only documentation change was a README usage example; no ADR was created or proposed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Baseline is green (3 tests). I'll write the tests first, so they fail before the implementation exists.",
+   "quote": "All 6 tests pass and the CLI behaves correctly by hand. The rejection test prints argparse's usage text to stderr, so I'll silence that and then commit.",
    "source": "transcript.md",
-   "reason": "The agent followed the ordinary read, test, implement, verify, commit flow with no architecture setup, recovery or documentation step."
+   "reason": "The steps were read, test, implement, verify and commit, with no architecture setup, recovery or documentation step."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0977938
+ "cost_usd": 0.0937938
 }

@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **ADR-0001** and **ADR-0003** are unchanged. ADR-0001 stays `accepted` until ADR-0006 is approved. ADR-0003's rule still holds, but its text mentions `sqlite3`; ADR-0006's Consequences flags this.",
+   "quote": " M docs/adr/0004-write-notes-atomically.md\n M docs/adr/0005-add-postgresql-backend.md\n?? docs/adr/0006-store-one-json-file-per-note.md",
    "source": "transcript.md",
-   "reason": "ADR-0004 was accepted, ADR-0005 rejected with the given reason, and a new ADR-0006 created; git status shows only these three ADR files changed."
+   "reason": "Only ADR-0004 (accepted), ADR-0005 (rejected citing R-3) and the new ADR-0006 changed; no other decision record was modified."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Waiting for you:** approve ADR-0006. Approving it makes ADR-0001 `superseded by ADR-0006`.",
+   "quote": "- **ADR-0006**, \"Store one JSON file per note\": approve it to replace SQLite.",
    "source": "transcript.md",
-   "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message says ADR-0006 awaits the architect's approval."
+   "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 as waiting for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1395978
+ "cost_usd": 0.1250018
 }

@@ -57,7 +57,7 @@ rule that the architect's approval of the written record is what makes it accept
 "ADR-0001 (SQLite): unchanged and still `accepted`. Under the ADR rules it becomes
 `superseded by ADR-0006` only when ADR-0006 is accepted." (S03-r1).
 
-## Open loophole: the skill does not always load
+## Loophole (closed below): the skill does not always load
 
 In S02 ("record the decision as an ADR") Haiku 5.5 loaded `domain-modeling` in 1 of 4 runs;
 S03 ("I've reviewed the open ADRs. ADR-0004 is approved…") loaded it in 2 of 2. Every run
@@ -91,3 +91,21 @@ loophole stays open: the pointer, not the rule.
 
 The grader now also fails S03 runs that rewrite ADR-0001, 0004 or 0005 beyond their Status;
 `baseline/S03-r2` (rewrote ADR-0004's Context, failure 5) is caught by it.
+
+## Closing the loophole: description micro-test (user constraint: no AGENTS.md pointer)
+
+The skill set has to reach `domain-modeling` on its own, so the description is the only lever.
+S02 on the branch skills with only the description patched, 5 runs per variant, Haiku 5.5
+medium; scored on whether the run loaded `domain-modeling` and whether ADR-0004 stayed proposed.
+
+| variant | description | loaded | `proposed` |
+|---|---|---:|---:|
+| A (control) | Use when writing, approving, rejecting, or superseding an ADR (architecture decision record), when a decision is expensive to change or crosses a module boundary, or when discussing codebase terminology or editing a GLOSSARY.md. | 2/5 | 3/5 |
+| B | Load before creating or editing any ADR (architecture decision record) or any file in docs/adr/: recording a decision, approving, rejecting, superseding. Also use when a decision is expensive to change or crosses a module boundary, and for codebase terminology or GLOSSARY.md. | 5/5 | 5/5 |
+| C | Required before you write, record, approve, reject, or supersede an ADR (architecture decision record) or touch docs/adr/: holds the ADR format and who may set an ADR's status. Also use for decisions that are expensive to change or cross a module boundary, and for codebase terminology or GLOSSARY.md. | 5/5 | 5/5 |
+| D | Use when asked to decide or record an architectural decision, or to write, approve, reject, or supersede an ADR (architecture decision record) in docs/adr/; when a decision is expensive to change or crosses a module boundary; or for codebase terminology and GLOSSARY.md. | 4/5 | 5/5 |
+
+Every unloaded control run that failed wrote `accepted`. B was adopted verbatim (commit 556bde7);
+the imperative "Load before creating or editing any ADR … or any file in `docs/adr/`" is what
+A lacked. Re-run on B: every branch run passes every check and criterion; S02 and S03 load the
+skill 4 of 4, S01 loads nothing and writes no ADR (no over-triggering).

@@ -1,2 +1,2 @@
-e0e900b406d56040c2e29dde78c3da889c245c49 feat: add --top N option to print only the most frequent words
-3debacf3cf9d29cbe99876af0f56db6822a353e4 fixture
+6bce603d04e52f5cc55e51db4df5793d2f66534f Add --top N option to limit output to most frequent words
+a91f6d990be2e17548c72ce5bd609fc51afff39c fixture

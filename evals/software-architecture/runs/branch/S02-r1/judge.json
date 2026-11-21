@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "It is still `proposed`. Under ADR-0002, the team should not build the export until you accept it, so that approval is the one thing to do first.",
+   "quote": "I drafted the export decision as ADR-0004 and left it `proposed`. It needs your approval before the team builds it.",
    "source": "transcript.md",
-   "reason": "The final message presents ADR 0004 as proposed and waiting for the architect's acceptance."
+   "reason": "The final message presents ADR-0004 as proposed and waiting for the architect's approval."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "=== docs/adr/0002-record-architecture-decisions.md",
+   "quote": "The record-decisions ADR (0002) puts both \"import and export formats\" and \"CLI command names\" on the central list, so this needs an ADR.",
    "source": "transcript.md",
-   "reason": "The agent printed ADR-0002 and arc42.md in its second tool call, before writing the new ADR."
+   "reason": "The agent read ADR-0002 (cat of docs/adr/*.md) and relied on its central list before writing the ADR."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "the program may use only the Python standard library (R-3, QG-2)",
-   "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
-   "reason": "The Context cites requirement and quality goal IDs (R-2, QG-1, R-3, QG-2, QS-3) that the decision serves."
+   "quote": "Constraints: standard library only (R-3);\nexport only reads, so it must not change the store (R-2);",
+   "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-notes-export.md",
+   "reason": "The Context cites requirement IDs R-3 and R-2 as forces the decision serves, though the backup need itself is named only in words."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1385898
+ "cost_usd": 0.1318178
 }

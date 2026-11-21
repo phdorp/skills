@@ -69,7 +69,7 @@ with the agents' wording: [campaigns/](campaigns/).
 | scenario | baseline grader | baseline judge | branch grader | branch judge | branch runs that loaded the target skill |
 |---|---:|---:|---:|---:|---|
 | S01 no-setup | 1.000 | 1.000 | 1.000 | 1.000 | - (none expected) |
-| S02 record-decision | 0.785 | 0.834 | 0.928 | 0.666 | 1 of 2 |
+| S02 record-decision | 0.785 | 0.834 | 1.000 | 1.000 | 2 of 2 |
 | S03 lifecycle | 0.400 | 0.000 | 1.000 | 1.000 | 2 of 2 |
 
 Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run takes 20–60 s.
@@ -79,8 +79,9 @@ Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run tak
 - S02, S03 (ticket 02, [campaign](campaigns/02-adr-rules.md)): on `main`, agents accepted their
   own ADRs, marked the replaced ADR superseded early, and added requirements on their own. Every
   branch run that loaded `domain-modeling` followed every rule; the branch S02 run that did not
-  load it accepted its own ADR again. Open loophole: the skill does not load reliably for
-  "record the decision as an ADR".
+  load it accepted its own ADR again. The skill loaded unreliably for "record the decision as
+  an ADR" until its description became an imperative trigger ("Load before creating or editing
+  any ADR …"): 2 of 5 loads before, 5 of 5 after, in a micro-test recorded in the campaign.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 

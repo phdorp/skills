@@ -1,2 +1,2 @@
-87bd00ec3c27245859a908c871057863d741fcc0 feat(cli): add --top N to print only the most frequent words
-3debacf3cf9d29cbe99876af0f56db6822a353e4 fixture
+d3cfe73d72cddfb1d5d5c01c056a01b8c1a72fc6 feat: add --top N option to print only the most frequent words
+a91f6d990be2e17548c72ce5bd609fc51afff39c fixture

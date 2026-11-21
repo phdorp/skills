@@ -25,36 +25,30 @@ class Main(unittest.TestCase):
             self.assertEqual(main([str(path)]), 0)
         self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def run_main(self, argv):
+    def test_top_prints_only_most_frequent_words(self):
         path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("c a c b b b d")
+        path.write_text("c c c b b a d")
         out = io.StringIO()
         with redirect_stdout(out):
-            status = main([str(path), *argv])
-        return status, out.getvalue()
-
-    def test_top_prints_only_most_frequent_words(self):
-        status, out = self.run_main(["--top", "2"])
-        self.assertEqual(status, 0)
-        self.assertEqual(out, "b 3\nc 2\n")
+            self.assertEqual(main(["--top", "2", str(path)]), 0)
+        self.assertEqual(out.getvalue(), "c 3\nb 2\n")
 
     def test_top_larger_than_vocabulary_prints_all_words(self):
-        status, out = self.run_main(["--top", "10"])
-        self.assertEqual(status, 0)
-        self.assertEqual(out, "b 3\nc 2\na 1\nd 1\n")
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("b a b")
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(main(["--top", "10", str(path)]), 0)
+        self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def test_top_zero_prints_nothing(self):
-        status, out = self.run_main(["--top", "0"])
-        self.assertEqual(status, 0)
-        self.assertEqual(out, "")
-
-    def test_negative_top_is_rejected(self):
-        err = io.StringIO()
-        with self.assertRaises(SystemExit) as cm, redirect_stdout(io.StringIO()), \
-                redirect_stderr(err):
-            self.run_main(["--top=-1"])
-        self.assertEqual(cm.exception.code, 2)
-        self.assertIn("must be >= 0", err.getvalue())
+    def test_top_rejects_non_positive_values(self):
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("a")
+        for bad in ("0", "-1", "x"):
+            with self.subTest(bad=bad), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as cm:
+                    main(["--top", bad, str(path)])
+                self.assertEqual(cm.exception.code, 2)
 
 
 if __name__ == "__main__":

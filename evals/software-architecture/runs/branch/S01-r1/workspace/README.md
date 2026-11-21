@@ -8,7 +8,7 @@ python3 -m tally notes.txt
 
 Prints one `word count` line per word, most frequent first, ties in alphabetical order.
 
-To print only the N most frequent words, pass `--top N`:
+To print only the N most frequent words:
 
 ```sh
 python3 -m tally --top 10 notes.txt
