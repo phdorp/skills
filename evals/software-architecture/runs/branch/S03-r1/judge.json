@@ -1,0 +1,27 @@
+{
+ "criteria": [
+  "J1",
+  "J2"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "rejected 2026-11-21: we will not run a second storage engine, and a server database contradicts R-3",
+   "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
+   "reason": "ADR-0005 is rejected with the given reason, ADR-0004 is accepted, the move off SQLite is recorded as new ADR-0006, and ADR-0001 to ADR-0003 are unchanged."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "ADR-0001 (SQLite)**: unchanged and still `accepted`. Under the ADR rules it becomes `superseded by ADR-0006` only when ADR-0006 is accepted.",
+   "source": "transcript.md",
+   "reason": "ADR-0006 stays proposed, ADR-0001 is not superseded, and the final message says ADR-0006 waits for the architect's approval."
+  }
+ ],
+ "quote_errors": [
+  "J2: quote not found in transcript.md"
+ ],
+ "needs_review": true,
+ "cost_usd": 0.1358698
+}

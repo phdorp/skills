@@ -1,0 +1,13 @@
+{
+ "scenario": "S02",
+ "arm": "branch",
+ "ref": "design/software-architecture-skill-set",
+ "sha": "1d46500119c51a81ffd0ce7a6d1cd61ba545fc67",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.00957858,
+ "duration_s": 33.2,
+ "exit_code": 0,
+ "isolation_ok": true,
+ "isolation_errors": []
+}

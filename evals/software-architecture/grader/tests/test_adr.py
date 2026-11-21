@@ -62,6 +62,11 @@ class Parse(unittest.TestCase):
         a = adr.parse(write("# T\n\n## Status: Proposed\n\n## Context\n\nR-1\n"))
         self.assertEqual(a.status, "proposed")
 
+    def test_subheadings_stay_inside_their_field(self):
+        a = adr.parse(write("# T\n\n## Decision\n\n### Format\n\nJSON Lines.\n\n## Consequences\n\nNone.\n"))
+        self.assertIn("JSON Lines.", a.fields["decision"])
+        self.assertEqual(a.fields["consequences"], "None.")
+
     def test_missing_field_absent_from_fields(self):
         a = adr.parse(write("# T\n\nJust a paragraph.\n"))
         self.assertEqual((a.fields, a.status), ({}, ""))

@@ -1,7 +1,8 @@
 """Read ADRs the way the grader needs them: number, title, Nygard fields, status.
 
 A field is a `#`-heading (`## Status`) or a label line (`Status: x`, `**Status:** x`),
-case-insensitive. Its text runs to the next field or heading. Standard library only.
+case-insensitive. Its text runs to the next field, or the next heading at the field's level or
+above (a label field counts as level 2), so `###` subheadings stay inside it. Standard library only.
 """
 import re
 from dataclasses import dataclass
@@ -10,9 +11,9 @@ from pathlib import Path
 FIELDS = ("status", "context", "decision", "consequences")
 NUMBER = re.compile(r"^(\d{4})-")
 TITLE = re.compile(r"^#\s+(.+?)\s*$", re.M)
-HEADING_FIELD = re.compile(r"^#{2,}\s*(status|context|decision|consequences)\s*:?\s*(.*)$", re.I)
+HEADING_FIELD = re.compile(r"^(#{2,})\s*(status|context|decision|consequences)\s*:?\s*(.*)$", re.I)
 LABEL_FIELD = re.compile(r"^\**(status|context|decision|consequences)\s*:\**\s*:?\**\s*(.*)$", re.I)
-ANY_HEADING = re.compile(r"^#{1,6}\s")
+ANY_HEADING = re.compile(r"^(#{1,6})\s")
 ID = re.compile(r"\b(?:R|QG|QS)-\d+\b")
 
 
@@ -29,7 +30,7 @@ def parse(path):
     text = path.read_text(encoding="utf-8", errors="replace")
     m = NUMBER.match(path.name)
     title = TITLE.search(text)
-    fields, current, lines = {}, None, []
+    fields, current, lines, level = {}, None, [], 2
 
     def close():
         if current is not None:
@@ -39,11 +40,12 @@ def parse(path):
         h, lab = HEADING_FIELD.match(line), LABEL_FIELD.match(line)
         if h or lab:
             close()
-            current, lines = (h or lab).group(1).lower(), []
-            value = (h or lab).group(2).strip()
+            name, value = (h.group(2), h.group(3)) if h else (lab.group(1), lab.group(2))
+            current, lines, level = name.lower(), [], len(h.group(1)) if h else 2
+            value = value.strip()
             if value:
                 lines.append(value)
-        elif ANY_HEADING.match(line):
+        elif ANY_HEADING.match(line) and len(ANY_HEADING.match(line).group(1)) <= level:
             close()
             current, lines = None, []
         elif current is not None:

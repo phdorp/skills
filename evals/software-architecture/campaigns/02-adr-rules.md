@@ -38,3 +38,37 @@ the status `proposed` ("It is **proposed**, not accepted"); S03 runs kept ADR-00
 
 Review of the flagged run S02-r2 (grader fails `cites_ids`, judge passes J3): the grader stands.
 R-6 does not exist; citing a requirement the architect has not confirmed is failure 4.
+
+## GREEN: branch skills (commit 99df440, then 1d46500 description fix)
+
+| run | skill loaded | failed checks | failed criteria |
+|---|---|---|---|
+| S03-r1 | `sa:domain-modeling` | - | - (judge quote garbled Markdown; verdict confirmed by hand) |
+| S03-r2 | `sa:domain-modeling` | - | - |
+| S02-r1 (first description) | no | - | - |
+| S02-r2 (first description) | no | `cites_ids` (R-6) | - |
+| S02-r1 (ADR triggers first) | `sa:domain-modeling` | - | - |
+| S02-r2 (ADR triggers first) | no | `status_proposed`, `cites_ids` | J1 |
+| S01-r1, S01-r2 | no | - | - |
+
+With the skill loaded, every run met every rule, citing it: "ADR-0006 is `proposed`, not
+accepted. Your message named the change but did not approve the new text, so I followed the
+rule that the architect's approval of the written record is what makes it accepted." and
+"ADR-0001 (SQLite): unchanged and still `accepted`. Under the ADR rules it becomes
+`superseded by ADR-0006` only when ADR-0006 is accepted." (S03-r1).
+
+## Open loophole: the skill does not always load
+
+In S02 ("record the decision as an ADR") Haiku 5.5 loaded `domain-modeling` in 1 of 4 runs;
+S03 ("I've reviewed the open ADRs. ADR-0004 is approved…") loaded it in 2 of 2. Every run
+without the skill repeated failure 1, e.g. S02-r2: "I marked the ADR **accepted** on 2026-11-21,
+since ADR-0002 blocks work until acceptance and you wanted the team to start tomorrow."
+Leading the description with the ADR triggers (loophole round 1) moved S02 from 0/2 to 1/2.
+The rule text binds; the pointer does not. Candidate fix, outside this ticket: a project set up
+by `setup-architecture` carries an `AGENTS.md` line that names `domain-modeling` for every ADR
+change (a context pointer the agent sees on every turn), tested with S02.
+
+## Grader correction found on the way
+
+`adr.parse` ended a field at any heading, so a `### Format` subheading emptied the Decision
+field and failed `five_fields` (branch S02-r2). Fixed with `test_subheadings_stay_inside_their_field`.
