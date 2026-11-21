@@ -42,6 +42,12 @@
    "score": 0.071,
    "judge": 0.0,
    "cost_usd": 0.041
+  },
+  "S08": {
+   "runs": 2,
+   "score": 0.5,
+   "judge": 0.375,
+   "cost_usd": 0.096
   }
  },
  "runs": [
@@ -127,7 +133,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.059s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1135,6 +1141,172 @@
     "cost_usd": 0.16406579999999998
    },
    "cost_usd": 0.021266,
+   "needs_review": false
+  },
+  {
+   "run": "S08-r1",
+   "scenario": "S08",
+   "checks": [
+    {
+     "name": "report_outside_repo",
+     "pass": true,
+     "detail": "writes: /tmp/architecture-review-20261121-210149.html; in workspace: "
+    },
+    {
+     "name": "goals_cited",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "t1_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "HeatingLib/Room.mo, HeatingLib/System.mo, HeatingLib/Thermostat.mo, HeatingLib/package.mo"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": false,
+     "detail": "; status -; cites []"
+    },
+    {
+     "name": "adr0001_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 6,
+   "score": 0.5,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The fix is to have System bind `C` and `G` into the Thermostat, so the gain comes from the room it controls.",
+      "source": "transcript.md",
+      "reason": "The coupling is described as parameter binding through System and signals over connectors, not as object-oriented classes, methods or inheritance."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "<li>locality: plant values live with the room that owns them</li>",
+      "source": "transcript.md",
+      "reason": "Candidate wins are tagged with design terms (locality, leverage, tests) rather than the project's quality goals; candidate A in particular names no QG it serves."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Which of these would you like to explore?",
+      "source": "transcript.md",
+      "reason": "Turn 1 ends by asking the architect which candidate to explore."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "Candidate A is implemented in the working tree.",
+      "source": "transcript.md",
+      "reason": "The agent edited the models directly instead of recording a proposed ADR that waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2373338
+   },
+   "cost_usd": 0.053454,
+   "needs_review": false
+  },
+  {
+   "run": "S08-r2",
+   "scenario": "S08",
+   "checks": [
+    {
+     "name": "report_outside_repo",
+     "pass": true,
+     "detail": "writes: /tmp/architecture-review-20261121-210132.html; in workspace: "
+    },
+    {
+     "name": "goals_cited",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "t1_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "HeatingLib/Room.mo, HeatingLib/System.mo, HeatingLib/Thermostat.mo, HeatingLib/package.mo"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": false,
+     "detail": "; status -; cites []"
+    },
+    {
+     "name": "adr0001_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 6,
+   "score": 0.5,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "<strong>Leverage:</strong> a variant is a new class that extends the base; <code>System</code> does not change.",
+      "source": "transcript.md",
+      "reason": "The report frames the coupling fix in object-oriented terms (classes, extends, partial base classes) rather than purely in dataflow terms."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "<strong>Locality:</strong> a regression in the heat balance or the control law shows up at the block where it was made. <strong>Tests:</strong> expected values come from the design equations, so each test documents one rule.",
+      "source": "transcript.md",
+      "reason": "Candidates list locality, leverage and tests as benefits but do not name the quality goal (QG-1/2/3) each serves; candidate 3 names none."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Which of these would you like to explore?",
+      "source": "transcript.md",
+      "reason": "Turn 1 ends by asking the architect which candidate to explore."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "Option A over option B, so no constant goes into `Interfaces` and no new ADR is needed.",
+      "source": "transcript.md",
+      "reason": "The final message reports that the model files were changed directly and that no ADR was recorded, the opposite of what the criterion requires."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.23125779999999999
+   },
+   "cost_usd": 0.042178,
    "needs_review": false
   }
  ]
