@@ -24,9 +24,9 @@ goals, Gap question). ADRs follow `domain-modeling`. Load both before you write 
 | source files without architecture documentation | undocumented |
 
 A README that only describes the product idea or how to run it is not architecture
-documentation; a README section on how the system is built is. This version
-handles fresh and documented projects. For an undocumented project, tell the architect which
-situation you found and that this setup does not handle it yet, and stop.
+documentation; a README section on how the system is built is. In an undocumented project,
+the architecture is recovered from the code once the architect has approved the list of
+decisions made centrally, because that list decides which findings become ADRs.
 
 ## 2. First turn: skeleton and proposal
 
@@ -53,7 +53,9 @@ situation you found and that this setup does not handle it yet, and stop.
      decisions stay as they are.
    - **Decisions made centrally:** the draft list for the "Record architecture decisions" ADR,
      from [references/made-centrally-adr.md](references/made-centrally-adr.md), adjusted to
-     this product, and its number: the next free one in the project's ADR directory.
+     this product, and its number: the next free one in the project's ADR directory. In an
+     undocumented project, say that recovering the architecture from the code waits for the
+     architect's approval of this ADR.
 3. Ask the architect to confirm or change each part.
 
 Done when the skeleton exists and your message ends with that question.
@@ -74,6 +76,11 @@ Write what they confirmed, in this order:
 
 Done when every confirmed item is written and nothing unconfirmed is.
 
+In an undocumented project, end this turn by asking the architect to approve the written text
+of the "Record architecture decisions" ADR, and leave sections 2–8 and 11 empty until they do.
+After the approval, recover the architecture as [references/recovery.md](references/recovery.md)
+says; its report replaces section 4.
+
 ## 4. Report
 
 List the files written, the legacy ADRs upgraded (still `accepted (legacy)`), the open
@@ -88,3 +95,5 @@ with what waits for it: work on any decision on its list.
 | "The README's architecture section belongs in arc42, I'll move it over" | Link it from the arc42 section. The README stays as it is. |
 | "I'll pick the storage engine now so the docs are complete" | Storage is a decision made centrally: it goes on the "Record architecture decisions" list and gets its own ADR later. |
 | "They said 'confirmed', so the new ADR is accepted" | They confirmed your proposals. The ADR is `proposed` until they approve its written text. |
+| "The architect approved ADR-0001, so the recovered ADRs are approved too" | The approval covers ADR-0001's text. Each recovered ADR is `proposed` until the architect approves it. |
+| "The code clearly decided this, so I'll mark it accepted" | Found is not decided. Recovered content carries *as found, unconfirmed* and recovered ADRs stay `proposed`. |
