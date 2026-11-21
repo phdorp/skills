@@ -2,7 +2,9 @@
 
 ## Status
 
-rejected 2026-11-21. A database server contradicts R-3 (standard library only).
+rejected 2026-11-21
+
+We will not run a second storage engine. A server database contradicts R-3.
 
 ## Context
 

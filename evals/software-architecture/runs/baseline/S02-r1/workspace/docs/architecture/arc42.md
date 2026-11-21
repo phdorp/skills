@@ -13,7 +13,6 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | R-3 | Runs on Linux and macOS with only the Python standard library. | 3 | active | installed on locked-down machines |
 | R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
 | R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
-| R-6 | Users export all their notes to a file for backup and for use in other tools. | 4 | active | requested by users; format in ADR-0004 |
 
 ### Quality goals
 
@@ -43,9 +42,8 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | block | responsibility | may use |
 |---|---|---|
-| `cli` | parse commands, print results and errors | `store`, `export`, `model` |
+| `cli` | parse commands, print results and errors | `store`, `model` |
 | `store` | keep notes between runs; the only block that knows the storage | `model` |
-| `export` | turn notes into the export format (ADR-0004) | `model` |
 | `model` | the `Note` value | - |
 
 ## 6. Runtime view

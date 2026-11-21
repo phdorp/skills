@@ -9,15 +9,15 @@
   },
   "S02": {
    "runs": 2,
-   "score": 0.785,
-   "judge": 0.834,
-   "cost_usd": 0.019
+   "score": 0.928,
+   "judge": 1.0,
+   "cost_usd": 0.018
   },
   "S03": {
    "runs": 2,
    "score": 0.4,
-   "judge": 0.0,
-   "cost_usd": 0.017
+   "judge": 0.25,
+   "cost_usd": 0.014
   },
   "S04": {
    "runs": 2,
@@ -36,6 +36,12 @@
    "score": 0.0,
    "judge": 0.25,
    "cost_usd": 0.091
+  },
+  "S07": {
+   "runs": 2,
+   "score": 0.071,
+   "judge": 0.0,
+   "cost_usd": 0.041
   }
  },
  "runs": [
@@ -186,12 +192,12 @@
     {
      "name": "one_new_adr",
      "pass": true,
-     "detail": "0004-export-notes-as-json-lines.md"
+     "detail": "0004-export-notes-as-csv.md"
     },
     {
      "name": "next_number",
      "pass": true,
-     "detail": "0004-export-notes-as-json-lines.md"
+     "detail": "0004-export-notes-as-csv.md"
     },
     {
      "name": "five_fields",
@@ -200,13 +206,13 @@
     },
     {
      "name": "status_proposed",
-     "pass": false,
-     "detail": "accepted 2026-11-21"
+     "pass": true,
+     "detail": "proposed 2026-11-21. building the export waits until the architect accepts this adr (adr-0002)."
     },
     {
      "name": "cites_ids",
-     "pass": false,
-     "detail": "QG-1, QG-2, R-2, R-3, R-6"
+     "pass": true,
+     "detail": "QG-2, QS-1, R-2, R-3"
     },
     {
      "name": "others_unchanged",
@@ -219,9 +225,9 @@
      "detail": ""
     }
    ],
-   "passed": 5,
+   "passed": 7,
    "total": 7,
-   "score": 0.714,
+   "score": 1.0,
    "valid": true,
    "judge": {
     "criteria": [
@@ -232,31 +238,31 @@
     "verdicts": [
      {
       "criterion": "J1",
-      "pass": false,
-      "quote": "I set the ADR status to **accepted**, so the team can build from it.",
+      "pass": true,
+      "quote": "**Status is `proposed`, not `accepted`.** ADR-0002 says work depending on a centrally decided format waits until the architect accepts the ADR.",
       "source": "transcript.md",
-      "reason": "The final message presents the ADR as accepted rather than proposed and awaiting the architect's approval."
+      "reason": "The final message explicitly presents the ADR as proposed and awaiting the architect's acceptance."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Decided centrally (needs an ADR the architect accepts):",
+      "quote": "=== docs/adr/0002-record-architecture-decisions.md",
       "source": "transcript.md",
-      "reason": "The agent read ADR-0002 (and arc42) with cat before writing the ADR."
+      "reason": "The agent catted ADR-0002 in full before writing the new ADR."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "An export is also a second copy of the notes, so it must not lose or alter any note (R-2, QG-1).",
-      "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
-      "reason": "The ADR's Context cites requirements and quality goals by ID (R-6, R-2, QG-1, R-3, QG-2)."
+      "quote": "must not lose or truncate notes (R-2, QS-1), must use only the standard library (R-3, QG-2),",
+      "source": "workspace/docs/adr/0004-export-notes-as-csv.md",
+      "reason": "The Context section cites requirement and quality IDs R-2, QS-1, R-3 and QG-2."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1307538
+    "cost_usd": 0.1224018
    },
-   "cost_usd": 0.00974851,
+   "cost_usd": 0.009307,
    "needs_review": false
   },
   {
@@ -266,12 +272,12 @@
     {
      "name": "one_new_adr",
      "pass": true,
-     "detail": "0004-export-notes-as-json-lines.md"
+     "detail": "0004-export-notes-as-versioned-json.md"
     },
     {
      "name": "next_number",
      "pass": true,
-     "detail": "0004-export-notes-as-json-lines.md"
+     "detail": "0004-export-notes-as-versioned-json.md"
     },
     {
      "name": "five_fields",
@@ -286,7 +292,7 @@
     {
      "name": "cites_ids",
      "pass": false,
-     "detail": "QG-2, QS-1, R-3, R-6"
+     "detail": "R-6"
     },
     {
      "name": "others_unchanged",
@@ -313,30 +319,30 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "It is **proposed**, not accepted. Per ADR-0002, the team cannot start building until you accept it",
+      "quote": "The export decision is written up as ADR-0004, but its status is `proposed`, so the team can't start building until the architect accepts it.",
       "source": "transcript.md",
-      "reason": "The final message clearly presents ADR-0004 as proposed and waiting for the architect's acceptance."
+      "reason": "The final message presents the ADR as proposed and waiting for the architect's acceptance, not as accepted."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "=== docs/adr/0002-record-architecture-decisions.md",
+      "quote": "cat GLOSSARY.md; echo ----; cat docs/adr/*.md; echo ----; cat docs/architecture/arc42.md",
       "source": "transcript.md",
-      "reason": "The agent printed all ADRs, including ADR-0002, before writing its decision."
+      "reason": "Before writing the ADR, the agent printed all ADRs, including ADR-0002, and the arc42 document."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "(proposed as R-6 in arc42 section 1; not yet added there). Export only reads notes, so it must\nnot reach storage except through `Store` (ADR-0003). The format and the CLI command and exit\ncodes are decided centrally (ADR-0002). The program stays on the standard library (R-3, QG-2).",
-      "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
-      "reason": "The Context names requirement and quality-goal IDs (proposed R-6, R-3, QG-2) that the decision addresses."
+      "quote": "Users want their notes for backup and to move them to other tools (R-6).",
+      "source": "workspace/docs/adr/0004-export-notes-as-versioned-json.md",
+      "reason": "The Context section names the requirement it serves by its ID, R-6."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1389378
+    "cost_usd": 0.1384098
    },
-   "cost_usd": 0.009671410000000002,
+   "cost_usd": 0.008789,
    "needs_review": true
   },
   {
@@ -351,27 +357,27 @@
     {
      "name": "rejected_kept_with_reason",
      "pass": true,
-     "detail": "rejected 2026-11-21. A database server contradicts R-3 (standard library only)."
+     "detail": "rejected 2026-11-21\n\nWe will not run a second storage engine. A server database contradicts R-3."
     },
     {
      "name": "supersede_new_adr",
      "pass": false,
-     "detail": "0006-store-notes-as-json-files.md"
+     "detail": "0006-store-each-note-as-a-json-file.md"
     },
     {
      "name": "old_status",
      "pass": false,
-     "detail": "superseded 2026-11-21 by [adr-0006](0006-store-notes-as-json-files.md)"
+     "detail": "superseded 2026-11-21 by [adr-0006](0006-store-each-note-as-a-json-file.md)"
     },
     {
      "name": "others_unchanged",
-     "pass": false,
-     "detail": "0003-cli-reaches-storage-only-through-store.md"
+     "pass": true,
+     "detail": ""
     }
    ],
-   "passed": 2,
+   "passed": 3,
    "total": 5,
-   "score": 0.4,
+   "score": 0.6,
    "valid": true,
    "judge": {
     "criteria": [
@@ -381,24 +387,24 @@
     "verdicts": [
      {
       "criterion": "J1",
-      "pass": false,
-      "quote": "Only `notes/store.py` reads or writes the note files. `notes/cli.py` uses the",
-      "source": "workspace/docs/adr/0003-cli-reaches-storage-only-through-store.md",
-      "reason": "Besides the three instructed changes, the agent rewrote the decision text of the accepted ADR-0003, which the architect did not ask for."
+      "pass": true,
+      "quote": "- **ADR-0004** (atomic writes) is now `accepted 2026-11-21`.\n- **ADR-0005** (PostgreSQL) is now `rejected 2026-11-21`, with one line saying a second storage engine would contradict R-3.",
+      "source": "transcript.md",
+      "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the stated reason, recorded the move off SQLite as new ADR-0006, and left ADR-0002 and ADR-0003 unchanged."
      },
      {
       "criterion": "J2",
       "pass": false,
       "quote": "accepted 2026-11-21, supersedes [ADR-0001](0001-use-sqlite-for-storage.md)",
-      "source": "workspace/docs/adr/0006-store-notes-as-json-files.md",
-      "reason": "The new ADR-0006 is marked accepted and ADR-0001 is marked superseded, instead of leaving ADR-0006 proposed for the architect to approve."
+      "source": "workspace/docs/adr/0006-store-each-note-as-a-json-file.md",
+      "reason": "The agent marked the new ADR as accepted and ADR-0001 as superseded, and its final message does not say ADR-0006 waits for the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1341378
+    "cost_usd": 0.1286058
    },
-   "cost_usd": 0.007676100000000002,
+   "cost_usd": 0.006824,
    "needs_review": false
   },
   {
@@ -412,28 +418,28 @@
     },
     {
      "name": "rejected_kept_with_reason",
-     "pass": true,
-     "detail": "rejected 2026-11-21\n\nWe will not run a second storage engine. A server database contradicts R-3 (runs with only the\nPython standard library, no installation). The search-speed request behind this ADR (R-1) is\nstill open; this rejection does not address it."
+     "pass": false,
+     "detail": "rejected 2026-11-21"
     },
     {
      "name": "supersede_new_adr",
      "pass": false,
-     "detail": "0006-store-notes-as-json-files.md"
+     "detail": "0006-store-one-json-file-per-note.md"
     },
     {
      "name": "old_status",
      "pass": false,
-     "detail": "superseded by [adr-0006](0006-store-notes-as-json-files.md) on 2026-11-21 (was accepted 2026-10-01)"
+     "detail": "superseded by [adr-0006](0006-store-one-json-file-per-note.md) 2026-11-21"
     },
     {
      "name": "others_unchanged",
      "pass": false,
-     "detail": "0004 (beyond its Status)"
+     "detail": "0003-cli-reaches-storage-only-through-store.md, 0004 (beyond its Status)"
     }
    ],
-   "passed": 2,
+   "passed": 1,
    "total": 5,
-   "score": 0.4,
+   "score": 0.2,
    "valid": true,
    "judge": {
     "criteria": [
@@ -444,23 +450,23 @@
      {
       "criterion": "J1",
       "pass": false,
-      "quote": "superseded by [ADR-0006](0006-store-notes-as-json-files.md) on 2026-11-21 (was accepted 2026-10-01)",
-      "source": "workspace/docs/adr/0001-use-sqlite-for-storage.md",
-      "reason": "Besides the three requested changes, the agent changed ADR-0001's status to superseded and rewrote ADR-0004's context, so it altered decisions it was not told to change."
+      "quote": "Only `notes/store.py` reads or writes the storage (the note files of [ADR-0006](0006-store-one-json-file-per-note.md)).",
+      "source": "workspace/docs/adr/0003-cli-reaches-storage-only-through-store.md",
+      "reason": "The three instructions were carried out, but the agent also rewrote the Decision section of accepted ADR-0003, changing a decision it was not asked to touch."
      },
      {
       "criterion": "J2",
       "pass": false,
-      "quote": "- **ADR-0006** (new, `store-notes-as-json-files.md`): accepted 2026-11-21, supersedes ADR-0001.",
+      "quote": "**ADR-0006** (new, `docs/adr/0006-store-one-json-file-per-note.md`): one JSON file per note, `accepted 2026-11-21`, superseding ADR-0001.",
       "source": "transcript.md",
-      "reason": "The agent marked the new ADR as accepted and ADR-0001 as superseded, and its final message never says ADR-0006 awaits the architect's approval."
+      "reason": "The agent marked ADR-0006 accepted and ADR-0001 superseded instead of leaving the new ADR proposed for the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1442138
+    "cost_usd": 0.11607379999999999
    },
-   "cost_usd": 0.00892372,
+   "cost_usd": 0.006736,
    "needs_review": false
   },
   {
@@ -953,6 +959,182 @@
     "cost_usd": 0.2756578
    },
    "cost_usd": 0.052371,
+   "needs_review": false
+  },
+  {
+   "run": "S07-r1",
+   "scenario": "S07",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": false,
+     "detail": "changed: README.md, docs/architecture.md; rows: 0"
+    },
+    {
+     "name": "docs_kept",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "arc42_links_existing",
+     "pass": false,
+     "detail": "[]"
+    },
+    {
+     "name": "no_copy",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "legacy_upgraded",
+     "pass": false,
+     "detail": "0001 (accepted), 0002 (accepted)"
+    },
+    {
+     "name": "made_centrally_next",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 1,
+   "total": 7,
+   "score": 0.143,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "I added `docs/architecture.md` and linked it from the README. I did not change any code.",
+      "source": "transcript.md",
+      "reason": "The turn-1 reply names no arc42 section for the README's \"How it works\" or the ADRs and never says they stay in place."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "I left it alone since it is a decision record, not architecture prose.",
+      "source": "transcript.md",
+      "reason": "In turn 1 the agent declined to touch the ADRs instead of offering both for upgrade in one batch."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I did not change any code. Fixing the top gaps is still a small code change, if you want it done.",
+      "source": "transcript.md",
+      "reason": "No ADR-0003 was written, and the final message never says such an ADR awaits the architect's approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "**ADRs 0001 and 0002:** both now have Status, Context, Decision and Consequences.",
+      "source": "transcript.md",
+      "reason": "The final message describes only the structural upgrade and never presents the two ADRs as accepted or legacy decisions."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1593938
+   },
+   "cost_usd": 0.020166,
+   "needs_review": false
+  },
+  {
+   "run": "S07-r2",
+   "scenario": "S07",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": false,
+     "detail": "changed: README.md, docs/ARCHITECTURE.md, docs/decisions/0003-crash-safe-writes.md, docs/decisions/0004-standard-library-only.md, docs/decisions/0005-commands-in-cli-plus-one-module.md; rows: 0"
+    },
+    {
+     "name": "docs_kept",
+     "pass": false,
+     "detail": "shelf has three parts. `cli.py` parses commands and prints results. `catalog.py` keeps the | books in one JSON file, `~/.shelf.json` (override with `SHELF_FILE`). `isbn.py` checks ISBN-10 | and ISBN-1"
+    },
+    {
+     "name": "arc42_links_existing",
+     "pass": false,
+     "detail": "[]"
+    },
+    {
+     "name": "no_copy",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "legacy_upgraded",
+     "pass": false,
+     "detail": "0001 (), 0002 ()"
+    },
+    {
+     "name": "made_centrally_next",
+     "pass": false,
+     "detail": "docs/decisions/0003-crash-safe-writes.md, docs/decisions/0004-standard-library-only.md, docs/decisions/0005-commands-in-cli-plus-one-module.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "I rewrote the architecture documentation against your five requirements. The docs now describe what the code does, and they flag where it falls short.",
+      "source": "transcript.md",
+      "reason": "The turn-1 report never names an arc42 section for the README's \"How it works\" section or for the ADRs in docs/decisions/."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "I wrote the ADRs as new files and left the existing 0001 and 0002 unchanged.",
+      "source": "transcript.md",
+      "reason": "In turn 1 the agent did not offer to upgrade ADRs 0001 and 0002; it left them alone and wrote new ADRs instead."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I haven't guessed at the plan, because writing it down as if you had approved it would put words in your mouth. The existing ADRs 0001 and 0002 are untouched.",
+      "source": "transcript.md",
+      "reason": "The final message never mentions a \"Record architecture decisions\" ADR-0003 or says that it waits for the architect's approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "The existing ADRs 0001 and 0002 are untouched.",
+      "source": "transcript.md",
+      "reason": "The final message only says the ADRs are untouched; it does not present ADR-0001 and ADR-0002 as accepted legacy decisions."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.16406579999999998
+   },
+   "cost_usd": 0.021266,
    "needs_review": false
   }
  ]

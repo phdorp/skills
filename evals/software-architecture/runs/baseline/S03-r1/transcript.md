@@ -10,14 +10,14 @@ and repair by hand. Update the decision records accordingly. I'm not available f
 ```json
 {
  "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200",
- "description": "Show repo state and list files"
+ "description": "Show repo status and list files"
 }
 ```
 
 ### tool_result
 
 ```
-14bfb8f fixture
+d5f8f66 fixture
 ./README.md
 ./GLOSSARY.md
 ./notes/__main__.py
@@ -165,14 +165,31 @@ Needs the `psycopg` package and a running database server.
 
 ```json
 {
- "command": "cat docs/architecture/arc42.md; echo ===README; cat README.md; echo ===GLOSSARY; cat GLOSSARY.md",
- "description": "Read architecture doc, README, and glossary"
+ "command": "cat README.md GLOSSARY.md docs/architecture/arc42.md && echo ===STORE && cat notes/store.py && echo ===MODEL && cat notes/model.py",
+ "description": "Read docs, store and model code"
 }
 ```
 
 ### tool_result
 
 ```
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
+# Glossary
+
+**Note**: a short piece of text a user keeps, with an id and the time it was created.
+
+**Store**: the place notes are kept between runs.
 # notes: architecture
 
 Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
@@ -247,39 +264,7 @@ Decisions are recorded as ADRs in [docs/adr/](../adr/). What is decided centrall
 ## 12. Glossary
 
 See [GLOSSARY.md](../../GLOSSARY.md).
-===README
-# notes
-
-Keep short notes from the command line.
-
-```sh
-python3 -m notes add "Buy milk"
-python3 -m notes list
-python3 -m notes search milk
-```
-
-Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
-`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
-===GLOSSARY
-# Glossary
-
-**Note**: a short piece of text a user keeps, with an id and the time it was created.
-
-**Store**: the place notes are kept between runs.
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "cat notes/store.py notes/model.py; grep -rn -i \"sqlite\\|sql\\|postgres\\|json\" --include=*.py --include=*.md . | grep -v \"^./.git/\"",
- "description": "Read storage code and search for DB references"
-}
-```
-
-### tool_result
-
-```
+===STORE
 """The only module that knows how notes are stored (ADR-0001, ADR-0003)."""
 import os
 import sqlite3
@@ -304,146 +289,123 @@ class Store:
         with self._db:
             cur = self._db.execute("INSERT INTO notes (text, created) VALUES (?, ?)",
                                    (text, created))
-        return Note(cur.lastrowid, text, created)
-
-    def all(self):
-        rows = self._db.execute("SELECT id, text, created FROM notes ORDER BY id")
-        return [Note(*row) for row in rows]
-
-    def search(self, term):
-        rows = self._db.execute("SELECT id, text, created FROM notes WHERE text LIKE ? ORDER BY id",
-                                (f"%{term}%",))
-        return [Note(*row) for row in rows]
-
-    def close(self):
-        self._db.close()
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class Note:
-    id: int
-    text: str
-    created: str
-docs/adr/0002-record-architecture-decisions.md:25:Left to the building blocks (no ADR): internal helpers, SQL query structure, test layout.
-notes/store.py:3:import sqlite3
-notes/store.py:16:        self._db = sqlite3.connect(path)
-docs/adr/0003-cli-reaches-storage-only-through-store.md:13:Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
-docs/adr/0005-add-postgresql-backend.md:1:# 5. Add a PostgreSQL backend
-docs/adr/0005-add-postgresql-backend.md:13:Offer PostgreSQL as a second storage engine, chosen with `NOTES_BACKEND=postgres`.
-docs/adr/0001-use-sqlite-for-storage.md:1:# 1. Use SQLite for storage
-docs/adr/0001-use-sqlite-for-storage.md:10:library (R-3, QG-2). The standard library ships `sqlite3`, whose transactions are atomic.
-docs/adr/0001-use-sqlite-for-storage.md:14:Store all notes in one SQLite database file, by default `~/.notes.db`.
-docs/adr/0001-use-sqlite-for-storage.md:18:Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
+        return Note(cur.lastrowid, text, cre
+[... 545 chars cut]
 ```
+
+### assistant
+
+Before editing, here's what the records show: ADR-0001 chose SQLite, ADR-0002 says the storage engine and on-disk format are decided centrally by ADR, and ADR-0003 confines storage code to `notes/store.py`. The change needs a new ADR that supersedes ADR-0001, not an edit to its body.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-ro65rbca/project/docs/adr/0006-store-notes-as-json-files.md",
- "content": "# 6. Store notes as one JSON file per note\n\n## Status\n\naccepted 2026-11-21, supersedes [ADR-0001](0001-use-sqlite-for-storage.md)\n\n## Context\n\nSQLite files are binary: they are hard to diff and cannot be repaired with a text editor. Users\nneed to inspect and fix their notes by hand (R-2, QG-1). Crash safety must still hold (QS-1),\nand the program may use only the Python standard library (R-3, QG-2). A server database\ncontradicts R-3, so it is not an option ([ADR-0005](0005-add-postgresql-backend.md) is rejected).\n\n## Decision\n\nStore each note in its own JSON file inside a store directory, by default `~/.notes/`, which\n`NOTES_DIR` can override. A file is named `<id>.json` and holds the keys `id`, `text` and\n`created`.\n\nEvery file is written as [ADR-0004](0004-write-notes-atomically.md) requires: a temporary file,\n`os.fsync`, then the final name.\n\n- A new note is published with `os.link` from the temporary file to `<id>.json`. `os.link`\n  fails if the name already exists, so two processes can never overwrite each other's note. On\n  failure the store takes the next free id and retries.\n- Ids are integers: one more than the highest existing id, starting at 1.\n\nOnly `notes/store.py` reads or writes these files ([ADR-0003](0003-cli-reaches-storage-only-through-store.md)).\n\n## Consequences\n\nA crash leaves each note either fully written or absent, as before, and a user can open, diff\nand correct any note in a text editor.\n\n`search` and `all` read every file, so search time grows with the number of notes. This gives\nup the faster search that motivated ADR-0005.\n\nThis ADR does not migrate notes from `~/.notes.db` or the `NOTES_DB` variable; a migration is a\nseparate change.\n"
+ "file_path": "/tmp/sa-eval-_cwb_fqo/project/docs/adr/0006-store-each-note-as-a-json-file.md",
+ "content": "# 6. Store each note as one JSON file\n\n## Status\n\naccepted 2026-11-21, supersedes [ADR-0001](0001-use-sqlite-for-storage.md)\n\n## Context\n\nSQLite files are binary. They are hard to diff and cannot be repaired with a text editor, which\nthe users and maintainers need when a store goes wrong. Crash safety must still hold (R-2, QG-1,\nQS-1), and the program may use only the Python standard library (R-3, QG-2). The `json` module\nis in the standard library, and ADR-0004 already gives an atomic write for any file the store\nwrites.\n\nA second storage engine is not wanted: ADR-0005 (PostgreSQL) is rejected, because a server\ndatabase contradicts R-3.\n\n## Decision\n\nThe store keeps each note in its own file in one directory:\n\n- the directory is `~/.notes/` by default; the environment variable `NOTES_DIR` sets another one;\n- the file name is `<id>.json`, where `<id>` is the note's integer id;\n- the file holds one JSON object with the keys `id` (integer), `text` (string) and `created`\n  (ISO 8601 UTC timestamp, whole seconds);\n- a new note gets the id one higher than the highest existing id, starting at 1;\n- every file is written as ADR-0004 requires: temporary file in the same directory, `os.fsync`,\n  then `os.replace`.\n\nOnly `notes/store.py` reads or writes these files (ADR-0003).\n\n## Consequences\n\n- Each note can be read, diffed and repaired with a text editor.\n- A crash leaves each note either fully written or absent, as before.\n- `os.replace` overwrites silently, so creating a note must not replace an existing file. The\n  mechanism is left to the building block.\n- Search reads every note file. This is acceptable for the current use (R-1) and is the first\n  place to look if search becomes slow.\n- The `NOTES_DB` variable, the file `~/.notes.db` and the `notes` table are gone. Migrating an\n  existing `~/.notes.db` is not decided in this ADR and needs its own decision.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-ro65rbca/project/docs/adr/0006-store-notes-as-json-files.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-_cwb_fqo/project/docs/adr/0006-store-each-note-as-a-json-file.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Edit
+
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-_cwb_fqo/project/docs/adr/0001-use-sqlite-for-storage.md",
+ "old_string": "accepted 2026-10-01",
+ "new_string": "superseded 2026-11-21 by [ADR-0006](0006-store-each-note-as-a-json-file.md)"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-_cwb_fqo/project/docs/adr/0001-use-sqlite-for-storage.md has been updated successfully.
+```
+
+### tool_use Edit
+
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-_cwb_fqo/project/docs/adr/0004-write-notes-atomically.md",
+ "old_string": "proposed",
+ "new_string": "accepted 2026-11-21"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-_cwb_fqo/project/docs/adr/0004-write-notes-atomically.md has been updated successfully.
+```
+
+### tool_use Edit
+
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-_cwb_fqo/project/docs/adr/0005-add-postgresql-backend.md",
+ "old_string": "proposed\n\n## Context",
+ "new_string": "rejected 2026-11-21\n\nWe will not run a second storage engine. A server database contradicts R-3.\n\n## Context"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-_cwb_fqo/project/docs/adr/0005-add-postgresql-backend.md has been updated successfully.
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cd /tmp/sa-eval-ro65rbca/project/docs/adr && python3 - <<'EOF'\nimport re\ndef sub(path, old, new, count=1):\n    s = open(path).read()\n    assert s.count(old) == count, (path, old, s.count(old))\n    open(path, \"w\").write(s.replace(old, new))\n\nsub(\"0001-use-sqlite-for-storage.md\", \"accepted 2026-10-01\",\n    \"superseded 2026-11-21 by [ADR-0006](0006-store-notes-as-json-files.md)\")\nsub(\"0004-write-notes-atomically.md\", \"proposed\", \"accepted 2026-11-21\")\nsub(\"0005-add-postgresql-backend.md\", \"proposed\",\n    \"rejected 2026-11-21. A database server contradicts R-3 (standard library only).\")\nsub(\"0003-cli-reaches-storage-only-through-store.md\",\n    \"Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the\",\n    \"Only `notes/store.py` reads or writes the note files. `notes/cli.py` uses the\")\nEOF\ncd /tmp/sa-eval-ro65rbca/project && git diff && git status --short",
- "description": "Create ADR-0006 and update statuses of ADRs 0001, 0003-0005"
+ "command": "git status --short && grep -n \"^accepted\\|^rejected\\|^superseded\\|^proposed\" docs/adr/*.md",
+ "description": "Check changed files and ADR status lines"
 }
 ```
 
 ### tool_result
 
 ```
-diff --git a/docs/adr/0001-use-sqlite-for-storage.md b/docs/adr/0001-use-sqlite-for-storage.md
-index da5f92c..d245a56 100644
---- a/docs/adr/0001-use-sqlite-for-storage.md
-+++ b/docs/adr/0001-use-sqlite-for-storage.md
-@@ -2,7 +2,7 @@
- 
- ## Status
- 
--accepted 2026-10-01
-+superseded 2026-11-21 by [ADR-0006](0006-store-notes-as-json-files.md)
- 
- ## Context
- 
-diff --git a/docs/adr/0003-cli-reaches-storage-only-through-store.md b/docs/adr/0003-cli-reaches-storage-only-through-store.md
-index a919305..02f9d53 100644
---- a/docs/adr/0003-cli-reaches-storage-only-through-store.md
-+++ b/docs/adr/0003-cli-reaches-storage-only-through-store.md
-@@ -10,7 +10,7 @@ Contributors should be able to swap the storage engine by changing one module (Q
- 
- ## Decision
- 
--Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
-+Only `notes/store.py` reads or writes the note files. `notes/cli.py` uses the
- `Store` class and the `Note` value.
- 
- ## Consequences
-diff --git a/docs/adr/0004-write-notes-atomically.md b/docs/adr/0004-write-notes-atomically.md
-index b337c8d..41b7965 100644
---- a/docs/adr/0004-write-notes-atomically.md
-+++ b/docs/adr/0004-write-notes-atomically.md
-@@ -2,7 +2,7 @@
- 
- ## Status
- 
--proposed
-+accepted 2026-11-21
- 
- ## Context
- 
-diff --git a/docs/adr/0005-add-postgresql-backend.md b/docs/adr/0005-add-postgresql-backend.md
-index 5cc28b0..005873d 100644
---- a/docs/adr/0005-add-postgresql-backend.md
-+++ b/docs/adr/0005-add-postgresql-backend.md
-@@ -2,7 +2,7 @@
- 
- ## Status
- 
--proposed
-+rejected 2026-11-21. A database server contradicts R-3 (standard library only).
- 
- ## Context
- 
  M docs/adr/0001-use-sqlite-for-storage.md
- M docs/adr/0003-cli-reaches-storage-only-through-store.md
  M docs/adr/0004-write-notes-atomically.md
  M docs/adr/0005-add-postgresql-backend.md
-?? docs/adr/0006-store-notes-as-json-files.md
+?? docs/adr/0006-store-each-note-as-a-json-file.md
+docs/adr/0001-use-sqlite-for-storage.md:5:superseded 2026-11-21 by [ADR-0006](0006-store-each-note-as-a-json-file.md)
+docs/adr/0004-write-notes-atomically.md:5:accepted 2026-11-21
+docs/adr/0002-record-architecture-decisions.md:5:accepted 2026-10-01
+docs/adr/0003-cli-reaches-storage-only-through-store.md:5:accepted 2026-10-01
+docs/adr/0005-add-postgresql-backend.md:5:rejected 2026-11-21
+docs/adr/0006-store-each-note-as-a-json-file.md:5:accepted 2026-11-21, supersedes [ADR-0001](0001-use-sqlite-for-storage.md)
 ```
 
 ### assistant
 
-The decision records are updated. I did not change code, tests, README, or arc42, and I did not commit.
+I updated the decision records. Nothing is committed.
 
-**Changes in `docs/adr/`:**
-- **ADR-0004** (atomic writes): status is now `accepted 2026-11-21`.
-- **ADR-0005** (PostgreSQL): status is now `rejected 2026-11-21`, with the reason that a database server contradicts R-3.
-- **ADR-0001** (SQLite): status is now `superseded 2026-11-21 by ADR-0006`. The body is unchanged.
-- **ADR-0003** (store is the only storage module): the decision now says "reads or writes the note files" instead of naming `sqlite3`. The rule itself is unchanged.
-- **ADR-0006** (new, `accepted 2026-11-21`): one JSON file per note, `<id>.json` with `id`, `text` and `created`, written under ADR-0004's temp-file, fsync and rename scheme.
+- **ADR-0004** (atomic writes) is now `accepted 2026-11-21`.
+- **ADR-0005** (PostgreSQL) is now `rejected 2026-11-21`, with one line saying a second storage engine would contradict R-3.
+- **ADR-0001** (SQLite) is now `superseded 2026-11-21 by ADR-0006`. I left its body unchanged.
+- **ADR-0006** (new, `docs/adr/0006-store-each-note-as-a-json-file.md`) is `accepted 2026-11-21` and records the decision. ADR-0002 says the on-disk format needs an ADR, which is why this is a new record and not a rewrite.
 
-**Choices I made that you did not specify. Please confirm or redirect:**
-- **Location:** the default directory is `~/.notes/`, overridable with `NOTES_DIR`.
-- **Ids:** integers, one more than the highest existing id.
-- **Concurrent adds:** a new note is published with `os.link`, which fails rather than overwrites if the name exists, and the store then retries with the next id. Without this, two processes could overwrite each other's note, which would break R-2.
-- **Search trade-off:** `search` and `all` read every file, so search slows as the number of notes grows. ADR-0006 records this.
-- **Migration:** ADR-0006 does not migrate data from `~/.notes.db`. It states this as a consequence.
+Choices I made in ADR-0006 that you did not specify, so you can redirect them:
+- Directory `~/.notes/`, overridable with `NOTES_DIR`.
+- Files named `<id>.json`. Each holds `id`, `text` and `created`.
+- Ids are assigned as the highest existing id plus one.
+- Each write follows ADR-0004 (temp file, fsync, `os.replace`).
 
-**Still out of step with the new decision (not touched):**
-- `notes/store.py` still uses SQLite, and `tests/test_notes.py` likely depends on it.
-- `README.md` still says notes are stored in `~/.notes.db` and `NOTES_DB` sets the path.
-- `arc42.md` has no storage-engine text to change, so it needs no edit.
+Open items:
+- **Migration of an existing `~/.notes.db` is not decided.** ADR-0006 says so and leaves it to a separate decision.
+- **ADR-0003** still says only `store.py` imports `sqlite3`. Its rule (only the store touches storage) still holds, so I did not edit it. Say if you want the wording changed.
+- **Code and docs still describe SQLite.** `notes/store.py`, `README.md` (the `~/.notes.db` and `NOTES_DB` references) and the tests are unchanged, since you asked only for the decision records. They will need changing when this is implemented.
+- **ADR-0004's context** says "any file the store writes besides the database". That is now slightly off, but I left it as approved.
 
 ### result (success)

@@ -2,7 +2,7 @@
 
 ## Status
 
-superseded by [ADR-0006](0006-store-notes-as-json-files.md) on 2026-11-21 (was accepted 2026-10-01)
+superseded by [ADR-0006](0006-store-one-json-file-per-note.md) 2026-11-21
 
 ## Context
 

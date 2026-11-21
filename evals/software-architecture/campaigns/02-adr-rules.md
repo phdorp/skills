@@ -109,3 +109,20 @@ Every unloaded control run that failed wrote `accepted`. B was adopted verbatim 
 the imperative "Load before creating or editing any ADR … or any file in `docs/adr/`" is what
 A lacked. Re-run on B: every branch run passes every check and criterion; S02 and S03 load the
 skill 4 of 4, S01 loads nothing and writes no ADR (no over-triggering).
+
+## Addendum (ticket 05): baseline re-run with clean isolation
+
+The baseline S02 and S03 runs above loaded the account's claude.ai "Claude Docs" connector (see
+[05-setup-documented.md](05-setup-documented.md)). Re-run without it (2026-11-21):
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S02-r1 | - | - |
+| S02-r2 | `cites_ids` (R-6) | - |
+| S03-r1 | `supersede_new_adr`, `old_status` | J2 |
+| S03-r2 | `rejected_kept_with_reason`, `supersede_new_adr`, `old_status`, `others_unchanged` | J1, J2 |
+
+Both clean S02 runs kept the ADR `proposed` ("**Status is `proposed`, not `accepted`.**",
+r1). Self-acceptance under time pressure (failure 1 above) was seen only in a run with the
+connector loaded, so the S02 `status_proposed` rule now has no clean RED; failure 4 (citing an
+unconfirmed R-6) still reproduces. S03's failures reproduce.

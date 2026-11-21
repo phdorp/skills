@@ -10,8 +10,8 @@ Contributors should be able to swap the storage engine by changing one module (Q
 
 ## Decision
 
-Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
-`Store` class and the `Note` value.
+Only `notes/store.py` reads or writes the storage (the note files of [ADR-0006](0006-store-one-json-file-per-note.md)).
+`notes/cli.py` uses the `Store` class and the `Note` value.
 
 ## Consequences
 

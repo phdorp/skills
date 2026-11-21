@@ -5,9 +5,17 @@
  "sha": "ee3e90725afa81778e1e920488f9e5df3e033a2e",
  "model": "claude-haiku-5-5",
  "effort": "medium",
- "cost_usd": 0.00974851,
- "duration_s": 40.1,
+ "cost_usd": 0.009307,
+ "duration_s": 41.9,
  "exit_code": 0,
+ "exit_codes": [
+  0
+ ],
+ "turns": 1,
+ "session_ids": [
+  "c8413e55-a0bd-42e4-939a-c7f28ec334ad"
+ ],
+ "invoked": false,
  "isolation_ok": true,
  "isolation_errors": []
 }

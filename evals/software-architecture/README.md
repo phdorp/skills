@@ -75,8 +75,8 @@ with the agents' wording: [campaigns/](campaigns/).
 | scenario | baseline grader | baseline judge | branch grader | branch judge | branch runs that loaded the target skill |
 |---|---:|---:|---:|---:|---|
 | S01 no-setup | 1.000 | 1.000 | 1.000 | 1.000 | - (none expected) |
-| S02 record-decision | 0.785 | 0.834 | 1.000 | 1.000 | 2 of 2 |
-| S03 lifecycle | 0.400 | 0.000 | 1.000 | 1.000 | 2 of 2 |
+| S02 record-decision | 0.928 | 1.000 | 1.000 | 1.000 | 2 of 2 |
+| S03 lifecycle | 0.400 | 0.250 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
@@ -85,8 +85,9 @@ Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50�
 
 - S01: no run loaded a skill on either arm. It shows an ordinary change stays ordinary, not
   that the skills stay quiet once loaded.
-- S02, S03 (ticket 02, [campaign](campaigns/02-adr-rules.md)): on `main`, agents accepted their
-  own ADRs, marked the replaced ADR superseded early, and added requirements on their own. Every
+- S02, S03 (ticket 02, [campaign](campaigns/02-adr-rules.md)): on `main`, agents marked the
+  replaced ADR superseded early and cited requirements that did not exist; accepting their own
+  ADRs was seen only in runs the claude.ai connector reached (clean re-run: campaign addendum). Every
   branch run that loaded `domain-modeling` followed every rule; the branch S02 run that did not
   load it accepted its own ADR again. The skill loaded unreliably for "record the decision as
   an ADR" until its description became an imperative trigger ("Load before creating or editing
