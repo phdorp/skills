@@ -101,7 +101,7 @@ S05 checks (`arc42.py` reads the tables by header name):
 
 | check | passes when |
 |---|---|
-| `old_rows_kept` | R-1…R-5 keep ID, requirement, status, reason (rank may change) |
+| `old_rows_kept` | R-1…R-5 keep ID, requirement, rank, status and reason: the order changes only when the architect sets it; new rows may carry a proposed rank |
 | `new_rows` | exactly three new rows: one matching `encrypt` and one `text editor`, both `active`; one matching `rich`, `rejected`, with a reason of ≥ 10 characters; none matching `sync` or `newest` |
 | `ids_next_free` | the new IDs are R-6, R-7, R-8 |
 | `superseding_adr` | one new ADR `0004-*`, five fields, status `proposed`, names ADR-0001; ADR-0001 still `accepted` |
