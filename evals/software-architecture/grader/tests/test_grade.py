@@ -74,5 +74,22 @@ class MarkedSections(unittest.TestCase):
         self.assertTrue(grade.marked_sections(text)[0])
 
 
+class BaseWorkspace(unittest.TestCase):
+    def test_base_workspace_skips_bytecode_left_in_the_fixture(self):
+        cache = grade.run.SUITE / "fixtures" / "undocumented" / "pantry" / "__pycache__"
+        made = not cache.exists()
+        cache.mkdir(exist_ok=True)
+        (cache / "stray.cpython-313.pyc").write_bytes(b"x")
+        try:
+            base = grade.base_workspace("S09")
+            names = [p.name for p in base.rglob("*")]
+            shutil.rmtree(base.parent, ignore_errors=True)
+        finally:
+            (cache / "stray.cpython-313.pyc").unlink()
+            if made:
+                cache.rmdir()
+        self.assertNotIn("__pycache__", names)
+
+
 if __name__ == "__main__":
     unittest.main()

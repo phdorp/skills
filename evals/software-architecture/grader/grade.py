@@ -100,9 +100,9 @@ def base_workspace(scenario_id):
     scenario = run.load_scenarios(run.SUITE / "TASKS.md")[scenario_id]
     fixture, overlay = run.fixture_dirs(scenario)
     base = Path(tempfile.mkdtemp(prefix="sa-base-")) / "ws"
-    shutil.copytree(fixture, base)
+    shutil.copytree(fixture, base, ignore=run.BYTECODE)
     if overlay is not None:
-        shutil.copytree(overlay, base, dirs_exist_ok=True)
+        shutil.copytree(overlay, base, dirs_exist_ok=True, ignore=run.BYTECODE)
     return base
 
 

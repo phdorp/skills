@@ -45,6 +45,8 @@ OVERLAY = re.compile(r"^Overlay:\s*(\S+)\s*$", re.M)
 INVOKE = re.compile(r"^Invoke:\s*(\S+)\s*$", re.M)
 PROMPT = re.compile(r"^```text\n(.*?)^```\s*$", re.M | re.S)
 REPLY = re.compile(r"^```reply\n(.*?)^```\s*$", re.M | re.S)
+# Bytecode a local test run leaves in a fixture (git-ignored) is not part of the fixture.
+BYTECODE = shutil.ignore_patterns("__pycache__", "*.pyc")
 
 
 @dataclass
@@ -103,9 +105,9 @@ def prepare_workspace(fixture_dir, overlay_dir=None):
     if fixture_dir is None:
         ws.mkdir()
     else:
-        shutil.copytree(fixture_dir, ws)
+        shutil.copytree(fixture_dir, ws, ignore=BYTECODE)
     if overlay_dir is not None:
-        shutil.copytree(overlay_dir, ws, dirs_exist_ok=True)
+        shutil.copytree(overlay_dir, ws, dirs_exist_ok=True, ignore=BYTECODE)
     _git("init", "-q", cwd=ws)
     _git("add", "-A", cwd=ws)
     _git("-c", "user.name=eval", "-c", "user.email=eval@example.invalid", "commit", "-q",
