@@ -20,16 +20,12 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 3. Context and scope
 
-See [README › How it works](../../README.md#how-it-works).
-
 ## 4. Solution strategy
-
-See [ADR 0001: Store books in one JSON file](../decisions/0001-store-books-in-one-json-file.md) and
-[ADR 0002: Validate ISBNs locally](../decisions/0002-validate-isbn-locally.md).
 
 ## 5. Building block view
 
-See [README › How it works](../../README.md#how-it-works).
+The three parts of shelf (`cli.py`, `catalog.py`, `isbn.py`) are described in the README: see
+[README › How it works](../../README.md#how-it-works).
 
 | block | responsibility | may use |
 |---|---|---|
@@ -42,9 +38,8 @@ See [README › How it works](../../README.md#how-it-works).
 
 ## 9. Architecture decisions
 
-Architecture decisions are recorded as ADRs in [docs/decisions/](../decisions/). The list of
-decisions made centrally is in
-[ADR 0003: Record architecture decisions](../decisions/0003-record-architecture-decisions.md).
+The ADRs are in [docs/decisions/](../decisions/). The "Record architecture decisions" ADR is
+pending and is written, as the next free number, once the architect confirms its list.
 
 ## 10. Quality requirements
 

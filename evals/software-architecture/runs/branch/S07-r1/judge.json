@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- Section 3 and section 5 link to README › How it works.\n- Section 4 links to ADR 0001 and ADR 0002.\n- Section 9 links to `docs/decisions/`.\n- Section 12 holds the no-glossary line.\n\nThe README and the ADRs stay as they are.",
+   "quote": "The skeleton links both (section 5 to the README, section 9 to `docs/decisions/`).",
    "source": "transcript.md",
-   "reason": "In turn 1 the agent names the arc42 sections for the README section and the ADRs and states the documents stay where they are."
+   "reason": "In turn 1 the agent maps the README section to arc42 section 5 and the ADR directory to section 9, and elsewhere in that turn states the existing README and ADRs are unchanged, without proposing a move."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "## 6. Legacy ADRs (upgrade in one batch, Status `accepted (legacy)`, Decision text unchanged)",
+   "quote": "## Legacy ADRs (offered as one batch; their decisions stay as they are)",
    "source": "transcript.md",
-   "reason": "Both ADRs are offered for upgrade together in one batch, with the decisions explicitly left unchanged."
+   "reason": "Both ADR 0001 and 0002 are offered together for a status/context upgrade, with the agent explicitly not reopening their decisions."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**Status of the ADRs:** 0003 waits for your approval of its text.",
+   "quote": "ADR 0003 needs your approval before the decisions on its list can be built",
    "source": "transcript.md",
-   "reason": "The final message says ADR 0003 awaits the architect's approval."
+   "reason": "The final message states that the new Record-architecture-decisions ADR 0003 awaits the architect's approval."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "- `docs/decisions/0001-store-books-in-one-json-file.md`: upgraded to `accepted (legacy)`.",
+   "quote": "Status `accepted (legacy)` added, Context citing the R- and QG-IDs. The Decision text is unchanged.",
    "source": "transcript.md",
-   "reason": "The final message presents 0001 (and likewise 0002) as accepted legacy decisions with unchanged Decision text, not as decisions to be re-approved."
+   "reason": "The final message presents 0001 and 0002 as accepted legacy decisions whose decisions were left unchanged, not as items to approve again."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2144618
+ "cost_usd": 0.1860698
 }

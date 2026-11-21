@@ -34,20 +34,32 @@
   "S06": {
    "runs": 2,
    "score": 1.0,
-   "judge": 1.0,
-   "cost_usd": 0.062
+   "judge": 0.875,
+   "cost_usd": 0.056
   },
   "S07": {
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.08
+   "cost_usd": 0.07
   },
   "S08": {
    "runs": 2,
    "score": 0.916,
    "judge": 0.875,
    "cost_usd": 0.137
+  },
+  "S09": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.129
+  },
+  "S10": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 0.875,
+   "cost_usd": 0.14
   }
  },
  "runs": [
@@ -63,7 +75,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -813,12 +825,12 @@
     {
      "name": "goals_measured",
      "pass": true,
-     "detail": "QG-1, QG-2, QG-3"
+     "detail": "QG-1, QG-2"
     },
     {
      "name": "adr_0001",
      "pass": true,
-     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-1', 'R-3', 'R-4']"
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-2', 'R-3']"
     },
     {
      "name": "section5_started",
@@ -851,37 +863,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "| 6. `list` shows latest first | feature-level, parent req 1 | an ordering behaviour inside the list view; gets no R-row |",
+      "quote": "1. Confirm or change the triage outcomes, and the R-5 wording (or give numbers).",
       "source": "transcript.md",
-      "reason": "Turn 1 gives a triage outcome for all six requirements, a reasoned rank, candidates A\u2013D citing req numbers with full scenarios, and asks the architect to confirm."
+      "reason": "The turn-1 message gives a triage outcome for all six requirements, a ranking with a reason for each ranked requirement, candidate goals citing R-IDs with scenarios or open measures, and asks the architect to confirm."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**Open question, not a goal:** Performance efficiency: time behaviour (req 5). What would show req 5 is met?",
-      "source": "transcript.md",
-      "reason": "Fast is kept as an open question asking for a measure and is never filed as a goal."
+      "quote": "Open questions (no measure yet, so no goal row): time behaviour (from R-5), and functional correctness of the eBird export (from R-4).",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "Speed was asked about in turn 1 and kept as an open question with no goal row or invented measure."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "**Security: confidentiality.** Are sightings private?",
+      "quote": "**Confidentiality**: a birder who wants a rare nest location kept off the export?",
       "source": "transcript.md",
-      "reason": "Turn 1 asks gap questions about characteristics no requirement supports, and no goal for them is filed."
+      "reason": "The agent asked gap questions about unsupported characteristics, and only QG-1 (R-2) and QG-2 (R-3) were filed."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "ADR 0001 waits for your approval of its text.",
+      "quote": "**Waiting for you:** approve the text of ADR 0001, which is still `proposed`.",
       "source": "transcript.md",
-      "reason": "The final message states that ADR 0001 waits for the architect's approval."
+      "reason": "The final message states that ADR 0001 (Record architecture decisions) waits for the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1717298
+    "cost_usd": 0.1602538
    },
-   "cost_usd": 0.034457,
+   "cost_usd": 0.025491,
    "needs_review": false
   },
   {
@@ -901,17 +913,17 @@
     {
      "name": "rlist",
      "pass": true,
-     "detail": "R-2 active, R-3 active, R-1 active, R-4 active, R-5 active"
+     "detail": "R-1 active, R-2 active, R-3 active, R-4 active, R-5 active"
     },
     {
      "name": "goals_measured",
      "pass": true,
-     "detail": "QG-1, QG-2"
+     "detail": "QG-1, QG-2, QG-3"
     },
     {
      "name": "adr_0001",
      "pass": true,
-     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-2', 'R-3', 'R-4']"
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'QG-3', 'R-1', 'R-2', 'R-4']"
     },
     {
      "name": "section5_started",
@@ -943,39 +955,39 @@
     "verdicts": [
      {
       "criterion": "J1",
-      "pass": true,
-      "quote": "1. Confirm or change each triage outcome, and the R-1 to R-5 order. Should the listing requirement be a feature-level issue under R-1?",
+      "pass": false,
+      "quote": "3. R-3 log from CLI: `3 (proposed)`.",
       "source": "transcript.md",
-      "reason": "The turn-1 message triages all six requirements, ranks R-1 to R-5 with a reason each, proposes goals citing R-IDs with scenarios, and asks the architect to confirm."
+      "reason": "The ranking gives reasons only for R-1 and R-2; R-3, R-4 and R-5 are listed without a reason."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "*Open question:* which command, on what hardware, must finish within what time? I have no measure, so no goal row yet.",
+      "quote": "| **Open question** Performance efficiency: time behaviour | R-5 | \u2014 | No measure yet. What response time for `add` and `list`, and at how many stored sightings? |",
       "source": "transcript.md",
-      "reason": "The performance goal is kept open with a request for a measure, and no goal row is filed for it."
+      "reason": "Fast is kept as an open question asking for a measure, and no goal row was filed for it."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Did you leave out *Security: confidentiality*? Sighting locations may be sensitive (for example, rare nesting sites).",
+      "quote": "- **Security: confidentiality.** Are exact locations of rare birds sensitive, so the data should stay local and never be shared by default?",
       "source": "transcript.md",
-      "reason": "The agent asks gap questions about unsupported characteristics, and the final arc42 holds only QG-1 and QG-2, both traced to requirements."
+      "reason": "Gap questions about unsupported characteristics were asked, and the only goals filed are QG-1 to QG-3 from R-1, R-2 and R-4."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "It becomes `accepted` only when you approve its text.",
+      "quote": "`docs/adr/0001-record-architecture-decisions.md`: status `proposed`, with the central-decision list. Its text needs your approval before it becomes `accepted`.",
       "source": "transcript.md",
-      "reason": "The final report states ADR 0001 is proposed and waits for the architect's approval."
+      "reason": "The final message states that ADR 0001 is proposed and needs the architect's approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.17413779999999998
+    "cost_usd": 0.1694978
    },
-   "cost_usd": 0.02742,
-   "needs_review": false
+   "cost_usd": 0.030137,
+   "needs_review": true
   },
   {
    "run": "S07-r1",
@@ -1032,37 +1044,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "- Section 3 and section 5 link to README \u203a How it works.\n- Section 4 links to ADR 0001 and ADR 0002.\n- Section 9 links to `docs/decisions/`.\n- Section 12 holds the no-glossary line.\n\nThe README and the ADRs stay as they are.",
+      "quote": "The skeleton links both (section 5 to the README, section 9 to `docs/decisions/`).",
       "source": "transcript.md",
-      "reason": "In turn 1 the agent names the arc42 sections for the README section and the ADRs and states the documents stay where they are."
+      "reason": "In turn 1 the agent maps the README section to arc42 section 5 and the ADR directory to section 9, and elsewhere in that turn states the existing README and ADRs are unchanged, without proposing a move."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "## 6. Legacy ADRs (upgrade in one batch, Status `accepted (legacy)`, Decision text unchanged)",
+      "quote": "## Legacy ADRs (offered as one batch; their decisions stay as they are)",
       "source": "transcript.md",
-      "reason": "Both ADRs are offered for upgrade together in one batch, with the decisions explicitly left unchanged."
+      "reason": "Both ADR 0001 and 0002 are offered together for a status/context upgrade, with the agent explicitly not reopening their decisions."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "**Status of the ADRs:** 0003 waits for your approval of its text.",
+      "quote": "ADR 0003 needs your approval before the decisions on its list can be built",
       "source": "transcript.md",
-      "reason": "The final message says ADR 0003 awaits the architect's approval."
+      "reason": "The final message states that the new Record-architecture-decisions ADR 0003 awaits the architect's approval."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "- `docs/decisions/0001-store-books-in-one-json-file.md`: upgraded to `accepted (legacy)`.",
+      "quote": "Status `accepted (legacy)` added, Context citing the R- and QG-IDs. The Decision text is unchanged.",
       "source": "transcript.md",
-      "reason": "The final message presents 0001 (and likewise 0002) as accepted legacy decisions with unchanged Decision text, not as decisions to be re-approved."
+      "reason": "The final message presents 0001 and 0002 as accepted legacy decisions whose decisions were left unchanged, not as items to approve again."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.2144618
+    "cost_usd": 0.1860698
    },
-   "cost_usd": 0.041702,
+   "cost_usd": 0.03647,
    "needs_review": false
   },
   {
@@ -1120,37 +1132,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "- `README.md` \u203a How it works \u2192 sections 3 and 5 (linked; the README stays as it is)",
+      "quote": "- `docs/decisions/` \u2192 arc42 section 9 (linked). The ADRs stay where and as they are.",
       "source": "transcript.md",
-      "reason": "In turn 1 the agent mapped each existing document to arc42 sections (README to 3/5/9, ADRs to 4) and stated the documents stay in place and are only linked."
+      "reason": "In turn 1 the agent maps the ADRs to section 9 and, on the line before, the README's How it works to section 5, saying both stay where they are."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Neither has a Status field. Upgrading would add `accepted (legacy)` and the IDs their Context serves, with the Decision text unchanged:",
+      "quote": "## Legacy ADRs (offered as one batch)",
       "source": "transcript.md",
-      "reason": "Both legacy ADRs were offered together under 'offered as one batch' with their decisions explicitly left unchanged."
+      "reason": "Both 0001 and 0002 are offered together for upgrade to accepted (legacy), with their Decision text unchanged and no re-decision proposed."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "The one new decision, ADR 0003, is still `proposed` and waits for your approval.",
+      "quote": "**ADR 0003 awaits your approval.** Once it is accepted, work on any listed decision may start.",
       "source": "transcript.md",
-      "reason": "The final message states ADR 0003 awaits the architect's approval."
+      "reason": "The final message states that ADR-0003 waits for the architect's approval."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "- **`docs/decisions/0002-validate-isbn-locally.md`**: Status `accepted (legacy)`, Context cites R-3. The Decision and Consequences text is unchanged.",
+      "quote": "Status `accepted (legacy)`. Context now cites R-2 and R-3. The Decision text is unchanged.",
       "source": "transcript.md",
-      "reason": "The final message presents both legacy ADRs as accepted (legacy) with unchanged decisions, not as open for re-approval."
+      "reason": "The final message presents the existing ADRs as accepted (legacy) with unchanged decisions, not as decisions awaiting approval."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1926618
+    "cost_usd": 0.1737298
    },
-   "cost_usd": 0.038478,
+   "cost_usd": 0.033782,
    "needs_review": false
   },
   {
@@ -1318,6 +1330,342 @@
    },
    "cost_usd": 0.048468,
    "needs_review": false
+  },
+  {
+   "run": "S09-r1",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 5; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "5 recovered, limit 6; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Recovering the architecture from the code waits until you approve the decision-list ADR.",
+      "source": "transcript.md",
+      "reason": "Turn 1 proposes the central decision list and states that recovery waits for the architect's approval of it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Waiting on you:** approve the text of ADR 0001. Its status stays `proposed` until you do.",
+      "source": "transcript.md",
+      "reason": "Turn 2 writes only the confirmed docs, recovers nothing, and closes by asking for approval of ADR 0001 before recovery begins."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Approve or reject ADRs 0002\u20130006 and confirm or correct each recovered section.",
+      "source": "transcript.md",
+      "reason": "The final message names sections 2\u20138 and 11 as marked As found, unconfirmed, lists proposed ADRs 0002\u20130006, and asks for their approval and section-by-section review."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2522818
+   },
+   "cost_usd": 0.060074,
+   "needs_review": false
+  },
+  {
+   "run": "S09-r2",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 5; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "6 recovered, limit 6; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QG-4"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Since this project is undocumented, recovering the architecture from the code waits until you approve this ADR's text.",
+      "source": "transcript.md",
+      "reason": "Turn 1 drafts the central decision list and explicitly defers recovery until the architect approves it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Approve or change the text of ADR-0001 (`docs/adr/0001-record-architecture-decisions.md`). Once it is accepted, I can recover the architecture from the code as the next step.",
+      "source": "transcript.md",
+      "reason": "Turn 2 only writes confirmed rows and the proposed ADR, then ends by asking for ADR-0001 approval before recovery."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**Sections to review (all *as found, unconfirmed*)**",
+      "source": "transcript.md",
+      "reason": "The final message lists each as-found section for review and then the proposed ADRs 0002\u20130007, each with its approval question."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.26829780000000003
+   },
+   "cost_usd": 0.068873,
+   "needs_review": false
+  },
+  {
+   "run": "S10-r1",
+   "scenario": "S10",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 5; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "3 recovered, limit 6; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "So the architecture will be recovered from the code once you approve the list of centrally made decisions (ADR 0001 below).",
+      "source": "transcript.md",
+      "reason": "Turn 1 drafts the list of decisions made centrally and makes recovery wait for the architect's approval of that list."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Waiting for you:** approve the text of ADR 0001. Once it's accepted, I recover the architecture from the code, and that report fills sections 2\u20138 and 11. Those sections stay empty until then.",
+      "source": "transcript.md",
+      "reason": "Turn 2 ends by asking for approval of ADR 0001 and leaves the recovery sections empty."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Everything the code showed is marked *as found, unconfirmed*, and the ADRs I drafted are `proposed`.",
+      "source": "transcript.md",
+      "reason": "The final message lists the unconfirmed sections 2\u20138 and 11 in review order with a question each, followed by proposed ADRs 0002\u20130004 awaiting approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "| `Thermostat` | proportional controller: takes the measured temperature `T`, outputs the heating power `Q` with the set point `T_set` | `Interfaces`; the package constant `roomHeatCapacity` (for the gain `k`) |",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "Section 5 describes the blocks by their signals in and out through the Interfaces connectors and names the coupling through roomHeatCapacity."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2697618
+   },
+   "cost_usd": 0.078449,
+   "needs_review": false
+  },
+  {
+   "run": "S10-r2",
+   "scenario": "S10",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 6; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "4 recovered, limit 5; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-2, QG-3"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Once you confirm, I'll write the R-list, goals, scenarios and ADR-0001 as `proposed`. Recovering the architecture from the code waits for your approval of ADR-0001's text.",
+      "source": "transcript.md",
+      "reason": "Turn 1 proposes the central decision list for ADR-0001 and defers recovery until the architect approves that ADR's text, which is the list."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**ADR-0001** waits for your approval of its text. Recovering the architecture from the code waits for that approval too, and so does changing the `roomHeatCapacity` coupling in `Thermostat.mo`.",
+      "source": "transcript.md",
+      "reason": "Turn 2 writes only the confirmed requirements and the proposed ADR-0001, recovers nothing, and ends by asking for approval of ADR-0001."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**arc42 sections marked *as found, unconfirmed*, for your review in this order:**",
+      "source": "transcript.md",
+      "reason": "The final message lists the unconfirmed sections in review order and the proposed ADR-0002 to ADR-0005, each with a question for the architect."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "| `Room` | lumped room air: stores heat, loses it through the walls | `Interfaces`; the package constant `roomHeatCapacity` |",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "Section 5 names the roomHeatCapacity coupling but does not describe any block's interface as its signals or connectors in and out; it only lists the Interfaces package as a dependency."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2747618
+   },
+   "cost_usd": 0.062028,
+   "needs_review": true
   }
  ]
 }

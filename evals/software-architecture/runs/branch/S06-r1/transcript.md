@@ -11,13 +11,13 @@ My requirements:
 
 ### assistant
 
-I'll start by checking the project state and loading the two skills the setup depends on.
+I'll start by checking the project state and loading the skills this one depends on.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "pwd && git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100 && ls -la docs 2>/dev/null; ls /tmp/sa-arm-24bjwjvm/sa/skills/ 2>/dev/null",
+ "command": "git status && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100",
  "description": "Inspect project state and files"
 }
 ```
@@ -28,6 +28,21 @@ I'll start by checking the project state and loading the two skills the setup de
 {
  "skill": "sa:quality-requirements"
 }
+```
+
+### tool_result
+
+```
+On branch master
+nothing to commit, working tree clean
+9ea9528 fixture
+./README.md
+```
+
+### tool_result
+
+```
+Launching skill: sa:quality-requirements
 ```
 
 ### tool_use Skill
@@ -41,99 +56,14 @@ I'll start by checking the project state and loading the two skills the setup de
 ### tool_result
 
 ```
-/tmp/sa-eval-5_i2nqjk/project
-242299a fixture
-./README.md
-add-requirements
-code-review
-codebase-design
-conventional-commits
-design-dialogue
-dispatching-parallel-agents
-domain-modeling
-executing-plans
-finishing-a-development-branch
-handoff
-improve-codebase-architecture
-openmodelica
-prototype
-quality-requirements
-research
-retro
-setup-architecture
-setup-pre-commit
-setup-project-workflow
-setup-ts-deep-modules
-spec-and-plan
-squash-merge-message
-systematic-debugging
-teach
-test-driven-development
-to-questionnaire
-triage
-using-git-worktrees
-verification-before-completion
-wait-what
-wayfinder
-wizard
-writing-for-agents
-```
-
-### tool_result
-
-```
-Launching skill: sa:quality-requirements
-```
-
-### tool_result
-
-```
 Launching skill: sa:domain-modeling
-```
-
-### assistant
-
-The project holds only a README, so I need to check whether it describes architecture or just the product. I'll read it along with the skill references.
-
-### tool_use Bash
-
-```json
-{
- "command": "cat README.md; echo ---; S=/tmp/sa-arm-24bjwjvm/sa/skills; ls $S/setup-architecture/references $S/domain-modeling $S/quality-requirements/references $S/add-requirements",
- "description": "Read README and list skill reference files"
-}
-```
-
-### tool_result
-
-```
-# birdlog
-
-A command-line tool for logging bird sightings. Nothing is built yet.
----
-/tmp/sa-arm-24bjwjvm/sa/skills/add-requirements:
-SKILL.md
-
-/tmp/sa-arm-24bjwjvm/sa/skills/domain-modeling:
-ADR-FORMAT.md
-GLOSSARY-FORMAT.md
-SKILL.md
-agents
-
-/tmp/sa-arm-24bjwjvm/sa/skills/quality-requirements/references:
-iso-25010.md
-quality-scenario.md
-
-/tmp/sa-arm-24bjwjvm/sa/skills/setup-architecture/references:
-arc42-skeleton.md
-made-centrally-adr.md
 ```
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-arm-24bjwjvm/sa/skills/setup-architecture/references/arc42-skeleton.md"
+ "file_path": "/tmp/sa-arm-qnbx5tzq/sa/skills/setup-architecture/references/arc42-skeleton.md"
 }
 ```
 
@@ -202,7 +132,7 @@ made-centrally-adr.md
 
 ```json
 {
- "file_path": "/tmp/sa-arm-24bjwjvm/sa/skills/setup-architecture/references/made-centrally-adr.md"
+ "file_path": "/tmp/sa-arm-qnbx5tzq/sa/skills/setup-architecture/references/made-centrally-adr.md"
 }
 ```
 
@@ -263,67 +193,7 @@ made-centrally-adr.md
 
 ```json
 {
- "file_path": "/tmp/sa-arm-24bjwjvm/sa/skills/domain-modeling/ADR-FORMAT.md"
-}
-```
-
-### tool_result
-
-```
-1	# ADR Format
-2	
-3	ADRs live in the project's ADR directory as `NNNN-slug.md`, numbered one above the highest
-4	existing number. That directory is the one where the project already keeps its ADRs (such as
-5	`docs/decisions/`), or `docs/adr/`, created when the first ADR is needed. ADRs stay where they
-6	are; a new ADR goes beside them. When and with which status to write one:
-7	[SKILL.md](./SKILL.md#architectural-decisions).
-8	
-9	## Template
-10	
-11	Nygard's five fields, all required:
-12	
-13	```md
-14	# {N}. {Short title of the decision}
-15	
-16	## Status
-17	
-18	{proposed | accepted YYYY-MM-DD | rejected YYYY-MM-DD: reason | superseded by ADR-NNNN}
-19	
-20	## Context
-21	
-22	{The forces at play: the requirements and quality goals the decision serves, cited by ID
-23	(R-n, QG-n, QS-n) where the project has them, otherwise named in words; constraints; the ADR
-24	this one replaces, if any.}
-25	
-26	## Decision
-27	
-28	{What we will do, in active voice: "We will …".}
-29	
-30	## Consequences
-31	
-32	{What becomes easier and harder, including effects on other ADRs and the work that follows.}
-33	```
-34	
-35	The Status field's first line is the status. Keep every ADR short: a few sentences per field.
-36	
-37	## What qualifies
-38	
-39	Examples of decisions that meet the rule in SKILL.md:
-40	
-41	- **Architectural shape.** "The write model is event-sourced, the read model is projected into Postgres."
-42	- **Integration between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
-43	- **Technology with lock-in.** Database, message bus, auth provider, deployment target; not every library.
-44	- **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
-45	- **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
-46	- **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
-47	
-```
-
-### tool_use Read
-
-```json
-{
- "file_path": "/tmp/sa-arm-24bjwjvm/sa/skills/add-requirements/SKILL.md"
+ "file_path": "/tmp/sa-arm-qnbx5tzq/sa/skills/add-requirements/SKILL.md"
 }
 ```
 
@@ -409,11 +279,36 @@ made-centrally-adr.md
 [... 990 chars cut]
 ```
 
+### tool_use Bash
+
+```json
+{
+ "command": "cat README.md; echo ---; ls -la; echo ---; git ls-files",
+ "description": "Read README and list tracked files"
+}
+```
+
+### tool_result
+
+```
+# birdlog
+
+A command-line tool for logging bird sightings. Nothing is built yet.
+---
+total 16
+drwxr-xr-x 3 root root 4096 Nov 21 22:38 .
+drwx------ 3 root root 4096 Nov 21 22:38 ..
+drwxr-xr-x 8 root root 4096 Nov 21 22:38 .git
+-rw-r--r-- 1 root root   81 Nov 21 13:39 README.md
+---
+README.md
+```
+
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-arm-24bjwjvm/sa/skills/quality-requirements/references/quality-scenario.md"
+ "file_path": "/tmp/sa-arm-qnbx5tzq/sa/skills/quality-requirements/references/quality-scenario.md"
 }
 ```
 
@@ -455,7 +350,7 @@ made-centrally-adr.md
 
 ```json
 {
- "file_path": "/tmp/sa-arm-24bjwjvm/sa/skills/quality-requirements/references/iso-25010.md"
+ "file_path": "/tmp/sa-arm-qnbx5tzq/sa/skills/quality-requirements/references/iso-25010.md"
 }
 ```
 
@@ -517,101 +412,99 @@ made-centrally-adr.md
 
 ### assistant
 
-The project is fresh: the README says "Nothing is built yet" and only describes the product, so it isn't architecture documentation. I'll write the arc42 skeleton, the only file this turn touches.
+The project is fresh: only a one-line README, which says nothing about architecture. I'll write the arc42 skeleton, the only file this turn touches.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md",
- "content": "# birdlog: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe ADRs are in [`../adr/`](../adr/). How decisions are recorded:\n[0001 Record architecture decisions](../adr/0001-record-architecture-decisions.md).\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+ "file_path": "/tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md",
+ "content": "# birdlog: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe ADRs are in [`../adr/`](../adr/). The decision on which decisions the architect makes centrally is the ADR \"Record architecture decisions\", proposed as [`../adr/0001-record-architecture-decisions.md`](../adr/0001-record-architecture-decisions.md) and written once the architect confirms the setup proposal.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-I've written the skeleton at `docs/architecture/arc42.md`. Nothing else is written: no requirement rows, goals, or ADRs until you confirm them.
+I've written the skeleton at `docs/architecture/arc42.md`. It's the only file this turn changed. The project has no architecture yet, so this is a fresh setup. Section 9 links to ADR 0001, which doesn't exist until you confirm, so that link is dead for now.
 
-**Situation:** fresh. There are no source files, and the README says "Nothing is built yet" and only describes the product.
+## Proposal
 
-## Triage
+### Triage
 
-I use the requirement numbers as you listed them (req 1–6). R-IDs are assigned in the order you confirm.
+Against an empty R-list, only the outcome applies.
 
-| req | proposed outcome | reason |
-|---|---|---|
-| 1. Log a sighting from the CLI | system-level | defines the sighting record and the CLI surface everything else depends on |
-| 2. No sighting lost on a crash mid-write | system-level | drives the storage design (atomic writes, flushing to disk); crosscutting |
-| 3. Offline on Linux, macOS, Windows, Python only | system-level | a platform and dependency constraint. Should it also go in section 2 (Constraints)? |
-| 4. Export to eBird CSV | system-level | the export format is a data-format decision, so it is on the central list |
-| 5. Fast | system-level, needs a measure | not testable as written (see open questions) |
-| 6. `list` shows latest first | feature-level, parent req 1 | an ordering behaviour inside the list view; gets no R-row |
-
-Sharper wording (proposals only):
-- req 5: "`add` and `list` respond within T ms with N stored sightings on a stated reference machine."
-- req 6: "`list` shows the most recent sighting first." Please say whether "latest" means observation time or time entered.
-
-## Rank
-
-1. req 2: the others assume a sighting survives.
-2. req 1: the core function.
-3. req 3: constrains every storage and dependency choice.
-4. req 4: the export format is a central decision.
-5. req 5: waits for a measure.
-
-Conflicts and tie-breakers:
-- **req 2 vs req 5:** flushing each write to disk before acknowledging it costs time on every `add`. Tie-breaker: *if only one of req 2 and req 5 can be fully met, which?*
-- req 3 and req 5 do not conflict: `sqlite3` ships with Python on all three OSes.
-
-Please set the order.
-
-## Quality goals (candidates)
-
-| candidate | characteristic | from | scenario |
+| ID | Requirement | Proposed outcome | Reason |
 |---|---|---|---|
-| A | Reliability: recoverability | req 2 | **stimulus:** `add` is killed with SIGKILL mid-write (standing in for a power loss). **environment:** normal operation. **response:** the sighting is either fully stored or absent, and every previously acknowledged sighting is still readable. **measure:** 0 lost acknowledged sightings and 0 unreadable stores in 100 kill trials. |
-| B | Flexibility: installability | req 3 | **stimulus:** a fresh Python 3 install on each OS, with no network, runs `add` then `list`. **environment:** offline. **response:** both work with the standard library only. **measure:** 3 of 3 OSes pass; 0 third-party packages. |
-| C | Compatibility: interoperability | req 4 | **stimulus:** `export` on a store of 1,000 sightings. **environment:** normal operation. **response:** every row is valid eBird CSV. **measure:** 0 rejected rows against the eBird template you name. |
-| D | Functional suitability: functional correctness | req 1, 6 | **stimulus:** 1,000 random sightings are logged, then listed. **environment:** normal operation. **response:** every field reads back unchanged and the list is newest first. **measure:** 100% of fields round-trip; 100% of list orders correct. |
+| R-1 | Log a sighting (species, place, time, count) from the CLI | system-level | Defines the record every other part stores, exports and lists. |
+| R-2 | No sighting is lost, even if the laptop dies mid-write | system-level | Durability decides the storage mechanism. |
+| R-3 | Offline on Linux, macOS and Windows with only Python | system-level | Limits the dependencies and the storage options. Also a candidate section 2 constraint, which is yours to add. |
+| R-4 | Export to the eBird CSV format | system-level | An export format crosses a boundary, so it goes on the decisions-made-centrally list. |
+| R-5 | It must be fast | system-level | Shapes storage and write path, but has no measure yet (see open questions). |
+| R-6 | `birdlog list` shows the latest sighting first | feature-level, parent R-1 | A behaviour of the list command inside the CLI requirement. Becomes an issue, not an R-list row. |
 
-**Open question, not a goal:** Performance efficiency: time behaviour (req 5). What would show req 5 is met? For example: "`add` and `list` finish in under T ms with N sightings on machine M." Please give T, N and M.
+Sharper wording, as proposals only:
+- R-5: "Logging a sighting and listing the latest N respond in under X ms with Y sightings stored." X and Y are yours to set.
+- R-2: "A sighting the CLI reported as saved survives power loss or a killed process at any point."
 
-Please confirm and rank the top candidates.
+### Rank (proposed order)
 
-## Gap questions
+1. **R-2** durability: everything else depends on what gets written.
+2. **R-1** logging: defines the data model.
+3. **R-3** portability: restricts the storage choice.
+4. **R-4** eBird export: a format on top of the stored data.
+5. **R-5** speed: refines the write path once the rest is fixed.
 
-One list, each characteristic asked once:
-- **Security: confidentiality.** Are sightings private? Rare-species nest locations, for example, might need to stay unreadable by other users on the same machine.
-- **Interaction capability: user error protection.** Should `add` reject a count of 0, a time in the future, or an unknown species?
-- **Functional suitability: functional completeness.** Must users be able to correct or delete a sighting? None of the six requirements covers this.
+Conflict: **R-2 vs R-5**. Syncing each write to disk is the usual cost of durability and slows every log call. Tie-breaker: *if only one of R-2 and R-5 can be fully met, which?*
 
-## Decisions made centrally
+### Quality goals (candidates)
 
-ADR `0001-record-architecture-decisions.md` in `docs/adr/`, status `proposed`. Its list:
-- storage engine and on-disk format (`sqlite3` or an append-only file)
-- import and export formats (eBird CSV)
-- interfaces between building blocks and the dependency rule
-- versioning of the CLI and the on-disk format
-- crosscutting conventions: time zone and units for times, error handling
-- third-party dependencies: standard library only, per req 3
+| Candidate | From | Proposed scenario |
+|---|---|---|
+| Reliability: recoverability | R-2 | Stimulus: process killed (SIGKILL) or power lost during a `log` call. Response: the sighting is either fully stored or absent, and the store still opens. Measure: 0 lost acknowledged sightings and 0 unreadable stores in 100 trials. |
+| Flexibility: adaptability | R-3 | Stimulus: the test suite runs on Linux, macOS and Windows with a stock Python. Measure: 0 platform-specific failures. |
+| Functional suitability: functional correctness | R-4 | Open question: how is an eBird import validated? I can't state a measure yet. |
+| Performance efficiency: time behaviour | R-5 | Open question: "fast" has no measure. What number would show it's met, for which operation, and with how many stored sightings? |
 
-Left to the building blocks: internal helpers, CLI parsing internals, and test layout.
+Ranked top 3 for your confirmation: recoverability (R-2), adaptability (R-3), time behaviour (R-5, once measured).
 
-## What I need from you
+### Gap questions
 
-1. Confirm or change the triage outcomes and the sharper wording.
-2. Set the rank and the tie-breaker for req 2 vs req 5.
-3. Confirm candidates A–D and give the open numbers for req 5 (T, N, M) and the eBird template for C.
-4. Answer the three gap questions, and say whether req 3 also belongs in section 2.
-5. Confirm the central-decisions list.
+Did you leave out something like:
+- **Confidentiality**: a birder who wants a rare nest location kept off the export?
+- **User error protection**: a typo in a species name or a count of 1000 by mistake?
+- **Capacity**: how many years of sightings must one store hold?
+- **Installability**: how do users install and uninstall it, beyond "Python is installed"?
 
-Once you confirm, I write the R-list rows, the goals and scenarios, and ADR 0001 (still `proposed` until you approve its text).
+### Decisions made centrally
+
+Draft for ADR 0001, "Record architecture decisions". No ADR directory exists yet, so 0001 is the next free number.
+
+Decided centrally:
+- storage engine and on-disk format (durability and "stdlib only" both bear on this);
+- eBird CSV export format and any internal format it maps from;
+- interfaces and dependency rule between CLI, core and storage;
+- versioning of the CLI and the data file;
+- crosscutting conventions: timestamps and time zones, species naming, error handling, logging;
+- third-party dependencies (the proposal is standard library only, from R-3).
+
+Left to the building blocks:
+- argument parsing details, output formatting, internal helpers, test layout.
+
+## Questions for you
+
+1. Confirm or change the triage outcomes, and the R-5 wording (or give numbers).
+2. Set the rank order, and answer the R-2 vs R-5 tie-breaker.
+3. Confirm the top 3 goals, and give the measures for time behaviour and the eBird validation.
+4. Answer the four gap questions.
+5. Confirm the decisions-made-centrally list for ADR 0001.
+
+Once you confirm, I'll write the R-list, goals, scenarios and ADR 0001, which will still be `proposed` until you approve its text.
 
 ### result (success)
 
@@ -624,57 +517,103 @@ down now. I'm offline after this, so finish without asking me again.
 
 ### assistant
 
-Confirmed items are being written now. Three goals are written as confirmed; Performance (req 5) and Interoperability (eBird export) stay open because they have no measure yet. I'll write the ADR and the feature-level issue first, then fill the arc42 tables.
+Everything is confirmed, so I'll write the R-list, the two confirmed goals with their scenarios, the feature issue, and ADR 0001. Keeping the proposed IDs (R-1 to R-6) is what the architect confirmed, so I'm not renumbering. Reading the skeleton first so I can edit it.
 
-### tool_use Write
+### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-5_i2nqjk/project/docs/adr/0001-record-architecture-decisions.md",
- "content": "# 1. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. Sightings must survive crashes (R-1, QG-1), work offline on Linux, macOS and Windows with only Python installed (R-3, QG-2), and export to the eBird CSV format (R-4).\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/adr/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- storage engine and on-disk data format\n- import and export formats (eBird CSV)\n- interfaces between building blocks, and the dependency rule between them\n- versioning of the CLI and of the on-disk format\n- crosscutting conventions: time zone and units, error handling, logging\n- third-party dependencies: standard library only (R-3)\n\nLeft to the building blocks (no ADR):\n\n- internal helpers, structure inside one block, test layout\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted.\n"
+ "file_path": "/tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-5_i2nqjk/project/docs/adr/0001-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+1	# birdlog: architecture
+2	
+3	Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
+4	
+5	## 1. Introduction and goals
+6	
+7	### Requirements overview
+8	
+9	| ID | requirement | rank | status | reason |
+10	|---|---|---|---|---|
+11	
+12	### Quality goals
+13	
+14	| ID | goal (ISO/IEC 25010) | from | scenario |
+15	|---|---|---|---|
+16	
+17	## 2. Constraints
+18	
+19	## 3. Context and scope
+20	
+21	## 4. Solution strategy
+22	
+23	## 5. Building block view
+24	
+25	| block | responsibility | may use |
+26	|---|---|---|
+27	
+28	## 6. Runtime view
+29	
+30	## 7. Deployment view
+31	
+32	## 8. Crosscutting concepts
+33	
+34	## 9. Architecture decisions
+35	
+36	The ADRs are in [`../adr/`](../adr/). The decision on which decisions the architect makes centrally is the ADR "Record architecture decisions", proposed as [`../adr/0001-record-architecture-decisions.md`](../adr/0001-record-architecture-decisions.md) and written once the architect confirms the setup proposal.
+37	
+38	## 10. Quality requirements
+39	
+40	| ID | goal | stimulus | environment | response | measure |
+41	|---|---|---|---|---|---|
+42	
+43	## 11. Risks and technical debt
+44	
+45	## 12. Glossary
+46	
+47	`GLOSSARY.md` is created with the first resolved term.
+48	
 ```
 
-### tool_use Write
+### tool_use Bash
 
 ```json
 {
- "file_path": "/tmp/sa-eval-5_i2nqjk/project/.scratch/requirements/issues/01-list-latest-first.md",
- "content": "# `birdlog list` shows the latest sighting first\n\nParent: R-2 (log a sighting from the command line). Feature-level; no R-list row.\n\n## Requirement\n\n`birdlog list` shows the latest sighting first.\n\n## Open question\n\n\"Latest\" must be defined before this is built: observation time (the time of the sighting) or time entered (when it was logged).\n"
+ "command": "ls docs/adr .scratch docs/agents 2>&1; echo; git status --short",
+ "description": "Check ADR, scratch and tracker directories exist"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-5_i2nqjk/project/.scratch/requirements/issues/01-list-latest-first.md (file state is current in your context — no need to Read it back)
+ls: cannot access 'docs/adr': No such file or directory
+ls: cannot access '.scratch': No such file or directory
+ls: cannot access 'docs/agents': No such file or directory
+
+?? docs/
 ```
-
-### assistant
-
-Next, the R-list, the confirmed goals, and the scenarios go into arc42.
 
 ### tool_use Edit
 
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md",
- "old_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n",
- "new_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | No sighting is ever lost, even if the laptop dies mid-write. | 1 | active | Everything else assumes a stored sighting survives; drives atomic writes and flushing to disk. |\n| R-2 | Birders log a sighting (species, place, time, count) from the command line. | 2 | active | The core function; defines the sighting record and the CLI surface. |\n| R-3 | Runs offline on Linux, macOS and Windows with nothing but Python installed. | 3 | active | Constrains storage and dependency choices: standard library only. |\n| R-4 | Sightings export to the eBird CSV format. | 4 | active | The export format is a central data-format decision. |\n| R-5 | It must be fast. | 5 | active | Not testable yet; its goal waits for a measure. |\n"
+ "file_path": "/tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md",
+ "old_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n",
+ "new_string": "| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Birders log a sighting (species, place, time, count) from the command line. | 2 | active | Defines the record every other part stores, exports and lists. |\n| R-2 | No sighting is ever lost, even if the laptop dies mid-write. | 1 | active | Durability decides the storage mechanism. |\n| R-3 | Runs offline on Linux, macOS and Windows with nothing but Python installed. | 3 | active | Limits the dependencies and the storage options. |\n| R-4 | Sightings export to the eBird CSV format. | 4 | active | An export format crosses a boundary, so it is decided centrally. |\n| R-5 | It must be fast. | 5 | active | Shapes the storage and write path; no measure yet, see open questions. |\n\nR-6 (`birdlog list` shows the latest sighting first) is feature-level under R-1: it is an issue, not a row. See `.scratch/requirements/issues/01-list-latest-first.md`.\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Reliability: recoverability | R-2 | QS-1 |\n| QG-2 | Flexibility: adaptability | R-3 | QS-2 |\n\nOpen questions (no measure yet, so no goal row): time behaviour (from R-5), and functional correctness of the eBird export (from R-4). What number would show R-5 is met, and how is an eBird import validated?\n"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
 ```
 
 ### tool_use Edit
@@ -682,58 +621,80 @@ The file /tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md has been updat
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md",
- "old_string": "| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n",
- "new_string": "| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Reliability: recoverability | R-1 | QS-1 |\n| QG-2 | Flexibility: installability | R-3 | QS-2 |\n| QG-3 | Functional suitability: functional correctness | R-2 | QS-3 |\n\nOpen, no measure yet (not goals until a measure is given):\n\n- Performance efficiency: time behaviour, from R-5. What would show R-5 is met (response times, sighting count, reference machine)?\n- Compatibility: interoperability, from R-4. Which eBird CSV template version does the export have to pass?\n"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Edit
-
-```json
-{
- "replace_all": false,
- "file_path": "/tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md",
+ "file_path": "/tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md",
  "old_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n",
- "new_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | `birdlog add` is killed with SIGKILL mid-write (stands in for a power loss) | normal operation | the sighting is either fully stored or absent; every previously acknowledged sighting is still readable | 0 lost acknowledged sightings and 0 unreadable stores in 100 kill trials |\n| QS-2 | QG-2 | a fresh Python 3 install on each OS runs `add` then `list` | Linux, macOS and Windows, offline | both work with the standard library only | 3 of 3 OSes pass; 0 third-party packages |\n| QS-3 | QG-3 | 1,000 random sightings are logged, then listed | normal operation | every field reads back unchanged; the list is newest first | 100% of fields round-trip; 100% of list orders correct |\n"
+ "new_string": "| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | the process is killed (SIGKILL) or power is lost during a `log` call | normal operation | the sighting is either fully stored or absent, and the store still opens | 0 lost acknowledged sightings and 0 unreadable stores in 100 trials |\n| QS-2 | QG-2 | the test suite runs on Linux, macOS and Windows with a stock Python | normal operation | the suite passes on all three platforms without platform-specific failures | 0 platform-specific failures |\n"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-5_i2nqjk/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-2zdf4f6t/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-2zdf4f6t/project/.scratch/requirements/issues/01-list-latest-first.md",
+ "content": "# `birdlog list` shows the latest sighting first\n\nParent requirement: R-1 (feature-level, no R-list row).\n\nThe `birdlog list` command prints stored sightings with the most recent sighting first.\n\nStatus: ready for triage (`sa:triage`).\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-2zdf4f6t/project/.scratch/requirements/issues/01-list-latest-first.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-2zdf4f6t/project/docs/adr/0001-record-architecture-decisions.md",
+ "content": "# 0001. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nSightings must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2).\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/adr/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- storage engine and on-disk data format;\n- the eBird CSV export format and the internal format it maps from;\n- interfaces between the CLI, core and storage blocks, and the dependency rule between them;\n- versioning of the CLI and of the data file;\n- crosscutting conventions: timestamps and time zones, species naming, error handling, logging;\n- third-party dependencies (standard library only, from R-3).\n\nLeft to the building blocks (no ADR):\n\n- argument parsing details, output formatting, internal helpers, test layout.\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-2zdf4f6t/project/docs/adr/0001-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-Setup is written for birdlog. The architecture is recorded as proposed, with three open items the architect still needs to settle.
+The architecture is written, and nothing is committed. ADR 0001 is `proposed` until you approve its text.
 
 **Files written**
-- `docs/architecture/arc42.md`: all twelve sections. Section 1 has the R-list (R-1 to R-5, ranked 1 to 5, all `active`) and three goals. Section 10 has their three scenarios. Section 9 links the ADR directory and ADR 0001.
-- `docs/adr/0001-record-architecture-decisions.md`: status `proposed`. Its Context cites R-1, QG-1, R-3, QG-2 and R-4. Its central list covers storage and data format, eBird import/export, building-block interfaces, CLI and format versioning, crosscutting conventions, and third-party dependencies (standard library only).
-- `.scratch/requirements/issues/01-list-latest-first.md`: the feature-level issue for `birdlog list` showing the latest sighting first. It cites R-2 as its parent and has no R-list row. The project has no `docs/agents/issue-tracker.md`, so I used the fallback path.
+- `docs/architecture/arc42.md`: all twelve sections. Section 1 holds the R-list and two goals. Section 10 holds two scenarios. Section 9 links to the ADRs.
+- `docs/adr/0001-record-architecture-decisions.md`: the decisions-made-centrally list, Status `proposed`.
+- `.scratch/requirements/issues/01-list-latest-first.md`: the feature issue for R-6, under parent R-1. There's no issue tracker configured, so it went to the fallback path.
 
-**Mapping**
-- R-1 is "no sighting lost" (rank 1), R-2 is "log from the CLI" (rank 2), R-3 is offline and Python-only (rank 3), R-4 is eBird export (rank 4), R-5 is "fast" (rank 5).
-- QG-1 Reliability: recoverability (QS-1). Measure: 0 lost acknowledged sightings in 100 SIGKILL trials.
-- QG-2 Flexibility: installability (QS-2). Measure: 3 of 3 OSes pass; 0 third-party packages.
-- QG-3 Functional suitability: functional correctness (QS-3). Measure: 100% of fields round-trip; 100% of list orders correct.
+**R-list**
+- R-2, durability, rank 1
+- R-1, logging, rank 2
+- R-3, offline and Python-only, rank 3
+- R-4, eBird export, rank 4
+- R-5, speed, rank 5
 
-**Still open, so not written as goals**
-- **R-5 (fast):** no measure yet. The response-time target, sighting count and reference machine are needed.
-- **eBird export (R-4):** the interoperability goal needs the eBird template version to check against.
-- **"Latest" in `list`:** observation time or time entered? QS-3's ordering measure depends on the answer.
+I kept the IDs you saw in the proposal, so R-2 is ranked first. Your confirmed ranking puts R-2 above R-5, which I read as your answer to the durability-versus-speed tie-breaker.
 
-**Not answered**
-- Whether R-3 also belongs in section 2 (Constraints). I left section 2 empty.
+**Quality goals**
+- QG-1, Reliability: recoverability (from R-2). QS-1 measures 0 lost acknowledged sightings and 0 unreadable stores in 100 kill or power-loss trials.
+- QG-2, Flexibility: adaptability (from R-3). QS-2 measures 0 platform-specific failures across Linux, macOS and Windows.
 
-ADR 0001 waits for your approval of its text. The export and storage decisions wait for their ADRs. I changed no code.
+**Open questions (no goal row, since there's no measure)**
+- Time behaviour from R-5: what number shows "fast" is met, for which operation, and with how many stored sightings?
+- Functional correctness of the eBird export from R-4: how is an import validated?
+
+**Gap questions:** none, so no new requirements or goals.
+
+**Choices I made**
+- R-1 to R-5 use the architect's original wording, not my sharpened proposals, since those weren't confirmed.
+- Section 2 (constraints) is empty. The "standard library only" constraint is in the ADR's list, but the architect hasn't added it as a constraint.
+
+**Waiting for you:** approve the text of ADR 0001, which is still `proposed`. Until you do, the storage, export-format and dependency decisions it lists are blocked.
 
 ### result (success)

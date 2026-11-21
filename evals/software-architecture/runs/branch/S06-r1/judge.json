@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "| 6. `list` shows latest first | feature-level, parent req 1 | an ordering behaviour inside the list view; gets no R-row |",
+   "quote": "1. Confirm or change the triage outcomes, and the R-5 wording (or give numbers).",
    "source": "transcript.md",
-   "reason": "Turn 1 gives a triage outcome for all six requirements, a reasoned rank, candidates A–D citing req numbers with full scenarios, and asks the architect to confirm."
+   "reason": "The turn-1 message gives a triage outcome for all six requirements, a ranking with a reason for each ranked requirement, candidate goals citing R-IDs with scenarios or open measures, and asks the architect to confirm."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Open question, not a goal:** Performance efficiency: time behaviour (req 5). What would show req 5 is met?",
-   "source": "transcript.md",
-   "reason": "Fast is kept as an open question asking for a measure and is never filed as a goal."
+   "quote": "Open questions (no measure yet, so no goal row): time behaviour (from R-5), and functional correctness of the eBird export (from R-4).",
+   "source": "workspace/docs/architecture/arc42.md",
+   "reason": "Speed was asked about in turn 1 and kept as an open question with no goal row or invented measure."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**Security: confidentiality.** Are sightings private?",
+   "quote": "**Confidentiality**: a birder who wants a rare nest location kept off the export?",
    "source": "transcript.md",
-   "reason": "Turn 1 asks gap questions about characteristics no requirement supports, and no goal for them is filed."
+   "reason": "The agent asked gap questions about unsupported characteristics, and only QG-1 (R-2) and QG-2 (R-3) were filed."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "ADR 0001 waits for your approval of its text.",
+   "quote": "**Waiting for you:** approve the text of ADR 0001, which is still `proposed`.",
    "source": "transcript.md",
-   "reason": "The final message states that ADR 0001 waits for the architect's approval."
+   "reason": "The final message states that ADR 0001 (Record architecture decisions) waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1717298
+ "cost_usd": 0.1602538
 }

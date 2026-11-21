@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Recovering the architecture from the code waits until you approve the decision-list ADR.",
+   "source": "transcript.md",
+   "reason": "Turn 1 proposes the central decision list and states that recovery waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "**Waiting on you:** approve the text of ADR 0001. Its status stays `proposed` until you do.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only the confirmed docs, recovers nothing, and closes by asking for approval of ADR 0001 before recovery begins."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "Approve or reject ADRs 0002–0006 and confirm or correct each recovered section.",
+   "source": "transcript.md",
+   "reason": "The final message names sections 2–8 and 11 as marked As found, unconfirmed, lists proposed ADRs 0002–0006, and asks for their approval and section-by-section review."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.2522818
+}

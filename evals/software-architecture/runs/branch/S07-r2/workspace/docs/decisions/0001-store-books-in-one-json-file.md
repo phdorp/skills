@@ -6,7 +6,8 @@ accepted (legacy)
 
 ## Context
 
-R-2 (the catalog survives a crash mid-write) and R-5 (runs with only the Python standard library).
+Serves R-2 (a crash mid-write leaves the catalog readable) and R-3 (only the standard library).
+A personal catalog is small, and the standard library reads and writes JSON.
 
 ## Decision
 
@@ -15,6 +16,5 @@ because a personal catalog is small and the standard library reads and writes JS
 
 ## Consequences
 
-Every write rewrites the whole file, so the cost of a write grows with the catalog. The rename
-protects against a crash of the process; the temporary file is not flushed to disk before the
-rename, so a power loss can still leave an unreadable file (see QS-2).
+Every read and write handles the whole catalog, which is acceptable for a personal catalog and
+gives no partial writes on a crash. Scaling to large catalogs would need a new decision.

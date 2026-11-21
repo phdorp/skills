@@ -6,7 +6,10 @@ proposed
 
 ## Context
 
-Sightings must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2), and the export must match eBird's CSV format (R-4).
+The architect decides the architecture; contributors and agents build it. Sightings must survive
+crashes (R-1, QG-1) and the tool must work offline everywhere with only Python (R-2, QG-2), so
+the storage design and the dependency rule are decided centrally. The eBird export is an external
+format and is decided centrally too (R-4, QG-3).
 
 ## Decision
 
@@ -14,18 +17,20 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- storage engine and on-disk data format for sightings (decides the crash behaviour in R-2);
-- export format: the eBird CSV columns and how each sighting field maps onto them (R-4);
-- versioning of the CLI commands and of the on-disk format;
-- crosscutting conventions: how sighting time is represented (time zone), the units of count, and error handling;
-- third-party dependencies: the standard library only (R-3);
-- interfaces between building blocks and the dependency rule between them (the blocks are decided later, in arc42 section 5).
+- storage engine, on-disk format of the sighting store, and its crash-safety mechanism (R-1);
+- the eBird CSV export format and any other import or export format (R-4);
+- interfaces between building blocks (CLI, store, export) and the dependency rule between them;
+- versioning of the store format and of the CLI commands;
+- crosscutting conventions: timestamps and time zone, error handling, exit codes;
+- third-party dependencies: the Python standard library only (R-2).
 
 Left to the building blocks (no ADR):
 
-- internal helpers and code structure inside one block;
+- internal helper functions and structure inside one block;
+- argument parsing details inside the CLI block;
 - test layout.
 
 ## Consequences
 
-Work that depends on a decision on the list waits until its ADR is accepted. The storage ADR depends on R-2 and QG-1; the performance requirement R-5 has no measure yet, so no decision on it is recorded here.
+Work that depends on a decision on the list waits until its ADR is accepted. Nothing in the
+storage, dependency or export area is built before that.

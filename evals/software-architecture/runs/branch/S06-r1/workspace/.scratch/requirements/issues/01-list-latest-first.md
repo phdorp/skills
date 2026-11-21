@@ -1,11 +1,7 @@
 # `birdlog list` shows the latest sighting first
 
-Parent: R-2 (log a sighting from the command line). Feature-level; no R-list row.
+Parent requirement: R-1 (feature-level, no R-list row).
 
-## Requirement
+The `birdlog list` command prints stored sightings with the most recent sighting first.
 
-`birdlog list` shows the latest sighting first.
-
-## Open question
-
-"Latest" must be defined before this is built: observation time (the time of the sighting) or time entered (when it was logged).
+Status: ready for triage (`sa:triage`).

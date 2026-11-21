@@ -46,3 +46,38 @@ Fixture note: the torn-line defect was not planned. It stays as a realistic temp
 what you find" (Review Focus 3).
 
 Gate: met (every run fails `t2_waits`, `recovered_marked` and `recovery_adrs`).
+
+## GREEN, first attempt: skills at `1868390` (2026-11-21, 2 runs each, clean isolation)
+
+All runs started with `/sa:setup-architecture`, kept one session over every turn and loaded
+`sa:domain-modeling` and `sa:quality-requirements`, except S06-r2 and S10-r2, which loaded no
+skill through the Skill tool (S10-r2 read `references/recovery.md` with `cat`). S06 and S07
+were re-run because their skill changed.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S06-r1 | - | - |
+| S06-r2 | - | J1 |
+| S07-r1 | - | - |
+| S07-r2 | - | - |
+| S09-r1 | - | - |
+| S09-r2 | - | - |
+| S10-r1 | - | - |
+| S10-r2 | - | J4 |
+
+S10-r2 kept the skeleton's `| block | responsibility | may use |` table and named no block's
+signals: "`Room` | lumped room air: stores heat, loses it through the walls | `Interfaces`; the
+package constant `roomHeatCapacity`". S10-r1 named them in the responsibility column ("outputs
+its temperature `T`, takes heating power `Q_heat`").
+
+S06-r2 ranked R-3 to R-5 without a reason ("3. R-3 log from CLI: `3 (proposed)`."), against
+`quality-requirements` › Rank, which this ticket does not change.
+
+Gate: not met (S10-r2 J4; S06-r2 J1).
+
+## Loophole round
+
+`references/recovery.md` step 3 gives dataflow code a structural slot: section 5's table is
+`| block | responsibility | in | out | may use |`, and a shared constant is a `may use` entry
+plus a sentence under the table. S06-r2's slip is outside this ticket's change and is recorded
+as an open loophole, not fixed here. The S09 and S10 branch runs were replaced.

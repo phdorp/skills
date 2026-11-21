@@ -8,25 +8,21 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 | ID | requirement | rank | status | reason |
 |---|---|---|---|---|
-| R-1 | Readers add, list and find books by title or ISBN from the command line. | 1 | active | Core function; the product has no purpose without it. |
-| R-2 | The catalog survives a crash mid-write. | 2 | active | Losing or corrupting the catalog is the worst failure. |
-| R-3 | An ISBN is checked before a book is stored. | 3 | active | A wrong ISBN makes `find` miss the book later (ADR 0002). |
-| R-4 | Adding a command touches only `cli.py` and one new module. | 4 | active | Keeps new commands cheap to add. |
-| R-5 | Runs with only the Python standard library. | 5 | active | A mandated technology choice; a constraint more than a priority. |
-
-Conflicts under the confirmed order: R-3 vs R-4 (where the ISBN check lives) and R-2 vs R-4
-(whether a new command may write the file itself). Read from the rank, R-2 and R-3 come before
-R-4 in both pairs; the architect has not answered the pairwise tie-breaker questions in words.
+| R-1 | Readers add, list and find books by title or ISBN from the command line, with or without hyphens in the ISBN. | 3 | active | Core interface and query path; the rest serves it. |
+| R-2 | A crash during any write leaves the catalog either in its prior state or fully updated, never unreadable. | 2 | active | Losing the catalog loses all data. |
+| R-3 | Runs with only the Python standard library. | 4 | active | Hard constraint; limits every choice rather than competing with them. Matches ADR 0001. |
+| R-4 | Every book is checked for a valid ISBN check digit before it is stored, by any entry point. | 1 | active | A wrong ISBN makes `find` miss the book later (ADR 0002). |
+| R-5 | Adding a command changes only `cli.py` and one new module. | 5 | active | Maintainability; cheap to defer, expensive to break later. |
 
 ### Quality goals
 
 | ID | goal (ISO/IEC 25010) | from | scenario |
 |---|---|---|---|
-| QG-1 | Functional suitability: functional completeness | R-1 | QS-1 |
-| QG-2 | Reliability: recoverability | R-2 | QS-2 |
-| QG-3 | Functional suitability: functional correctness | R-3 | QS-3 |
-| QG-4 | Maintainability: modifiability | R-4 | QS-4 |
-| QG-5 | Flexibility: installability | R-5 | QS-5 |
+| QG-1 | Reliability: recoverability | R-2 | QS-1 |
+| QG-2 | Functional suitability: functional correctness | R-4 | QS-2 |
+| QG-3 | Maintainability: modifiability | R-5 | QS-3 |
+| QG-4 | Functional suitability: functional completeness | R-1 | QS-4 |
+| QG-5 | Flexibility: adaptability | R-3 | QS-5 |
 
 ### Stakeholders
 
@@ -34,16 +30,12 @@ R-4 in both pairs; the architect has not answered the pairwise tie-breaker quest
 
 ## 3. Context and scope
 
-See [README › How it works](../../README.md#how-it-works).
-
 ## 4. Solution strategy
-
-See [ADR 0001: Store books in one JSON file](../decisions/0001-store-books-in-one-json-file.md) and
-[ADR 0002: Validate ISBNs locally](../decisions/0002-validate-isbn-locally.md).
 
 ## 5. Building block view
 
-See [README › How it works](../../README.md#how-it-works).
+The three parts of shelf (`cli.py`, `catalog.py`, `isbn.py`) are described in the README: see
+[README › How it works](../../README.md#how-it-works).
 
 | block | responsibility | may use |
 |---|---|---|
@@ -56,19 +48,18 @@ See [README › How it works](../../README.md#how-it-works).
 
 ## 9. Architecture decisions
 
-Architecture decisions are recorded as ADRs in [docs/decisions/](../decisions/). The list of
-decisions made centrally is in
-[ADR 0003: Record architecture decisions](../decisions/0003-record-architecture-decisions.md).
+The ADRs are in [docs/decisions/](../decisions/). The central decisions are recorded in
+[0003 Record architecture decisions](../decisions/0003-record-architecture-decisions.md).
 
 ## 10. Quality requirements
 
 | ID | goal | stimulus | environment | response | measure |
 |---|---|---|---|---|---|
-| QS-1 | QG-1 | a reader runs `add`, `list` or `find` with a title or an ISBN | normal operation | the book is listed, or found by its title (case-insensitive substring) or its ISBN | 100% of books in the test set are found by title and by ISBN |
-| QS-2 | QG-2 | the process is killed with SIGKILL during `add` | normal operation | the book is either fully stored or absent; the catalog still loads | 0 unreadable catalog files in 100 trials |
-| QS-3 | QG-3 | a reader adds a book with an ISBN whose check digit is wrong | normal operation | the book is not stored and the reader is told the ISBN is invalid | 0 stored books with a failing check digit, across all entry points |
-| QS-4 | QG-4 | a developer adds a command | normal operation | only `cli.py` and one new module change | at most 2 files changed per new command |
-| QS-5 | QG-5 | the test suite runs on a clean Python 3 install | normal operation | the suite runs without installing any package | 0 failing tests; 0 packages installed beyond the standard library |
+| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the catalog opens and holds either the prior or the new state | 0 unreadable catalogs in 100 kill trials |
+| QS-2 | QG-2 | `add` is given an ISBN with a wrong check digit | normal operation | the book is rejected and nothing is stored | 0 stored books with an invalid check digit |
+| QS-3 | QG-3 | a new command is added | normal development | only `cli.py` and one new module change | 2 files changed |
+| QS-4 | QG-4 | `find` is given an ISBN with or without hyphens | catalog holding books added with hyphenated and plain ISBNs | every matching book is returned | 100% of matches returned in a test catalog |
+| QS-5 | QG-5 | shelf is installed and run on Python 3 | fresh machine with no third-party packages | it runs | 0 third-party imports; 0 install steps beyond Python 3 |
 
 ## 11. Risks and technical debt
 

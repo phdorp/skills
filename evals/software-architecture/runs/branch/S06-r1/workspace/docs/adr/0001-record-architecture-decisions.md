@@ -1,4 +1,4 @@
-# 1. Record architecture decisions
+# 0001. Record architecture decisions
 
 ## Status
 
@@ -6,7 +6,7 @@ proposed
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. Sightings must survive crashes (R-1, QG-1), work offline on Linux, macOS and Windows with only Python installed (R-3, QG-2), and export to the eBird CSV format (R-4).
+Sightings must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2).
 
 ## Decision
 
@@ -14,16 +14,16 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- storage engine and on-disk data format
-- import and export formats (eBird CSV)
-- interfaces between building blocks, and the dependency rule between them
-- versioning of the CLI and of the on-disk format
-- crosscutting conventions: time zone and units, error handling, logging
-- third-party dependencies: standard library only (R-3)
+- storage engine and on-disk data format;
+- the eBird CSV export format and the internal format it maps from;
+- interfaces between the CLI, core and storage blocks, and the dependency rule between them;
+- versioning of the CLI and of the data file;
+- crosscutting conventions: timestamps and time zones, species naming, error handling, logging;
+- third-party dependencies (standard library only, from R-3).
 
 Left to the building blocks (no ADR):
 
-- internal helpers, structure inside one block, test layout
+- argument parsing details, output formatting, internal helpers, test layout.
 
 ## Consequences
 

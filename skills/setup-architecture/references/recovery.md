@@ -25,9 +25,11 @@ Done when every source file belongs to a block you can name, with what it uses.
 
 ## 3. Fill arc42 with what you found
 
-Fill sections 2–8 and 11 of `docs/architecture/arc42.md` with what the code shows; section 5
-gets one row per block, with its responsibility and what it may use (for dataflow code: its
-signals in and out). Start each section you fill with the line:
+Fill sections 2–8 and 11 of `docs/architecture/arc42.md` with what the code shows. Section 5
+gets one row per block in its table. For dataflow code, the table is
+`| block | responsibility | in | out | may use |`: `in` and `out` name the block's input and
+output connectors or signals, and a shared parameter or constant two blocks read is a row's
+`may use` entry and a sentence under the table. Start each section you fill with the line:
 
 ```markdown
 *As found, unconfirmed.*

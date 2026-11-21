@@ -6,10 +6,9 @@ proposed
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. The product needs the
-line drawn here so that the catalog survives crashes (R-2, QG-1), ISBNs are checked before storing
-(R-4, QG-2), the program runs on the standard library alone (R-3, QG-3), and a new command changes
-only cli.py and one new module (R-5, QG-4).
+The architect decides the architecture; contributors and agents build it. The line between
+the two must let the catalog survive crashes (R-2, QG-1) and work with only Python's standard
+library (R-3, QG-3), and keep a new command to `cli.py` and one module (R-5, QG-4).
 
 ## Decision
 
@@ -17,17 +16,16 @@ We record architecture decisions as ADRs in `docs/decisions/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- storage engine and on-disk data format: one JSON file (ADR 0001);
-- interfaces and the dependency rule: `cli` calls `catalog` and `isbn`; only `catalog` touches the
-  file; a command module is wired in by `cli.py` only;
-- third-party dependencies: none; standard library only (R-3);
-- versioning of the CLI and the catalog file (the JSON has no version field today);
-- crosscutting conventions: error output to stderr, exit code 1 on invalid input.
+- storage format and write rule of the catalog file (ADR 0001);
+- the boundary between `cli` and `catalog`: `cli` calls `catalog` and never touches the file (README);
+- where ISBNs are checked (ADR 0002);
+- the CLI's command names and flags, as an interface other people's scripts may depend on;
+- crosscutting conventions: error output and exit codes;
+- third-party dependencies: none; standard library only (R-3).
 
 Left to the building blocks (no ADR):
 
-- internal helpers and the structure inside one block;
-- parsing internals and test layout.
+- internal helpers, the structure inside one module, and the test layout.
 
 ## Consequences
 
