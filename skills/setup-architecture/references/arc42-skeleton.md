@@ -35,10 +35,20 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | 6. Runtime view | how the parts work together in the scenarios that matter |
 | 7. Deployment view | where it runs and how it gets there |
 | 8. Crosscutting concepts | rules every part follows: naming, units, error handling, logging |
-| 9. Architecture decisions | one sentence saying decisions are ADRs in `docs/adr/`, linked as `../adr/` from this file, and a link to the "Record architecture decisions" ADR |
+| 9. Architecture decisions | one sentence saying where the ADRs are, linked relative to this file (`../adr/` for `docs/adr/`), and a link to the "Record architecture decisions" ADR |
 | 10. Quality requirements | the quality scenario table (`quality-requirements` › references/quality-scenario.md) |
 | 11. Risks and technical debt | known risks and debt, each with what it threatens |
 | 12. Glossary | a link to `GLOSSARY.md`; without one, the line "`GLOSSARY.md` is created with the first resolved term." |
+
+## Existing documents
+
+In a project that already documents its architecture, each section whose content lives in
+another document (a README section, a wiki page, a design doc) gets one line linking it, such
+as "See README › How it works", linked as `../../README.md#how-it-works`. That document stays where
+and as it is; the arc42 file holds the link, never a copy of its content. A section whose
+content lives nowhere yet starts empty, as in a fresh project.
+
+## At setup
 
 At setup, sections 1, 5 and 10 get their empty tables and sections 9 and 12 their links in the
 first turn. Rows follow once the architect confirms; section 5's rows follow once building

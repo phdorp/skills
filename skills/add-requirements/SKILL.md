@@ -19,7 +19,7 @@ Read `docs/architecture/arc42.md`. Without it, offer to run `setup-architecture`
 ## 1. Check each requirement
 
 Read the whole R-list (arc42 section 1), the quality goals, the stakeholders, the constraints
-(section 2), and every accepted ADR in `docs/adr/`. Then, for each new requirement:
+(section 2), and every accepted ADR in the project's ADR directory (`domain-modeling`). Then, for each new requirement:
 
 1. **Duplicate:** compare it with every R-list row, `deferred` and `rejected` rows included.
    Name the row it repeats.

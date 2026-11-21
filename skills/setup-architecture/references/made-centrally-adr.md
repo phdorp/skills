@@ -1,8 +1,8 @@
 # "Record architecture decisions" ADR
 
 The ADR that draws the line between decisions the architect makes centrally and decisions left
-to whoever builds a block. It takes the next free number (0001 in a fresh project); skills find
-it by its title, never by its number. Format and status rules: `domain-modeling`.
+to whoever builds a block. It takes the next free number in the project's ADR directory (0001 in a
+fresh project); skills find it by its title, never by its number. Format and status rules: `domain-modeling`.
 
 ```markdown
 # <n>. Record architecture decisions
@@ -19,7 +19,7 @@ must survive crashes (R-2, QG-1) and work everywhere with only Python (R-3, QG-2
 
 ## Decision
 
-We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
+We record architecture decisions as ADRs in `<the project's ADR directory>`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 

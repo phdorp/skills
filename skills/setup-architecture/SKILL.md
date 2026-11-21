@@ -24,14 +24,16 @@ goals, Gap question). ADRs follow `domain-modeling`. Load both before you write 
 | source files without architecture documentation | undocumented |
 
 A README that only describes the product idea is not architecture documentation. This version
-handles fresh projects. For a documented or undocumented project, tell the architect which
+handles fresh and documented projects. For an undocumented project, tell the architect which
 situation you found and that this setup does not handle it yet, and stop.
 
-## 2. Fresh project, first turn: skeleton and proposal
+## 2. First turn: skeleton and proposal
 
 1. Write `docs/architecture/arc42.md` from [references/arc42-skeleton.md](references/arc42-skeleton.md):
    all twelve section headings, the empty tables of sections 1, 5 and 10, and the links of
-   sections 9 and 12. This is the only file this turn writes.
+   sections 9 and 12. In a documented project, each section whose content already lives in
+   another document links to it (references/arc42-skeleton.md › Existing documents). This is
+   the only file this turn writes: existing documents and ADRs stay as they are.
 2. Send the architect one message with your proposal:
    - **Triage:** for each requirement, its proposed outcome and a one-line reason, using the
      checks of [add-requirements](../add-requirements/SKILL.md) step 1 (against an empty
@@ -40,9 +42,14 @@ situation you found and that this setup does not handle it yet, and stop.
    - **Quality goals:** the candidates with their scenarios, and the open questions for any
      goal without a measure (`quality-requirements` › Derive goals).
    - **Gap questions** (`quality-requirements` › Gap question).
-   - **Decisions made centrally:** the draft list for ADR-0001, from
-     [references/made-centrally-adr.md](references/made-centrally-adr.md), adjusted to this
-     product.
+   - **Where your documents map** (documented project): each existing document and the arc42
+     section that links to it.
+   - **Legacy ADRs** (documented project): the ADRs without a Status, offered for upgrade in
+     one batch as `domain-modeling` describes, each with the IDs its Context would cite. Their
+     decisions stay as they are.
+   - **Decisions made centrally:** the draft list for the "Record architecture decisions" ADR,
+     from [references/made-centrally-adr.md](references/made-centrally-adr.md), adjusted to
+     this product, and its number: the next free one in the project's ADR directory.
 3. Ask the architect to confirm or change each part.
 
 Done when the skeleton exists and your message ends with that question.
@@ -55,20 +62,25 @@ Write what they confirmed, in this order:
    requirement, as in [add-requirements](../add-requirements/SKILL.md) step 3.
 2. The confirmed goals and scenarios as `QG-n` (section 1) and `QS-n` (section 10). A goal
    still without a measure stays an open question in your report.
-3. `docs/adr/0001-record-architecture-decisions.md` from the template, status `proposed`, its
-   Context citing the R- and QG-IDs it serves; section 9 links it.
+3. The legacy ADRs, upgraded as `domain-modeling` describes, when the architect confirmed the
+   batch.
+4. The "Record architecture decisions" ADR from the template, as the next free number in the
+   project's ADR directory (`0001-record-architecture-decisions.md` in a fresh project), status
+   `proposed`, its Context citing the R- and QG-IDs it serves; section 9 links it.
 
 Done when every confirmed item is written and nothing unconfirmed is.
 
 ## 4. Report
 
-List the files written, the open questions (unmeasured goals, anything the architect left
-unanswered), and ADR-0001 waiting for the architect's approval of its text, with what waits for
-it: work on any decision on its list.
+List the files written, the legacy ADRs upgraded (still `accepted (legacy)`), the open
+questions (unmeasured goals, anything the architect left unanswered), and the "Record
+architecture decisions" ADR, by its number, waiting for the architect's approval of its text,
+with what waits for it: work on any decision on its list.
 
 | Thought | Reality |
 |---|---|
-| "Set up the architecture means scaffold the code" | Setup writes the architecture documents. Code is ordinary work after ADR-0001 is accepted. |
+| "Set up the architecture means scaffold the code" | Setup writes the architecture documents. Code is ordinary work after the "Record architecture decisions" ADR is accepted. |
 | "The architect gave the requirements, so I'll write the R-list now" | The triage is a proposal until they confirm it. Turn one writes the skeleton only. |
-| "I'll pick the storage engine now so the docs are complete" | Storage is a decision made centrally: it goes on ADR-0001's list and gets its own ADR later. |
-| "They said 'confirmed', so ADR-0001 is accepted" | They confirmed your proposals. ADR-0001 is `proposed` until they approve its written text. |
+| "The README's architecture section belongs in arc42, I'll move it over" | Link it from the arc42 section. The README stays as it is. |
+| "I'll pick the storage engine now so the docs are complete" | Storage is a decision made centrally: it goes on the "Record architecture decisions" list and gets its own ADR later. |
+| "They said 'confirmed', so the new ADR is accepted" | They confirmed your proposals. The ADR is `proposed` until they approve its written text. |

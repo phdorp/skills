@@ -78,7 +78,7 @@ A decision is **architectural** when any of these holds:
 - it is on the project's list of decisions made centrally.
 
 The list lives in the ADR titled "Record architecture decisions". Find it by that title in
-`docs/adr/`, or through the link in arc42 section 9 (`docs/architecture/arc42.md`); its number
+the project's ADR directory ([ADR-FORMAT.md](./ADR-FORMAT.md)), or through the link in arc42 section 9 (`docs/architecture/arc42.md`); its number
 differs between projects. Read it before you decide anything it might cover.
 
 A decision inside one building block is left to implementation and gets no ADR.
@@ -96,7 +96,8 @@ and when the architect is away. Their approval of the written record is what mak
 | The architect rejects it | `rejected YYYY-MM-DD: <their reason in one line>`; the file stays |
 | The architect changes a decision | a new `proposed` ADR whose Context names the ADR it replaces; the old ADR keeps `accepted` |
 | The replacing ADR is accepted | the old ADR becomes `superseded by ADR-NNNN` |
-| An existing ADR has no Status | treat it as accepted (legacy) |
+| An existing ADR has no Status | treat it as accepted (legacy); its decision is not reopened |
+| The architect confirms upgrading the legacy ADRs (offered in one batch at setup) | add the missing fields and the IDs its Context serves; Status `accepted (legacy)`; the Decision text stays as it was |
 
 Edit only the ADRs the architect's instruction names, plus the ADR an accepted ADR replaces. When a decision affects another accepted
 ADR, name it in the new ADR's Consequences and in your report. ADRs are never deleted.

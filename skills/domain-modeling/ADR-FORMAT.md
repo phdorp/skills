@@ -1,7 +1,9 @@
 # ADR Format
 
-ADRs live in `docs/adr/` as `NNNN-slug.md`, numbered one above the highest existing number.
-Create `docs/adr/` when the first ADR is needed. When and with which status to write one:
+ADRs live in the project's ADR directory as `NNNN-slug.md`, numbered one above the highest
+existing number. That directory is the one where the project already keeps its ADRs (such as
+`docs/decisions/`), or `docs/adr/`, created when the first ADR is needed. ADRs stay where they
+are; a new ADR goes beside them. When and with which status to write one:
 [SKILL.md](./SKILL.md#architectural-decisions).
 
 ## Template
