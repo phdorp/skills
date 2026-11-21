@@ -70,6 +70,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S06-wordmeasure": set(),                           # measure in words: "all three OSes"
     "S06-nosection5": {"section5_started"},             # section 5 left empty
     "S06-citesqs": set(),                               # ADR-0001 Context also cites an existing QS-ID
+    "S06-twogoals": set(),                              # two measured goals; unmeasured ones left open
     "S07-t1upgrade": {"t1_only_arc42"},                 # upgraded ADR-0001 in turn 1
     "S07-moved": {"docs_kept"},                         # README's "How it works" replaced by a link
     "S07-copied": {"no_copy"},                          # README sentence copied into arc42

@@ -38,12 +38,15 @@ situation you found and that this setup does not handle it yet, and stop.
    - **Triage:** for each requirement, its proposed outcome and a one-line reason, using the
      checks of [add-requirements](../add-requirements/SKILL.md) step 1 (against an empty
      R-list, only the outcome remains). Offer sharper wording as a proposal.
-   - **Rank:** the system-level requirements in a proposed order (`quality-requirements` › Rank).
-   - **Quality goals:** the candidates with their scenarios, and the open questions for any
-     goal without a measure (`quality-requirements` › Derive goals).
+   - **Rank:** the system-level requirements in a proposed order, a one-line reason for each
+     (`quality-requirements` › Rank).
+   - **Quality goals:** the candidates the system-level requirements imply, with their
+     scenarios, and the open questions for any goal without a measure
+     (`quality-requirements` › Derive goals). A feature-level requirement gets no R-ID and
+     no goal.
    - **Gap questions** (`quality-requirements` › Gap question).
-   - **Where your documents map** (documented project): each existing document and the arc42
-     section that links to it.
+   - **Where your documents map** (documented project): each existing document, the arc42
+     section that links to it, and the statement that the document stays where and as it is.
    - **Legacy ADRs** (documented project): the ADRs without a Status, offered for upgrade in
      one batch as `domain-modeling` describes, each with the IDs its Context would cite. Their
      decisions stay as they are.

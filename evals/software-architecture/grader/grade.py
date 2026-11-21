@@ -322,7 +322,11 @@ def _files(root):
 
 
 def goals_measured(text):
-    """3-5 goals, each citing existing R-IDs and a scenario whose measure states a number."""
+    """1-5 goals, each citing existing R-IDs and a scenario whose measure states a number.
+
+    The spec's "top 3-5" is what the architect confirms; S06 and S07 tell the agent to leave
+    unmeasured goals open, so fewer than three measured goals can be right.
+    """
     rids = {r["id"] for r in _rows(text, "requirement")}
     goals, scen = _rows(text, "from"), {r["id"]: r for r in _rows(text, "stimulus")}
 
@@ -332,7 +336,7 @@ def goals_measured(text):
         return (bool(cited) and cited <= rids and bool(qs)
                 and all(q in scen and has_measure(scen[q].get("measure", "")) for q in qs))
 
-    ok = 3 <= len(goals) <= 5 and all(measured(g) for g in goals)
+    ok = 1 <= len(goals) <= 5 and all(measured(g) for g in goals)
     return ok, ", ".join(f"{g['id']}{'' if measured(g) else ' (unmeasured or uncited)'}" for g in goals)
 
 
