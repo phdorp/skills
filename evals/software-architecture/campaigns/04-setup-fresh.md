@@ -53,7 +53,8 @@ or change the triage outcomes and the wording of R-1 to R-5." (r1). "Fast" staye
 question (no measure yet, so no goal row): Performance efficiency: time behaviour, from R-5."
 (r2). Gap questions were asked, not filed: "Security (confidentiality): should sighting locations
 be protected from other users on the same machine?" (r1). After the reply both wrote R-1…R-5,
-four measured goals, the latest-first issue citing R-1, and ADR-0001 `proposed`: "ADR-0001 is
+four measured goals, the latest-first issue citing the logging requirement (R-2 in r1, R-1 in
+r2), and ADR-0001 `proposed`: "ADR-0001 is
 `proposed` and waits for your approval of its text." (r1)
 
 Grader fix (no skill change): r1's QS-4 measure "the suite passes on all three OSes in CI" is

@@ -8,7 +8,10 @@ against the skills at `main`. Re-run it when the model or the skills change.
 
 - `TASKS.md`: scenarios (S01…), each a prompt given verbatim to a fresh agent on a copy of one
   fixture. An `Invoke: <skill>` line prefixes the prompt with `/sa:<skill>` on arms that have
-  that user-invoked skill; `meta.json` records `invoked`.
+  that user-invoked skill; `meta.json` records `invoked`. Each ` ```reply ` block after the
+  prompt is a scripted architect reply, sent with `claude -p --resume` in the same session;
+  the workspace before reply k is saved as `workspace-t<k-1>/`, and a run whose turns do not
+  share one session fails isolation.
 - `RUBRIC.md`: judged criteria per scenario.
 - `fixtures/<name>/`: small projects the scenarios start from.
 - `grader/run.py`: runs one scenario on one arm and saves the run; `probe` proves isolation.
@@ -74,8 +77,9 @@ with the agents' wording: [campaigns/](campaigns/).
 | S03 lifecycle | 0.400 | 0.000 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
 
-Cost so far: about $1.30–1.50 per arm (runs ≈ $0.10, judge ≈ $1.20–1.40). Each run takes 20–60 s.
+Cost so far: about $1.70–2.10 per arm (runs ≈ $0.15–0.20, judge ≈ $1.50–1.90). A turn takes 20–60 s.
 
 - S01: no run loaded a skill on either arm. It shows an ordinary change stays ordinary, not
   that the skills stay quiet once loaded.
@@ -91,6 +95,11 @@ Cost so far: about $1.30–1.50 per arm (runs ≈ $0.10, judge ≈ $1.20–1.40)
   `/sa:add-requirements` (`Invoke:` line in `TASKS.md`), and every run also loaded
   `quality-requirements` and `domain-modeling`. One loophole round: the report now names the
   work each proposed ADR holds back.
+- S06 (ticket 04, [campaign](campaigns/04-setup-fresh.md)): on `main`, "set up the
+  architecture" became a coded program in turn 1, with nothing proposed to confirm and no
+  arc42 or ADR. On the branch, turn 1 wrote only the skeleton and the proposal; the reply
+  produced the R-list, measured goals and a proposed ADR-0001. All branch runs of S01–S05 were
+  re-run then, with the three new skills visible.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
@@ -102,6 +111,6 @@ Cost so far: about $1.30–1.50 per arm (runs ≈ $0.10, judge ≈ $1.20–1.40)
 - Scenario prompts must carry the architect's answers up front: a `-p` run cannot answer
   questions, so a run that stops to ask ends there.
 - Two runs per scenario cannot detect small effects.
-- Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02: 1 of 4 on the branch). A scenario
+- Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 before the imperative description, 2 of 2 since). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the
   model alone.
