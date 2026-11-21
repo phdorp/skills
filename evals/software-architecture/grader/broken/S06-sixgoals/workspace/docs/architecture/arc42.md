@@ -40,6 +40,8 @@ Structured after arc42 (https://arc42.org).
 
 ## 5. Building block view
 
+| block | responsibility | may use |
+|---|---|---|
 
 
 ## 6. Runtime view

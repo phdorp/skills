@@ -84,6 +84,25 @@ class BuildPrompt(unittest.TestCase):
         self.assertEqual(run.build_prompt(s, self.plugin_dir), "Integrate these.\n")
 
 
+class Turns(unittest.TestCase):
+    def test_turn_summary_keeps_every_exit_code(self):
+        s = run.turn_summary(["timeout", 0], [None, 0.02], expected=2)
+        self.assertEqual((s["exit_codes"], s["exit_code"], s["cost_usd"]), (["timeout", 0], "timeout", None))
+        self.assertTrue(any("turn 1" in e for e in s["errors"]), s["errors"])
+
+    def test_turn_summary_clean_run(self):
+        s = run.turn_summary([0, 0], [0.01, 0.02], expected=2)
+        self.assertEqual((s["exit_code"], s["cost_usd"], s["errors"]), (0, 0.03, []))
+
+    def test_turn_summary_flags_missing_turns(self):
+        s = run.turn_summary([0], [0.01], expected=2)
+        self.assertTrue(any("1 of 2" in e for e in s["errors"]), s["errors"])
+
+    def test_turn_summary_single_turn_keeps_old_meaning(self):
+        s = run.turn_summary([1], [0.01], expected=1)
+        self.assertEqual((s["exit_code"], s["errors"]), (1, []))
+
+
 class ClaudeCmd(unittest.TestCase):
     def test_claude_cmd_adds_resume(self):
         cmd = run.claude_cmd("hi", Path("/p/sa"), resume="abc-123")

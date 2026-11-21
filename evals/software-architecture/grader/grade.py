@@ -290,11 +290,18 @@ def s05(run_dir):
 
 
 SECTION_HEAD = re.compile(r"^## (\d{1,2})\.?\s+\S", re.M)
-# A measure states a number: digits, or a number word ("all three OSes", "every sighting").
-DIGIT = re.compile(r"\d|\b(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|all|every|none)\b", re.I)
+# A measure states a number: digits, "zero", or a quantifier over a count ("all three OSes").
+NUMBER_WORD = r"(?:two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+MEASURE = re.compile(r"\d|\bzero\b|\b(?:all|each|every|both)\s+(?:one\s+of\s+)?(?:the\s+)?"
+                     + NUMBER_WORD + r"\b", re.I)
+
+
+def has_measure(text):
+    return bool(MEASURE.search(text))
 QG_ID = re.compile(r"\bQG-\d+\b")
 QS_ID = re.compile(r"\bQS-\d+\b")
 R_ANY = re.compile(r"\bR-\d+\b")
+BLOCK_TABLE = re.compile(r"^\|\s*block\s*\|", re.M | re.I)
 
 
 def _rows(text, column):
@@ -334,7 +341,7 @@ def s06(run_dir):
         cited = set(R_ANY.findall(g.get("from", "")))
         qs = QS_ID.findall(g.get("scenario", ""))
         return (bool(cited) and cited <= set(rids) and bool(qs)
-                and all(q in scen and DIGIT.search(scen[q].get("measure", "")) for q in qs))
+                and all(q in scen and has_measure(scen[q].get("measure", "")) for q in qs))
 
     adrs = sorted((ws / "docs" / "adr").glob("*.md")) if (ws / "docs" / "adr").is_dir() else []
     a = adr.parse(adrs[0]) if len(adrs) == 1 else None
@@ -356,6 +363,7 @@ def s06(run_dir):
               and "record architecture decisions" in a.title.lower() and five_fields(a)
               and a.status.startswith("proposed") and bool(cited) and cited <= known,
               f"{', '.join(p.name for p in adrs)}; status {a.status if a else '-'}; cites {sorted(cited)}"),
+        check("section5_started", bool(BLOCK_TABLE.search(_section(text, 5)))),
         check("section9_links_adr", "adr/" in _section(text, 9)),
         check("feature_routed", bool(routed), ", ".join(str(p.relative_to(ws)) for p in routed)),
     ]

@@ -30,8 +30,8 @@ situation you found and that this setup does not handle it yet, and stop.
 ## 2. Fresh project, first turn: skeleton and proposal
 
 1. Write `docs/architecture/arc42.md` from [references/arc42-skeleton.md](references/arc42-skeleton.md):
-   all twelve section headings, the empty tables of sections 1 and 10, and the links of sections
-   9 and 12. This is the only file this turn writes.
+   all twelve section headings, the empty tables of sections 1, 5 and 10, and the links of
+   sections 9 and 12. This is the only file this turn writes.
 2. Send the architect one message with your proposal:
    - **Triage:** for each requirement, its proposed outcome and a one-line reason, using the
      checks of [add-requirements](../add-requirements/SKILL.md) step 1 (against an empty

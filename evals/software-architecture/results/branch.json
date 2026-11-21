@@ -33,7 +33,7 @@
   },
   "S06": {
    "runs": 2,
-   "score": 1.0,
+   "score": 0.875,
    "judge": 1.0,
    "cost_usd": 0.067
   }
@@ -51,7 +51,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -126,7 +126,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.059s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -809,6 +809,11 @@
      "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-3', 'QG-4', 'R-1', 'R-3', 'R-4', 'R-5']"
     },
     {
+     "name": "section5_started",
+     "pass": false,
+     "detail": ""
+    },
+    {
      "name": "section9_links_adr",
      "pass": true,
      "detail": ""
@@ -820,8 +825,8 @@
     }
    ],
    "passed": 7,
-   "total": 7,
-   "score": 1.0,
+   "total": 8,
+   "score": 0.875,
    "valid": true,
    "judge": {
     "criteria": [
@@ -865,7 +870,7 @@
     "cost_usd": 0.1661458
    },
    "cost_usd": 0.032245,
-   "needs_review": false
+   "needs_review": true
   },
   {
    "run": "S06-r2",
@@ -897,6 +902,11 @@
      "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'R-2', 'R-3']"
     },
     {
+     "name": "section5_started",
+     "pass": false,
+     "detail": ""
+    },
+    {
      "name": "section9_links_adr",
      "pass": true,
      "detail": ""
@@ -908,8 +918,8 @@
     }
    ],
    "passed": 7,
-   "total": 7,
-   "score": 1.0,
+   "total": 8,
+   "score": 0.875,
    "valid": true,
    "judge": {
     "criteria": [
@@ -953,7 +963,7 @@
     "cost_usd": 0.1870378
    },
    "cost_usd": 0.03487,
-   "needs_review": false
+   "needs_review": true
   }
  ]
 }

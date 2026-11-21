@@ -31,7 +31,7 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | 2. Constraints | what the architect cannot change: platforms, licences, mandated technology |
 | 3. Context and scope | the system boundary and everything outside it the system talks to |
 | 4. Solution strategy | the few fundamental ideas the solution rests on, each traced to a goal |
-| 5. Building block view | the parts of the system, what each is responsible for, and what it may use |
+| 5. Building block view | the table `\| block \| responsibility \| may use \|`: the parts of the system, what each is responsible for, and which other blocks it may use |
 | 6. Runtime view | how the parts work together in the scenarios that matter |
 | 7. Deployment view | where it runs and how it gets there |
 | 8. Crosscutting concepts | rules every part follows: naming, units, error handling, logging |
@@ -40,5 +40,6 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | 11. Risks and technical debt | known risks and debt, each with what it threatens |
 | 12. Glossary | a link to `GLOSSARY.md`; without one, the line "`GLOSSARY.md` is created with the first resolved term." |
 
-At setup, sections 1, 9 and 10 get their tables and links in the first turn, and their rows
-once the architect confirms. Section 5 starts when the first building block is decided.
+At setup, sections 1, 5 and 10 get their empty tables and sections 9 and 12 their links in the
+first turn. Rows follow once the architect confirms; section 5's rows follow once building
+blocks are decided.

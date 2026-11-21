@@ -191,6 +191,21 @@ def render_turns(turns):
     return "\n".join(render_transcript(jsonl, prompt) for jsonl, prompt in turns)
 
 
+def turn_summary(codes, costs, expected):
+    """Exit code, cost and run errors over the turns that ran (expected: turns in the scenario).
+
+    exit_code is the first non-zero code, else the last; cost is None when any turn reported
+    none. In a multi-turn run a failed turn is an error, since later turns built on it.
+    """
+    failed = [c for c in codes if c != 0]
+    errors = [f"turn {k} exited {c}" for k, c in enumerate(codes, 1) if c != 0 and expected > 1]
+    if len(codes) < expected:
+        errors.append(f"only {len(codes)} of {expected} turns ran")
+    cost = None if not costs or any(c is None for c in costs) else round(sum(costs), 6)
+    return {"exit_codes": list(codes), "exit_code": failed[0] if failed else (codes[-1] if codes else None),
+            "cost_usd": cost, "errors": errors}
+
+
 def fixture_dirs(scenario, suite=SUITE):
     """(fixture_dir, overlay_dir or None) of a scenario."""
     fixtures = Path(suite) / "fixtures"
@@ -250,32 +265,32 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
         plugin_dir = export_arm(ref, tmp)
         ws = prepare_workspace(*fixture_dirs(scenario, suite))
         prompt = build_prompt(scenario, plugin_dir)
-        turns, inits, costs, duration, code = [], [], [], 0.0, None
-        for k, text in enumerate([prompt] + scenario.replies, 1):
-            if k > 1:
-                shutil.copytree(ws, run_dir / f"workspace-t{k - 1}",
+        turns, inits, costs, codes, duration = [], [], [], [], 0.0
+        for turn, text in enumerate([prompt] + scenario.replies, 1):
+            if turn > 1:
+                shutil.copytree(ws, run_dir / f"workspace-t{turn - 1}",
                                 ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
-            jsonl = run_dir / ("transcript.jsonl" if k == 1 else f"transcript-t{k}.jsonl")
+            jsonl = run_dir / ("transcript.jsonl" if turn == 1 else f"transcript-t{turn}.jsonl")
             session = inits[0].get("session_id") if inits and inits[0] else None
-            if k > 1 and not session:
+            if turn > 1 and not session:
                 break
             code, seconds = _claude(text, ws, plugin_dir, jsonl, resume=session)
             init, cost = _init_and_cost(jsonl)
             turns.append((jsonl, text))
             inits.append(init)
-            costs.append(cost or 0)
+            costs.append(cost)
+            codes.append(code)
             duration += seconds
-        errors = turn_errors(inits, plugin_dir, _user_skill_names())
-        if len(turns) < 1 + len(scenario.replies):
-            errors.append(f"only {len(turns)} of {1 + len(scenario.replies)} turns ran")
-        cost = round(sum(costs), 6)
+        summary = turn_summary(codes, costs, 1 + len(scenario.replies))
+        errors = turn_errors(inits, plugin_dir, _user_skill_names()) + summary["errors"]
         (run_dir / "transcript.md").write_text(render_turns(turns))
         (run_dir / "git-log.txt").write_text(_git("log", "--format=%H %s", cwd=ws))
         shutil.copytree(ws, run_dir / "workspace",
                         ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
         meta = {"scenario": scenario.id, "arm": arm, "ref": ref,
                 "sha": _git("rev-parse", ref).strip(), "model": MODEL, "effort": EFFORT,
-                "cost_usd": cost, "duration_s": round(duration, 1), "exit_code": code,
+                "cost_usd": summary["cost_usd"], "duration_s": round(duration, 1),
+                "exit_code": summary["exit_code"], "exit_codes": summary["exit_codes"],
                 "turns": len(turns), "session_ids": [i.get("session_id") for i in inits],
                 "invoked": prompt != scenario.prompt,
                 "isolation_ok": not errors, "isolation_errors": errors}
