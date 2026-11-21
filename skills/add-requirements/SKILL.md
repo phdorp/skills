@@ -75,7 +75,8 @@ Done when every confirmed outcome is applied and nothing else changed.
 
 List the rows you added, the issues you filed, the ADRs you drafted, and every question still
 open for the architect: the proposed ranks to set, each goal-impact question, and each ADR
-waiting for approval.
+waiting for approval together with the work that waits for it ("<the change> waits until
+you accept ADR-NNNN").
 
 | Thought | Reality |
 |---|---|
