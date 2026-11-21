@@ -16,12 +16,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "..usage: tally [-h] [--top N] file\ntally: error: argument --top: must be >= 0, got -1\n.usage: tally [-h] [--top N] file\ntally: error: argument --top: invalid integer: 'many'\n......\n----------------------------------------------------------------------\nRan 9 tests in 0.003s\n\nOK\n"
+     "detail": "..usage: tally [-h] [--top N] file\ntally: error: argument --top: must be >= 0, got -1\n.usage: tally [-h] [--top N] file\ntally: error: argument --top: invalid integer: 'many'\n......\n----------------------------------------------------------------------\nRan 9 tests in 0.004s\n\nOK\n"
     },
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -91,7 +91,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.053s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
