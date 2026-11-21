@@ -73,7 +73,7 @@ with the agents' wording: [campaigns/](campaigns/).
 | S02 record-decision | 0.785 | 0.834 | 1.000 | 1.000 | 2 of 2 |
 | S03 lifecycle | 0.400 | 0.000 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S05 add-requirements-confirmed | 0.333 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $1.30–1.50 per arm (runs ≈ $0.10, judge ≈ $1.20–1.40). Each run takes 20–60 s.
 

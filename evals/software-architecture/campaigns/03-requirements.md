@@ -13,8 +13,8 @@ committed.
 |---|---|---|
 | S04-r1 | `adrs_unchanged` (wrote ADR-0004, ADR-0005), `code_unchanged` (`store.py`) | J4 |
 | S04-r2 | `code_unchanged` (`store.py`) | J4 |
-| S05-r1 | `old_rows_kept` (R-4), `new_rows`, `superseding_adr` (0004 `accepted`, plus 0005), `feature_routed` | J1, J2, J3 |
-| S05-r2 | `old_rows_kept` (R-4), `new_rows`, `superseding_adr` (0004 `accepted`, plus 0005), `feature_routed` | J1, J2, J3 |
+| S05-r1 | `old_rows_kept` (R-4), `new_rows`, `superseding_adr` (0004 `accepted`, plus 0005), `feature_routed`, `code_unchanged` | J1, J2, J3 |
+| S05-r2 | `old_rows_kept` (R-4), `new_rows`, `superseding_adr` (0004 `accepted`, plus 0005), `feature_routed`, `code_unchanged` | J1, J2, J3 |
 
 Observed failures, in the agents' words (`runs/baseline/*/transcript.md`):
 
@@ -43,7 +43,13 @@ What held on `main` already: both S04 runs named R-4, R-3 and ADR-0001 against r
 started at R-6 (`ids_next_free` passes); rejected `rich` kept with a reason.
 
 Gate: met. Both S04 runs changed code before confirmation, and both S05 runs failed
-`old_rows_kept`.
+`old_rows_kept`. (`code_unchanged` was added to S05 after the final review; re-grading these
+runs fails it too.)
+
+Not observed on `main`: an invented quality goal. No run added a goal, so the "no invented
+goals" rule (`goals_unchanged`, S05 J1's "instead of adding one") earns no GREEN credit here;
+the S05 judge failures on `main` are a missing goal question, not an added goal. Ticket 04,
+where setup derives goals from scratch, is where that rule meets pressure.
 
 ## GREEN: branch skills (commit a7aa49c)
 
@@ -77,3 +83,15 @@ depends on resolving R-7 vs R-8."
 
 S01–S03 were not re-run: the skills they loaded did not change. The two new skills are visible
 to them, which could change S02 and S03; ticket 04's re-run covers that.
+
+## Final review fix: proposed ranks written as final
+
+The whole-branch review found that both GREEN S05 runs wrote ranks `4` and `5` into the R-list,
+with "proposed" only in the chat report, so the next session reads them as the architect's
+order. A new check, `ranks_marked_proposed`, failed the S05-r1 run above (R-7, R-8 ranked `4`,
+`5`). Counter (commit f3288ad): `quality-requirements` › Rank says a bare number is the
+architect's order and an unconfirmed rank is written `4 (proposed)`. The review also added
+`code_unchanged` to S05.
+
+Re-run of S04 and S05 on the branch (2 runs each, replacing the runs above): every check and
+criterion passes, both S05 runs wrote `4 (proposed)` and `5 (proposed)`.

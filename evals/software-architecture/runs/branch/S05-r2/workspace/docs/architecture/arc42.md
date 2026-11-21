@@ -14,8 +14,8 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
 | R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
 | R-6 | Install with `pip install notes-cli`, using the `rich` library for coloured output. | - | rejected | breaks R-3 |
-| R-7 | Notes can be read and edited with any text editor. | 4 (proposed) | active | replaces the SQLite decision (ADR-0001, superseded by ADR-0004 once accepted) |
-| R-8 | Notes are encrypted at rest, so a stolen laptop exposes nothing. | 5 (proposed) | active | a stolen laptop exposes nothing |
+| R-7 | Notes can be read and edited with any text editor. | 4 (proposed) | active | from user interviews; proposed to replace ADR-0001 (SQLite) |
+| R-8 | Notes are encrypted at rest, so a stolen laptop exposes nothing. | 5 (proposed) | active | from user interviews; conflicts with R-3 and R-7 |
 
 ### Quality goals
 

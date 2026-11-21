@@ -23,13 +23,13 @@
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.023
+   "cost_usd": 0.022
   },
   "S05": {
    "runs": 2,
-   "score": 0.938,
+   "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.027
+   "cost_usd": 0.028
   }
  },
  "runs": [
@@ -45,7 +45,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.056s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -120,7 +120,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -502,37 +502,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Duplicate of R-4",
+      "quote": "Repeats **R-4** (deferred: \"needs a server; revisit next year\").",
       "source": "transcript.md",
-      "reason": "The agent explicitly flags requirement 1 as a duplicate of the deferred R-4."
+      "reason": "The agent explicitly identifies the sync requirement as a repeat of the deferred R-4."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Conflicts with **R-3** (stdlib only), the **section 2 constraint** (stdlib only)",
+      "quote": "Conflicts with **R-3** and the section 2 constraint (standard library only).",
       "source": "transcript.md",
-      "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the rich/pip requirement."
+      "reason": "The agent names R-3 and the standard-library-only constraint as conflicting with the pip/rich requirement."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Conflicts with the accepted **ADR-0001** (SQLite binary file",
+      "quote": "Conflicts with **ADR-0001** (accepted; SQLite file \"cannot be read or repaired with a text editor\").",
       "source": "transcript.md",
       "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "Please confirm or change each outcome.",
+      "quote": "Confirm the outcomes (or change any of them), and I'll apply them.",
       "source": "transcript.md",
-      "reason": "Each requirement gets a proposed outcome (1 is kept deferred via R-4, 2 rejected, 3 system-level, 4 feature-level, 5 rejected), and the agent asks for confirmation without changing any files."
+      "reason": "The agent gave one outcome per requirement (keep deferred, rejected, system-level, feature-level, rejected), changed no files, and asked the architect to confirm first."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1147258
+    "cost_usd": 0.1073498
    },
-   "cost_usd": 0.01026469,
+   "cost_usd": 0.00927186,
    "needs_review": false
   },
   {
@@ -570,37 +570,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Duplicate of **R-4** (deferred: \"needs a server; revisit next year\")",
+      "quote": "Repeats **R-4** (deferred: \"needs a server; revisit next year\").",
       "source": "transcript.md",
-      "reason": "The agent explicitly identifies the sync requirement as a duplicate of the deferred R-4."
+      "reason": "The agent explicitly identifies the sync requirement as a repeat of the deferred R-4 and proposes no new row."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "Conflicts with **R-3** (stdlib only, rank 3) and the **\u00a72 constraint** (stdlib only).",
+      "quote": "Conflicts with **R-3** (stdlib only), the section 2 stdlib constraint and **QS-2** (works without installing anything).",
       "source": "transcript.md",
-      "reason": "The agent names both R-3 and the stdlib-only constraint as conflicting with the pip/rich requirement."
+      "reason": "The agent names R-3 and the standard-library-only constraint as conflicting with the rich/pip requirement."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Conflicts with **ADR-0001** (accepted; \"cannot be read or repaired with a text editor\").",
+      "quote": "Conflicts with **ADR-0001** (accepted) and with item 5.",
       "source": "transcript.md",
-      "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
+      "reason": "The agent names ADR-0001 (SQLite storage) as conflicting with the text-editor requirement."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "My proposal: N1 no new row, N2 rejected, N3 system-level (rank 4, proposed), N4 feature-level, N5 rejected.",
+      "quote": "I checked all five requirements against the architecture but changed no files. The procedure ends at this question until you confirm an outcome for each requirement.",
       "source": "transcript.md",
-      "reason": "The agent proposes one outcome per requirement (N1 stays deferred as R-4), changes nothing, and asks the architect to confirm first."
+      "reason": "The agent proposes one outcome per requirement (keep deferred R-4, rejected, system-level, feature-level, system-level) and asks the architect to confirm before changing anything."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1261138
+    "cost_usd": 0.12319379999999999
    },
-   "cost_usd": 0.01224573,
+   "cost_usd": 0.012751210000000002,
    "needs_review": false
   },
   {
@@ -625,7 +625,7 @@
     {
      "name": "superseding_adr",
      "pass": true,
-     "detail": "0004-replace-sqlite-storage.md"
+     "detail": "0004-store-notes-in-a-text-editor-readable-format.md"
     },
     {
      "name": "goals_unchanged",
@@ -636,91 +636,6 @@
      "name": "feature_routed",
      "pass": true,
      "detail": ".scratch/requirements/issues/01-notes-list-newest-first.md"
-    },
-    {
-     "name": "ranks_marked_proposed",
-     "pass": false,
-     "detail": "R-7, R-8"
-    },
-    {
-     "name": "code_unchanged",
-     "pass": true,
-     "detail": ""
-    }
-   ],
-   "passed": 7,
-   "total": 8,
-   "score": 0.875,
-   "valid": true,
-   "judge": {
-    "criteria": [
-     "J1",
-     "J2",
-     "J3"
-    ],
-    "verdicts": [
-     {
-      "criterion": "J1",
-      "pass": true,
-      "quote": "no quality goal covers confidentiality. Proposed as a question, not a row: add **QG-4** \"Security: confidentiality\", with the scenario: a person with the stolen store file \u2192 reads it without the key \u2192 no note text is recoverable \u2192 measure: 0 note bodies found by a plaintext search across 100 test stores.",
-      "source": "transcript.md",
-      "reason": "The agent asks about a security quality goal and proposes a scenario and measure without adding a QG row."
-     },
-     {
-      "criterion": "J2",
-      "pass": true,
-      "quote": "**Ranks:** set the order of R-7 and R-8. My proposal is 4 and 5.",
-      "source": "transcript.md",
-      "reason": "The agent proposes ranks and asks the architect to set the order."
-     },
-     {
-      "criterion": "J3",
-      "pass": true,
-      "quote": "**Waiting work:** storage changes wait until you accept ADR-0004.",
-      "source": "transcript.md",
-      "reason": "The agent states that storage-dependent work waits for approval of the new ADR."
-     }
-    ],
-    "quote_errors": [],
-    "needs_review": false,
-    "cost_usd": 0.1286898
-   },
-   "cost_usd": 0.0133122,
-   "needs_review": true
-  },
-  {
-   "run": "S05-r2",
-   "scenario": "S05",
-   "checks": [
-    {
-     "name": "old_rows_kept",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "new_rows",
-     "pass": true,
-     "detail": "R-6 rejected; R-7 active; R-8 active"
-    },
-    {
-     "name": "ids_next_free",
-     "pass": true,
-     "detail": "R-6, R-7, R-8"
-    },
-    {
-     "name": "superseding_adr",
-     "pass": true,
-     "detail": "0004-store-notes-as-plain-text.md"
-    },
-    {
-     "name": "goals_unchanged",
-     "pass": true,
-     "detail": ""
-    },
-    {
-     "name": "feature_routed",
-     "pass": true,
-     "detail": ".scratch/requirements/issues/01-list-newest-first.md"
     },
     {
      "name": "ranks_marked_proposed",
@@ -747,30 +662,115 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "Candidate scenario: a stolen laptop's note files are read without the key; measure: 0 note text recoverable. Question: add this as a Security goal?",
+      "quote": "## Goal impact (questions, nothing added to the goal or scenario tables)",
       "source": "transcript.md",
-      "reason": "The agent proposes a security scenario and measure and asks the architect whether to add the goal, without adding a QG to arc42."
+      "reason": "The final message puts QG-4 Security: confidentiality forward as a question with a proposed scenario and asks 'What measure?', and the quality-goal tables in arc42.md are unchanged."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**Proposed ranks to set:** R-7 at 4, R-8 at 5.",
+      "quote": "Proposed order of the active requirements: R-1 (1), R-2 (2), R-3 (3), R-7 (4), R-8 (5). The existing ranks are unchanged.",
       "source": "transcript.md",
-      "reason": "The agent proposes ranks for the new active requirements and leaves setting them to the architect, stating they are its proposals and not the architect's."
+      "reason": "The agent proposes ranks for R-7 and R-8 and then writes 'Please set the order yourself.'"
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "The storage change waits until you accept ADR-0004, and that depends on resolving R-7 vs R-8.",
+      "quote": "Changing the storage code waits until you accept ADR-0004. No code has changed.",
       "source": "transcript.md",
-      "reason": "The final message says the storage-dependent work waits for the new ADR's acceptance."
+      "reason": "The agent states that storage-dependent work waits for the proposed ADR-0004 to be accepted."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1320538
+    "cost_usd": 0.1389418
    },
-   "cost_usd": 0.013319300000000001,
+   "cost_usd": 0.01274943,
+   "needs_review": false
+  },
+  {
+   "run": "S05-r2",
+   "scenario": "S05",
+   "checks": [
+    {
+     "name": "old_rows_kept",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "new_rows",
+     "pass": true,
+     "detail": "R-6 rejected; R-7 active; R-8 active"
+    },
+    {
+     "name": "ids_next_free",
+     "pass": true,
+     "detail": "R-6, R-7, R-8"
+    },
+    {
+     "name": "superseding_adr",
+     "pass": true,
+     "detail": "0004-store-notes-as-text-files.md"
+    },
+    {
+     "name": "goals_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-notes-list-newest-first.md"
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "R-8 touches confidentiality, which no goal covers. Should I add a goal for it? A candidate measure would be \"a store file copied off a stolen laptop shows zero note text.\"",
+      "source": "transcript.md",
+      "reason": "The agent asks whether a confidentiality goal is needed and proposes a measure, without adding the goal."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "I proposed the order R-1, R-2, R-3 (yours), then R-7 at 4 and R-8 at 5. Please set the order.",
+      "source": "transcript.md",
+      "reason": "The agent proposes ranks for R-7 and R-8 and asks the architect to set the order."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The storage work waits until you accept it.",
+      "source": "transcript.md",
+      "reason": "The final message says the storage work waits for ADR-0004 to be accepted."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1319978
+   },
+   "cost_usd": 0.015070860000000002,
    "needs_review": false
   }
  ]
