@@ -53,6 +53,17 @@ default type set follows `@commitlint/config-conventional` (MIT).
 The `squash-merge-message` skill describes release-please's multi-change footers and commit
 override from its README (<https://github.com/googleapis/release-please>, Apache-2.0).
 
+### Software architecture toolkits
+
+Ideas adapted in our own words, no text copied:
+
+- `MSiccDev/arc42-toolkit` (<https://github.com/MSiccDev/arc42-toolkit>, MIT): ask the
+  architect first, and push back on vague measures. Used in `quality-requirements`.
+- `docs-as-code-toolkit/architecture-knowledge-toolkit`
+  (<https://github.com/docs-as-code-toolkit/architecture-knowledge-toolkit>, MIT): a goal
+  without a measure becomes an open question instead of an invented target. Used in
+  `quality-requirements`.
+
 ### openmodelica
 
 The OpenModelica skill and `SyntaxCard.mo` were provided by the repository owner.

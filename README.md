@@ -46,7 +46,7 @@ The skills are designed to chain. A typical feature runs:
 ## All skills
 
 Every skill below is **model-invoked** unless it is labelled _(user-invoked)_. Model-invoked
-skills carry a description the agent can reach on its own; user-invoked skills are the ten listed
+skills carry a description the agent can reach on its own; user-invoked skills are the eleven listed
 again under [User-invoked skills](#user-invoked-skills) and can only be called by hand.
 
 ### Design and planning
@@ -59,6 +59,10 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
   seams, adapters, leverage, and locality.
 - **[domain-modeling](skills/domain-modeling/SKILL.md)** - Build and sharpen the project's
   glossary and ADRs as decisions crystallise.
+- **[quality-requirements](skills/quality-requirements/SKILL.md)** - Rank requirements and
+  derive ISO/IEC 25010 quality goals and scenarios, each confirmed by the architect.
+- **[add-requirements](skills/add-requirements/SKILL.md)** _(user-invoked)_ - Check new
+  requirements against the architecture and apply the outcomes the architect confirms.
 - **[prototype](skills/prototype/SKILL.md)** - Throwaway code that answers one design question.
 - **[improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md)** _(user-invoked)_ - Scan for
   deepening opportunities, report them visually, then explore the chosen one.
@@ -126,7 +130,7 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 
 ## User-invoked skills
 
-Ten skills are meant to be called by you, not fired autonomously by the model. Each sets
+Eleven skills are meant to be called by you, not fired autonomously by the model. Each sets
 `metadata: opencode/autoinvoke: false` in its frontmatter, so OpenCode keeps its description out
 of the agent's context and only your explicit invocation loads it. They still work by typing the
 skill's name; they just cannot be reached by the agent. Reach for one when:
@@ -134,6 +138,7 @@ skill's name; they just cannot be reached by the agent. Reach for one when:
 | Skill | Purpose |
 |---|---|
 | [`wayfinder`](skills/wayfinder/SKILL.md) | Map work too large for one session as decision tickets on the issue tracker and resolve them one at a time. |
+| [`add-requirements`](skills/add-requirements/SKILL.md) | Bring new requirements into a project that has an architecture (`docs/architecture/arc42.md`). |
 | [`triage`](skills/triage/SKILL.md) | Move incoming issues and external PRs through triage into agent-ready briefs, or close them with a reason. |
 | [`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md) | Scan a codebase for deepening opportunities, report them visually, then work through the chosen one. |
 | [`retro`](skills/retro/SKILL.md) | Conduct a retrospective on a coding session and rank evidence-backed improvements to steering files, checks, and tooling. |
