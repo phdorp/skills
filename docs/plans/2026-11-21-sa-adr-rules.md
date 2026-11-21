@@ -27,15 +27,13 @@ change that answers the observed failures, GREEN runs on the branch arm, and one
 - Skill edits follow `writing-for-agents` and `AGENTS.md` (descriptions say when, not how; one meaning in one place).
 - `python3 scripts/validate-skills.py` passes.
 
-## Decisions I need from you before execution
+## Decisions (user, 2026-11-21)
 
-1. **An ADR for a decision the architect dictated** ("we're moving off SQLite; record it"):
-   my recommendation is `proposed` until the architect approves the written record, because the
-   agent wrote the Context and Consequences. Alternative: `accepted` with today's date, since
-   the architect stated the decision. S03 checks whichever you pick.
-2. **When the old ADR gets `superseded by ADR-NNNN`**: my recommendation is when the new ADR is
-   accepted; until then the old one stays `accepted` and the new one names it in Context.
-   Alternative: at the time the new ADR is proposed. S03 checks whichever you pick.
+1. An ADR the agent writes for a decision the architect dictated is `proposed` until the
+   architect approves the written record. S03 `supersede_new_adr` requires status `proposed`.
+2. The old ADR becomes `superseded by ADR-NNNN` only when the new ADR is accepted; until then it
+   stays `accepted` and the new ADR names it in Context. S03 `old_status` requires 0001 still
+   `accepted`.
 
 ## Review Focus
 
@@ -128,8 +126,8 @@ and repair by hand. Update the decision records accordingly. I'm not available f
 S03 checks: `approved_accepted_dated` (0004 status `accepted` with a `YYYY-MM-DD` date in the
 Status field), `rejected_kept_with_reason` (0005 exists, status `rejected`, Status field has a
 reason of ≥ 10 characters beyond the status word), `supersede_new_adr` (one new ADR `0006-*.md`,
-five fields, names `ADR-0001` or `0001`, status per decision 1), `old_status` (0001 exists;
-status per decision 2), `others_unchanged` (0002, 0003 byte-identical).
+five fields, names `ADR-0001` or `0001`, status `proposed`), `old_status` (0001 exists,
+status still `accepted`), `others_unchanged` (0002, 0003 byte-identical).
 
 Self-test `EXPECT` (one variant per check, each failing exactly that check):
 
@@ -174,7 +172,7 @@ change or crosses a module boundary, or recording, approving, or editing an ADR.
 "inside one building block → no ADR"); find the "Record architecture decisions" ADR by title,
 use its list; every ADR the agent writes starts `proposed`; `accepted` only after the
 architect's explicit approval in the conversation, with the date; rejected stays with one line
-why; a change is a new ADR (supersede per decision 2); status-less ADRs count as accepted
+why; a change is a new `proposed` ADR naming the old one; the old one becomes `superseded by ADR-NNNN` only when the new one is accepted; an ADR for a decision the architect dictated is still `proposed` until they approve the record; status-less ADRs count as accepted
 (legacy). Each line answers a failure quoted in the campaign record; a rule no RED run
 violated goes in as a plain statement without counters.
 
