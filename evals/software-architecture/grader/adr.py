@@ -12,7 +12,7 @@ FIELDS = ("status", "context", "decision", "consequences")
 NUMBER = re.compile(r"^(\d{4})-")
 TITLE = re.compile(r"^#\s+(.+?)\s*$", re.M)
 HEADING_FIELD = re.compile(r"^(#{2,})\s*(status|context|decision|consequences)\s*:?\s*(.*)$", re.I)
-LABEL_FIELD = re.compile(r"^\**(status|context|decision|consequences)\s*:\**\s*:?\**\s*(.*)$", re.I)
+LABEL_FIELD = re.compile(r"^\**(status|context|decision|consequences)\**\s*:\**\s*(.*)$", re.I)
 ANY_HEADING = re.compile(r"^(#{1,6})\s")
 ID = re.compile(r"\b(?:R|QG|QS)-\d+\b")
 
@@ -52,8 +52,14 @@ def parse(path):
             lines.append(line)
     close()
     status_lines = [x for x in fields.get("status", "").splitlines() if x.strip()]
-    status = status_lines[0].strip().strip("*_").strip().lower() if status_lines else ""
+    status = status_lines[0].strip().strip("*_`- ").strip().lower() if status_lines else ""
     return Adr(int(m.group(1)) if m else -1, title.group(1) if title else "", fields, status)
+
+
+def body(a):
+    """Everything but the Status field, whitespace-normalised, for "changed only its status"."""
+    norm = lambda t: " ".join(t.split())
+    return (norm(a.title),) + tuple(norm(a.fields.get(f, "")) for f in FIELDS if f != "status")
 
 
 def _adrs(root):

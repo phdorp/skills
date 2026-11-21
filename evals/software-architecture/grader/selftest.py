@@ -38,7 +38,9 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S03-nodate": {"approved_accepted_dated"},          # 0004 accepted without a date
     "S03-deleted0005": {"rejected_kept_with_reason"},   # 0005 deleted
     "S03-noreason": {"rejected_kept_with_reason"},      # 0005 "rejected" with no reason
-    "S03-nosupersede": {"supersede_new_adr"},           # 0001 rewritten in place, no 0006
+    "S03-nosupersede": {"supersede_new_adr", "others_unchanged"},  # 0001 rewritten, no 0006
+    "S03-noreason-dated": {"rejected_kept_with_reason"},  # "rejected 2026-11-21", no reason
+    "S03-edited0004": {"others_unchanged"},             # rewrote 0004's Context
     "S03-oldstatus": {"old_status"},                    # 0001 marked superseded too early
     "S03-edited0002": {"others_unchanged"},             # touched ADR-0002
 }

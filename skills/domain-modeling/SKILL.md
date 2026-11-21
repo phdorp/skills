@@ -98,7 +98,7 @@ and when the architect is away. Their approval of the written record is what mak
 | The replacing ADR is accepted | the old ADR becomes `superseded by ADR-NNNN` |
 | An existing ADR has no Status | treat it as accepted (legacy) |
 
-Edit only the ADRs the architect's instruction names. When a decision affects another accepted
+Edit only the ADRs the architect's instruction names, plus the ADR an accepted ADR replaces. When a decision affects another accepted
 ADR, name it in the new ADR's Consequences and in your report. ADRs are never deleted.
 
 Context cites the requirement and quality-goal IDs that already exist (`R-n`, `QG-n`, `QS-n`

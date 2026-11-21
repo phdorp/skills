@@ -67,6 +67,18 @@ class Parse(unittest.TestCase):
         self.assertIn("JSON Lines.", a.fields["decision"])
         self.assertEqual(a.fields["consequences"], "None.")
 
+    def test_status_styles_found_in_the_wild(self):
+        for text in ("# T\n\n**Status**: proposed\n", "# T\n\n## Status\n\n`proposed`\n",
+                     "# T\n\n## Status\n\n- Proposed\n"):
+            self.assertEqual(adr.parse(write(text)).status, "proposed", text)
+
+    def test_body_ignores_status_only(self):
+        a = adr.parse(write(HEADING))
+        b = adr.parse(write(HEADING.replace("Proposed", "accepted 2026-11-21")))
+        c = adr.parse(write(HEADING.replace("Easy to parse.", "Hard to parse.")))
+        self.assertEqual(adr.body(a), adr.body(b))
+        self.assertNotEqual(adr.body(a), adr.body(c))
+
     def test_missing_field_absent_from_fields(self):
         a = adr.parse(write("# T\n\nJust a paragraph.\n"))
         self.assertEqual((a.fields, a.status), ({}, ""))

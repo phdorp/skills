@@ -151,13 +151,17 @@ def s03(run_dir):
     ws, base = run_dir / "workspace", base_workspace("S03")
     try:
         new = adr.new_adrs(ws, base)
-        changed = [p for p in adr.changed_adrs(ws, base) if p.name[:4] in ("0002", "0003")]
+        changed = [p.name for p in adr.changed_adrs(ws, base) if p.name[:4] in ("0002", "0003")]
+        a4, a5, a1 = _find(ws, "0004"), _find(ws, "0005"), _find(ws, "0001")
+        for prefix, a in (("0001", a1), ("0004", a4), ("0005", a5)):
+            if a is not None and adr.body(a) != adr.body(_find(base, prefix)):
+                changed.append(f"{prefix} (beyond its Status)")
     finally:
         shutil.rmtree(base.parent, ignore_errors=True)
-    a4, a5, a1 = _find(ws, "0004"), _find(ws, "0005"), _find(ws, "0001")
     reason = ""
     if a5 is not None:
         reason = re.sub(r"rejected", "", a5.fields.get("status", ""), count=1, flags=re.I)
+        reason = DATE.sub("", reason)
         reason = re.sub(r"[\W_]+", " ", reason).strip()
     a6 = adr.parse(new[0]) if len(new) == 1 else None
     return [
@@ -173,7 +177,7 @@ def s03(run_dir):
               ", ".join(p.name for p in new)),
         check("old_status", a1 is not None and a1.status.startswith("accepted"),
               a1.status if a1 else "missing"),
-        check("others_unchanged", not changed, ", ".join(p.name for p in changed)),
+        check("others_unchanged", not changed, ", ".join(changed)),
     ]
 
 
