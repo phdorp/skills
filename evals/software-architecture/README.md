@@ -7,7 +7,8 @@ against the skills at `main`. Re-run it when the model or the skills change.
 ## Contents
 
 - `TASKS.md`: scenarios (S01…), each a prompt given verbatim to a fresh agent on a copy of one
-  fixture.
+  fixture. An `Invoke: <skill>` line prefixes the prompt with `/sa:<skill>` on arms that have
+  that user-invoked skill; `meta.json` records `invoked`.
 - `RUBRIC.md`: judged criteria per scenario.
 - `fixtures/<name>/`: small projects the scenarios start from.
 - `grader/run.py`: runs one scenario on one arm and saves the run; `probe` proves isolation.
@@ -71,8 +72,10 @@ with the agents' wording: [campaigns/](campaigns/).
 | S01 no-setup | 1.000 | 1.000 | 1.000 | 1.000 | - (none expected) |
 | S02 record-decision | 0.785 | 0.834 | 1.000 | 1.000 | 2 of 2 |
 | S03 lifecycle | 0.400 | 0.000 | 1.000 | 1.000 | 2 of 2 |
+| S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S05 add-requirements-confirmed | 0.333 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 
-Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run takes 20–60 s.
+Cost so far: about $1.30–1.50 per arm (runs ≈ $0.10, judge ≈ $1.20–1.40). Each run takes 20–60 s.
 
 - S01: no run loaded a skill on either arm. It shows an ordinary change stays ordinary, not
   that the skills stay quiet once loaded.
@@ -82,6 +85,12 @@ Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run tak
   load it accepted its own ADR again. The skill loaded unreliably for "record the decision as
   an ADR" until its description became an imperative trigger ("Load before creating or editing
   any ADR …"): 2 of 5 loads before, 5 of 5 after, in a micro-test recorded in the campaign.
+- S04, S05 (ticket 03, [campaign](campaigns/03-requirements.md)): on `main`, agents built a
+  requirement before the architect confirmed the triage, rewrote deferred R-4, and accepted
+  the superseding ADR themselves. On the branch the scenarios start with
+  `/sa:add-requirements` (`Invoke:` line in `TASKS.md`), and every run also loaded
+  `quality-requirements` and `domain-modeling`. One loophole round: the report now names the
+  work each proposed ADR holds back.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
