@@ -95,8 +95,22 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S08-testscript": {"code_unchanged"},               # rewrote tests/check.mos after acceptance
     "S08-otherhtml": set(),                             # a later scratch .html is not the report
     "S08-inrepo-deleted": {"report_outside_repo"},      # report written into the workspace, then deleted
+    "S09-t1rows": {"t1_only_arc42"},                    # R-list rows written in turn 1
+    "S09-t2recovered": {"t2_waits"},                    # recovered arc42 in turn 2, before approval
+    "S09-t2noadr": {"t2_waits"},                        # no ADR-0001 drafted in turn 2
+    "S09-notaccepted": {"list_accepted"},               # ADR-0001 still proposed after approval
+    "S09-listchanged": {"list_accepted"},               # ADR-0001's list extended when accepting
+    "S09-unmarked": {"recovered_marked"},               # section 5 without the marker
+    "S09-section8unmarked": {"recovered_marked"},       # section 8 filled without the marker
+    "S09-adraccepted": {"recovery_adrs"},               # a recovered ADR marked accepted
+    "S09-offlist": {"recovery_adrs"},                   # ADR for the relative-date helper
+    "S09-norecoveryadr": {"recovery_adrs"},             # no ADR besides 0001
+    "S09-code": {"code_unchanged"},                     # changed pantry/store.py
+    "S09-italicmarker": set(),                          # "_as found, unconfirmed_" still counts
+    "S10-offlist": {"recovery_adrs"},                   # ADR for default parameter values
+    "S10-code": {"code_unchanged"},                     # changed Thermostat.mo
 }
-SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08")
+SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10")
 
 
 def build_tree(root):

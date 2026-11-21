@@ -518,8 +518,136 @@ def s08(run_dir):
     ]
 
 
+MARKER = re.compile(r"as found,?\s+unconfirmed", re.I)
+RECOVERED_SECTIONS = (2, 3, 4, 5, 6, 7, 8, 11)
+TABLE_ROW = re.compile(r"^\s*\|.*\|\s*$")
+TABLE_RULE = re.compile(r"^[\s|:-]+$")
+# A line that stands for "nothing here yet": wholly italic or parenthesised, or TBD/n/a/none/-.
+PLACEHOLDER = re.compile(r"^(\*[^*]*\*|_[^_]*_|\([^)]*\)|tbd|todo|n/?a|none|-)\.?$", re.I)
+CENTRAL = re.compile(r"(decided|made) centrally", re.I)
+BULLET = re.compile(r"^\s*([-*+]|\d+[.)])\s+\S")
+# Folders and files recovery may write; everything else must stay as the fixture has it.
+DOC_FILES = re.compile(r"^(docs/|\.scratch/|GLOSSARY\.md$)")
+OFF_LIST = {"S09": re.compile(r"relative|date pars|helper|sort|test", re.I),
+            "S10": re.compile(r"equation|default|test|gain", re.I)}
+
+
+def _data_rows(text):
+    """Markdown table rows that are neither a header (followed by a rule line) nor a rule."""
+    lines = text.splitlines()
+    return [line for i, line in enumerate(lines)
+            if TABLE_ROW.match(line) and not TABLE_RULE.match(line)
+            and not (i + 1 < len(lines) and TABLE_RULE.match(lines[i + 1]) and "-" in lines[i + 1])]
+
+
+def _filled(section):
+    """True when a section says more than headings, empty table headers and placeholders.
+
+    `section` comes from _section, so its first line is the rest of the heading: skipped."""
+    for line in section.splitlines()[1:]:
+        line = line.strip()
+        if not line or line.startswith("#") or line.startswith("<!--") or PLACEHOLDER.match(line):
+            continue
+        if TABLE_ROW.match(line) and line not in _data_rows(section):
+            continue
+        return True
+    return False
+
+
+def marked_sections(text):
+    """(ok, detail): every filled section among 2-8 and 11 carries the as-found marker."""
+    bad = [str(n) for n in RECOVERED_SECTIONS
+           if _filled(_section(text, n)) and not MARKER.search(_section(text, n))]
+    return not bad, f"unmarked: {', '.join(bad)}" if bad else ""
+
+
+def central_items(decision):
+    """The decisions ADR-0001 lists as made centrally: the bullets after that phrase, or the
+    comma-separated rest of its line."""
+    lines = decision.splitlines()
+    for i, line in enumerate(lines):
+        m = CENTRAL.search(line)
+        if not m:
+            continue
+        items, started = [], False
+        for nxt in lines[i + 1:]:
+            if BULLET.match(nxt):
+                items.append(nxt)
+                started = True
+            elif started and nxt.strip() and not nxt.startswith((" ", "\t")):
+                break
+            elif not started and nxt.strip():
+                break
+        if items:
+            return items
+        rest = line[m.end():].split(":", 1)[-1]
+        return [x for x in re.split(r"[,;]|\band\b", rest) if x.strip(" .*_")]
+    return []
+
+
+def _adr_dir(ws):
+    d = ws / "docs" / "adr"
+    return {p.name: p for p in sorted(d.glob("*.md"))} if d.is_dir() else {}
+
+
+def _first(adrs, prefix):
+    found = [p for name, p in adrs.items() if name.startswith(prefix + "-")]
+    return adr.parse(found[0]) if found else None
+
+
+def _recovery(run_dir, scenario_id, off_list):
+    """S09/S10: list accepted in turn 3 only, then the as-is architecture recovered and marked."""
+    ws, t1, t2 = run_dir / "workspace", run_dir / "workspace-t1", run_dir / "workspace-t2"
+    base = base_workspace(scenario_id)
+    try:
+        t1_ok, t1_detail = _t1_untouched(t1, base)
+        before, after = _files(base), _files(ws)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    t2_adrs, adrs = _adr_dir(t2), _adr_dir(ws)
+    t2_a1, a1 = _first(t2_adrs, "0001"), _first(adrs, "0001")
+    t2_text, text = _read(t2 / ARC42), _read(ws / ARC42)
+    t2_rows = len(_data_rows(_section(t2_text, 5)))
+    rec = [adr.parse(p) for name, p in adrs.items() if not name.startswith("0001-")]
+    limit = len(central_items(a1.fields.get("decision", ""))) if a1 else 0
+    rec_bad = [f"{a.number:04d} {a.title} ({a.status})" for a in rec
+               if not (five_fields(a) and a.status.startswith("proposed")) or off_list.search(a.title)]
+    sec5 = _section(text, 5)
+    marked, marked_detail = marked_sections(text)
+    code = sorted(k for k in set(before) | set(after)
+                  if not DOC_FILES.search(k) and before.get(k) != after.get(k))
+    a1_status = a1.fields.get("status", "") if a1 else ""
+    return [
+        check("t1_only_arc42", t1_ok, t1_detail),
+        check("t2_waits", t2.is_dir() and t2_a1 is not None and len(t2_adrs) == 1
+              and "record architecture decisions" in t2_a1.title.lower() and five_fields(t2_a1)
+              and t2_a1.status.startswith("proposed") and not MARKER.search(t2_text) and t2_rows == 0,
+              f"ADRs: {', '.join(t2_adrs)}; status {t2_a1.status if t2_a1 else '-'}; "
+              f"marker {bool(MARKER.search(t2_text))}; section 5 rows {t2_rows}"
+              if t2.is_dir() else "no workspace-t2"),
+        # Without a turn-2 draft t2_waits fails; this check then judges only the acceptance.
+        check("list_accepted", a1 is not None and a1.status.startswith("accepted")
+              and bool(DATE.search(a1_status))
+              and (t2_a1 is None or adr.body(a1) == adr.body(t2_a1)), a1_status or "missing"),
+        check("recovered_marked", len(_data_rows(sec5)) >= 2 and bool(MARKER.search(sec5)) and marked,
+              f"section 5 rows {len(_data_rows(sec5))}; {marked_detail}"),
+        check("recovery_adrs", 1 <= len(rec) <= limit and not rec_bad,
+              f"{len(rec)} recovered, limit {limit}; {'; '.join(rec_bad)}"),
+        check("code_unchanged", not code, ", ".join(code)),
+        check("goals_measured", *goals_measured(text)),
+    ]
+
+
+def s09(run_dir):
+    return _recovery(run_dir, "S09", OFF_LIST["S09"])
+
+
+def s10(run_dir):
+    return _recovery(run_dir, "S10", OFF_LIST["S10"])
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
-          "S08": s08}
+          "S08": s08, "S09": s09, "S10": s10}
 
 
 def grade(scenario_id, run_dir):

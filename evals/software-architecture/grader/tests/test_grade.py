@@ -49,5 +49,30 @@ class WrittenFile(unittest.TestCase):
         self.assertIsNone(grade.written_file(Path(tempfile.mkdtemp(prefix="sa-test-")), ".html"))
 
 
+class MarkedSections(unittest.TestCase):
+    @staticmethod
+    def doc(sections):
+        return "# x\n\n" + "".join(f"## {n}. Heading {n}\n\n{body}\n\n" for n, body in sections)
+
+    def test_marked_sections_requires_marker_in_filled_sections(self):
+        text = self.doc([(2, "*As found, unconfirmed.*\n\n- stdlib only"),
+                         (8, "Errors go to stderr with exit code 1.")])
+        ok, detail = grade.marked_sections(text)
+        self.assertFalse(ok)
+        self.assertIn("8", detail)
+
+    def test_marked_sections_ignores_empty_and_confirmed_sections(self):
+        text = self.doc([(1, "| ID | requirement |\n|---|---|\n| R-1 | add items |"),
+                         (5, "*As found, unconfirmed.*\n\n| block | responsibility |\n|---|---|\n| `cli` | commands |"),
+                         (6, "| step | what |\n|---|---|"), (9, "ADRs in docs/adr/."),
+                         (10, "| ID | measure |\n|---|---|\n| QS-1 | 0 lost |"), (12, "No terms yet.")])
+        self.assertEqual(grade.marked_sections(text), (True, ""))
+
+    def test_marked_sections_accepts_italic_marker(self):
+        text = self.doc([(4, "*As found, unconfirmed*\n\nAppend-only file."),
+                         (11, "_as found,\nunconfirmed_ - no lock around appends")])
+        self.assertTrue(grade.marked_sections(text)[0])
+
+
 if __name__ == "__main__":
     unittest.main()
