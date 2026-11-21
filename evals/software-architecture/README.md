@@ -61,19 +61,29 @@ reviews every listed run, plus a sample of the rest.
 
 ## Results
 
-2026-11-21, Haiku 5.5 medium runs, Opus 5.5 judge, 2 runs per scenario and arm. Both arms
-carried identical skills at this point (`main` and the branch differed only in docs), so these
-rows are the baseline to re-run once the skills change.
+Haiku 5.5 medium runs, Opus 5.5 judge, 2 runs per scenario and arm. `baseline` ran the skills
+at `main`; `branch` ran the skills at the commit named in each run's `meta.json`. A branch run
+is replaced when the skills it ran change; git history keeps the old runs. Campaign records
+with the agents' wording: [campaigns/](campaigns/).
 
-| scenario | baseline grader | baseline judge | branch grader | branch judge |
-|---|---:|---:|---:|---:|
-| S01 no-setup | 1.000 | 1.000 | 1.000 | 1.000 |
-| cost, all runs | ≈ $0.03 runs | ≈ $0.36 judge | | |
+| scenario | baseline grader | baseline judge | branch grader | branch judge | branch runs that loaded the target skill |
+|---|---:|---:|---:|---:|---|
+| S01 no-setup | 1.000 | 1.000 | 1.000 | 1.000 | - (none expected) |
+| S02 record-decision | 0.785 | 0.834 | 0.857 | 0.834 | 1 of 2 |
+| S03 lifecycle | 0.500 | 0.000 | 1.000 | 1.000 | 2 of 2 |
 
-- All four runs passed the isolation check; the judge's quotes all verified; no run needed
-  review. Each run took about 20 s.
-- No run invoked a skill: all four only used Bash and Edit. S01 therefore shows that an ordinary
-  change stays ordinary, but it does not yet show the skills staying quiet when loaded.
+Cost so far: about $0.80 per arm (runs ≈ $0.10, judge ≈ $0.70). Each run takes 20–60 s.
+
+- S01: no run loaded a skill on either arm. It shows an ordinary change stays ordinary, not
+  that the skills stay quiet once loaded.
+- S02, S03 (ticket 02, [campaign](campaigns/02-adr-rules.md)): on `main`, agents accepted their
+  own ADRs, marked the replaced ADR superseded early, and added requirements on their own. Every
+  branch run that loaded `domain-modeling` followed every rule; the branch S02 run that did not
+  load it accepted its own ADR again. Open loophole: the skill does not load reliably for
+  "record the decision as an ADR".
+- Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
+  failure stands because R-6 does not exist; `branch/S03-r1`, where the judge garbled the
+  Markdown in a correct quote and the verdict stands.
 
 ## Known gaps
 
@@ -83,6 +93,6 @@ rows are the baseline to re-run once the skills change.
 - Scenario prompts must carry the architect's answers up front: a `-p` run cannot answer
   questions, so a run that stops to ask ends there.
 - Two runs per scenario cannot detect small effects.
-- Haiku 5.5 rarely loads a skill for a small change unprompted (S01: 0 of 4 runs). A scenario
+- Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02: 1 of 4 on the branch). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the
   model alone.
