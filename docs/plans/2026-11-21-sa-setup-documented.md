@@ -45,6 +45,7 @@ and "the project's ADR directory" (where existing ADRs live). The suite gains fi
 - `skills/setup-architecture/SKILL.md` - documented branch: mapping step, legacy batch in the proposal, writes after confirmation.
 - `skills/setup-architecture/references/arc42-skeleton.md` - the mapping rule: a section whose content lives elsewhere links there.
 - `skills/domain-modeling/SKILL.md` - "the project's ADR directory"; legacy upgrade row in the status table.
+- `skills/add-requirements/SKILL.md` - step 1 reads ADRs from the project's ADR directory.
 - `evals/software-architecture/fixtures/documented/` - `README.md` with a "How it works" section, `docs/decisions/0001-store-books-in-one-json-file.md` (one paragraph, no fields), `docs/decisions/0002-validate-isbn-locally.md` (Context/Decision/Consequences, no Status), `shelf/{__init__,__main__,cli,catalog,isbn}.py`, `tests/test_shelf.py`.
 - `evals/software-architecture/grader/grade.py` - `s07`; `grader/{reference,broken}/S07*`; `TASKS.md`, `RUBRIC.md`, `README.md`, `campaigns/05-setup-documented.md`.
 
@@ -119,11 +120,12 @@ Self-test `EXPECT`:
 
 ### Task 3: Documented branch (GREEN)
 
-**Files:** Modify `skills/setup-architecture/SKILL.md`, `references/arc42-skeleton.md`, `skills/domain-modeling/SKILL.md`.
+**Files:** Modify `skills/setup-architecture/SKILL.md`, `references/arc42-skeleton.md`, `skills/domain-modeling/SKILL.md`, `skills/add-requirements/SKILL.md`.
 
 - `setup-architecture` › situation: documented → step 2 with a mapping part: for each existing document, the arc42 section it belongs to; that section gets one line linking it ("See [README › How it works](../../README.md#how-it-works).") and nothing of its content. The proposal adds "Where your documents map" and "Legacy ADRs to upgrade in one batch" (each listed with the IDs its Context would cite). After confirmation: upgrade per `domain-modeling`, then the "made centrally" ADR as the next free number in the existing ADR directory. Remove "this version handles fresh projects" for documented; keep it for undocumented (ticket 07).
 - `arc42-skeleton.md`: the mapping rule in one paragraph.
 - `domain-modeling`: "Find it by that title in the project's ADR directory (`docs/adr/`, or where its ADRs already live)"; status table row "The architect confirms the legacy upgrade batch | the missing fields and IDs added, Status `accepted (legacy)`, Decision text unchanged".
+- `add-requirements` step 1: read every accepted ADR in the project's ADR directory (`domain-modeling`), not `docs/adr/` by name (user, 2026-11-21).
 - [ ] **Step 1:** Edit; validator → `OK`. **Commit** `feat(setup-architecture): map existing documentation and upgrade legacy ADRs in one batch`.
 - [ ] **Step 2:** Run S07 on the branch (k 1–2); re-run S02–S06 on the branch (they load `domain-modeling`); judge, summarise.
 - [ ] **Step 3: Gate.** Expected: every branch S07 run passes every check and criterion; S01–S06 stay at 1.000/1.000. Otherwise Task 4.
