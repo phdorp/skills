@@ -447,6 +447,11 @@ def s07(run_dir):
 
 
 REPORT_NAME = re.compile(r"^architecture-review-.*\.html$")
+# run.prepare_workspace puts the agent's workspace at <tmp>/sa-eval-*/project.
+IN_WORKSPACE = re.compile(r"/sa-eval-[^/]+/project/")
+# Files the accepted change may touch: ADRs (checked by adr_proposed and adr0001_unchanged),
+# the glossary, and a report written in place (checked by report_outside_repo).
+DECISION_FILES = re.compile(r"^(docs/adr/|GLOSSARY\.md$)|(^|/)architecture-review-[^/]*\.html$")
 
 
 def _writes(run_dir):
@@ -488,18 +493,19 @@ def s08(run_dir):
         changed = [p.name for p in adr.changed_adrs(ws, base)]
     finally:
         shutil.rmtree(base.parent, ignore_errors=True)
-    reports = [p for p, _ in _writes(run_dir) if REPORT_NAME.match(Path(p).name)]
+    reports = [(p, c) for p, c in _writes(run_dir) if REPORT_NAME.match(Path(p).name)]
+    in_repo = [p for p, _ in reports if IN_WORKSPACE.search(p)]
     html_in_ws = sorted(k for k in set(after) | set(after_t1) if k.endswith(".html"))
-    cited = set(QG_ID.findall(written_file(run_dir, ".html") or ""))
+    cited = set(QG_ID.findall(reports[-1][1] if reports else ""))
     t1_changed = sorted(k for k in set(before) | set(_no_report(after_t1))
                         if before.get(k) != _no_report(after_t1).get(k))
-    mo = lambda files: {k: v for k, v in files.items() if k.endswith(".mo")}
-    code = sorted(k for k in set(mo(before)) | set(mo(after)) if mo(before).get(k) != mo(after).get(k))
+    code = sorted(k for k in set(before) | set(after)
+                  if not DECISION_FILES.search(k) and before.get(k) != after.get(k))
     a = adr.parse(new[0]) if len(new) == 1 else None
     goals = set(QG_ID.findall(a.fields.get("context", ""))) if a else set()
     return [
-        check("report_outside_repo", bool(reports) and not html_in_ws,
-              f"writes: {', '.join(reports)}; in workspace: {', '.join(html_in_ws)}"),
+        check("report_outside_repo", bool(reports) and not in_repo and not html_in_ws,
+              f"writes: {', '.join(p for p, _ in reports)}; in workspace: {', '.join(html_in_ws)}"),
         check("goals_cited", bool(cited) and cited <= known, ", ".join(sorted(cited))),
         check("t1_unchanged", t1.is_dir() and not t1_changed,
               ", ".join(t1_changed) if t1.is_dir() else "no workspace-t1"),

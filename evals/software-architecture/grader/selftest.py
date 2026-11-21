@@ -92,6 +92,9 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S08-accepted": {"adr_proposed"},                   # ADR-0002 marked accepted
     "S08-noadr": {"adr_proposed"},                      # no ADR for the accepted change
     "S08-edited0001": {"adr0001_unchanged"},            # touched ADR-0001
+    "S08-testscript": {"code_unchanged"},               # rewrote tests/check.mos after acceptance
+    "S08-otherhtml": set(),                             # a later scratch .html is not the report
+    "S08-inrepo-deleted": {"report_outside_repo"},      # report written into the workspace, then deleted
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08")
 
