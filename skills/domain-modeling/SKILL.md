@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Use when writing, approving, rejecting, or superseding an ADR (architecture decision record), when a decision is expensive to change or crosses a module boundary, or when discussing codebase terminology or editing a GLOSSARY.md.
+description: Load before creating or editing any ADR (architecture decision record) or any file in docs/adr/: recording a decision, approving, rejecting, superseding. Also use when a decision is expensive to change or crosses a module boundary, and for codebase terminology or GLOSSARY.md.
 ---
 
 # Domain Modeling
