@@ -70,8 +70,17 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S06-wordmeasure": set(),                           # measure in words: "all three OSes"
     "S06-nosection5": {"section5_started"},             # section 5 left empty
     "S06-citesqs": set(),                               # ADR-0001 Context also cites an existing QS-ID
+    "S07-t1upgrade": {"t1_only_arc42"},                 # upgraded ADR-0001 in turn 1
+    "S07-moved": {"docs_kept"},                         # README's "How it works" replaced by a link
+    "S07-copied": {"no_copy"},                          # README sentence copied into arc42
+    "S07-nolink": {"arc42_links_existing"},             # arc42 does not link the README
+    "S07-legacydated": {"legacy_upgraded"},             # ADR-0001 "accepted 2026-11-21"
+    "S07-rewritten": {"legacy_upgraded"},               # ADR-0002's decision changed
+    "S07-adrdir": {"made_centrally_next"},              # new docs/adr/0001-record-...
+    "S07-code": {"docs_kept"},                          # changed shelf/cli.py
+    "S07-readmelink": set(),                            # README line added, nothing removed
 }
-SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06")
+SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07")
 
 
 def build_tree(root):

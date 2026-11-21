@@ -321,6 +321,21 @@ def _files(root):
             for p in root.rglob("*") if p.is_file()} if root.is_dir() else {}
 
 
+def goals_measured(text):
+    """3-5 goals, each citing existing R-IDs and a scenario whose measure states a number."""
+    rids = {r["id"] for r in _rows(text, "requirement")}
+    goals, scen = _rows(text, "from"), {r["id"]: r for r in _rows(text, "stimulus")}
+
+    def measured(g):
+        cited = set(R_ANY.findall(g.get("from", "")))
+        qs = QS_ID.findall(g.get("scenario", ""))
+        return (bool(cited) and cited <= rids and bool(qs)
+                and all(q in scen and has_measure(scen[q].get("measure", "")) for q in qs))
+
+    ok = 3 <= len(goals) <= 5 and all(measured(g) for g in goals)
+    return ok, ", ".join(f"{g['id']}{'' if measured(g) else ' (unmeasured or uncited)'}" for g in goals)
+
+
 def s06(run_dir):
     ws, t1, base = run_dir / "workspace", run_dir / "workspace-t1", base_workspace("S06")
     try:
@@ -336,13 +351,6 @@ def s06(run_dir):
     rids = [r["id"] for r in rows]
     statuses = {_status(r) for r in rows}
     goals, scen = _rows(text, "from"), {r["id"]: r for r in _rows(text, "stimulus")}
-
-    def measured(g):
-        cited = set(R_ANY.findall(g.get("from", "")))
-        qs = QS_ID.findall(g.get("scenario", ""))
-        return (bool(cited) and cited <= set(rids) and bool(qs)
-                and all(q in scen and has_measure(scen[q].get("measure", "")) for q in qs))
-
     adrs = sorted((ws / "docs" / "adr").glob("*.md")) if (ws / "docs" / "adr").is_dir() else []
     a = adr.parse(adrs[0]) if len(adrs) == 1 else None
     known = set(rids) | {g["id"] for g in goals} | set(scen)
@@ -357,8 +365,7 @@ def s06(run_dir):
               and statuses <= {"active", "deferred", "rejected"}
               and not any("latest" in r.get("requirement", "").lower() for r in rows),
               ", ".join(f"{r['id']} {_status(r)}" for r in rows)),
-        check("goals_measured", 3 <= len(goals) <= 5 and all(measured(g) for g in goals),
-              ", ".join(f"{g['id']}{'' if measured(g) else ' (unmeasured or uncited)'}" for g in goals)),
+        check("goals_measured", *goals_measured(text)),
         check("adr_0001", a is not None and adrs[0].name.startswith("0001-")
               and "record architecture decisions" in a.title.lower() and five_fields(a)
               and a.status.startswith("proposed") and bool(cited) and cited <= known,
@@ -369,7 +376,63 @@ def s06(run_dir):
     ]
 
 
-CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06}
+DECISIONS = Path("docs") / "decisions"
+LEGACY = {"0001": "one json file", "0002": "checked locally"}
+README_SENTENCE = "`cli` calls `catalog`, never the file directly."
+
+
+def _t1_untouched(t1, base):
+    """(ok, detail): turn 1 added only arc42.md, changed nothing, and filled no table."""
+    if not t1.is_dir():
+        return False, "no workspace-t1"
+    before, after = _files(base), _files(t1)
+    changed = sorted(k for k in set(before) | set(after) if before.get(k) != after.get(k))
+    rows = sum(len(_rows(_read(t1 / ARC42), c)) for c in ("requirement", "from", "stimulus"))
+    return changed == [ARC42.as_posix()] and rows == 0, f"changed: {', '.join(changed)}; rows: {rows}"
+
+
+def s07(run_dir):
+    ws, t1, base = run_dir / "workspace", run_dir / "workspace-t1", base_workspace("S07")
+    try:
+        t1_ok, t1_detail = _t1_untouched(t1, base)
+        before, after = _files(base), _files(ws)
+        missing = sorted(set(before) - set(after))
+        readme_lost = [line for line in before.get("README.md", b"").decode().splitlines()
+                       if line.strip() and line not in after.get("README.md", b"").decode().splitlines()]
+        code = [k for k in before if k.startswith("shelf/") and before[k] != after.get(k)]
+        new_adrs = sorted(k for k in after if k not in before and k.endswith(".md")
+                          and (k.startswith("docs/decisions/") or k.startswith("docs/adr/")))
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    text = _read(ws / ARC42)
+    heads = [int(m.group(1)) for m in SECTION_HEAD.finditer(text)]
+    known = ({r["id"] for r in _rows(text, "requirement")} | {g["id"] for g in _rows(text, "from")}
+             | {s["id"] for s in _rows(text, "stimulus")})
+    legacy_bad = []
+    for prefix, phrase in LEGACY.items():
+        found = sorted((ws / DECISIONS).glob(prefix + "-*.md")) if (ws / DECISIONS).is_dir() else []
+        a = adr.parse(found[0]) if found else None
+        cited = adr.ids(a.fields.get("context", "")) if a else set()
+        if not (a and five_fields(a) and a.status.startswith("accepted (legacy)")
+                and cited and cited <= known and phrase in _norm(a.fields.get("decision", "")).lower()):
+            legacy_bad.append(f"{prefix} ({a.status if a else 'missing'})")
+    a3 = adr.parse(ws / new_adrs[0]) if len(new_adrs) == 1 else None
+    return [
+        check("t1_only_arc42", t1_ok, t1_detail),
+        check("docs_kept", not missing and not readme_lost and not code,
+              "; ".join(x for x in (", ".join(missing), " | ".join(readme_lost)[:200], ", ".join(code)) if x)),
+        check("arc42_links_existing", heads == list(range(1, 13)) and "README.md" in text
+              and "decisions/" in text, str(heads)),
+        check("no_copy", bool(text) and _norm(README_SENTENCE) not in _norm(text)),
+        check("legacy_upgraded", not legacy_bad, ", ".join(legacy_bad)),
+        check("made_centrally_next", a3 is not None and new_adrs[0].startswith("docs/decisions/0003-")
+              and "record architecture decisions" in a3.title.lower() and a3.status.startswith("proposed")
+              and not (ws / "docs" / "adr").exists(), ", ".join(new_adrs)),
+        check("goals_measured", *goals_measured(text)),
+    ]
+
+
+CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07}
 
 
 def grade(scenario_id, run_dir):

@@ -124,3 +124,31 @@ confirmed in your order, except any you could not give a measure: keep those as 
 questions. To your "did you leave out" questions: no, nothing is missing. Write everything
 down now. I'm offline after this, so finish without asking me again.
 ```
+
+## S07 setup-documented: map existing documentation, upgrade legacy ADRs
+
+Fixture: documented
+Invoke: setup-architecture
+
+Tests D1 (documented), D5, D16 (stories 11, 12, 15): the project already describes its
+architecture in its README and keeps status-less ADRs in `docs/decisions/`. Turn 1 writes only
+an arc42 file that links to those documents and proposes the setup plus a one-batch upgrade of
+the legacy ADRs; after the architect's reply the legacy ADRs become `accepted (legacy)` with
+their decisions unchanged, and "Record architecture decisions" is `docs/decisions/0003-…`,
+`proposed`. Nothing is moved, deleted or copied.
+
+```text
+Bring this project's architecture documentation into shape. My requirements:
+1. Readers add, list and find books by title or ISBN from the command line.
+2. The catalog survives a crash mid-write.
+3. Runs with only the Python standard library.
+4. An ISBN is checked before a book is stored.
+5. Adding a command touches only cli.py and one new module.
+```
+
+```reply
+Confirmed as proposed: your triage, your ranking, the quality goals (except any without a
+measure: keep those open), where each existing document maps, and the upgrade of the existing
+ADRs. To your "did you leave out" questions: no, nothing is missing. Write everything down now.
+I'm offline after this, so finish without asking me again.
+```

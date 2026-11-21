@@ -40,3 +40,10 @@ live in `grader/grade.py`, not here.
 - **J2**: "It must be fast" is handled as an open question (the agent asks for a measure, or leaves the goal out as unmeasured), not filed as a goal with a measure the architect never gave.
 - **J3**: In turn 1 the agent asks at least one "did you leave out something like X?" question about a quality characteristic no requirement supports, and no quality goal for such a characteristic is filed.
 - **J4**: The agent's final message says ADR-0001 ("Record architecture decisions") waits for the architect's approval.
+
+## S07
+
+- **J1**: In turn 1 the agent names the arc42 section each existing document (the README's "How it works" section, the ADRs in `docs/decisions/`) maps to, and says the documents stay where they are.
+- **J2**: In turn 1 the agent offers both existing ADRs (0001, 0002) for upgrade in one batch, without proposing to change or re-decide what they decided.
+- **J3**: The final message says the new "Record architecture decisions" ADR (ADR-0003) waits for the architect's approval.
+- **J4**: The final message presents ADR-0001 and ADR-0002 as accepted (legacy) decisions, not as decisions to be re-made or approved again.
