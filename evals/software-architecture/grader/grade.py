@@ -21,6 +21,8 @@ HERE = Path(__file__).resolve().parent
 HIDDEN = HERE / "hidden"
 CMD_TIMEOUT_S = 120
 ADR_NAME = re.compile(r"(^|[^a-z])adr([^a-z]|$)")
+# The section headings run.render_transcript writes; a "### " heading inside agent text is not one.
+HEADING = re.compile(r"^### (user|assistant|tool_use \S+|tool_result|result \(\w+\))$", re.M)
 
 
 def check(name, ok, detail=""):
@@ -45,8 +47,10 @@ def assistant_text(run_dir):
     p = run_dir / "transcript.md"
     if not p.exists():
         return ""
-    sections = ("\n" + p.read_text()).split("\n### ")
-    return "\n".join(s for s in sections if s.startswith("assistant"))
+    text = p.read_text()
+    heads = list(HEADING.finditer(text))
+    return "\n".join(text[m.end():heads[i + 1].start() if i + 1 < len(heads) else len(text)]
+                     for i, m in enumerate(heads) if m.group(1) == "assistant")
 
 
 def commits(run_dir):

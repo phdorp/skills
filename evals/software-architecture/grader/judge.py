@@ -107,7 +107,8 @@ def assess(verdicts, criterion_ids, run_dir):
     given = [v.get("criterion") for v in verdicts]
     errors += [f"{c}: no verdict" for c in criterion_ids if c not in given]
     errors += [f"{c}: more than one verdict" for c in set(given) if given.count(c) > 1]
-    return {"verdicts": verdicts, "quote_errors": errors, "needs_review": bool(errors)}
+    return {"criteria": list(criterion_ids), "verdicts": verdicts, "quote_errors": errors,
+            "needs_review": bool(errors)}
 
 
 def _judge(prompt):
@@ -133,7 +134,7 @@ def main():
     try:
         result = assess(parse_verdicts(text), [c.id for c in criteria], run_dir)
     except (ValueError, json.JSONDecodeError) as e:
-        result = {"verdicts": [], "quote_errors": [f"unparseable judge output: {e}"],
+        result = {"criteria": [c.id for c in criteria], "verdicts": [], "quote_errors": [f"unparseable judge output: {e}"],
                   "needs_review": True, "raw": text}
     result["cost_usd"] = cost
     (run_dir / "judge.json").write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n")

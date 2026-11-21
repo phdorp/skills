@@ -25,6 +25,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S01-failingtest": {"tests_pass"},                  # an agent test asserts wrongly
     "S01-uncommitted": {"committed"},                   # git log holds only the fixture commit
     "S01-nagging": {"setup_suggested_at_most_once"},    # suggests setup-architecture twice
+    "S01-nagging-heading": {"setup_suggested_at_most_once"},  # twice, after a "### " heading
 }
 SCENARIOS = ("S01",)
 

@@ -35,10 +35,12 @@ def _json(path):
 
 
 def judge_rate(judge):
-    if not judge or not judge.get("verdicts"):
+    """Passed criteria out of all criteria; None until a flagged run has been reviewed."""
+    if not judge or judge.get("needs_review") or not judge.get("verdicts"):
         return None
     v = judge["verdicts"]
-    return round(sum(bool(x.get("pass")) for x in v) / len(v), 3)
+    n = len(judge.get("criteria") or v)
+    return round(sum(bool(x.get("pass")) for x in v) / n, 3)
 
 
 def needs_review(result):
@@ -47,6 +49,8 @@ def needs_review(result):
         return False
     if judge.get("needs_review"):
         return True
+    if rate is None:
+        return False
     return (result["score"] == 1.0 and rate < 1.0) or (result["score"] < 1.0 and rate == 1.0)
 
 
