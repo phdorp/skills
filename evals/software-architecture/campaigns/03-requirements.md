@@ -44,3 +44,36 @@ started at R-6 (`ids_next_free` passes); rejected `rich` kept with a reason.
 
 Gate: met. Both S04 runs changed code before confirmation, and both S05 runs failed
 `old_rows_kept`.
+
+## GREEN: branch skills (commit a7aa49c)
+
+Every run started with `/sa:add-requirements` (`invoked: true`) and loaded
+`sa:quality-requirements` and `sa:domain-modeling` through the `Skill` tool.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S04-r1 | - | - |
+| S04-r2 | - | - |
+| S05-r1 | - | J3 |
+| S05-r2 | - | - |
+
+Every RED failure was gone: no S04 run changed a file ("Please confirm or change each outcome.",
+S04-r1); no S05 run touched R-4, accepted ADR-0004, changed code or added a goal; both filed
+the newest-first item as `.scratch/requirements/issues/01-…md` citing R-1, proposed ranks 4
+and 5, and asked about a security goal as a question.
+
+## Loophole (closed): the report did not tie the waiting work to the ADR
+
+S05-r1 changed no code and kept ADR-0004 `proposed`, but its report said only "Two findings
+need your decision before the storage work can start." The judge failed J3: the run never said
+the storage work waits for the ADR's approval. Step 4 listed "each ADR waiting for approval"
+without the work behind it.
+
+Counter (commit 600a9f4): the report names each ADR waiting for approval "together with the work
+that waits for it". Re-run of S04 and S05 on the branch (2 runs each, replacing the runs
+above): every check and criterion passes. S05-r1: "**Waiting work:** storage changes wait until
+you accept ADR-0004." S05-r2: "The storage change waits until you accept ADR-0004, and that
+depends on resolving R-7 vs R-8."
+
+S01–S03 were not re-run: the skills they loaded did not change. The two new skills are visible
+to them, which could change S02 and S03; ticket 04's re-run covers that.
