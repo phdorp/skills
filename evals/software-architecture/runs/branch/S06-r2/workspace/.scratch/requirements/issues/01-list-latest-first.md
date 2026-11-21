@@ -1,7 +1,8 @@
-# 01 Show the latest sighting first in `birdlog list`
+# `birdlog list` shows the latest sighting first
 
-**Parent:** R-1 (feature-level, no R-row)
+Parent requirement: R-1 (Birders log a sighting from the command line).
+Type: feature-level. No R-list row.
 
-`birdlog list` shows the latest sighting first.
+`birdlog list` prints the stored sightings with the most recent sighting first.
 
-Status: ready for triage.
+Note: the tracker named in `docs/agents/issue-tracker.md` does not exist in this project yet, so this issue is filed as a file.

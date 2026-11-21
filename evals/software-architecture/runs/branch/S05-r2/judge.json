@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "No goal covers confidentiality. Add a Security goal (QG-4) with a scenario? What would show R-8 is met?",
+   "quote": "Proposed as a question, not a row: QG-4 with a scenario where a thief reads the stored file without the key, and the measure \"0 plaintext note strings found across 100 stored test notes\".",
    "source": "transcript.md",
-   "reason": "The agent asks the architect whether to add a security goal and leaves the measure as an open question, without adding a QG-4 row to arc42.md."
+   "reason": "The agent asks whether a security goal is needed, with a proposed scenario and measure, and does not add a QG row."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Set the order of R-7 and R-8 (both proposed as 4 and 5, which is a guess).",
+   "quote": "R-7 at 4 and R-8 at 5 are proposals. Please set the order.",
    "source": "transcript.md",
-   "reason": "The agent proposes ranks 4 and 5 for the new active requirements and asks the architect to set the order."
+   "reason": "The agent proposes ranks for the new active requirements and asks the architect to set the order."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Until it is accepted, the storage change waits until you accept ADR-0004.",
+   "quote": "**ADR-0004 waits for you.** Accepting it unlocks the storage change.",
    "source": "transcript.md",
-   "reason": "The agent states that the storage change waits for the new ADR-0004 to be accepted."
+   "reason": "The agent says the storage change waits for the new ADR's acceptance."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1329338
+ "cost_usd": 0.12296979999999999
 }

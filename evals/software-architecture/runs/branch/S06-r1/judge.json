@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Please confirm or change each part: the triage outcomes and R-5/R-6 wording, the rank with the R-2/R-5 tie-breaker, the goal candidates and open questions, the gap questions, and the central decision list.",
+   "quote": "| 6. `list` shows latest first | feature-level, parent req 1 | an ordering behaviour inside the list view; gets no R-row |",
    "source": "transcript.md",
-   "reason": "Turn 1 ends with triage for R-1 to R-6, a ranking with reasons, and goal candidates citing R-IDs with proposed measures, then asks the architect to confirm."
+   "reason": "Turn 1 gives a triage outcome for all six requirements, a reasoned rank, candidates A–D citing req numbers with full scenarios, and asks the architect to confirm."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Open question (no measure yet, so no goal row): Performance efficiency: time behaviour, from\nR-5. What response time for `birdlog add` and `birdlog list`, at how many stored sightings?",
-   "source": "workspace/docs/architecture/arc42.md",
-   "reason": "Fast is kept as an open question with no QG row and no invented measure."
+   "quote": "**Open question, not a goal:** Performance efficiency: time behaviour (req 5). What would show req 5 is met?",
+   "source": "transcript.md",
+   "reason": "Fast is kept as an open question asking for a measure and is never filed as a goal."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- **Security: confidentiality.** Sighting locations can be sensitive, for example nests of rare birds. Did you leave out privacy of stored places?",
+   "quote": "**Security: confidentiality.** Are sightings private?",
    "source": "transcript.md",
-   "reason": "The agent asked gap questions about unsupported characteristics, and the filed goals QG-1 to QG-4 cover only R-1 to R-4."
+   "reason": "Turn 1 asks gap questions about characteristics no requirement supports, and no goal for them is filed."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "- ADR 0001 is `proposed`. Work that depends on the central decisions waits until you approve its text.",
+   "quote": "ADR 0001 waits for your approval of its text.",
    "source": "transcript.md",
-   "reason": "The final message says ADR 0001 waits for the architect's approval."
+   "reason": "The final message states that ADR 0001 waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1538178
+ "cost_usd": 0.1717298
 }

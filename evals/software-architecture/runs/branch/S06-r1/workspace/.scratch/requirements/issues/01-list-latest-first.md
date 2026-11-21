@@ -1,12 +1,11 @@
 # `birdlog list` shows the latest sighting first
 
-Feature-level requirement under R-1 (log a sighting from the command line). Not an R-list row.
+Parent: R-2 (log a sighting from the command line). Feature-level; no R-list row.
 
 ## Requirement
 
 `birdlog list` shows the latest sighting first.
 
-## To clarify when picked up
+## Open question
 
-"Latest" can mean the sighting time (when the bird was seen) or the entry time (when it was
-logged). Decide which before implementing, and record the choice in the issue.
+"Latest" must be defined before this is built: observation time (the time of the sighting) or time entered (when it was logged).

@@ -86,3 +86,22 @@ and 5. The README stays as it is." (r2).
    and the "stays" line): the instructions are present and followed in the other runs; Haiku
    skips single items in a long proposal. A structural slot (a fixed proposal template with one
    row per item) is the matching form if it recurs.
+
+## Final review fixes (commit 80969fc)
+
+1. **A README-only documented project stopped as "undocumented".** Micro-test on the
+   `documented` fixture without `docs/decisions/`, turn 1 only, 5 reps: the old situation
+   table stopped in 5 of 5 ("This project is **undocumented**, and this version of
+   `setup-architecture` does not handle that case"); the new one, which counts a README
+   section on how the system is built, wrote only the skeleton as documented in 5 of 5.
+2. **`domain-modeling` still said to create `docs/adr/`**; it now points to the project's ADR
+   directory in `ADR-FORMAT.md`. Its description was left as is: a micro-test editing
+   `docs/decisions/0002-…` loaded `domain-modeling` in 5 of 5 runs.
+3. **Grader:** `no_copy` now also catches a legacy ADR's decision copied into arc42
+   (`S07-copiedadr`); `legacy_upgraded` compares each decision sentence in full
+   (`S07-shortened`); `rlist` accepts rows sorted by rank (`S06-roworder`), as branch S06-r2
+   kept the architect's numbers.
+
+Re-run of S02–S07 on the branch (2 each): every check and criterion passes. The two open
+loopholes above did not recur in these runs; with two runs each, that does not show them
+closed.

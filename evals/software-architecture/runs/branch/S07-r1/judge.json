@@ -8,34 +8,34 @@
  "verdicts": [
   {
    "criterion": "J1",
-   "pass": false,
-   "quote": "The README's \"How it works\" already describes the building blocks, so section 5 links to it rather than copying it.",
+   "pass": true,
+   "quote": "- Section 3 and section 5 link to README › How it works.\n- Section 4 links to ADR 0001 and ADR 0002.\n- Section 9 links to `docs/decisions/`.\n- Section 12 holds the no-glossary line.\n\nThe README and the ADRs stay as they are.",
    "source": "transcript.md",
-   "reason": "Turn 1 maps only the README section to section 5, never names section 9 for the ADRs in docs/decisions/, and never says the existing documents stay where they are."
+   "reason": "In turn 1 the agent names the arc42 sections for the README section and the ADRs and states the documents stay where they are."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "## Legacy ADRs (offered as one batch)",
+   "quote": "## 6. Legacy ADRs (upgrade in one batch, Status `accepted (legacy)`, Decision text unchanged)",
    "source": "transcript.md",
-   "reason": "Turn 1 offers both ADRs 0001 and 0002 together for upgrade and says each Decision text stays as it is."
+   "reason": "Both ADRs are offered for upgrade together in one batch, with the decisions explicitly left unchanged."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- **ADR 0003** (`docs/decisions/0003-record-architecture-decisions.md`): approve or change its decision list.",
+   "quote": "**Status of the ADRs:** 0003 waits for your approval of its text.",
    "source": "transcript.md",
-   "reason": "The final message lists ADR 0003 under 'Waiting for you' as needing the architect's approval."
+   "reason": "The final message says ADR 0003 awaits the architect's approval."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "upgraded to `accepted (legacy)` with Status and Context citing R-2/QG-1, R-3/QG-3 and R-4/QG-2. Decision text is unchanged.",
+   "quote": "- `docs/decisions/0001-store-books-in-one-json-file.md`: upgraded to `accepted (legacy)`.",
    "source": "transcript.md",
-   "reason": "The final message presents ADRs 0001 and 0002 as accepted (legacy) with unchanged decisions, not as decisions to re-approve."
+   "reason": "The final message presents 0001 (and likewise 0002) as accepted legacy decisions with unchanged Decision text, not as decisions to be re-approved."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1690738
+ "cost_usd": 0.2144618
 }

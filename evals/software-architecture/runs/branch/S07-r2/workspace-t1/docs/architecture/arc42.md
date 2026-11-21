@@ -20,18 +20,16 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 3. Context and scope
 
-The system boundary and the file it keeps outside itself are described in
-[README › How it works](../../README.md#how-it-works).
+See [README › How it works](../../README.md#how-it-works).
 
 ## 4. Solution strategy
 
-The catalog is one JSON file, written through a temporary file and renamed into place. See
-[ADR 0001](../decisions/0001-store-books-in-one-json-file.md).
+See [ADR 0001: Store books in one JSON file](../decisions/0001-store-books-in-one-json-file.md) and
+[ADR 0002: Validate ISBNs locally](../decisions/0002-validate-isbn-locally.md).
 
 ## 5. Building block view
 
-The three parts (`cli`, `catalog`, `isbn`) are described in
-[README › How it works](../../README.md#how-it-works).
+See [README › How it works](../../README.md#how-it-works).
 
 | block | responsibility | may use |
 |---|---|---|
@@ -44,9 +42,9 @@ The three parts (`cli`, `catalog`, `isbn`) are described in
 
 ## 9. Architecture decisions
 
-Architecture decisions are recorded as ADRs in [docs/decisions/](../decisions/). The ADR
-"Record architecture decisions" (proposed as 0003, not yet written) lists which decisions are
-made centrally.
+Architecture decisions are recorded as ADRs in [docs/decisions/](../decisions/). The list of
+decisions made centrally is in
+[ADR 0003: Record architecture decisions](../decisions/0003-record-architecture-decisions.md).
 
 ## 10. Quality requirements
 

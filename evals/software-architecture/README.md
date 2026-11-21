@@ -79,8 +79,8 @@ with the agents' wording: [campaigns/](campaigns/).
 | S03 lifecycle | 0.400 | 0.250 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 0.875 | 2 of 2 (slash) |
-| S07 setup-documented (two turns) | 0.071 | 0.000 | 0.857 | 0.875 | 2 of 2 (slash) |
+| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S07 setup-documented (two turns) | 0.071 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -108,9 +108,9 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
 - S07 (ticket 05, [campaign](campaigns/05-setup-documented.md)): on `main`, turn 1 rewrote or
   duplicated the README's architecture and wrote new ADRs into the slot the "made centrally"
   ADR needs. On the branch, documents stay in place and legacy ADRs become
-  `accepted (legacy)`; two loopholes stay open (an unmeasured goal filed in both S07 runs,
-  single proposal items dropped in two runs). Every branch run was re-run then with clean
-  isolation; S06 and S07 judge scores dropped from 1.000 to 0.875 on those dropped items.
+  `accepted (legacy)`. An earlier round filed an unmeasured goal (both S07 runs) and dropped
+  single proposal items (two runs); the final re-run did not repeat them, which two runs
+  cannot rule out. Every branch run was re-run with clean isolation.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 

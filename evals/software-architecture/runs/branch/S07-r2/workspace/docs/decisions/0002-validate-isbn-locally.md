@@ -6,9 +6,8 @@ accepted (legacy)
 
 ## Context
 
-Serves R-4 (a book is stored only if its ISBN has a valid check digit).
-
-Books are often added offline, and a wrong ISBN makes `find` miss them later.
+R-3 (an ISBN is checked before a book is stored). Books are often added offline, and a wrong
+ISBN makes `find` miss them later.
 
 ## Decision
 

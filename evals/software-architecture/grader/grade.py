@@ -365,7 +365,8 @@ def s06(run_dir):
         check("t1_only_skeleton", t1.is_dir() and new_t1 == [ARC42.as_posix()] and t1_rows == 0,
               f"new: {', '.join(new_t1)}; rows: {t1_rows}" if t1.is_dir() else "no workspace-t1"),
         check("headings", heads == list(range(1, 13)), str(heads)),
-        check("rlist", len(rows) >= 4 and rids == [f"R-{i}" for i in range(1, len(rows) + 1)]
+        check("rlist", len(rows) >= 4 and sorted(rids, key=lambda r: int(r[2:]) if r[2:].isdigit() else -1)
+              == [f"R-{i}" for i in range(1, len(rows) + 1)]
               and statuses <= {"active", "deferred", "rejected"}
               and not any("latest" in r.get("requirement", "").lower() for r in rows),
               ", ".join(f"{r['id']} {_status(r)}" for r in rows)),

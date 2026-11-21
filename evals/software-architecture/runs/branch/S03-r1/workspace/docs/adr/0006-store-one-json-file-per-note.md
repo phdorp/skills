@@ -6,37 +6,27 @@ proposed
 
 ## Context
 
-This replaces ADR-0001 (use SQLite for storage). SQLite files are binary and hard to diff and
-repair by hand, so the architect wants notes stored in a plain-text form a user can read and fix.
-
-Notes must still survive crashes (R-2, QG-1, QS-1), and the program may use only the Python
-standard library (R-3, QG-2). The standard library ships `json`, and ADR-0004 already gives an
-atomic write (temporary file, `os.fsync`, `os.replace`) that works per file.
+This ADR replaces ADR-0001 (use SQLite for storage). SQLite files are binary: they are hard to
+diff and cannot be repaired by hand. Notes must still survive crashes (R-2, QG-1, QS-1), and the
+program may use only the Python standard library (R-3, QG-2). Storage stays behind the store
+module (QG-3, QS-3; ADR-0003). Crash safety for each file follows ADR-0004 (accepted).
 
 ## Decision
 
-We will store each note as its own JSON file in one store directory, named by the note's id.
-Every write goes through the atomic write rule of ADR-0004. The store directory replaces the
-SQLite database file; its default location is not yet decided (see Consequences).
+We will store each note as one JSON file in a notes directory, named by the note's ID. Every
+write goes through the atomic write rule of ADR-0004: temporary file, `os.fsync`, `os.replace`.
+No other storage engine is used.
 
 ## Consequences
 
-A crash during a write leaves either the old note file or the new one, as ADR-0004 requires.
-Notes can be read, diffed and repaired with a text editor.
+Notes can be diffed, read and repaired with a text editor. A crash during `add` leaves either
+the old set of files or the new one (QS-1). Listing and searching read every file, which is
+slower than a query on a database; accepted for the current note counts (ADR-0005 is rejected,
+so no faster engine is planned).
 
-Harder:
+Effects on other ADRs: ADR-0003 still holds (only `notes/store.py` touches files), but its
+wording names `sqlite3` and the database file; it needs a new ADR if the architect wants it
+restated. ADR-0004 applies to every note file.
 
-- QS-1 says the store still opens after a crash. A single unreadable note file must not stop
-  the store from opening; the store has to skip and report such a file. This needs its own test.
-- There are no multi-note transactions. Operations that change several notes at once can leave
-  the store half-changed; none exist today.
-- `list` and `search` (R-1) read every file, which is slower than a SQL query on a large store.
-- The default location (`~/.notes.db` in ADR-0001) changes to a directory. The architect must
-  decide the new default path; it is not decided here.
-
-Effects on other ADRs: ADR-0001 stays `accepted` until this ADR is accepted, then becomes
-`superseded by ADR-0006`. ADR-0003 is unchanged in substance: only `notes/store.py` may touch the
-storage, but after this change that module uses `json` and file operations instead of `sqlite3`.
-ADR-0004 is unchanged; its atomic write rule now applies to each note file. ADR-0002's central
-list already names the storage engine and on-disk format, so it needs no change.
-Code in `notes/store.py` still imports `sqlite3`; it is not changed by this ADR.
+Work that follows once this is accepted: replace the SQLite code in `notes/store.py`, change
+the default location from `~/.notes.db` to a notes directory, and update QS-3's test scope.

@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Duplicate of R-4**",
+   "quote": "Repeats **R-4** (deferred, \"needs a server; revisit next year\").",
    "source": "transcript.md",
-   "reason": "The agent explicitly identifies the sync requirement as a duplicate of the deferred R-4 and proposes no new row."
+   "reason": "The agent explicitly identifies the sync requirement as a repeat of the deferred R-4."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Conflicts with R-3** (stdlib only)",
+   "quote": "Conflicts with **R-3** (standard library only) and the section 2 constraint.",
    "source": "transcript.md",
-   "reason": "The agent names R-3, the standard-library-only constraint, as conflicting with the rich dependency."
+   "reason": "For requirement 2 the agent names R-3 and the stdlib-only constraint as the conflict."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**Conflicts with accepted ADR-0001**: SQLite file",
+   "quote": "Conflicts with **ADR-0001**, which decides one binary SQLite file that \"cannot be read or repaired with a text editor\".",
    "source": "transcript.md",
-   "reason": "The agent names ADR-0001's SQLite storage as conflicting with the text-editor requirement."
+   "reason": "For requirement 3 the agent names ADR-0001 as the conflict."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "Nothing is changed yet: no R-list row, ADR, issue, or code.",
+   "quote": "Nothing has been changed yet: the procedure stops at this table so you can confirm or change each outcome.",
    "source": "transcript.md",
-   "reason": "The agent proposes an outcome for every requirement (splitting #2 with explanation), changes nothing, and asks the architect to confirm each outcome first."
+   "reason": "The table gives one outcome per requirement (duplicate of the deferred R-4, rejected, system-level, feature-level, rejected), and the agent asks for confirmation without modifying any workspace files."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1370618
+ "cost_usd": 0.09746579999999999
 }

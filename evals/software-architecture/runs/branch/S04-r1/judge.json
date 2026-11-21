@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Repeats **R-4** (deferred: \"needs a server; revisit next year\").",
+   "quote": "**Duplicate** of R-4 (deferred: \"needs a server; revisit next year\").",
    "source": "transcript.md",
-   "reason": "The agent explicitly identifies the sync requirement as a repeat of deferred R-4 and proposes no new row."
+   "reason": "The agent explicitly identifies requirement 1 as a duplicate of the deferred R-4."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Conflicts with **R-3** (rank 3, stdlib only) and the section 2 constraint.",
+   "quote": "**Rejected:** conflicts with R-3 and the stdlib-only constraint.",
    "source": "transcript.md",
-   "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the pip/rich requirement."
+   "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the rich/pip requirement."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Conflicts with accepted **ADR-0001**, which says the SQLite file \"cannot be read or repaired with a text editor\".",
+   "quote": "Conflicts with **ADR-0001** (SQLite file, which \"cannot be read or repaired with a text editor\").",
    "source": "transcript.md",
    "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "I haven't changed any files: this step ends with your confirmation.",
+   "quote": "1. Do you confirm each outcome, or change any of them?",
    "source": "transcript.md",
-   "reason": "The agent gives one outcome per requirement (repeat of deferred R-4, rejected, system-level, feature-level, rejected), asks for confirmation, and the workspace is unchanged."
+   "reason": "The agent proposed one outcome per requirement (no new row/duplicate, rejected, system-level, feature-level, rejected), asked for confirmation, and left all files unchanged."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.10798179999999999
+ "cost_usd": 0.1050258
 }

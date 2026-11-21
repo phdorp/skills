@@ -9,26 +9,22 @@
 
 ### assistant
 
-I'll start by checking the project state and loading the two skills this setup depends on.
+I'll start by checking what the project holds, since that decides which situation applies.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -print | head -100",
- "description": "Inspect project files and git state"
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100 && echo --- && find . -path ./.git -prune -o -name '*.md' -print",
+ "description": "Inspect project files, git state and docs"
 }
 ```
 
 ### tool_result
 
 ```
-cb976ba fixture
-.
+5592213 fixture
 ./README.md
-./tests
-./shelf
-./docs
 ./tests/test_shelf.py
 ./tests/__init__.py
 ./shelf/isbn.py
@@ -36,63 +32,210 @@ cb976ba fixture
 ./shelf/__main__.py
 ./shelf/cli.py
 ./shelf/__init__.py
-./docs/decisions
+./docs/decisions/0001-store-books-in-one-json-file.md
+./docs/decisions/0002-validate-isbn-locally.md
+---
+./README.md
 ./docs/decisions/0001-store-books-in-one-json-file.md
 ./docs/decisions/0002-validate-isbn-locally.md
 ```
 
-### tool_use Skill
+### tool_use Read
 
 ```json
 {
- "skill": "sa:quality-requirements"
+ "file_path": "/tmp/sa-arm-ci5rbgot/sa/skills/quality-requirements/SKILL.md"
 }
 ```
 
 ### tool_result
 
 ```
-Launching skill: sa:quality-requirements
+1	---
+2	name: quality-requirements
+3	description: Load before ranking requirements, deriving or changing quality goals or quality scenarios (ISO/IEC 25010), or checking how a new requirement affects them.
+4	---
+5	
+6	# Quality Requirements
+7	
+8	The architect owns the requirements and the quality goals; you propose, they decide. Each
+9	procedure below ends with a proposal and a question. A file changes only for what the
+10	architect has confirmed in this conversation.
+11	
+12	## Where they live
+13	
+14	All three tables sit in `docs/architecture/arc42.md`. IDs never change meaning: a new entry
+15	takes the next free number, and an entry the architect drops keeps its ID with a status.
+16	
+17	| table | section | columns |
+18	|---|---|---|
+19	| Requirements overview (the R-list) | 1 | `ID \| requirement \| rank \| status \| reason` — status `active`, `deferred` or `rejected`; deferred and rejected rows stay, with the architect's reason |
+20	| Quality goals | 1 | `ID \| goal (ISO/IEC 25010) \| from \| scenario` — `QG-n`, characteristic and sub-characteristic, the R-IDs it comes from, its `QS-n` |
+21	| Quality scenarios | 10 | see [references/quality-scenario.md](references/quality-scenario.md) |
+22	
+23	The R-list's wording is the architect's. Sharpening a requirement is a proposal you show
+24	them, never an edit you make.
+25	
+26	Deciding which new requirements enter the R-list (duplicate, consistency and direction checks,
+27	the four outcomes) is the `add-requirements` triage; at setup the first requirements go
+28	through the same triage.
+29	
+30	## Rank
+31	
+32	1. Propose an order of the active requirements, one line of reason each.
+33	2. Name every conflict between two requirements by their IDs.
+34	3. For each conflict or near-tie, ask a pairwise tie-breaker: "if only one of R-3 and R-7 can
+35	   be fully met, which?"
+36	4. Ask the architect to set the order. Use no scoring scheme (MoSCoW, weights) unless they ask.
+37	
+38	Done when the architect has the proposed order, every conflict, and the tie-breakers in front
+39	of them. A bare number in the `rank` column is the architect's order. Until they set it, a new row's
+40	rank cell holds your proposal as `4 (proposed)`, and your report asks them to set the order.
+41	
+42	## Derive goals
+43	
+44	1. For each ISO/IEC 25010 characteristic the active requirements imply, write a candidate goal:
+45	   characteristic and sub-characteristic ([references/iso-25010.md](references/iso-25010.md)),
+46	   citing the R-IDs it comes from. A characteristic with no R-ID behind it is not a candidate.
+47	2. Give each candidate a scenario in the template of
+48	   [references/quality-scenario.md](references/quality-scenario.md).
+49	3. A candidate whose measure you cannot state is an **open question** to the architect ("what
+50	   would show that R-2 is met?"), not a goal.
+51	4. Ask the architect to confirm and rank the top 3–5.
+52	5. Write only the confirmed goals and scenarios, as `QG-n` in section 1 and `QS-n` in
+53	   section 10, in the architect's order.
+54	
+55	Done when every implied characteristic is either a confirmed goal with a measured scenario or
+56	an open question in your report.
+57	
+58	## Gap question
+59	
+60	For each 25010 characteristic that no requirement supports and that the product could
+61	plausibly need, ask: "did you leave out something like <characteristic, with a one-line
+62	example for this product>?" The answer is the architect's; a new requirement it produces goes
+63	through `add-requirements`.
+64	
+65	Done when each such characteristic has been asked about once, in one list.
+66	
+67	## Goal impact
+68	
+69	Run it after the architect confirms a new system-level requirement.
+70	
+71	1. Name the quality goals the requirement strengthens and the ones it strains, by `QG-n`.
+72	2. When no goal covers its characteristic, or a measure no longer fits, propose the new goal
+73	   or changed measure with its scenario, as a question: "R-6 implies Security:
+74	   confidentiality, which no goal covers. Ad
+[... 960 chars cut]
 ```
 
-### tool_use Skill
+### tool_use Read
 
 ```json
 {
- "skill": "sa:domain-modeling"
+ "file_path": "/tmp/sa-arm-ci5rbgot/sa/skills/domain-modeling/SKILL.md"
 }
 ```
 
 ### tool_result
 
 ```
-Launching skill: sa:domain-modeling
-```
-
-### tool_use Skill
-
-```json
-{
- "skill": "sa:add-requirements"
-}
-```
-
-### tool_result
-
-```
-Launching skill: sa:add-requirements
+1	---
+2	name: domain-modeling
+3	description: Load before creating or editing any ADR (architecture decision record) or any file in docs/adr/: recording a decision, approving, rejecting, superseding. Also use when a decision is expensive to change or crosses a module boundary, and for codebase terminology or GLOSSARY.md.
+4	---
+5	
+6	# Domain Modeling
+7	
+8	Actively build and sharpen the project's domain model as you design. This is the *active* discipline: challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `GLOSSARY.md` for vocabulary is not this skill: that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)
+9	
+10	## File structure
+11	
+12	Most repos have a single context:
+13	
+14	```
+15	/
+16	├── GLOSSARY.md
+17	├── docs/
+18	│   └── adr/
+19	│       ├── 0001-event-sourced-orders.md
+20	│       └── 0002-postgres-for-write-model.md
+21	└── src/
+22	```
+23	
+24	If a `GLOSSARY-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
+25	
+26	```
+27	/
+28	├── GLOSSARY-MAP.md
+29	├── docs/
+30	│   └── adr/                          ← system-wide decisions
+31	├── src/
+32	│   ├── ordering/
+33	│   │   ├── GLOSSARY.md
+34	│   │   └── docs/adr/                 ← context-specific decisions
+35	│   └── billing/
+36	│       ├── GLOSSARY.md
+37	│       └── docs/adr/
+38	```
+39	
+40	Create files lazily: only when you have something to write. If no `GLOSSARY.md` exists, create one when the first term is resolved. ADRs go in the project's ADR directory ([ADR-FORMAT.md](./ADR-FORMAT.md)).
+41	
+42	## During the session
+43	
+44	### Challenge against the glossary
+45	
+46	When the user uses a term that conflicts with the existing language in `GLOSSARY.md`, call it out immediately. "Your glossary defines 'cancellation' as X, but you seem to mean Y. Which is it?"
+47	
+48	### Sharpen fuzzy language
+49	
+50	When the user uses vague or overloaded terms, propose a precise canonical term. "You're saying 'account': do you mean the Customer or the User? Those are different things."
+51	
+52	### Discuss concrete scenarios
+53	
+54	When domain relationships are being discussed, stress-test them with specific scenarios. Invent scenarios that probe edge cases and force the user to be precise about the boundaries between concepts.
+55	
+56	### Cross-reference with code
+57	
+58	When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible. Which is right?"
+59	
+60	### Update GLOSSARY.md inline
+61	
+62	When a term is resolved, update `GLOSSARY.md` right there. Don't batch these up: capture them as they happen. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+63	
+64	`GLOSSARY.md` should be totally devoid of implementation details. Do not treat `GLOSSARY.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
+65	
+66	## Architectural decisions
+67	
+68	The architect decides the architecture; you draft the record. ADRs use the format in
+69	[ADR-FORMAT.md](./ADR-FORMAT.md).
+70	
+71	### When a decision needs an ADR
+72	
+73	A decision is **architectural** when any of these holds:
+74	
+75	- it is expensive to change later;
+76	- it crosses a module boundary: interfaces, data formats, dependency rules, versioning, or
+77	  crosscutting conventions such as naming, units, and error handling;
+78	- it is on the project's list of decisions made centrally.
+79	
+80	The list lives in the ADR titled "Record architecture decisions". Find it by that title in
+81	the project's ADR directory ([ADR-FORMAT.md](./ADR-FORMAT.md)), or through the link in arc42 section 9 (`docs/architecture/arc42.md`); its number
+82	differs between projects. Read it before you decide anything it might cover.
+83	
+84	A decision inside one building block is left to i
+[... 2518 chars cut]
 ```
 
 ### assistant
 
-The skills are loaded. Next I'll read the README, the two existing ADRs, and the code to see which situation this project is in.
+The project has ADRs already, so it is "documented". I'll read the existing docs, the code, and the skill references I need.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in README.md docs/decisions/*.md shelf/*.py tests/test_shelf.py; do echo \"=== $f\"; cat \"$f\"; echo; done",
- "description": "Read README, ADRs, source, and tests"
+ "command": "for f in README.md docs/decisions/*.md shelf/*.py tests/test_shelf.py; do echo \"=== $f\"; cat \"$f\"; done",
+ "description": "Read README, ADRs, source and tests"
 }
 ```
 
@@ -117,13 +260,11 @@ books in one JSON file, `~/.shelf.json` (override with `SHELF_FILE`). `isbn.py` 
 and ISBN-13 check digits. `cli` calls `catalog`, never the file directly.
 
 Design decisions are in [docs/decisions/](docs/decisions/).
-
 === docs/decisions/0001-store-books-in-one-json-file.md
 # 1. Store books in one JSON file
 
 We keep the whole catalog in one JSON file, written to a temporary file and renamed into place,
 because a personal catalog is small and the standard library reads and writes JSON.
-
 === docs/decisions/0002-validate-isbn-locally.md
 # 2. Validate ISBNs locally
 
@@ -138,17 +279,14 @@ ISBNs are checked locally with their check digit before a book is stored; no onl
 ## Consequences
 
 A correctly formed but unassigned ISBN is accepted.
-
 === shelf/__init__.py
 """shelf: keep a list of the books you own."""
-
 === shelf/__main__.py
 import sys
 
 from shelf.cli import main
 
 sys.exit(main(sys.argv[1:]))
-
 === shelf/catalog.py
 """The catalog: every book, kept in one JSON file."""
 import json
@@ -181,7 +319,6 @@ def add(title, isbn=None):
 def find(text):
     text = text.lower()
     return [b for b in load() if text in b["title"].lower() or text == (b["isbn"] or "")]
-
 === shelf/cli.py
 """Command line: add, list, find."""
 import argparse
@@ -210,7 +347,6 @@ def main(argv):
         for b in books:
             print(b["title"] + (f" ({b['isbn']})" if b["isbn"] else ""))
     return 0
-
 === shelf/isbn.py
 """ISBN-10 and ISBN-13 check digits."""
 
@@ -225,7 +361,6 @@ def valid(isbn):
         total = sum(int(d) * (1 if i % 2 == 0 else 3) for i, d in enumerate(digits))
         return total % 10 == 0
     return False
-
 === tests/test_shelf.py
 import os
 import tempfile
@@ -246,19 +381,15 @@ class Shelf(unittest.TestCase):
 
     def test_add_then_find_by_title_or_isbn(self):
         catalog.add("Dune", "9780441172719")
-        self.assertEqual([b["title"]
-[... 130 chars cut]
+        self.assertEqual([b["title"] for b i
+[... 122 chars cut]
 ```
-
-### assistant
-
-The project has source code, ADRs in `docs/decisions/`, and no arc42 file, so it is the **documented** situation. Before writing anything, I need the skeleton, the ADR templates, and the quality references.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cd /tmp/sa-arm-tzcpsuw0/sa/skills && ls -R setup-architecture quality-requirements domain-modeling add-requirements && for f in setup-architecture/references/*.md quality-requirements/references/*.md domain-modeling/ADR-FORMAT.md domain-modeling/GLOSSARY-FORMAT.md; do echo \"=== $f\"; cat \"$f\"; echo; done",
+ "command": "cd /tmp/sa-arm-ci5rbgot/sa/skills && ls -R setup-architecture quality-requirements domain-modeling add-requirements | head -50 && for f in setup-architecture/references/*.md domain-modeling/ADR-FORMAT.md add-requirements/SKILL.md quality-requirements/references/quality-scenario.md; do echo \"=== $f\"; cat \"$f\"; done",
  "description": "Read skill reference templates"
 }
 ```
@@ -349,7 +480,6 @@ content lives nowhere yet starts empty, as in a fresh project.
 At setup, sections 1, 5 and 10 get their empty tables and sections 9 and 12 their links in the
 first turn. Rows follow once the architect confirms; section 5's rows follow once building
 blocks are decided.
-
 === setup-architecture/references/made-centrally-adr.md
 # "Record architecture decisions" ADR
 
@@ -367,108 +497,180 @@ proposed
 ## Context
 
 The architect decides the architecture; contributors and agents build it. <One sentence on
-what this product needs from that line, ci
-[... 10667 chars cut]
+what this product needs from that line, cit
+[... 9369 chars cut]
 ```
 
 ### assistant
 
-I have what I need. The project is **documented**: it has an ADR directory (`docs/decisions/`, two ADRs without a Status, so legacy) and source files, but no arc42 file. Turn one writes only the skeleton. The README's "How it works" already describes the building blocks, so section 5 links to it rather than copying it.
+The project is "documented": a README "How it works" section and two ADRs in `docs/decisions/`. Both ADRs have no Status, so they are legacy. Turn one writes only the arc42 skeleton, with links into the existing documents. Everything else waits for the architect's confirmation.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/architecture/arc42.md",
- "content": "# shelf: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\nSee README › [How it works](../../README.md#how-it-works).\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe ADRs live in [docs/decisions/](../decisions/). The \"Record architecture decisions\" ADR is\nplanned there as `0003-record-architecture-decisions.md` and is written once the architect confirms\nthe proposal.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/architecture/arc42.md",
+ "content": "# shelf: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\nThe command line and the catalog file (`~/.shelf.json`, or the path in `SHELF_FILE`) are described in [README › How it works](../../README.md#how-it-works).\n\n## 4. Solution strategy\n\nThe catalog is one JSON file: [ADR 0001](../decisions/0001-store-books-in-one-json-file.md). ISBNs are checked locally: [ADR 0002](../decisions/0002-validate-isbn-locally.md).\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\nThe parts as they are today are described in [README › How it works](../../README.md#how-it-works).\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe decision records are in [docs/decisions/](../decisions/). The ADR \"Record architecture decisions\" is linked here once the architect confirms its proposal.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-867pybnt/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-xbrq3bz2/project/docs/architecture/arc42.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "cat /tmp/sa-arm-ci5rbgot/sa/skills/quality-requirements/references/iso-25010.md | head -60; ls docs/architecture; python3 -I -c \"\nimport sys; sys.path.insert(0,'.')\nfrom shelf import catalog, isbn\nprint(isbn.valid('0-441-17271-7'), isbn.valid('0441172717'))\n\"",
+ "description": "Check ISO 25010 names and verify ISBN behaviour"
+}
+```
+
+### tool_result
+
+```
+# ISO/IEC 25010:2023 product quality model
+
+Nine characteristics, each with its sub-characteristics. Use it as a checklist so no kind of
+quality is forgotten; a goal names one characteristic and, where it helps, one
+sub-characteristic ("Reliability: fault tolerance"). The meanings below are short paraphrases;
+the standard is the authority. Worked examples of goals and scenarios:
+[quality.arc42.org](https://quality.arc42.org/) (link, do not copy).
+
+| characteristic | sub-characteristic | the degree to which … |
+|---|---|---|
+| Functional suitability | functional completeness | the functions cover the specified tasks and objectives |
+| | functional correctness | results are correct and precise |
+| | functional appropriateness | the functions help users reach their objectives |
+| Performance efficiency | time behaviour | response and processing times meet the need |
+| | resource utilisation | the amounts and types of resources used meet the need |
+| | capacity | the maximum limits meet the need |
+| Compatibility | co-existence | it shares an environment with other products without harm |
+| | interoperability | it exchanges information with other systems and uses it |
+| Interaction capability | appropriateness recognisability | users can tell whether it fits their needs |
+| | learnability | users can learn to use it in a given time |
+| | operability | it is easy to operate and control |
+| | user error protection | it prevents operation errors |
+| | user engagement | it presents functions and information inviting use |
+| | inclusivity | people of varied backgrounds and abilities can use it |
+| | user assistance | users with the widest range of characteristics reach their goals |
+| | self-descriptiveness | it makes its capabilities apparent without other help |
+| Reliability | faultlessness | it performs specified functions without fault in normal operation |
+| | availability | it is operational and accessible when needed |
+| | fault tolerance | it operates as intended despite hardware or software faults |
+| | recoverability | after a failure it recovers the data and re-establishes the desired state |
+| Security | confidentiality | data is accessible only to those authorised |
+| | integrity | its state and data are protected from unauthorised change |
+| | non-repudiation | actions or events can be proven to have taken place |
+| | accountability | actions can be traced uniquely to the entity that took them |
+| | authenticity | the identity of a subject or resource can be proven |
+| | resistance | it sustains operation while under attack |
+| Maintainability | modularity | a change to one component has minimal impact on others |
+| | reusability | an asset can be used in more than one system |
+| | analysability | the impact of a change, or the cause of a failure, can be found |
+| | modifiability | it can be changed without introducing defects or degrading quality |
+| | testability | test criteria can be set and tests run to check them |
+| Flexibility | adaptability | it can be adapted to different hardware, software or environments |
+| | scalability | it can handle growing or shrinking workloads |
+| | installability | it can be installed and uninstalled in a given environment |
+| | replaceability | it can replace another product for the same purpose |
+| Safety | operational constraint | it keeps operation within safe parameters |
+| | risk identification | it can identify courses of events that expose life, property or environment to risk |
+| | fail safe | it places itself in a safe mode on failure |
+| | hazard warning | it warns of unacceptable risks |
+| | safe integration | it keeps safety when integrated with other components |
+arc42.md
+True True
 ```
 
 ### assistant
 
-The skeleton is in place at `docs/architecture/arc42.md`. This is the only file I've written. Here is my proposal for your confirmation.
+I wrote the arc42 skeleton at `docs/architecture/arc42.md`. It is the only file I changed. Nothing is committed. Your five requirements are proposals until you confirm them.
 
-**Situation: documented.** The project has source code and an ADR directory (`docs/decisions/`), so this is an existing architecture. The two ADRs have no Status field, so they are legacy. The ADR directory is `docs/decisions/`, not `docs/adr/`, and I've used that path.
+**Situation:** documented. The README has a "How it works" section, and the decision records live in `docs/decisions/`, not `docs/adr/`. The new record would be `0003`.
 
-## Triage (proposed outcomes)
+## 1. Triage (proposal)
 
-| Req | Proposed outcome | Reason |
-|---|---|---|
-| 1. Add, list, find by title or ISBN from the CLI | system-level | It defines the core use and the cli / catalog / isbn split. |
-| 2. Catalog survives a crash mid-write | system-level | It constrains how the file is written, and ADR 0001 already decides a temp file plus rename. |
-| 3. Standard library only | system-level | It is a dependency rule, and ADR 0001 relies on it. Alternatively, it could go in section 2 (Constraints) if you see it as fixed rather than a requirement. Your call. |
-| 4. ISBN checked before storing | system-level | It is a data-integrity rule. ADR 0002 already decides it, so there is no conflict. |
-| 5. Adding a command touches only cli.py and one new module | system-level | It constrains the module structure (modifiability). |
+| ID | your requirement (sharper wording) | outcome | reason |
+|---|---|---|---|
+| R-1 | Readers add, list and find books by title or ISBN from the command line. | system-level | It is the product's purpose and fixes the building blocks (cli, catalog, isbn). No duplicate, no conflict. |
+| R-2 | A crash during `add` never leaves the catalog unreadable or half-written. | system-level | Shapes storage. ADR 0001 already writes a temp file and renames it. |
+| R-3 | Runs with only the Python standard library. | system-level | Mandated technology. Also belongs in section 2 as a constraint once confirmed. |
+| R-4 | A book with an ISBN is stored only if its check digit is valid. | system-level | Matches ADR 0002. Open question: ISBN is optional today, so the rule applies only when one is given. |
+| R-5 | Adding a command changes only `cli.py` and one new module. | system-level | Shapes module structure. Not met today: all three commands live inline in `cli.py`. |
 
-No duplicates, and no conflicts between active requirements. No conflicts with ADR 0001 or 0002. Requirements 2, 3 and 4 match both ADRs.
+## 2. Rank (proposed, you set the order)
 
-## Rank (proposed order)
+1. R-2 (lost data is irreversible)
+2. R-4 (wrong ISBNs make `find` miss books later)
+3. R-1 (core use)
+4. R-5 (modifiability)
+5. R-3 (constraint; hard to fail, easy to verify)
 
-1. **R-1**: the product's purpose.
-2. **R-2**: losing the catalog is the worst failure.
-3. **R-4**: a wrong ISBN makes `find` miss the book later.
-4. **R-3**: a constraint on how the thing is built.
-5. **R-5**: a constraint on how it is extended.
+Tie-breakers to answer:
+- R-2 vs R-4: "if only one can be fully met, which?"
+- R-1 vs R-5: "if only one can be fully met this release, which?"
 
-Near-tie to settle: **R-1 vs R-2**. If only one of R-1 and R-2 can be fully met, which?
+## 3. Quality goals (candidates, ISO/IEC 25010:2023)
 
-## Quality goals (candidates, for you to confirm and rank)
+| ID | goal | from | scenario (measure) |
+|---|---|---|---|
+| QG-1 | Reliability: recoverability | R-2 | QS-1: process killed with SIGKILL during `add`. Response: catalog loads as either the old or the new list. Measure: 0 unreadable catalogs in 100 kill trials. |
+| QG-2 | Functional suitability: functional correctness | R-4 | QS-2: `add` with an invalid ISBN. Response: rejected, nothing stored. Measure: 0 stored from a fixed set of 1000 wrong-check-digit ISBNs. |
+| QG-3 | Flexibility: installability | R-3 | QS-3: a clean Python 3 with no pip installs. Response: `python3 -m shelf list` runs. Measure: 0 non-stdlib imports, 0 install steps. |
+| QG-4 | Maintainability: modifiability | R-5 | QS-4: a dummy command is added. Response: only `cli.py` and one new module change. Measure: 2 files changed. |
 
-| Candidate | From | Proposed scenario (measure) |
-|---|---|---|
-| QG-1 Reliability: recoverability | R-2 | the process is killed (SIGKILL) during `add`; the store either has the old or the new content and still opens. Measure: 0 unreadable stores in 100 trials |
-| QG-2 Functional correctness | R-4 | `add` is given a malformed ISBN. Measure: 0 invalid ISBNs stored in a fixed set of 100 malformed ISBNs |
-| QG-3 Flexibility: installability | R-3 | a fresh Python 3 install with no packages added. Measure: all tests pass with 0 third-party packages installed |
-| QG-4 Maintainability: modifiability | R-5 | a sample new command is added. Measure: the diff touches only cli.py and one new module |
+**Open question:** what would show R-1 is met? A candidate is "every README example and an add-then-find test of 100 books return the expected result", but you should set it.
 
-R-1 implies functional completeness too, but I have no measure for it yet. That is an open question below.
+## 4. Gap questions (each asked once)
 
-**Open questions:**
-- What is the minimum supported Python version? QG-3 needs it.
-- Does "survives" include power loss? Killing the process does not test that. Power-loss safety needs an `fsync` step, which the current code lacks.
-- What measure shows R-1 is met? Passing an acceptance test for each README command is my suggestion.
+- Security, confidentiality: is the catalog file readable by other users on a shared machine?
+- Performance efficiency, time behaviour: every command loads the whole file. How many books must it handle?
+- Usability, user error protection: should errors such as an invalid ISBN give more guidance than one line?
 
-## Gap questions
+## 5. Existing documents
 
-- Did you leave out **capacity** (performance efficiency)? For example, the largest catalog the file must hold. ADR 0001 assumes it is small.
-- Did you leave out **confidentiality** (security)? The catalog is plain JSON in the home directory.
-- Did you leave out **interoperability**? For example, exporting the catalog to other tools.
+- Section 3 and section 5 link to README › How it works.
+- Section 4 links to ADR 0001 and ADR 0002.
+- Section 9 links to `docs/decisions/`.
+- Section 12 holds the no-glossary line.
 
-## Legacy ADRs (offered as one batch)
+The README and the ADRs stay as they are.
 
-- **0001 (store books in one JSON file)**: Context would cite R-2, R-3. Status `accepted (legacy)`. The Decision text stays as it is.
-- **0002 (validate ISBNs locally)**: Context would cite R-4. Status `accepted (legacy)`. The Decision text stays as it is.
+## 6. Legacy ADRs (upgrade in one batch, Status `accepted (legacy)`, Decision text unchanged)
 
-These are only offered. I have not upgraded them.
+- **0001 Store books in one JSON file:** add Context, Consequences, and the IDs R-2 and R-3.
+- **0002 Validate ISBNs locally:** add Status and the IDs R-1 and R-4. Its Context already gives the reason.
 
-## Decisions made centrally (draft for ADR 0003)
+## 7. Decisions made centrally (draft for "Record architecture decisions", `0003`, status `proposed`)
 
-Planned as `docs/decisions/0003-record-architecture-decisions.md`, status `proposed`.
+Decided centrally:
+- storage format and location (ADR 0001, already decided);
+- the dependency rule: `cli` calls `catalog` and `isbn`, and only `catalog` touches the file; a command module is wired in by `cli.py` only;
+- third-party dependencies: none (R-3);
+- versioning of the CLI and the catalog file (the JSON has no version field today);
+- crosscutting conventions: error output to stderr, exit code 1 on invalid input.
 
-**Decided centrally:**
-- Storage format: covered by ADR 0001. The catalog file has no version field, so versioning the file format needs a decision.
-- Dependency rule: cli calls catalog and isbn; only catalog touches the file. The README already states this.
-- Canonical ISBN form: hyphens kept or stripped? `find` compares raw strings, so `add --isbn 0-441-17271-7` followed by `find 0441172717` returns nothing. This is a bug or a convention gap, and I have not fixed it.
-- Error handling: messages to stderr and exit code 1, as the CLI does now.
-- Third-party dependencies: none, if R-3 is confirmed.
+Left to the building blocks: internal helpers, parsing internals, test layout.
 
-**Left to the building blocks:** internal helpers, argparse structure, test layout.
+## 8. Things I noticed in the code (facts for R-2 and R-1, not fixed)
 
-## Question
+- `catalog.save` does not `fsync` before the rename, so a power loss can still leave an empty file. `load` raises on a corrupt file, and two concurrent `add`s can lose a book. Whether power loss is in scope is your call.
+- `find` compares ISBNs as raw strings. A book added as `0-441-17271-7` is not found by `0441172717`, although both forms are valid.
 
-Please confirm or change:
-1. The triage outcomes, and whether R-3 belongs in the R-list or in section 2.
-2. The rank, and your answer to the R-1 vs R-2 near-tie.
-3. Which of QG-1 to QG-4 you want, and the measures. Also the open questions above.
-4. The gap questions.
-5. Whether to upgrade the two legacy ADRs.
-6. The draft list for ADR 0003.
+## Questions for you
+
+1. Confirm, change or reject each triage outcome. Is an ISBN required on `add`, or optional?
+2. Set the rank, or answer the two tie-breakers.
+3. Confirm, change or drop QG-1 to QG-4 and their measures, and answer the R-1 question.
+4. Answer the three gap questions.
+5. Confirm the legacy ADR upgrade (0001 and 0002).
+6. Approve the `0003` draft list, or change it.
+
+Once you confirm, I will write the R-list, goals, scenarios, legacy ADR upgrades and `0003` as `proposed`. `0003` stays `proposed` until you approve its text.
 
 ### result (success)
 
@@ -481,13 +683,13 @@ I'm offline after this, so finish without asking me again.
 
 ### assistant
 
-Everything is confirmed except the quality goals without a measure, which stay open. I'll read the files I need to change, then write the R-list, goals, scenarios, the two legacy ADR upgrades, and the draft ADR 0003.
+Your confirmation covers all four quality goals, since each has a measure. Before I write, I'll re-read the three files I'm about to change.
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/architecture/arc42.md"
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/architecture/arc42.md"
 }
 ```
 
@@ -516,45 +718,47 @@ Everything is confirmed except the quality goals without a measure, which stay o
 20	
 21	## 3. Context and scope
 22	
-23	## 4. Solution strategy
+23	The command line and the catalog file (`~/.shelf.json`, or the path in `SHELF_FILE`) are described in [README › How it works](../../README.md#how-it-works).
 24	
-25	## 5. Building block view
+25	## 4. Solution strategy
 26	
-27	See README › [How it works](../../README.md#how-it-works).
+27	The catalog is one JSON file: [ADR 0001](../decisions/0001-store-books-in-one-json-file.md). ISBNs are checked locally: [ADR 0002](../decisions/0002-validate-isbn-locally.md).
 28	
-29	| block | responsibility | may use |
-30	|---|---|---|
-31	
-32	## 6. Runtime view
+29	## 5. Building block view
+30	
+31	| block | responsibility | may use |
+32	|---|---|---|
 33	
-34	## 7. Deployment view
+34	The parts as they are today are described in [README › How it works](../../README.md#how-it-works).
 35	
-36	## 8. Crosscutting concepts
+36	## 6. Runtime view
 37	
-38	## 9. Architecture decisions
+38	## 7. Deployment view
 39	
-40	The ADRs live in [docs/decisions/](../decisions/). The "Record architecture decisions" ADR is
-41	planned there as `0003-record-architecture-decisions.md` and is written once the architect confirms
-42	the proposal.
+40	## 8. Crosscutting concepts
+41	
+42	## 9. Architecture decisions
 43	
-44	## 10. Quality requirements
+44	The decision records are in [docs/decisions/](../decisions/). The ADR "Record architecture decisions" is linked here once the architect confirms its proposal.
 45	
-46	| ID | goal | stimulus | environment | response | measure |
-47	|---|---|---|---|---|---|
-48	
-49	## 11. Risks and technical debt
+46	## 10. Quality requirements
+47	
+48	| ID | goal | stimulus | environment | response | measure |
+49	|---|---|---|---|---|---|
 50	
-51	## 12. Glossary
+51	## 11. Risks and technical debt
 52	
-53	`GLOSSARY.md` is created with the first resolved term.
+53	## 12. Glossary
 54	
+55	`GLOSSARY.md` is created with the first resolved term.
+56	
 ```
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/decisions/0001-store-books-in-one-json-file.md"
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/decisions/0001-store-books-in-one-json-file.md"
 }
 ```
 
@@ -572,7 +776,7 @@ Everything is confirmed except the quality goals without a measure, which stay o
 
 ```json
 {
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/decisions/0002-validate-isbn-locally.md"
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/decisions/0002-validate-isbn-locally.md"
 }
 ```
 
@@ -595,93 +799,130 @@ Everything is confirmed except the quality goals without a measure, which stay o
 14	
 ```
 
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/architecture/arc42.md",
+ "content": "# shelf: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Readers add, list and find books by title or ISBN from the command line. | 3 | active | The product's purpose; it fixes the building blocks (cli, catalog, isbn). |\n| R-2 | The catalog survives a crash mid-write. | 1 | active | Lost data is irreversible; ADR 0001 writes a temporary file and renames it. |\n| R-3 | Runs with only the Python standard library. | 5 | active | Mandated technology; checked by the import list. |\n| R-4 | An ISBN is checked before a book is stored. | 2 | active | Wrong ISBNs make `find` miss books later; ADR 0002. |\n| R-5 | Adding a command touches only cli.py and one new module. | 4 | active | Shapes the module structure. |\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Reliability: recoverability | R-2 | QS-1 |\n| QG-2 | Functional suitability: functional correctness | R-4 | QS-2 |\n| QG-3 | Flexibility: installability | R-3 | QS-3 |\n| QG-4 | Maintainability: modifiability | R-5 | QS-4 |\n\n### Stakeholders\n\n## 2. Constraints\n\nOnly the Python standard library may be used (R-3).\n\n## 3. Context and scope\n\nThe command line and the catalog file (`~/.shelf.json`, or the path in `SHELF_FILE`) are described in [README › How it works](../../README.md#how-it-works).\n\n## 4. Solution strategy\n\nThe catalog is one JSON file: [ADR 0001](../decisions/0001-store-books-in-one-json-file.md). ISBNs are checked locally: [ADR 0002](../decisions/0002-validate-isbn-locally.md).\n\n## 5. Building block view\n\n| block | responsibility | may use |\n|---|---|---|\n\nThe parts as they are today are described in [README › How it works](../../README.md#how-it-works).\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe decision records are in [docs/decisions/](../decisions/). The ADR [3. Record architecture decisions](../decisions/0003-record-architecture-decisions.md) (proposed) defines which decisions are made centrally.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the catalog loads with either the old or the new book list, never a partial one | 0 unreadable catalogs in 100 kill trials |\n| QS-2 | QG-2 | `add` is given an ISBN with a wrong check digit | normal operation | the book is rejected with exit code 1 and nothing is stored | 0 stored from a fixed set of 1000 wrong-check-digit ISBNs |\n| QS-3 | QG-3 | a clean Python 3 install with no pip packages runs `python3 -m shelf list` | clean environment | the command runs | 0 non-standard-library imports, 0 install steps |\n| QS-4 | QG-4 | a dummy command is added | development | only cli.py and one new module change | 2 files changed |\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-xbrq3bz2/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/decisions/0001-store-books-in-one-json-file.md",
+ "content": "# 1. Store books in one JSON file\n\n## Status\n\naccepted (legacy)\n\n## Context\n\nThe catalog must survive a crash during a write (R-2) and run with only the Python standard\nlibrary (R-3). This record was written without a context section; the context is added at\nupgrade.\n\n## Decision\n\nWe keep the whole catalog in one JSON file, written to a temporary file and renamed into place,\nbecause a personal catalog is small and the standard library reads and writes JSON.\n\n## Consequences\n\nThe whole file is rewritten on every change, which is simple but suits only small catalogs. The\nrename gives crash safety against a killed process, not against power loss: the file is not\nsynced before the rename (see QG-1).\n"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-xbrq3bz2/project/docs/decisions/0001-store-books-in-one-json-file.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/decisions/0002-validate-isbn-locally.md",
+ "content": "# 2. Validate ISBNs locally\n\n## Status\n\naccepted (legacy)\n\n## Context\n\nBooks are often added offline, and a wrong ISBN makes `find` miss them later (R-1, R-4).\n\n## Decision\n\nISBNs are checked locally with their check digit before a book is stored; no online lookup.\n\n## Consequences\n\nA correctly formed but unassigned ISBN is accepted. The check applies only when an ISBN is given;\nwhether an ISBN is required is still open for the architect (see the report).\n"
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-xbrq3bz2/project/docs/decisions/0002-validate-isbn-locally.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-xbrq3bz2/project/docs/decisions/0003-record-architecture-decisions.md",
+ "content": "# 3. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. The product needs the\nline drawn here so that the catalog survives crashes (R-2, QG-1), ISBNs are checked before storing\n(R-4, QG-2), the program runs on the standard library alone (R-3, QG-3), and a new command changes\nonly cli.py and one new module (R-5, QG-4).\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/decisions/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- storage engine and on-disk data format: one JSON file (ADR 0001);\n- interfaces and the dependency rule: `cli` calls `catalog` and `isbn`; only `catalog` touches the\n  file; a command module is wired in by `cli.py` only;\n- third-party dependencies: none; standard library only (R-3);\n- versioning of the CLI and the catalog file (the JSON has no version field today);\n- crosscutting conventions: error output to stderr, exit code 1 on invalid input.\n\nLeft to the building blocks (no ADR):\n\n- internal helpers and the structure inside one block;\n- parsing internals and test layout.\n\n## Consequences\n\nWork that depends on a decision on the list waits until its ADR is accepted.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-xbrq3bz2/project/docs/decisions/0003-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "git status --short && grep -c '^| R-\\|^| QG-\\|^| QS-' docs/architecture/arc42.md",
+ "description": "Verify changed files and table row counts"
+}
+```
+
+### tool_result
+
+```
+ M docs/decisions/0001-store-books-in-one-json-file.md
+ M docs/decisions/0002-validate-isbn-locally.md
+?? docs/architecture/
+?? docs/decisions/0003-record-architecture-decisions.md
+?? shelf/__pycache__/
+13
+```
+
 ### assistant
 
-I've read the current files. Now I'll write the arc42 file with the confirmed rows, the two ADR upgrades, and the draft ADR 0003. The architect didn't explicitly confirm the decisions list, so ADR 0003 is written as `proposed`, which is the required status anyway.
+My earlier ISBN check created `shelf/__pycache__/`. I'll remove it, since I made it.
 
-### tool_use Write
+### tool_use Bash
 
 ```json
 {
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/architecture/arc42.md",
- "content": "# shelf: architecture\n\nStructured after the arc42 template (https://arc42.org). Empty sections are filled when needed.\n\n## 1. Introduction and goals\n\n### Requirements overview\n\n| ID | requirement | rank | status | reason |\n|---|---|---|---|---|\n| R-1 | Readers add, list and find books by title or ISBN from the command line. | 1 | active | The core use; it defines the cli / catalog / isbn split. |\n| R-2 | The catalog survives a crash mid-write. | 2 | active | Losing the catalog is the worst failure. |\n| R-3 | Runs with only the Python standard library. | 4 | active | A constraint on how it is built; ADR 0001 relies on it. |\n| R-4 | An ISBN is checked before a book is stored. | 3 | active | A wrong ISBN makes `find` miss the book later; ADR 0002. |\n| R-5 | Adding a command touches only cli.py and one new module. | 5 | active | A constraint on extension (modifiability). |\n\n### Quality goals\n\n| ID | goal (ISO/IEC 25010) | from | scenario |\n|---|---|---|---|\n| QG-1 | Reliability: recoverability | R-2 | QS-1 |\n| QG-2 | Functional correctness | R-4 | QS-2 |\n| QG-3 | Flexibility: installability | R-3 | QS-3 |\n| QG-4 | Maintainability: modifiability | R-5 | QS-4 |\n\n### Stakeholders\n\n## 2. Constraints\n\n## 3. Context and scope\n\n## 4. Solution strategy\n\n## 5. Building block view\n\nSee README › [How it works](../../README.md#how-it-works).\n\n| block | responsibility | may use |\n|---|---|---|\n\n## 6. Runtime view\n\n## 7. Deployment view\n\n## 8. Crosscutting concepts\n\n## 9. Architecture decisions\n\nThe ADRs live in [docs/decisions/](../decisions/). The\n[Record architecture decisions](../decisions/0003-record-architecture-decisions.md) ADR is\nproposed and waits for the architect's approval of its text.\n\n## 10. Quality requirements\n\n| ID | goal | stimulus | environment | response | measure |\n|---|---|---|---|---|---|\n| QS-1 | QG-1 | the process is killed (SIGKILL) during `add` | normal operation | the catalog either has the old or the new content, and still opens | 0 unreadable catalogs in 100 trials |\n| QS-2 | QG-2 | `add` is given a malformed ISBN | normal operation | the add is refused with an error; nothing is stored | 0 invalid ISBNs stored in a fixed set of 100 malformed ISBNs |\n| QS-3 | QG-3 | the tests and the CLI are run on a fresh Python 3 install | no third-party packages installed | the tests pass and the CLI runs | all tests pass with 0 third-party packages installed |\n| QS-4 | QG-4 | a sample new command is added | normal development | the change touches only cli.py and one new module | the diff touches only cli.py and one new module |\n\n## 11. Risks and technical debt\n\n## 12. Glossary\n\n`GLOSSARY.md` is created with the first resolved term.\n"
+ "command": "rm -rf shelf/__pycache__ && git status --short",
+ "description": "Remove cache directory created by my check"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-867pybnt/project/docs/architecture/arc42.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/decisions/0001-store-books-in-one-json-file.md",
- "content": "# 1. Store books in one JSON file\n\n## Status\n\naccepted (legacy)\n\n## Context\n\nThe catalog must survive a crash mid-write (R-2, QG-1), and the tool must run on the standard\nlibrary alone (R-3, QG-3).\n\n## Decision\n\nWe keep the whole catalog in one JSON file, written to a temporary file and renamed into place,\nbecause a personal catalog is small and the standard library reads and writes JSON.\n\n## Consequences\n\nEach command reads the whole file, and each save rewrites the whole file.\n"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-867pybnt/project/docs/decisions/0001-store-books-in-one-json-file.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/decisions/0002-validate-isbn-locally.md",
- "content": "# 2. Validate ISBNs locally\n\n## Status\n\naccepted (legacy)\n\n## Context\n\nBooks are often added offline, and a wrong ISBN makes `find` miss them later (R-4, QG-2).\n\n## Decision\n\nISBNs are checked locally with their check digit before a book is stored; no online lookup.\n\n## Consequences\n\nA correctly formed but unassigned ISBN is accepted.\n"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-867pybnt/project/docs/decisions/0002-validate-isbn-locally.md has been updated successfully. (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-867pybnt/project/docs/decisions/0003-record-architecture-decisions.md",
- "content": "# 3. Record architecture decisions\n\n## Status\n\nproposed\n\n## Context\n\nThe architect decides the architecture; contributors and agents build it. The catalog must\nsurvive crashes (R-2, QG-1), and the tool must run with only the standard library (R-3, QG-3),\nso the central decisions must be recorded where builders will find them before they change the\ncode.\n\n## Decision\n\nWe record architecture decisions as ADRs in `docs/decisions/`, in Nygard form.\n\nDecided centrally (needs an ADR the architect accepts):\n\n- Storage format: one JSON file (ADR 0001). Its versioning is open: the file has no version field.\n- Interfaces and the dependency rule: cli calls catalog and isbn; only catalog touches the file.\n- Versioning of the file format and of the CLI commands.\n- Canonical ISBN form, hyphens kept or stripped: open. `find` currently compares the raw strings.\n- Error handling: messages go to stderr, with exit code 1, as cli.py does now.\n- Third-party dependencies: none (R-3).\n\nLeft to the building blocks (no ADR):\n\n- Internal helpers, the argparse structure, and the test layout.\n\n## Consequences\n\nWork that depends on a decision on this list waits until its ADR is accepted. ADRs 0001 and 0002\nare legacy-accepted and their decisions are unchanged. Changing the ISBN form and the file-format\nversioning both wait for the architect's decision.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-867pybnt/project/docs/decisions/0003-record-architecture-decisions.md (file state is current in your context — no need to Read it back)
+ M docs/decisions/0001-store-books-in-one-json-file.md
+ M docs/decisions/0002-validate-isbn-locally.md
+?? docs/architecture/
+?? docs/decisions/0003-record-architecture-decisions.md
 ```
 
 ### assistant
 
-The architecture documentation is written, and nothing is committed. Your confirmed items are in place, and the one open goal is listed below.
+The architecture documentation is written. Nothing is committed.
 
-**Files written**
-- `docs/architecture/arc42.md`: the R-list (R-1 to R-5, active, ranked 1, 2, 4, 3, 5), quality goals QG-1 to QG-4 with their scenarios QS-1 to QS-4, and section 9 linking the new ADR.
-- `docs/decisions/0001-store-books-in-one-json-file.md` and `0002-validate-isbn-locally.md`: upgraded to `accepted (legacy)` with Status and Context citing R-2/QG-1, R-3/QG-3 and R-4/QG-2. Decision text is unchanged.
-- `docs/decisions/0003-record-architecture-decisions.md`: new, status `proposed`.
+**Files**
+- `docs/architecture/arc42.md` (new): R-1 to R-5 with the confirmed order (R-2, R-4, R-1, R-5, R-3), QG-1 to QG-4 with their measures, QS-1 to QS-4 in section 10, the stdlib-only constraint in section 2, and links to the README and ADRs.
+- `docs/decisions/0001-store-books-in-one-json-file.md`: upgraded to `accepted (legacy)`. I added a Status, a Context citing R-2 and R-3, and a Consequences section. The Decision text is unchanged.
+- `docs/decisions/0002-validate-isbn-locally.md`: upgraded to `accepted (legacy)`. I added a Status and cited R-1 and R-4 in the Context. The Decision text is unchanged.
+- `docs/decisions/0003-record-architecture-decisions.md` (new): status `proposed`. It lists the decisions made centrally and links from section 9.
 
-The gap questions got no answer that adds a requirement, so the R-list has no new rows.
+**Choices I made that you can redirect**
+- The R-list keeps your original wording. I did not apply the sharper wordings from my proposal, because you confirmed the triage, not the rewording.
+- Consequences text in the upgraded ADRs is my draft. The 0001 Consequences say the rename does not protect against power loss, because there is no fsync.
+- 0002's Consequences now note that the ISBN check applies only when an ISBN is given.
 
-**Choices I made**
-- The triage put R-3 in the R-list, not in section 2 (Constraints), as proposed.
-- Each QS measure is a countable test, using the candidate measures from my proposal.
-- ADR 0003's decision list is my draft. You confirmed the other items, but not this list explicitly.
+**Still open for you**
+- **R-1 measure:** nothing measures "readers add, list and find books" yet, so there is no QG for it. A candidate is "every README example and an add-then-find test of 100 books return the expected result."
+- **Is an ISBN required on `add`?** Today it is optional, so R-4 only applies when one is given. You did not answer this, so I left it open.
+- **`find` by ISBN is exact-string:** `0-441-17271-7` is not found by `0441172717`, though both are valid. This is a code issue to ticket later, not an architecture decision.
 
-**Still open**
-- **Goal for R-1 (functional completeness):** no measure yet, so no QG row. Suggested measure: every README command passes an acceptance test.
-- **Minimum Python version:** not stated. QS-3 doesn't need it, but you will want it written down.
-- **Power-loss durability:** QS-1 tests a killed process. `save()` has no `fsync` before the rename, so a power cut is not covered. This is a gap against R-2.
-- **ISBN form bug:** `find` compares raw strings. `add --isbn 0-441-17271-7` followed by `find 0441172717` returns nothing. I have not fixed it. It is the canonical-ISBN decision in ADR 0003.
+**Not yet met by the code (for later tickets):** R-5 fails today, since all commands are inline in `cli.py`. R-2 is only partly met (no fsync, and concurrent `add`s can lose a book).
 
-**Waiting for you**
-- **ADR 0003** (`docs/decisions/0003-record-architecture-decisions.md`): approve or change its decision list. Until then, the ISBN-form change and the file-format versioning wait.
+**Status of the ADRs:** 0003 waits for your approval of its text. The work that depends on it is any decision on its list: the storage format, the dependency rule, the stdlib-only rule, and versioning.
 
 ### result (success)

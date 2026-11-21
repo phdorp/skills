@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **ADR-0004, \"Export notes as one JSON document via `notes export`\":** approve or reject it.",
+   "quote": "It is `proposed`, not accepted, so the team cannot start building until the architect approves it.",
    "source": "transcript.md",
-   "reason": "The final message presents ADR-0004 under 'Waiting for the architect' and asks the architect to approve or reject it, so it is not presented as accepted."
+   "reason": "The final message presents ADR 0004 as proposed and waiting on the architect's approval."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "\"file_path\": \"/tmp/sa-eval-4n6euo3k/project/docs/adr/0002-record-architecture-decisions.md\"",
+   "quote": "=== docs/adr/0002-record-architecture-decisions.md",
    "source": "transcript.md",
-   "reason": "The agent read ADR-0002 before writing ADR-0004."
+   "reason": "The agent read ADR-0002 before drafting the decision, and its full text appears in the tool output."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "The export may use only the standard library (R-3, QG-2), and it may reach notes only through `Store` (ADR-0003, QS-3).",
-   "source": "workspace/docs/adr/0004-export-notes-as-json.md",
-   "reason": "The ADR's Context cites requirement and quality IDs (R-3, QG-2, QS-3) that the decision serves."
+   "quote": "may use only the standard library (R-3, QG-2)",
+   "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
+   "reason": "The Context cites requirement and quality-goal IDs (R-2, QG-1, R-3, QG-2) for the forces the decision serves."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1384738
+ "cost_usd": 0.1258018
 }

@@ -10,7 +10,7 @@ Please integrate them into the project.
 
 ### assistant
 
-I'll load the two required skills and read the architecture doc first.
+I'll load the two skills the procedure requires and check for the architecture doc first.
 
 ### tool_use Skill
 
@@ -40,11 +40,55 @@ Launching skill: sa:quality-requirements
 Launching skill: sa:domain-modeling
 ```
 
+### tool_use Bash
+
+```json
+{
+ "command": "ls -la && ls -la docs 2>/dev/null; ls -R docs 2>/dev/null | head -100; test -f docs/architecture/arc42.md && echo \"ARC42 PRESENT\" || echo \"ARC42 MISSING\"",
+ "description": "List project files and check for arc42.md"
+}
+```
+
+### tool_result
+
+```
+total 32
+drwxr-xr-x 6 root root 4096 Nov 21 17:12 .
+drwx------ 3 root root 4096 Nov 21 17:12 ..
+drwxr-xr-x 8 root root 4096 Nov 21 17:12 .git
+-rw-r--r-- 1 root root  149 Nov 21 11:54 GLOSSARY.md
+-rw-r--r-- 1 root root  330 Nov 21 11:54 README.md
+drwxr-xr-x 4 root root 4096 Nov 21 11:54 docs
+drwxr-xr-x 2 root root 4096 Nov 21 11:54 notes
+drwxr-xr-x 2 root root 4096 Nov 21 11:54 tests
+total 16
+drwxr-xr-x 4 root root 4096 Nov 21 11:54 .
+drwxr-xr-x 6 root root 4096 Nov 21 17:12 ..
+drwxr-xr-x 2 root root 4096 Nov 21 11:55 adr
+drwxr-xr-x 2 root root 4096 Nov 21 11:55 architecture
+docs:
+adr
+architecture
+
+docs/adr:
+0001-use-sqlite-for-storage.md
+0002-record-architecture-decisions.md
+0003-cli-reaches-storage-only-through-store.md
+
+docs/architecture:
+arc42.md
+ARC42 PRESENT
+```
+
+### assistant
+
+The skills are loaded and `arc42.md` is present. Next I'll read the architecture doc, the ADRs, and the glossary.
+
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-wkkliah3/project/docs/architecture/arc42.md"
+ "file_path": "/tmp/sa-eval-7gxikf6h/project/docs/architecture/arc42.md"
 }
 ```
 
@@ -128,33 +172,19 @@ Launching skill: sa:domain-modeling
 75	
 ```
 
-### assistant
-
-Arc42 is loaded. Next I need the ADR directory, the central decisions list, and the issue tracker config.
-
 ### tool_use Bash
 
 ```json
 {
- "command": "ls -la docs/adr docs/agents .scratch 2>&1; echo ---; for f in docs/adr/*.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo ---; cat docs/agents/issue-tracker.md 2>&1; echo ---; git status --short; git log --oneline | head -5",
- "description": "List ADRs, issue tracker config, and repo state"
+ "command": "for f in docs/adr/*.md GLOSSARY.md README.md; do echo \"===== $f\"; cat \"$f\"; echo; done; echo \"===== notes/ tests/\"; ls -la notes tests; git log --oneline | head",
+ "description": "Read ADRs, glossary, README, and list code dirs"
 }
 ```
 
 ### tool_result
 
 ```
-ls: cannot access 'docs/agents': No such file or directory
-ls: cannot access '.scratch': No such file or directory
-docs/adr:
-total 20
-drwxr-xr-x 2 root root 4096 Nov 21 11:55 .
-drwxr-xr-x 4 root root 4096 Nov 21 11:54 ..
--rw-r--r-- 1 root root  478 Nov 21 11:55 0001-use-sqlite-for-storage.md
--rw-r--r-- 1 root root  817 Nov 21 11:55 0002-record-architecture-decisions.md
--rw-r--r-- 1 root root  419 Nov 21 11:55 0003-cli-reaches-storage-only-through-store.md
----
-=== docs/adr/0001-use-sqlite-for-storage.md
+===== docs/adr/0001-use-sqlite-for-storage.md
 # 1. Use SQLite for storage
 
 ## Status
@@ -175,7 +205,7 @@ Store all notes in one SQLite database file, by default `~/.notes.db`.
 Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
 repaired with a text editor.
 
-=== docs/adr/0002-record-architecture-decisions.md
+===== docs/adr/0002-record-architecture-decisions.md
 # 2. Record architecture decisions
 
 ## Status
@@ -206,7 +236,7 @@ Left to the building blocks (no ADR): internal helpers, SQL query structure, tes
 
 Work that depends on a decision on the list waits until its ADR is accepted.
 
-=== docs/adr/0003-cli-reaches-storage-only-through-store.md
+===== docs/adr/0003-cli-reaches-storage-only-through-store.md
 # 3. CLI reaches storage only through the store module
 
 ## Status
@@ -226,34 +256,68 @@ Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli
 
 Any new command that reads or writes notes goes through `Store`.
 
----
-cat: docs/agents/issue-tracker.md: No such file or directory
----
-47e98f0 fixture
+===== GLOSSARY.md
+# Glossary
+
+**Note**: a short piece of text a user keeps, with an id and the time it was created.
+
+**Store**: the place notes are kept between runs.
+
+===== README.md
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
+
+===== notes/ tests/
+notes:
+total 28
+drwxr-xr-x 2 root root 4096 Nov 21 11:54 .
+drwxr-xr-x 6 root root 4096 Nov 21 17:12 ..
+-rw-r--r-- 1 root root   46 Nov 21 11:54 __init__.py
+-rw-r--r-- 1 root root   57 Nov 21 11:54 __main__.py
+-rw-r--r-- 1 root root 1025 Nov 21 11:54 cli.py
+-rw-r--r-- 1 root root  115 Nov 21 11:54 model.py
+-rw-r--r-- 1 root root 1260 Nov 21 11:54 store.py
+
+tests:
+total 12
+drwxr-xr-x 2 root root 4096 Nov 21 11:54 .
+drwxr-xr-x 6 root root 4096 Nov 21 17:12 ..
+-rw-r--r-- 1 root root    0 Nov 21 11:54 __init__.py
+-rw-r--r-- 1 root root 1244 Nov 21 11:54 test_notes.py
+26e78de fixture
 ```
 
 ### assistant
 
-I checked all five requirements against the R-list, quality goals, constraints and accepted ADRs (0001–0003). I haven't changed any files: this step ends with your confirmation. Three of the five conflict with something already decided.
+I've checked the five requirements against the architecture, but I haven't changed any files yet. The procedure needs your outcome for each one first, and "integrate them" doesn't give that. I read it as asking for the triage to be run and the outcomes proposed.
+
+Three of the five collide with existing decisions. Two of them hinge on R-3 (stdlib only), so one choice you make would settle both.
 
 | # | Requirement | Findings | Proposed outcome and reason |
 |---|---|---|---|
-| 1 | Notes sync between laptop and desktop | Repeats **R-4** (deferred: "needs a server; revisit next year"). | **No new row.** It repeats R-4, which stays unchanged. I'll report it as asked again. |
-| 2 | Install with `pip install notes-cli`, `rich` for coloured output | Conflicts with **R-3** (rank 3, stdlib only) and the section 2 constraint. Conflicts with **QS-2** ("0 install steps"). A third-party dependency needs an ADR under ADR-0002. | **Rejected**, reason: conflicts with R-3 and the stdlib constraint. Coloured output is still possible without `rich`, using ANSI codes from the standard library. That would be feature-level under R-1 if you prefer it. |
-| 3 | Notes readable and editable with any text editor | Conflicts with accepted **ADR-0001**, which says the SQLite file "cannot be read or repaired with a text editor". Conflicts with #5 (encrypted files are not editable). Strains **R-2** (hand edits and crash safety) and **QS-1** (its measure does not cover edits). | **System-level**: new row **R-6**, `active`, rank 4 (proposed). It needs a superseding **ADR-0004** that replaces ADR-0001's storage format. ADR-0001 stays `accepted` until ADR-0004 is accepted. |
-| 4 | `notes list` shows newest first | No conflict and no duplicate. Fits inside **R-1** (list notes from the CLI). ADR-0002 centralises command names and exit codes, not ordering. | **Feature-level**: an issue citing R-1, no R-list row. No tracker is configured (`docs/agents/issue-tracker.md` is missing), so it goes to `.scratch/requirements/issues/NN-<slug>.md`. |
-| 5 | Notes encrypted at rest | Conflicts with **R-3** and the stdlib constraint, since the standard library has no encryption. Needs a third-party library (ADR-0002). Conflicts with **ADR-0001** and with #3. Stakeholder risk: a lost key means lost notes, against "without losing any". No quality goal covers confidentiality. | **Rejected** as written, reason: conflicts with R-3 and the stdlib constraint. If you relax R-3 for this, it becomes system-level, with a superseding ADR and a new goal (see questions). |
+| 1 | Notes sync between laptop and desktop | **Duplicate** of R-4 (deferred: "needs a server; revisit next year"). | **No new row.** R-4 stays as it is; I'll record in the report that this was asked again. |
+| 2 | `pip install notes-cli`, `rich` for coloured output | Conflicts with **R-3** (stdlib only), the **section 2 constraint** (stdlib only), the **QS-2** measure (0 install steps, under QG-2), and **ADR-0002** (third-party dependencies are decided centrally). | **Rejected:** conflicts with R-3 and the stdlib-only constraint. |
+| 3 | Notes readable and editable with any text editor | Conflicts with **ADR-0001** (SQLite file, which "cannot be read or repaired with a text editor"). Touches **R-2 / QG-1 / QS-1** (crash safety), which SQLite transactions give today. Conflicts with #5 as worded. | **System-level:** it changes the storage format. This needs a superseding ADR (proposed, next free number 0004) replacing ADR-0001, with crash safety designed in. ADR-0001 stays `accepted` until that ADR is accepted. |
+| 4 | `notes list` shows newest notes first | No duplicate, no conflict. Fits inside **R-1** (add, list, search). ADR-0002's command names and exit codes are unaffected. | **Feature-level:** an issue citing R-1; no R-list row. |
+| 5 | Notes encrypted at rest | Conflicts with **R-3** and the stdlib-only constraint: the stdlib has no cipher, and writing one by hand isn't a sound option. Conflicts with **ADR-0002** (third-party deps). Conflicts with #3 (readable in a text editor). No current goal covers confidentiality. | **Rejected** under the current direction: conflicts with R-3 and the stdlib-only constraint. |
 
-Questions for you:
+**Questions for you:**
 
-1. **Confirm or change each outcome** in the table, especially #2 and #5, which depend on whether you will relax R-3.
-2. **#3 vs #5:** they cannot both be fully met. Which wins? ("if only one of R-3 and #5 can be fully met, which?" applies too.)
-3. **Rank:** once you confirm #3 as R-6, set its order (I propose 4).
-4. **Goal impact for #3 and #5 (if confirmed):**
-   - #3 touches QG-1 and QS-1: does QS-1 need a measure that covers hand edits?
-   - #5 would need a new goal, "Security: confidentiality", not in the goal tables. Proposed measure: a stolen store opened without the key shows no note text, 0 plaintext notes in 100 trials. Add QG-4 with this scenario?
-5. **Wording:** #2's packaging and colour halves are one requirement in your message. Do you want them split?
+1. Do you confirm each outcome, or change any of them?
+2. **Main decision:** would you relax R-3 (stdlib only)? If you did, #2 and #5 could become system-level. #5 would then need a third-party cipher (a superseding ADR-0002 change), and a confidentiality goal, which I'd propose as a question (e.g. "Add QG-4 with this scenario?"). I wouldn't add it myself.
+3. If #3 is system-level: it supersedes ADR-0001 and has to keep crash safety. It also can't coexist with #5 as worded. Which of the two do you want? For ranking, is R-2 or new #3 more important if only one can be fully met?
+4. R-4 was deferred with "revisit next year", and it's now November 2026. Do you want to reconsider it now? That's your call; I won't change R-4.
 
-Once you answer, I'll apply the outcomes. The superseding ADR-0004 would then wait for your approval before any storage work begins.
+Once you confirm, I'll apply the outcomes, draft the superseding ADR as `proposed` if #3 goes ahead, and file the issue for #4.
 
 ### result (success)

@@ -6,8 +6,9 @@ accepted (legacy)
 
 ## Context
 
-The catalog must survive a crash mid-write (R-2, QG-1), and the tool must run on the standard
-library alone (R-3, QG-3).
+The catalog must survive a crash during a write (R-2) and run with only the Python standard
+library (R-3). This record was written without a context section; the context is added at
+upgrade.
 
 ## Decision
 
@@ -16,4 +17,6 @@ because a personal catalog is small and the standard library reads and writes JS
 
 ## Consequences
 
-Each command reads the whole file, and each save rewrites the whole file.
+The whole file is rewritten on every change, which is simple but suits only small catalogs. The
+rename gives crash safety against a killed process, not against power loss: the file is not
+synced before the rename (see QG-1).
