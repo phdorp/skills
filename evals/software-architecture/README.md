@@ -81,6 +81,7 @@ with the agents' wording: [campaigns/](campaigns/).
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S07 setup-documented (two turns) | 0.071 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 1.000 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -111,6 +112,13 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   `accepted (legacy)`. An earlier round filed an unmeasured goal (both S07 runs) and dropped
   single proposal items (two runs); the final re-run did not repeat them, which two runs
   cannot rule out. Every branch run was re-run with clean isolation.
+- S08 (ticket 06, [campaign](campaigns/06-paradigm-neutral.md)): fixture `modelica` is a
+  Modelica library that checks with `omc`. On `main`, both runs implemented the accepted
+  candidate in the `.mo` files, wrote no ADR ("no new ADR is needed") and tied no candidate to a
+  quality goal. On the branch, every candidate cites an existing `QG-n`, the accepted change is
+  a `proposed` ADR-0002, and no model changes. One loophole round: a run named the Modelica
+  seam "partial base classes"; `codebase-design` now names constructs in the language's own
+  words.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 

@@ -56,7 +56,8 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 - **[spec-and-plan](skills/spec-and-plan/SKILL.md)** - Turn an agreed design into a written
   spec, tracer-bullet tickets with blocking edges, and an executable plan.
 - **[codebase-design](skills/codebase-design/SKILL.md)** - Shared vocabulary for deep modules,
-  seams, adapters, leverage, and locality.
+  seams, adapters, leverage, and locality, mapped to object-oriented, imperative and dataflow
+  code, with principle, pattern and anti-pattern tables.
 - **[domain-modeling](skills/domain-modeling/SKILL.md)** - Build and sharpen the project's
   glossary and ADRs as decisions crystallise.
 - **[setup-architecture](skills/setup-architecture/SKILL.md)** _(user-invoked)_ - Set up a
@@ -67,7 +68,8 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
   requirements against the architecture and apply the outcomes the architect confirms.
 - **[prototype](skills/prototype/SKILL.md)** - Throwaway code that answers one design question.
 - **[improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md)** _(user-invoked)_ - Scan for
-  deepening opportunities, report them visually, then explore the chosen one.
+  deepening opportunities, report them visually, then explore the chosen one; in a set-up
+  project each one serves a quality goal and an accepted one becomes a proposed ADR.
 - **[wayfinder](skills/wayfinder/SKILL.md)** _(user-invoked)_ - Map work too large for one session as decision
   tickets on an issue tracker.
 - **[research](skills/research/SKILL.md)** - Investigate a question against primary sources and
