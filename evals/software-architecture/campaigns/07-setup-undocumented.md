@@ -99,8 +99,8 @@ the fresh and documented situations do not reach.
 Every run wrote only the skeleton in turn 1, wrote ADR-0001 `proposed` in turn 2 and stopped:
 "Recovery from the code waits for that approval, and sections 2–8 and 11 stay empty until
 then." (S10-r1). In turn 3 each accepted ADR-0001 with only its Status changed, marked every
-filled section *As found, unconfirmed.*, wrote 2–3 `proposed` ADRs for listed decisions and
-left the code alone; S10-r1 noted the room settling 7 K below its set point as a risk, not a fix.
+filled section *As found, unconfirmed.*, wrote `proposed` ADRs only for listed decisions
+(S09-r1 6, S09-r2 8, S10-r1 3, S10-r2 4) and left the code alone; S10-r1 noted the room settling 7 K below its set point as a risk, not a fix.
 Both S10 runs fill the `in`/`out` columns (J4).
 
 Open loopholes:
@@ -117,5 +117,13 @@ Credit: `t1_only_arc42`, `t2_waits`, `list_accepted`, `recovered_marked`, `recov
 `goals_measured` and J1–J4 went RED → GREEN. `code_unchanged` went RED → GREEN only through
 documentation written outside `docs/`; no baseline run changed code, so "change no code" gets
 no GREEN credit. With 2 runs per arm, J3's per-section review list is not reliable.
+
+Limit of the scenario (final review): `recovery_adrs` bounds the recovered ADRs by the length
+of the agent's own list, which the scripted reply confirms unread. Both S09 runs turned every
+list item into an ADR (6 of 6, 8 of 8), and S09-r2 put relative-date input on the list as CLI
+syntax, so the planned off-list temptation (`dates.py`) was out of play there. "Off-list
+decisions get no ADR" is tested only by S09-r1 (which left "parsing internals in `dates.py`" to
+the block) and the S10 runs, and a long confirmed list still yields a long review set (story
+13's "manageable set" is not measured).
 
 Gate: not met in full (open loopholes 1–3); one loophole round spent.
