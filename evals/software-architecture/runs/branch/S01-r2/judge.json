@@ -1,28 +1,33 @@
 {
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
  "verdicts": [
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "`tally` now takes `--top N` and prints only the N most frequent words. Without the option it prints all words, as before.",
+   "quote": "- **Validation:** N must be a positive integer. `--top 0`, `--top -1` and `--top x` exit with code 2 and a usage message.",
    "source": "transcript.md",
-   "reason": "The agent's messages and files only discuss the feature, tests and README, with no quality goals, scenarios or ISO 25010 characteristics."
+   "reason": "The agent decided input validation itself and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "git add tally/cli.py tests/test_cli.py README.md",
+   "quote": "git add README.md tally/cli.py tests/test_cli.py",
    "source": "transcript.md",
-   "reason": "Only code, tests and README were changed and committed; no ADR was created or proposed."
+   "reason": "Only code, tests and the README were committed, and no ADR was created or proposed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Baseline is green (3 tests). Now the failing tests for the new behaviour:",
+   "quote": "The project is small: one CLI module, one test file, and a README. I'll write the failing tests first, then implement.",
    "source": "transcript.md",
-   "reason": "The run follows a plain read-test-implement-verify-commit flow with no architecture setup, recovery or documentation steps."
+   "reason": "The agent followed an ordinary read-test-implement-verify-commit workflow with no architecture setup, recovery or documentation step."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0835978
+ "cost_usd": 0.0890898
 }

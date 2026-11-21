@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a GLOSSARY.md, making a decision that is expensive to change or crosses a module boundary, or recording, approving, rejecting, or superseding an ADR.
+description: Use when writing, approving, rejecting, or superseding an ADR (architecture decision record), when a decision is expensive to change or crosses a module boundary, or when discussing codebase terminology or editing a GLOSSARY.md.
 ---
 
 # Domain Modeling

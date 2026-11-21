@@ -1,28 +1,33 @@
 {
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
  "verdicts": [
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "I chose to reject negatives rather than treat them as \"all\", since that's the safer reading of an invalid value.",
+   "quote": "All 8 pass. Next I'll update the README to document the option, then run the suite once more and commit.",
    "source": "transcript.md",
-   "reason": "The agent decided edge-case behaviour itself and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
+   "reason": "The agent went straight from tests to docs and commit without asking for or inventing any quality goals, scenarios or ISO 25010 characteristics."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "The change is committed as `14615a2` on `master`.",
+   "quote": "- **Docs:** Added a short `--top` example to `README.md`.",
    "source": "transcript.md",
-   "reason": "The final report and the committed files show no ADR was created or proposed."
+   "reason": "The only documentation change was a README example; no ADR was created or proposed."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "I'll write the failing tests first, then implement.",
+   "quote": "Baseline is green (3 tests). I'll write the failing tests first, then implement.",
    "source": "transcript.md",
-   "reason": "The run is a plain read, test, implement, verify and commit sequence with no architecture setup, recovery or documentation step."
+   "reason": "The agent's steps were reading code, running tests, implementing, verifying and committing, with no architecture setup, recovery or documentation steps."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0913818
+ "cost_usd": 0.0837058
 }

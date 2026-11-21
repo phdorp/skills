@@ -5,7 +5,19 @@
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.014
+   "cost_usd": 0.015
+  },
+  "S02": {
+   "runs": 2,
+   "score": 0.928,
+   "judge": 1.0,
+   "cost_usd": 0.02
+  },
+  "S03": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.018
   }
  },
  "runs": [
@@ -16,7 +28,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "..usage: tally [-h] [--top N] file\ntally: error: argument --top: must be >= 0, got -1\n.usage: tally [-h] [--top N] file\ntally: error: argument --top: invalid integer: 'many'\n......\n----------------------------------------------------------------------\nRan 9 tests in 0.004s\n\nOK\n"
+     "detail": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.003s\n\nOK\n"
     },
     {
      "name": "feature_works",
@@ -49,34 +61,39 @@
    "score": 1.0,
    "valid": true,
    "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
     "verdicts": [
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "I chose to reject negatives rather than treat them as \"all\", since that's the safer reading of an invalid value.",
+      "quote": "All 8 pass. Next I'll update the README to document the option, then run the suite once more and commit.",
       "source": "transcript.md",
-      "reason": "The agent decided edge-case behaviour itself and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
+      "reason": "The agent went straight from tests to docs and commit without asking for or inventing any quality goals, scenarios or ISO 25010 characteristics."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "The change is committed as `14615a2` on `master`.",
+      "quote": "- **Docs:** Added a short `--top` example to `README.md`.",
       "source": "transcript.md",
-      "reason": "The final report and the committed files show no ADR was created or proposed."
+      "reason": "The only documentation change was a README example; no ADR was created or proposed."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "I'll write the failing tests first, then implement.",
+      "quote": "Baseline is green (3 tests). I'll write the failing tests first, then implement.",
       "source": "transcript.md",
-      "reason": "The run is a plain read, test, implement, verify and commit sequence with no architecture setup, recovery or documentation step."
+      "reason": "The agent's steps were reading code, running tests, implementing, verifying and committing, with no architecture setup, recovery or documentation steps."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0913818
+    "cost_usd": 0.0837058
    },
-   "cost_usd": 0.00687732,
+   "cost_usd": 0.007037030000000001,
    "needs_review": false
   },
   {
@@ -86,12 +103,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.003s\n\nOK\n"
+     "detail": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.003s\n\nOK\n"
     },
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -119,34 +136,325 @@
    "score": 1.0,
    "valid": true,
    "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
     "verdicts": [
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "`tally` now takes `--top N` and prints only the N most frequent words. Without the option it prints all words, as before.",
+      "quote": "- **Validation:** N must be a positive integer. `--top 0`, `--top -1` and `--top x` exit with code 2 and a usage message.",
       "source": "transcript.md",
-      "reason": "The agent's messages and files only discuss the feature, tests and README, with no quality goals, scenarios or ISO 25010 characteristics."
+      "reason": "The agent decided input validation itself and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "git add tally/cli.py tests/test_cli.py README.md",
+      "quote": "git add README.md tally/cli.py tests/test_cli.py",
       "source": "transcript.md",
-      "reason": "Only code, tests and README were changed and committed; no ADR was created or proposed."
+      "reason": "Only code, tests and the README were committed, and no ADR was created or proposed."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Baseline is green (3 tests). Now the failing tests for the new behaviour:",
+      "quote": "The project is small: one CLI module, one test file, and a README. I'll write the failing tests first, then implement.",
       "source": "transcript.md",
-      "reason": "The run follows a plain read-test-implement-verify-commit flow with no architecture setup, recovery or documentation steps."
+      "reason": "The agent followed an ordinary read-test-implement-verify-commit workflow with no architecture setup, recovery or documentation step."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0835978
+    "cost_usd": 0.0890898
    },
-   "cost_usd": 0.007495240000000001,
+   "cost_usd": 0.00759542,
+   "needs_review": false
+  },
+  {
+   "run": "S02-r1",
+   "scenario": "S02",
+   "checks": [
+    {
+     "name": "one_new_adr",
+     "pass": true,
+     "detail": "0004-export-notes-as-versioned-json.md"
+    },
+    {
+     "name": "next_number",
+     "pass": true,
+     "detail": "0004-export-notes-as-versioned-json.md"
+    },
+    {
+     "name": "five_fields",
+     "pass": true,
+     "detail": "['consequences', 'context', 'decision', 'status']"
+    },
+    {
+     "name": "status_proposed",
+     "pass": true,
+     "detail": "proposed 2026-11-21"
+    },
+    {
+     "name": "cites_ids",
+     "pass": true,
+     "detail": "QG-1, QG-2, R-2, R-3"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_export_code",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "It's marked **proposed**, not accepted. ADR-0002 says building waits until the architect accepts it, so someone needs to flip the status before the team starts.",
+      "source": "transcript.md",
+      "reason": "The final message presents the ADR as proposed and waiting for the architect's acceptance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "=== docs/adr/0002-record-architecture-decisions.md",
+      "source": "transcript.md",
+      "reason": "The agent printed ADR-0002 in a tool call before writing the new ADR, and later relied on its list of central decisions."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Users want to back up their notes and move them to other tools. Notes must not be lost (R-2,\nQG-1). The program may use only the standard library (R-3, QG-2).",
+      "source": "workspace/docs/adr/0004-export-notes-as-versioned-json.md",
+      "reason": "The ADR's Context names the requirements and quality goals the decision serves by ID (R-2, QG-1, R-3, QG-2)."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1427738
+   },
+   "cost_usd": 0.010981760000000002,
+   "needs_review": false
+  },
+  {
+   "run": "S02-r2",
+   "scenario": "S02",
+   "checks": [
+    {
+     "name": "one_new_adr",
+     "pass": true,
+     "detail": "0004-export-notes-as-json-via-export-command.md"
+    },
+    {
+     "name": "next_number",
+     "pass": true,
+     "detail": "0004-export-notes-as-json-via-export-command.md"
+    },
+    {
+     "name": "five_fields",
+     "pass": true,
+     "detail": "['consequences', 'context', 'decision', 'status']"
+    },
+    {
+     "name": "status_proposed",
+     "pass": true,
+     "detail": "proposed 2026-11-21"
+    },
+    {
+     "name": "cites_ids",
+     "pass": false,
+     "detail": "QS-1, R-2, R-6"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_export_code",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 7,
+   "score": 0.857,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "It is marked **proposed**, not accepted. ADR-0002 says export formats and CLI command names are decided centrally and need the architect's acceptance before work depends on them.",
+      "source": "transcript.md",
+      "reason": "The final message explicitly presents ADR-0004 as proposed and awaiting the architect's acceptance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Decided centrally (needs an ADR the architect accepts):",
+      "source": "transcript.md",
+      "reason": "The agent printed ADR-0002 (and arc42.md) in a tool call before writing the new ADR."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "proposed as R-6: \"Users export all\nnotes to a file they can keep as a backup or import into other tools.\"",
+      "source": "workspace/docs/adr/0004-export-notes-as-json-via-export-command.md",
+      "reason": "The Context names the requirement the decision serves by ID (proposed R-6) and also cites R-2 and QS-1 for the crash-safety constraint."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1478858
+   },
+   "cost_usd": 0.009500850000000002,
+   "needs_review": true
+  },
+  {
+   "run": "S03-r1",
+   "scenario": "S03",
+   "checks": [
+    {
+     "name": "approved_accepted_dated",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "rejected_kept_with_reason",
+     "pass": true,
+     "detail": "rejected 2026-11-21: we will not run a second storage engine, and a server database contradicts R-3"
+    },
+    {
+     "name": "supersede_new_adr",
+     "pass": true,
+     "detail": "0006-store-notes-as-json-files.md"
+    },
+    {
+     "name": "old_status",
+     "pass": true,
+     "detail": "accepted 2026-10-01"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "rejected 2026-11-21: we will not run a second storage engine, and a server database contradicts R-3",
+      "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
+      "reason": "ADR-0005 is rejected with the given reason, ADR-0004 is accepted, the move off SQLite is recorded as new ADR-0006, and ADR-0001 to ADR-0003 are unchanged."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ADR-0001 (SQLite)**: unchanged and still `accepted`. Under the ADR rules it becomes `superseded by ADR-0006` only when ADR-0006 is accepted.",
+      "source": "transcript.md",
+      "reason": "ADR-0006 stays proposed, ADR-0001 is not superseded, and the final message says ADR-0006 waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [
+     "J2: quote not found in transcript.md"
+    ],
+    "needs_review": true,
+    "cost_usd": 0.1358698
+   },
+   "cost_usd": 0.00968571,
+   "needs_review": true
+  },
+  {
+   "run": "S03-r2",
+   "scenario": "S03",
+   "checks": [
+    {
+     "name": "approved_accepted_dated",
+     "pass": true,
+     "detail": "accepted 2026-11-21"
+    },
+    {
+     "name": "rejected_kept_with_reason",
+     "pass": true,
+     "detail": "rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3."
+    },
+    {
+     "name": "supersede_new_adr",
+     "pass": true,
+     "detail": "0006-store-each-note-as-a-json-file.md"
+    },
+    {
+     "name": "old_status",
+     "pass": true,
+     "detail": "accepted 2026-10-01"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "- **ADR-0005** (PostgreSQL backend): `rejected 2026-11-21: we will not run a second storage engine; a server database contradicts R-3.` The file stays.",
+      "source": "transcript.md",
+      "reason": "The agent accepted ADR-0004, rejected ADR-0005 with the given reason and added ADR-0006 for the move off SQLite; git status shows no other ADR was changed."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "I wrote ADR-0006 as `proposed` because you approved 0004 and rejected 0005 but did not approve the new record.",
+      "source": "transcript.md",
+      "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message lists ADR-0006 under 'Waiting for the architect' with an approval question."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1344978
+   },
+   "cost_usd": 0.00815628,
    "needs_review": false
   }
  ]

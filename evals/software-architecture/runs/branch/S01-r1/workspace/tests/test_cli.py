@@ -1,7 +1,7 @@
 import io
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 from tally.cli import count_words, format_counts, main
@@ -25,41 +25,39 @@ class Main(unittest.TestCase):
             self.assertEqual(main([str(path)]), 0)
         self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def _run(self, text, *args):
+    def _run(self, text, argv_extra):
         path = Path(tempfile.mkdtemp()) / "in.txt"
         path.write_text(text)
         out = io.StringIO()
         with redirect_stdout(out):
-            status = main([*args, str(path)])
-        return status, out.getvalue()
+            code = main([str(path), *argv_extra])
+        return code, out.getvalue()
 
     def test_top_prints_only_most_frequent_words(self):
-        status, out = self._run("c c c b b a", "--top", "2")
-        self.assertEqual(status, 0)
+        code, out = self._run("c c c b b a d", ["--top", "2"])
+        self.assertEqual(code, 0)
         self.assertEqual(out, "c 3\nb 2\n")
 
     def test_top_larger_than_vocabulary_prints_all_words(self):
-        status, out = self._run("b a b", "--top", "10")
+        code, out = self._run("b a b", ["--top", "10"])
         self.assertEqual(out, "b 2\na 1\n")
 
     def test_top_zero_prints_nothing(self):
-        status, out = self._run("b a b", "--top", "0")
-        self.assertEqual(status, 0)
+        code, out = self._run("b a b", ["--top", "0"])
+        self.assertEqual(code, 0)
         self.assertEqual(out, "")
 
-    def test_top_breaks_ties_alphabetically(self):
-        status, out = self._run("d c b a", "--top", "2")
-        self.assertEqual(out, "a 1\nb 1\n")
+    def test_top_rejects_negative_number(self):
+        with self.assertRaises(SystemExit) as ctx, redirect_stdout(io.StringIO()), \
+                redirect_stderr(io.StringIO()):
+            self._run("b a b", ["--top", "-1"])
+        self.assertEqual(ctx.exception.code, 2)
 
-    def test_negative_top_is_rejected(self):
-        with self.assertRaises(SystemExit) as cm, redirect_stdout(io.StringIO()):
-            self._run("b a", "--top", "-1")
-        self.assertEqual(cm.exception.code, 2)
-
-    def test_non_integer_top_is_rejected(self):
-        with self.assertRaises(SystemExit) as cm, redirect_stdout(io.StringIO()):
-            self._run("b a", "--top", "many")
-        self.assertEqual(cm.exception.code, 2)
+    def test_top_rejects_non_integer(self):
+        with self.assertRaises(SystemExit) as ctx, redirect_stdout(io.StringIO()), \
+                redirect_stderr(io.StringIO()):
+            self._run("b a b", ["--top", "many"])
+        self.assertEqual(ctx.exception.code, 2)
 
 
 if __name__ == "__main__":

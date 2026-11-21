@@ -15,13 +15,10 @@ def format_counts(counts):
 
 
 def non_negative_int(value):
-    try:
-        n = int(value)
-    except ValueError:
-        raise argparse.ArgumentTypeError(f"invalid integer: {value!r}")
-    if n < 0:
-        raise argparse.ArgumentTypeError(f"must be >= 0, got {n}")
-    return n
+    number = int(value)
+    if number < 0:
+        raise argparse.ArgumentTypeError(f"must be >= 0, got {number}")
+    return number
 
 
 def main(argv=None):
