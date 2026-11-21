@@ -48,6 +48,18 @@
    "score": 0.5,
    "judge": 0.375,
    "cost_usd": 0.096
+  },
+  "S09": {
+   "runs": 2,
+   "score": 0.0,
+   "judge": 0.0,
+   "cost_usd": 0.064
+  },
+  "S10": {
+   "runs": 2,
+   "score": 0.0,
+   "judge": 0.0,
+   "cost_usd": 0.112
   }
  },
  "runs": [
@@ -63,7 +75,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -133,7 +145,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1307,6 +1319,342 @@
     "cost_usd": 0.23125779999999999
    },
    "cost_usd": 0.042178,
+   "needs_review": false
+  },
+  {
+   "run": "S09-r1",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": false,
+     "detail": "changed: ARCHITECTURE.md, README.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": false,
+     "detail": "ADRs: ; status -; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": false,
+     "detail": "Proposed. This is a draft, not the approved text. The approved\nversion of this ADR was not in the repository, so the content below is taken\nfrom the Decisions section of `ARCHITECTURE.md`. Replace it with the approved\ntext before relying on it."
+    },
+    {
+     "name": "recovered_marked",
+     "pass": false,
+     "detail": "section 5 rows 0; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": false,
+     "detail": "0 recovered, limit 0; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "ARCHITECTURE.md, README.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "Confirmed: the torn-write case loses the next item. I'll write the architecture doc now and record that as a known gap, without changing the code, since you asked for documentation.",
+      "source": "transcript.md",
+      "reason": "Turn 1 wrote the full architecture doc directly instead of proposing a list of centrally made decisions and waiting for approval before recovering."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "If the proposal was from another session or tool, paste it here and I'll write it into the doc, keeping any goal that has no measure marked as open.",
+      "source": "transcript.md",
+      "reason": "Turn 2 ends by asking for the missing proposal or a confirmation of ARCHITECTURE.md, not for approval of ADR-0001."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "**Rest of the architecture:** I had already recovered it from the code.",
+      "source": "transcript.md",
+      "reason": "The final message lists no arc42 sections marked as found, unconfirmed, and no set of proposed ADRs awaiting approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.16656579999999999
+   },
+   "cost_usd": 0.032708,
+   "needs_review": false
+  },
+  {
+   "run": "S09-r2",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": false,
+     "detail": "changed: README.md, docs/architecture.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": false,
+     "detail": "ADRs: ; status -; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": false,
+     "detail": "Proposed. The approval text was not found in the repository or the conversation, so this record is not yet marked Accepted."
+    },
+    {
+     "name": "recovered_marked",
+     "pass": false,
+     "detail": "section 5 rows 0; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": false,
+     "detail": "0 recovered, limit 0; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "README.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "The tests pass, but the probe shows a real data-loss bug against requirement 2: a torn line followed by a new add gets concatenated with the next record, and that record is lost. I'll document the architecture and record this as a known gap.",
+      "source": "transcript.md",
+      "reason": "Turn 1 went straight to writing docs/architecture.md, with no proposed list of centrally made decisions and no statement that recovery waits for the architect's approval."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "I don't want to write down something I'd be making up. Could you paste the proposal, or tell me which of these you mean?",
+      "source": "transcript.md",
+      "reason": "Turn 2 asked the architect to paste a missing proposal rather than asking for approval of ADR-0001 before recovering."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "On \"recover the rest of the architecture from the code\": `docs/architecture.md` already covers every module, the storage format, the command flow, date parsing, and the testing setup. I didn't find any further architecture in the code.",
+      "source": "transcript.md",
+      "reason": "The final message lists no arc42 sections marked as found and unconfirmed for section-by-section review, and no proposed ADRs awaiting approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1765178
+   },
+   "cost_usd": 0.031337,
+   "needs_review": false
+  },
+  {
+   "run": "S10-r1",
+   "scenario": "S10",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": false,
+     "detail": "changed: ARCHITECTURE.md, README.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": false,
+     "detail": "ADRs: ; status -; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": false,
+     "detail": "missing"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": false,
+     "detail": "section 5 rows 0; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": false,
+     "detail": "0 recovered, limit 0; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "ARCHITECTURE.md, README.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "I'll write the architecture doc to describe this as it is, and link it from the README.",
+      "source": "transcript.md",
+      "reason": "Turn 1 wrote the architecture doc directly instead of proposing a list of centrally made decisions and waiting for the architect's approval before recovering."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "I don't have a proposal to confirm.",
+      "source": "transcript.md",
+      "reason": "Turn 2 did not ask the architect to approve ADR-0001 'Record architecture decisions'; it denied any proposal existed and asked for the proposal text."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I didn't create an ADR, because there isn't one to approve.",
+      "source": "transcript.md",
+      "reason": "The final message lists no arc42 sections marked as found, unconfirmed and no proposed ADRs awaiting approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "The connector causality is the contract between blocks.",
+      "source": "workspace/ARCHITECTURE.md",
+      "reason": "There is no arc42 section 5; connectors and the roomHeatCapacity coupling are only covered in free-form Components/Gaps sections of ARCHITECTURE.md."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1880498
+   },
+   "cost_usd": 0.046677,
+   "needs_review": false
+  },
+  {
+   "run": "S10-r2",
+   "scenario": "S10",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": false,
+     "detail": "changed: README.md, docs/ARCHITECTURE.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": false,
+     "detail": "ADRs: ; status -; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": false,
+     "detail": "missing"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": false,
+     "detail": "section 5 rows 0; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": false,
+     "detail": "0 recovered, limit 0; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": false,
+     "detail": "README.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 0,
+   "total": 7,
+   "score": 0.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "The library is small: a room, a thermostat, and a system that connects them. Before writing docs, I'll check whether OpenModelica is installed so I can verify the three requirements against the code.",
+      "source": "transcript.md",
+      "reason": "Turn 1 went straight to verifying and writing the architecture document instead of proposing centrally made decisions and waiting for approval."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "Could you paste the triage, the ranking and the quality goals, or point me to where they live?",
+      "source": "transcript.md",
+      "reason": "Turn 2 ends by asking for the triage material, not by asking the architect to approve ADR-0001."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "I did not record the \"Record architecture decisions\" ADR. No such ADR exists: it isn't in the repo, git history, or memory, and I never wrote one.",
+      "source": "transcript.md",
+      "reason": "The final message lists no arc42 sections marked as found, unconfirmed and no proposed ADRs awaiting approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "## Package structure",
+      "source": "workspace/docs/ARCHITECTURE.md",
+      "reason": "The document has no arc42 Section 5; block interfaces and the roomHeatCapacity coupling appear only in non-arc42 sections."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2271178
+   },
+   "cost_usd": 0.064953,
    "needs_review": false
   }
  ]
