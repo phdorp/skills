@@ -1,0 +1,153 @@
+{
+ "arm": "branch",
+ "summary": {
+  "S01": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.014
+  }
+ },
+ "runs": [
+  {
+   "run": "S01-r1",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "..usage: tally [-h] [--top N] file\ntally: error: argument --top: must be >= 0, got -1\n.usage: tally [-h] [--top N] file\ntally: error: argument --top: invalid integer: 'many'\n......\n----------------------------------------------------------------------\nRan 9 tests in 0.003s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "I chose to reject negatives rather than treat them as \"all\", since that's the safer reading of an invalid value.",
+      "source": "transcript.md",
+      "reason": "The agent decided edge-case behaviour itself and never asked for or invented quality goals, scenarios or ISO 25010 characteristics."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "The change is committed as `14615a2` on `master`.",
+      "source": "transcript.md",
+      "reason": "The final report and the committed files show no ADR was created or proposed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "I'll write the failing tests first, then implement.",
+      "source": "transcript.md",
+      "reason": "The run is a plain read, test, implement, verify and commit sequence with no architecture setup, recovery or documentation step."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0913818
+   },
+   "cost_usd": 0.00687732,
+   "needs_review": false
+  },
+  {
+   "run": "S01-r2",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.003s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "`tally` now takes `--top N` and prints only the N most frequent words. Without the option it prints all words, as before.",
+      "source": "transcript.md",
+      "reason": "The agent's messages and files only discuss the feature, tests and README, with no quality goals, scenarios or ISO 25010 characteristics."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "git add tally/cli.py tests/test_cli.py README.md",
+      "source": "transcript.md",
+      "reason": "Only code, tests and README were changed and committed; no ADR was created or proposed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Baseline is green (3 tests). Now the failing tests for the new behaviour:",
+      "source": "transcript.md",
+      "reason": "The run follows a plain read-test-implement-verify-commit flow with no architecture setup, recovery or documentation steps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0835978
+   },
+   "cost_usd": 0.007495240000000001,
+   "needs_review": false
+  }
+ ]
+}

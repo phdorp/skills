@@ -1,0 +1,153 @@
+{
+ "arm": "baseline",
+ "summary": {
+  "S01": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.015
+  }
+ },
+ "runs": [
+  {
+   "run": "S01-r1",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.004s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Two choices I made without asking: I rejected `--top 0` rather than printing nothing, and the option is named `--top N` in the help text.",
+      "source": "transcript.md",
+      "reason": "The agent's messages and files contain no quality goals, quality scenarios or ISO 25010 characteristics, only concrete behaviour choices."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "I added `--top N` to the tally CLI and committed it as `da31322` on `master`. All 7 tests pass.",
+      "source": "transcript.md",
+      "reason": "The commit touched only README.md, cli.py and test_cli.py, and the agent never created or proposed an ADR."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The codebase is small: `main` parses args, `format_counts` already sorts by count then word. I'll write failing tests first, then add the option.",
+      "source": "transcript.md",
+      "reason": "The agent followed a plain read-test-implement-verify-commit flow with no architecture setup, recovery or documentation steps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0924698
+   },
+   "cost_usd": 0.007819570000000001,
+   "needs_review": false
+  },
+  {
+   "run": "S01-r2",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.003s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.053s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "- **Behaviour:** `--top` is applied after the existing ranking (count descending, then alphabetical), so ties at the cutoff are resolved alphabetically. `--top 0` prints nothing. A value larger than the vocabulary prints everything.",
+      "source": "transcript.md",
+      "reason": "The final report covers only functional behaviour and never asks for or states quality goals, scenarios or ISO 25010 characteristics."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Docs:** the README has a short `--top` example.",
+      "source": "transcript.md",
+      "reason": "The only documentation produced was a README example; no ADR was created or proposed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The CLI is small: `main` parses args, and `format_counts` does the ranking. I'll write failing tests first, then implement.",
+      "source": "transcript.md",
+      "reason": "The agent read the code, wrote tests, implemented, verified and committed, with no architecture setup, recovery or documentation step."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.09312179999999999
+   },
+   "cost_usd": 0.00704831,
+   "needs_review": false
+  }
+ ]
+}
