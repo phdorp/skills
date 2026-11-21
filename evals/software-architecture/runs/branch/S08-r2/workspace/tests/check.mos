@@ -1,0 +1,57 @@
+// Run from the project root: omc tests/check.mos
+// Compiles HeatingLib.System, simulates it for one day, and checks the behaviour the
+// blocks specify. A failed check prints FAILED and stops omc with exit status 1.
+// (OpenModelica's assert() does not stop the script, so the checks use exit(1).)
+loadFile("HeatingLib/package.mo");
+err := getErrorString();
+if err <> "" then
+  print("FAILED: package.mo does not load\n");
+  exit(1);
+end if;
+
+checkModel(HeatingLib.System);
+err := getErrorString();
+if err <> "" then
+  print("FAILED: HeatingLib.System does not check\n");
+  exit(1);
+end if;
+
+// Simulation writes its build products to the working directory; keep them out of the repo.
+cd(getTempDirectoryPath());
+simulate(HeatingLib.System, stopTime=86400, outputFormat="csv");
+err := getErrorString();
+if err <> "" then
+  print("FAILED: HeatingLib.System does not simulate\n");
+  exit(1);
+end if;
+
+// 501 samples: numberOfIntervals = 500 plus the initial point. The default result file
+// lands in the working directory.
+res := OpenModelica.Scripting.readSimulationResult("HeatingLib.System_res.csv", {room.T, thermostat.Q}, 501);
+Tr := res[1];
+Qh := res[2];
+n := size(Tr, 1);
+
+// The room stays above the outdoor temperature (273.15 K): the heater never lets it fall
+// below ambient.
+if not (min(Tr) >= 273.15) then
+  print("FAILED: room falls below the outdoor temperature\n");
+  exit(1);
+end if;
+// Proportional control does not overshoot the set point (293.15 K).
+if not (max(Tr) <= 293.15 + 0.1) then
+  print("FAILED: room overshoots the set point\n");
+  exit(1);
+end if;
+// The heater delivers between 0 and Q_max (3000 W) at every sample.
+if not (min(Qh) >= 0 and max(Qh) <= 3000) then
+  print("FAILED: heater power leaves [0, Q_max]\n");
+  exit(1);
+end if;
+// After a day the room has settled: the last samples agree to 0.01 K.
+if not (abs(Tr[n] - Tr[n - 100]) < 0.01) then
+  print("FAILED: room has not settled\n");
+  exit(1);
+end if;
+
+print("HeatingLib checks passed\n");

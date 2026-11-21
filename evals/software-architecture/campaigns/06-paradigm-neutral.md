@@ -57,3 +57,25 @@ Gate: not met (J1, r2).
 `codebase-design` names the dataflow seam in Modelica's terms (a `replaceable` block constrained
 by a partial model that holds the port contract) and asks for each construct in the language's
 own words. J1 stays as written. Both branch runs were replaced.
+
+## GREEN: skills at `86ca20a` (2026-11-21, 2 runs, clean isolation)
+
+Both runs loaded `codebase-design` and `domain-modeling`.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S08-r1 | - | - |
+| S08-r2 | - | - |
+
+Each report gives every candidate a quality-goal line citing existing IDs (QG-2, QG-3). After
+the reply, both wrote `docs/adr/0002-*.md` as `proposed` with a `QG-n` in its Context and left
+the `.mo` files unchanged: "Candidate 1 is now a proposed ADR, and the code is unchanged." (r1);
+"the shared-value code stays as it is until the architect approves the ADR." (r2). Both describe
+the coupling as "a package constant. Two blocks read it directly instead of receiving it through
+a port or parameter" (r2).
+
+Credit: `goals_cited`, `code_unchanged`, `adr_proposed`, J1, J2, J4 went RED → GREEN.
+`report_outside_repo`, `t1_unchanged`, `adr0001_unchanged` and J3 held on `main` and get no
+GREEN credit. With 2 runs per arm, a J1 slip back to object-oriented wording is not ruled out.
+
+Gate: met.

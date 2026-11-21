@@ -1,0 +1,43 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3",
+  "J4"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "The fix is a `C` parameter on `Thermostat`, wired from `System` as `thermostat(C = room.C)`.",
+   "source": "transcript.md",
+   "reason": "The coupling is described as parameters wired between blocks in System and signals crossing ports, not as object-oriented classes, methods or inheritance."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "<span class=\"px-2 py-1 rounded-full bg-indigo-100 text-indigo-800\">QG-3 faultlessness</span>",
+   "source": "transcript.md",
+   "reason": "Every candidate card has a QG badge (QG-2, QG-2, QG-3) naming the quality goal it serves."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "Which candidate would you like to explore?",
+   "source": "transcript.md",
+   "reason": "The first turn's final message ends by asking the architect which candidate to explore."
+  },
+  {
+   "criterion": "J4",
+   "pass": true,
+   "quote": "Candidate 1 is now a proposed ADR, and the code is unchanged.",
+   "source": "transcript.md",
+   "reason": "The final message states the ADR is proposed and waiting for the architect's approval, and that no model was changed in the repo."
+  }
+ ],
+ "quote_errors": [
+  "J2: quote not found in transcript.md"
+ ],
+ "needs_review": true,
+ "cost_usd": 0.23497780000000001
+}
