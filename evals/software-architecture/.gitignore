@@ -1,0 +1,3 @@
+grader/selftest/
+runs/*/*/transcript.jsonl
+__pycache__/

@@ -1,0 +1,262 @@
+#!/usr/bin/env python3
+"""Run one software-architecture scenario on one arm (see ../README.md).
+
+Usage:
+  python3 -I run.py probe --ref REF
+  python3 -I run.py run SCENARIO --arm ARM --ref REF -k K
+
+An arm's skills come from `git archive REF` exported into a directory named `sa`, loaded with
+--plugin-dir, so they appear as `sa:<skill>` on every arm. The scenario runs in a fresh temp
+workspace outside this repository (so the repo's AGENTS.md and git root stay invisible), with
+--setting-sources project (so ~/.claude/skills stays out) and a clean environment (so the child
+is not treated as a child session of whoever starts it). The stream-json init event proves
+isolation; a run that fails it is still saved, with isolation_ok false, and is not scored.
+
+Writes runs/<arm>/<scenario>-r<k>/: workspace/ (without .git), git-log.txt, transcript.jsonl,
+transcript.md, meta.json.
+"""
+import argparse
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+from dataclasses import dataclass
+from pathlib import Path
+
+MODEL = "claude-haiku-5-5"
+EFFORT = "medium"
+TIMEOUT_S = 1800
+CHILD_ENV_KEYS = ("HOME", "PATH", "LANG")
+PLUGIN_NAME = "sa"
+BUILTIN_COLLISIONS = frozenset({"code-review"})  # CLI built-in skills that share a user skill name
+TOOL_RESULT_MAX = 4000
+
+SUITE = Path(__file__).resolve().parents[1]
+REPO_ROOT = SUITE.parents[1]
+USER_SKILLS = Path.home() / ".claude" / "skills"
+
+SECTION = re.compile(r"^## (S\d+)\b.*$", re.M)
+FIXTURE = re.compile(r"^Fixture:\s*(\S+)\s*$", re.M)
+PROMPT = re.compile(r"^```text\n(.*?)^```\s*$", re.M | re.S)
+
+
+@dataclass
+class Scenario:
+    id: str
+    fixture: str
+    prompt: str
+
+
+def load_scenarios(tasks_md):
+    text = Path(tasks_md).read_text()
+    heads = list(SECTION.finditer(text))
+    scenarios = {}
+    for i, m in enumerate(heads):
+        body = text[m.end():heads[i + 1].start() if i + 1 < len(heads) else len(text)]
+        fixture = FIXTURE.search(body)
+        prompts = PROMPT.findall(body)
+        if not fixture:
+            raise ValueError(f"{m.group(1)}: no 'Fixture:' line")
+        if len(prompts) != 1:
+            raise ValueError(f"{m.group(1)}: expected one ```text block, found {len(prompts)}")
+        scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0])
+    return scenarios
+
+
+def _git(*args, cwd=REPO_ROOT, **kw):
+    return subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, text=True,
+                          **kw).stdout
+
+
+def export_arm(ref, dest):
+    out = Path(dest) / PLUGIN_NAME
+    out.mkdir(parents=True)
+    archive = subprocess.run(["git", "archive", ref], cwd=REPO_ROOT, check=True,
+                             capture_output=True).stdout
+    subprocess.run(["tar", "-x", "-C", str(out)], input=archive, check=True)
+    return out
+
+
+def prepare_workspace(fixture_dir):
+    ws = Path(tempfile.mkdtemp(prefix="sa-eval-")) / "project"
+    if fixture_dir is None:
+        ws.mkdir()
+    else:
+        shutil.copytree(fixture_dir, ws)
+    _git("init", "-q", cwd=ws)
+    _git("add", "-A", cwd=ws)
+    _git("-c", "user.name=eval", "-c", "user.email=eval@example.invalid", "commit", "-q",
+         "--allow-empty", "-m", "fixture", cwd=ws)
+    return ws
+
+
+def check_isolation(init, plugin_dir, user_skill_names):
+    plugin_dir = Path(plugin_dir).resolve()
+    errors = []
+    loaded = [p for p in init.get("plugins", []) if p.get("path") != "builtin"]
+    for p in loaded:
+        if Path(p["path"]).resolve() != plugin_dir:
+            errors.append(f"foreign plugin loaded: {p.get('name')} at {p['path']}")
+    if not any(Path(p["path"]).resolve() == plugin_dir for p in loaded):
+        errors.append(f"arm plugin not loaded: {plugin_dir}")
+    skills = set(init.get("skills", []))
+    prefix = plugin_dir.name + ":"
+    expected = {prefix + d.name for d in (plugin_dir / "skills").iterdir() if d.is_dir()}
+    got = {s for s in skills if s.startswith(prefix)}
+    errors += [f"arm skill missing: {s}" for s in sorted(expected - got)]
+    errors += [f"unexpected arm skill: {s}" for s in sorted(got - expected)]
+    errors += [f"user skill visible: {s}"
+               for s in sorted((set(user_skill_names) - BUILTIN_COLLISIONS) & skills)]
+    return errors
+
+
+def _events(jsonl):
+    for line in Path(jsonl).read_text().splitlines():
+        try:
+            yield json.loads(line)
+        except json.JSONDecodeError:
+            continue
+
+
+def _result_text(content):
+    if isinstance(content, str):
+        return content
+    return "\n".join(c.get("text", "") for c in content or [] if isinstance(c, dict))
+
+
+def render_transcript(jsonl, prompt):
+    parts = [f"### user\n\n{prompt.rstrip()}"]
+    for ev in _events(jsonl):
+        kind = ev.get("type")
+        content = (ev.get("message") or {}).get("content")
+        if kind == "assistant":
+            for c in content or []:
+                if c.get("type") == "text" and c.get("text", "").strip():
+                    parts.append(f"### assistant\n\n{c['text'].rstrip()}")
+                elif c.get("type") == "tool_use":
+                    body = json.dumps(c.get("input"), indent=1, ensure_ascii=False)
+                    parts.append(f"### tool_use {c.get('name')}\n\n```json\n{body}\n```")
+        elif kind == "user" and isinstance(content, list):
+            for c in content:
+                if c.get("type") == "tool_result":
+                    text = _result_text(c.get("content"))
+                    if len(text) > TOOL_RESULT_MAX:
+                        text = text[:TOOL_RESULT_MAX] + f"\n[... {len(text) - TOOL_RESULT_MAX} chars cut]"
+                    parts.append(f"### tool_result\n\n```\n{text}\n```")
+        elif kind == "result":
+            parts.append(f"### result ({ev.get('subtype')})")
+    return "\n\n".join(parts) + "\n"
+
+
+def new_run_dir(suite, arm, scenario_id, k):
+    run_dir = Path(suite) / "runs" / arm / f"{scenario_id}-r{k}"
+    run_dir.mkdir(parents=True, exist_ok=False)
+    return run_dir
+
+
+def _child_env():
+    env = {k: os.environ[k] for k in CHILD_ENV_KEYS if k in os.environ}
+    env["IS_SANDBOX"] = "1"
+    return env
+
+
+def _claude(prompt, cwd, plugin_dir, out_jsonl):
+    cmd = ["claude", "-p", prompt, "--model", MODEL, "--effort", EFFORT,
+           "--setting-sources", "project", "--plugin-dir", str(plugin_dir),
+           "--output-format", "stream-json", "--verbose", "--dangerously-skip-permissions"]
+    start = time.time()
+    with open(out_jsonl, "w") as out:
+        try:
+            code = subprocess.run(cmd, cwd=cwd, env=_child_env(), stdout=out,
+                                  stderr=subprocess.DEVNULL, timeout=TIMEOUT_S).returncode
+        except subprocess.TimeoutExpired:
+            code = "timeout"
+    return code, round(time.time() - start, 1)
+
+
+def _init_and_cost(jsonl):
+    init, cost = {}, None
+    for ev in _events(jsonl):
+        if ev.get("type") == "system" and ev.get("subtype") == "init":
+            init = ev
+        elif ev.get("type") == "result":
+            cost = ev.get("total_cost_usd")
+    return init, cost
+
+
+def _user_skill_names():
+    return {p.name for p in USER_SKILLS.iterdir()} if USER_SKILLS.is_dir() else set()
+
+
+def run_scenario(scenario, arm, ref, k, suite=SUITE):
+    run_dir = new_run_dir(suite, arm, scenario.id, k)
+    tmp = Path(tempfile.mkdtemp(prefix="sa-arm-"))
+    try:
+        plugin_dir = export_arm(ref, tmp)
+        ws = prepare_workspace(Path(suite) / "fixtures" / scenario.fixture)
+        jsonl = run_dir / "transcript.jsonl"
+        code, duration = _claude(scenario.prompt, ws, plugin_dir, jsonl)
+        init, cost = _init_and_cost(jsonl)
+        errors = check_isolation(init, plugin_dir, _user_skill_names()) if init else ["no init event"]
+        (run_dir / "transcript.md").write_text(render_transcript(jsonl, scenario.prompt))
+        (run_dir / "git-log.txt").write_text(_git("log", "--format=%H %s", cwd=ws))
+        shutil.copytree(ws, run_dir / "workspace",
+                        ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
+        meta = {"scenario": scenario.id, "arm": arm, "ref": ref,
+                "sha": _git("rev-parse", ref).strip(), "model": MODEL, "effort": EFFORT,
+                "cost_usd": cost, "duration_s": duration, "exit_code": code,
+                "isolation_ok": not errors, "isolation_errors": errors}
+        (run_dir / "meta.json").write_text(json.dumps(meta, indent=1) + "\n")
+        shutil.rmtree(ws.parent, ignore_errors=True)
+        return run_dir
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def probe(ref):
+    tmp = Path(tempfile.mkdtemp(prefix="sa-probe-"))
+    try:
+        plugin_dir = export_arm(ref, tmp)
+        ws = prepare_workspace(None)
+        jsonl = tmp / "probe.jsonl"
+        _claude("Reply OK.", ws, plugin_dir, jsonl)
+        init, _ = _init_and_cost(jsonl)
+        errors = check_isolation(init, plugin_dir, _user_skill_names()) if init else ["no init event"]
+        shutil.rmtree(ws.parent, ignore_errors=True)
+        if errors:
+            print("\n".join(errors))
+            return 1
+        n = sum(1 for s in init["skills"] if s.startswith(PLUGIN_NAME + ":"))
+        print(f"isolation ok ({n} {PLUGIN_NAME}: skills, ref {ref})")
+        return 0
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    p = sub.add_parser("probe")
+    p.add_argument("--ref", required=True)
+    r = sub.add_parser("run")
+    r.add_argument("scenario")
+    r.add_argument("--arm", required=True)
+    r.add_argument("--ref", required=True)
+    r.add_argument("-k", type=int, required=True)
+    a = ap.parse_args()
+    if a.cmd == "probe":
+        return probe(a.ref)
+    scenario = load_scenarios(SUITE / "TASKS.md")[a.scenario]
+    run_dir = run_scenario(scenario, a.arm, a.ref, a.k)
+    meta = json.loads((run_dir / "meta.json").read_text())
+    print(f"{run_dir}: exit {meta['exit_code']}, isolation_ok {meta['isolation_ok']}, "
+          f"${meta['cost_usd']}")
+    return 0 if meta["isolation_ok"] else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
