@@ -11,13 +11,13 @@ Write the spec. I'm not available: where you would ask me, state the assumption 
 
 ### assistant
 
-I'll start by looking at the repo: the tracker config, the existing `tally` code, and any project docs the spec should follow.
+I'll start by checking the repo for the tracker config, the glossary, the current `tally` code, and its tests.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200 && echo --- && cat docs/agents/issue-tracker.md 2>/dev/null; ls docs 2>/dev/null; cat GLOSSARY.md 2>/dev/null | head -80",
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200 && echo \"---\" && ls -la docs 2>/dev/null; cat docs/agents/issue-tracker.md 2>/dev/null; echo \"---\"; cat GLOSSARY.md 2>/dev/null; cat docs/GLOSSARY.md 2>/dev/null",
  "description": "Survey repo files, tracker config, and glossary"
 }
 ```
@@ -25,7 +25,8 @@ I'll start by looking at the repo: the tracker config, the existing `tally` code
 ### tool_result
 
 ```
-f3abafc fixture
+Exit code 1
+36e60e2 fixture
 ./README.md
 ./tally/__main__.py
 ./tally/cli.py
@@ -33,14 +34,43 @@ f3abafc fixture
 ./tests/test_cli.py
 ./tests/__init__.py
 ---
+---
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in README.md tally/__main__.py tally/cli.py tally/__init__.py tests/test_cli.py; do echo \"=== $f\"; cat -n \"$f\"; done",
- "description": "Read the tally source, tests, and README"
+ "command": "for f in $(git ls-files | grep -v -E '^(docs/|\\.scratch/)' | head -50); do echo \"=== $f\"; done; echo; git ls-files | grep -i -E 'tally|count|word' ",
+ "description": "List tracked files and find tally-related code"
+}
+```
+
+### tool_result
+
+```
+=== README.md
+=== tally/__init__.py
+=== tally/__main__.py
+=== tally/cli.py
+=== tests/__init__.py
+=== tests/test_cli.py
+
+tally/__init__.py
+tally/__main__.py
+tally/cli.py
+```
+
+### assistant
+
+No tracker config, glossary, or docs directory exists, so the local publish form applies. Next I'll read the CLI and its tests.
+
+### tool_use Bash
+
+```json
+{
+ "command": "for f in README.md tally/__init__.py tally/__main__.py tally/cli.py tests/test_cli.py; do echo \"=== $f\"; cat -n \"$f\"; done",
+ "description": "Read source, tests, and README"
 }
 ```
 
@@ -58,6 +88,8 @@ f3abafc fixture
      8	
      9	Prints one `word count` line per word, most frequent first, ties in alphabetical order.
     10	Run the tests with `python3 -m unittest`.
+=== tally/__init__.py
+     1	"""Word frequency counter."""
 === tally/__main__.py
      1	import sys
      2	
@@ -90,8 +122,6 @@ f3abafc fixture
     23	    for line in format_counts(counts):
     24	        print(line)
     25	    return 0
-=== tally/__init__.py
-     1	"""Word frequency counter."""
 === tests/test_cli.py
      1	import io
      2	import tempfile
@@ -127,116 +157,106 @@ f3abafc fixture
 
 ### assistant
 
-The repo has no `docs/` directory, no tracker config, no glossary, and no ADRs, so the spec goes to the local form. Next I'll read the spec template and check the branch state before committing.
+The code is small: `main(argv)` is the existing seam, and the tests already drive it with temp files and captured stdout. Before writing, I'll read the spec template and check which branch is the default.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git branch -a && git remote -v; echo ---; cat /tmp/sa-arm-s99i4x9j/sa/skills/spec-and-plan/references/spec-template.md; echo ---; python3 -m unittest 2>&1 | tail -3",
- "description": "Check branches, read spec template, run existing tests"
+ "command": "cd /tmp/sa/skills 2>/dev/null; cat -n /tmp/sa-arm-ot_64lra/sa/skills/spec-and-plan/references/spec-template.md; echo \"---\"; cd /tmp/sa-eval-7ap2dpgz/project && git branch -a && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null; python3 -m unittest 2>&1 | tail -3",
+ "description": "Read spec template, list branches, run existing tests"
 }
 ```
 
 ### tool_result
 
 ```
+     1	# Spec Template
+     2	
+     3	The body is identical for both publication forms; only the wrapper changes.
+     4	
+     5	## Local file form
+     6	
+     7	Save to `docs/specs/YYYY-MM-DD-<topic>-spec.md`. Start with a status line so a reader knows whether the spec is agreed or still moving:
+     8	
+     9	```markdown
+    10	# <Feature> Spec
+    11	
+    12	Status: ready-for-agent
+    13	Source: <path to the design doc, or the conversation that produced this>
+    14	```
+    15	
+    16	## Tracker issue form
+    17	
+    18	- **Title**: `<Feature>`
+    19	- **Labels**: `ready-for-agent` unless the user says otherwise.
+    20	- **Body**: the sections below.
+    21	- **Parent**: if the source was an existing issue, publish this spec as its sub-issue. Do not modify the parent.
+    22	
+    23	## Body
+    24	
+    25	### Problem Statement
+    26	
+    27	The problem the user is facing, from the user's perspective. What is painful today, who feels it, and what it costs them. No solution language.
+    28	
+    29	### Solution
+    30	
+    31	The solution to the problem, from the user's perspective. What changes for them when this ships.
+    32	
+    33	### User Stories
+    34	
+    35	A long, numbered list. Each one follows:
+    36	
+    37	```
+    38	1. As an <actor>, I want <feature>, so that <benefit>
+    39	```
+    40	
+    41	Cover every aspect of the feature, not just the happy path. Include:
+    42	
+    43	- first use, returning use, and empty state
+    44	- permissions and roles
+    45	- failure and recovery
+    46	- limits and large inputs
+    47	- accessibility and platform differences where they matter
+    48	- the cases the user explicitly cares about
+    49	
+    50	Example:
+    51	
+    52	```
+    53	1. As a mobile bank customer, I want to see balances on my accounts, so that I can make better-informed decisions about my spending.
+    54	```
+    55	
+    56	### Implementation Decisions
+    57	
+    58	The decisions already made, in enough detail that a planner does not reopen them:
+    59	
+    60	- modules to build or modify, and their responsibilities
+    61	- interfaces that change, in prose
+    62	- technical clarifications from the developer
+    63	- architectural decisions
+    64	- schema changes
+    65	- API contracts
+    66	- specific interactions and sequences
+    67	
+    68	Do not include specific file paths or code snippets; they go stale quickly.
+    69	
+    70	Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo.
+    71	
+    72	### Testing Decisions
+    73	
+    74	- What makes a good test here: external behaviour, through the agreed seams, not implementation details.
+    75	- Which modules will be tested, and at which seam.
+    76	- Prior art: similar tests already in the codebase, by path or name.
+    77	
+    78	### Out of Scope
+    79	
+    80	What this spec deliberately does not cover, and where that work goes instead if it is planned.
+    81	
+    82	### Further Notes
+    83	
+    84	Anything else the planner or builder needs: open assumptions, links to ADRs or research, rollout notes.
+---
 * master
----
-# Spec Template
-
-The body is identical for both publication forms; only the wrapper changes.
-
-## Local file form
-
-Save to `docs/specs/YYYY-MM-DD-<topic>-spec.md`. Start with a status line so a reader knows whether the spec is agreed or still moving:
-
-```markdown
-# <Feature> Spec
-
-Status: ready-for-agent
-Source: <path to the design doc, or the conversation that produced this>
-```
-
-## Tracker issue form
-
-- **Title**: `<Feature>`
-- **Labels**: `ready-for-agent` unless the user says otherwise.
-- **Body**: the sections below.
-- **Parent**: if the source was an existing issue, publish this spec as its sub-issue. Do not modify the parent.
-
-## Body
-
-### Problem Statement
-
-The problem the user is facing, from the user's perspective. What is painful today, who feels it, and what it costs them. No solution language.
-
-### Solution
-
-The solution to the problem, from the user's perspective. What changes for them when this ships.
-
-### User Stories
-
-A long, numbered list. Each one follows:
-
-```
-1. As an <actor>, I want <feature>, so that <benefit>
-```
-
-Cover every aspect of the feature, not just the happy path. Include:
-
-- first use, returning use, and empty state
-- permissions and roles
-- failure and recovery
-- limits and large inputs
-- accessibility and platform differences where they matter
-- the cases the user explicitly cares about
-
-Example:
-
-```
-1. As a mobile bank customer, I want to see balances on my accounts, so that I can make better-informed decisions about my spending.
-```
-
-### Implementation Decisions
-
-The decisions already made, in enough detail that a planner does not reopen them:
-
-- modules to build or modify, and their responsibilities
-- interfaces that change, in prose
-- technical clarifications from the developer
-- architectural decisions
-- schema changes
-- API contracts
-- specific interactions and sequences
-
-Do not include specific file paths or code snippets; they go stale quickly.
-
-Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo.
-
-### Testing Decisions
-
-- What makes a good test here: external behaviour, through the agreed seams, not implementation details.
-- Which modules will be tested, and at which seam.
-- Prior art: similar tests already in the codebase, by path or name.
-
-### Quality Requirements (set-up projects only)
-
-Only when `docs/architecture/arc42.md` exists. Cite by ID; arc42 and the ADRs hold the text.
-
-- **Serves:** the parent requirements (`R-n`).
-- **Keeps:** the quality scenarios (`QS-n`) the work must still meet.
-- **Builds on:** the accepted ADRs it relies on.
-- **Blocked by:** each decision the work needs that only a proposed ADR settles, with the ADR number. The spec does not build on it until the architect accepts it.
-
-### Out of Scope
-
-What this spec deliberately does not cover, and where that work goes instead if it is planned.
-
-### Further Notes
-
-Anything else the planner or builder needs: open assumptions, links to ADRs or research, rollout notes.
----
 Ran 3 tests in 0.001s
 
 OK
@@ -244,32 +264,32 @@ OK
 
 ### assistant
 
-The repo has one branch, `master`, and no tracker config, so I'll write the spec to `docs/specs/` and commit it on a feature branch. The design is one slice in one file, so I'm skipping tickets and the plan. Writing the spec now.
+The repo has only `master`, no `main`, so I'll commit the spec on a new branch rather than on `master`. Now I'll write the spec with each open question closed as a stated assumption, since you're not available to answer.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-kk1otici/project/docs/specs/2026-11-22-tally-min-count-spec.md",
- "content": "# Tally Min-Count Spec\n\nStatus: ready-for-agent\nSource: the approved design given in the conversation that produced this spec (`tally --min-count N FILE`). The design owner was not available for questions; every point the design left open is recorded as an assumption under Further Notes.\n\n### Problem Statement\n\n`tally` prints every distinct word in a file. On a long text, most of the output is words that appear once or twice, and the words that recur are buried among them. A user who wants to see only the recurring words has to scroll through or post-process the whole list.\n\n### Solution\n\n`tally` accepts a `--min-count N` option. When it is given, `tally` prints only the words that occur at least N times in the file. Each line keeps the same `word count` format and the same order as today: most frequent first, ties in alphabetical order. When the option is omitted, the output is exactly as it is today. When N is zero or negative, `tally` refuses to run and reports a usage error.\n\n### User Stories\n\n1. As a user counting words in a file, I want to pass `--min-count N`, so that only the words counted at least N times are printed.\n2. As a user, I want `tally FILE` without the option to print every word, exactly as it does today, so that existing scripts keep working.\n3. As a user, I want the filtered list in the same order as the unfiltered list (most frequent first, ties alphabetical), so that I can read it the same way.\n4. As a user, I want a word that occurs exactly N times to be included, so that the threshold is inclusive (\"at least N\").\n5. As a user, I want `--min-count 1` to print every word, so that the option never hides a word unless I ask it to.\n6. As a user, I want N larger than the most frequent word's count to produce no output and exit successfully, so that \"no word repeats that often\" is a normal answer and not an error.\n7. As a user, I want an empty file to print nothing and exit successfully, with or without the option.\n8. As a user, I want `--min-count 0` to fail with the usage message on stderr and exit code 2, so that a mistaken threshold cannot silently print nothing or everything.\n9. As a user, I want a negative N (for example `--min-count -3`) to fail the same way as zero, so that the error is consistent.\n10. As a user, I want a non-integer N (for example `abc`, `2.5`, or an empty string) to fail with the usage message on stderr and exit code 2, so that a typo is reported and not guessed at.\n11. As a user, I want `--min-count` with no value to fail with the usage message on stderr and exit code 2.\n12. As a user, I want to write the option before or after the file name, and as `--min-count=N` or `--min-count N`, so that it behaves like the other options of the standard argument parser.\n13. As a user, I want nothing written to stdout when the option is rejected, so that a pipeline does not receive partial or misleading output.\n14. As a user, I want a very large N (for example one billion) to be accepted and produce no output, so that I never hit an artificial upper limit.\n15. As a user, I want the README to show the new option, so that I can find it without reading the source.\n\n### Implementation Decisions\n\n- **Counting is unchanged.** Words are still counted case-insensitively with the same word pattern. The option does not change any count; it only decides which counted words are printed.\n- **Filtering happens after counting and before printing.** A word is printed if and only if its count is greater than or equal to N. Ranking (most frequent first, ties alphabetical) is applied to the kept words exactly as it is today.\n- **Interface of the counting and formatting helpers.** The counting helper keeps its current contract. The formatting helper gains an optional minimum count that defaults to 1, so every existing caller and every existing test keeps its current behaviour.\n- **The option is parsed by the existing argument parser.** The option takes one value. The value is validated as a positive integer at parse time. Any invalid value, whether below 1, non-integer, or missing, is reported through the parser's standard usage-error path: the usage line and a specific message on stderr, exit code 2, with nothing written to stdout. The exact wording of the specific message is not fixed by this spec.\n- **No new module, no new file.** The change lives in the existing CLI module, with a one-sentence addition to the README's usage description.\n- **Unchanged behaviour.** Missing file argument, unreadable file, and the program's exit code 0 on success are not changed by this feature.\n\n### Testing Decisions\n\n- **What makes a good test here.** Tests observe external behaviour: the lines printed to stdout, the text written to stderr, and the exit code. They do not inspect internal data structures or the order in which helpers are called.\n- **Seam.** The existing `main(argv)` entry point in the CLI module is the seam. It already proves the behaviour end to end (argument parsing, counting, filtering, output), and the existing tests use it with captured stdout. No new seam is proposed.\n- **Modules tested.** The CLI module only. One direct test of the formatting helper's minimum-count parameter is acceptable as a boundary check, but the main proof is through `main`.\n- **Required cases through `main`:**\n  - with `--min-count 2` on a file whose counts are 3, 2, 1: only the words with counts 3 and 2 are printed, in the existing order;\n  - with `--min-count` equal to a word's count: that word is printed (inclusive boundary);\n  - with `--min-count` greater than every count: nothing is printed and the exit code is 0;\n  - with `--min-count 1`: the output equals the output without the option;\n  - without the option: the output is byte-for-byte what `test_prints_every_word` already expects;\n  - with `--min-count 0`, `--min-count -1`, `--min-count abc`, `--min-count 2.5`, and a missing value: `SystemExit` with code 2, the usage text on stderr, and nothing on stdout;\n  - the option written after the file name and in the `--min-count=N` form: same output as the canonical form.\n- **Prior art.** `tests/test_cli.py`: `Main.test_prints_every_word` shows how to call `main` with a temporary file and capture stdout. `CountWords.test_ranks_by_count_then_alphabetically` shows the expected ordering that filtered output must keep. Stderr capture and the `SystemExit` check have no prior art in this repo and are new.\n\n### Out of Scope\n\n- Changing the word pattern, case handling, or ordering.\n- A maximum value for N, or any upper bound.\n- Reading from standard input, or handling a missing or unreadable file more gracefully than today.\n- Other output formats, such as JSON or CSV.\n- A short option letter for `--min-count`.\n- Any change to the exit code of a successful run.\n\n### Further Notes\n\nThe design owner was not available to answer questions. The following points were open in the approved design or are implied by it. Each is recorded here as an assumption to confirm, with the reason for it. None is deferred.\n\n- **A1. Non-integer values are rejected like values below 1.** The design names only \"N below 1\". N is specified as a positive integer, so `abc`, `2.5`, and an empty string are treated as the same kind of error: usage on stderr, exit code 2.\n- **A2. A missing value is rejected the same way.** `--min-count` with no value after it is a usage error with exit code 2.\n- **A3. Negative values are values, not options.** `--min-count -3` is read as the value -3 and then rejected under A1's rule for values below 1.\n- **A4. Repeated option: the last value wins.** This is the standard behaviour of the argument parser, and the spec does not add a rejection for repeats.\n- **A5. No upper bound on N.** A very large N is valid and produces no output.\n- **A6. Usage errors exit with SystemExit(2).** The error is raised through the argument parser, so the code path is the same one that already handles unknown options. Callers of `main` that catch `SystemExit` see code 2. `__main__` passes the exit status through unchanged.\n- **A7. The exact wording of the error message is not fixed.** Tests check that the usage text appears on stderr and that the exit code is 2. They do not compare the full message.\n- **A8. Seam choice.** The seam is the existing `main(argv)` entry point, as described under Testing Decisions. The design did not name a seam, so this was chosen by the spec author.\n- **A9. README.** The README's usage text gains one sentence describing the option. This is part of the change, not a separate task.\n- **A10. Filtering is inclusive.** A word whose count equals N is printed. This follows from \"at least N times\" in the design.\n\nNothing in this list is deferred. Each item becomes final when the design owner reads this spec and either accepts it or asks for a change.\n"
+ "file_path": "/tmp/sa-eval-7ap2dpgz/project/docs/specs/2026-11-22-min-count-spec.md",
+ "content": "# Min Count Option Spec\n\nStatus: ready-for-agent\nSource: the approved design in the conversation that produced this spec (`tally --min-count N FILE`). Where that design was silent, the assumptions in Further Notes apply; the author was unavailable to confirm them.\n\n### Problem Statement\n\nSomeone who counts word frequencies in a long text gets every word in the output, including the many words that appear once. To see only the words that matter, they must scan or filter the whole list by hand. Even a simple cut-off, such as \"only words used at least three times\", is not available today.\n\n### Solution\n\n`tally` accepts a `--min-count N` option. With it, the output lists only the words counted at least N times, in the same order as today: most frequent first, ties in alphabetical order. Without the option, the output is unchanged: every word is printed.\n\n### User Stories\n\n1. As a writer, I want to pass `--min-count 3` to tally, so that I see only the words I use three or more times.\n2. As a writer, I want to put `--min-count` before or after the file name, so that I can type the option where it reads most naturally.\n3. As a writer, I want the filtered list to keep the same order as the unfiltered list, so that I can compare the two outputs directly.\n4. As a writer, I want ties at the same count to stay in alphabetical order, so that the output is predictable across runs.\n5. As a writer, I want a word whose count equals N to be included, so that \"at least N\" means what it says.\n6. As a writer, I want a word whose count is one below N to be excluded, so that the cut-off is exact.\n7. As a user who does not pass the option, I want the output to stay exactly as it is today, so that existing scripts keep working.\n8. As a user, I want N = 1 to print every word, so that 1 is the lowest valid value and means \"no filtering\".\n9. As a user whose text has no word that reaches N, I want tally to print nothing and exit successfully, so that \"no matches\" is not reported as an error.\n10. As a user whose text is empty, I want tally to print nothing and exit successfully, so that an empty file behaves as it does today.\n11. As a user who passes N below 1 (0, -3), I want tally to print the usage message to stderr and exit with code 2, so that I learn the value is wrong and scripts can detect the failure.\n12. As a user who passes a value that is not an integer (`abc`, `2.5`, an empty string), I want tally to print the usage message to stderr and exit with code 2, so that a typo is not silently ignored.\n13. As a user who omits the value (`tally --min-count FILE`), I want tally to print the usage message to stderr and exit with code 2, so that the option is never silently misread.\n14. As a user who passes a very large N with no word reaching it, I want tally to print nothing and exit successfully, so that large values are valid.\n15. As a user who passes `--min-count` twice, I want the last value to win, so that the behaviour follows the standard convention of the argument parser.\n16. As a user reading the help text, I want `--min-count N` to be listed with a short description, so that I can discover the option without reading the source.\n17. As a user reading the README, I want the usage example to show the option, so that I can learn it from the documentation.\n18. As a user, I want the word rules to stay the same (case-insensitive, same word definition), so that the counts shown are the counts I expect.\n\n### Implementation Decisions\n\n- **Module changed:** `tally/cli.py`. The `main(argv)` function gains the option. No other module changes behaviour.\n- **Option contract:** `--min-count` takes one required value, `N`. It is parsed as an integer. A value that is not an integer, or is less than 1, is a usage error.\n- **Usage error mechanism:** Use the argument parser's own error path (the same path that already handles unknown options and missing file names). That path prints the usage line and an error line to stderr and exits with status 2. Inside the process, `main(argv)` therefore raises `SystemExit` with code 2 rather than returning 2. `python3 -m tally` exits with status 2 as a result.\n- **Filter placement:** The filter runs after counting and before ranking. Words with a count below N are dropped. The count comparison is inclusive: a count equal to N is kept.\n- **Unchanged:** `count_words` (case folding, word pattern), the ranking rule in `format_counts` (count descending, then word ascending), and the output line format (`word count`).\n- **Default:** When the option is absent, no filter is applied, and the output is identical to today's.\n- **Interface change:** The command line gains `--min-count N`. The Python signature of `main(argv=None)` is unchanged.\n- **Documentation:** The README usage section mentions the option with one example line.\n\n### Testing Decisions\n\n- **What makes a good test:** The observable behaviour of the command: what is printed to stdout, what is printed to stderr, and the exit status. Tests do not inspect internal counters or intermediate lists.\n- **Seam:** `main(argv)` in `tally/cli.py`. This is the existing seam, and it is the highest point that can prove the behaviour, since the filter, the ordering, and the error path are all reached through it. No new seam is introduced.\n- **Modules tested:** `tally/cli.py`, through `main`. The existing `count_words` and `format_counts` tests stay as they are.\n- **Cases to cover through `main`:**\n  - the option absent: output identical to today's (existing test covers this; keep it passing)\n  - a word with count exactly N is printed; a word with count N-1 is not\n  - ties at or above N keep alphabetical order\n  - the option placed before and after the file name give the same output\n  - no word reaches N: empty stdout, return value 0\n  - N = 1: all words printed\n  - N = 0, N = -3: `SystemExit` with code 2; usage text on stderr; nothing on stdout\n  - N = `abc` and a missing value: `SystemExit` with code 2; usage text on stderr\n  - repeated `--min-count`: the last value applies\n- **Prior art:** `tests/test_cli.py`, class `Main`, method `test_prints_every_word`. It writes a temp file, calls `main([...])` with `redirect_stdout`, and asserts the output. New tests follow the same pattern and add `redirect_stderr` for the error cases.\n- **Test runner:** `python3 -m unittest`, as in the README.\n\n### Out of Scope\n\n- Filtering by a maximum count, or by a range. Only a minimum is in scope.\n- Reading from standard input, or accepting several files.\n- A short option alias such as `-m`.\n- Changing what counts as a word (punctuation, digits, Unicode letters). The current word pattern stays.\n- Changing the behaviour for an unreadable or missing file. It stays as it is today.\n- Any change to the output format or sort order beyond the filter.\n\n### Further Notes\n\nAssumptions made in place of questions, since the author was unavailable. Each one is a decision the spec has closed; a reviewer can overturn one before the plan is written.\n\n1. **Non-integer values** (`abc`, `2.5`, empty string) are usage errors with exit code 2, the same as N below 1. The design only named N below 1; treating other non-integers differently would be surprising.\n2. **Inclusive threshold:** a word is kept when its count is greater than or equal to N.\n3. **No upper bound on N.** A value larger than every count prints nothing and exits 0.\n4. **Empty result is not an error:** nothing is printed to stdout and the exit status is 0.\n5. **Repeated option:** the last occurrence wins, following the argument parser's default behaviour.\n6. **Option form:** `--min-count N` and `--min-count=N` are both accepted, following the argument parser's default behaviour. There is no short alias.\n7. **Usage error:** the message goes to stderr through the argument parser, and the exit status is 2. Inside the process, `main` raises `SystemExit(2)`.\n8. **README:** updating the usage section is part of this change. It is a single example line, not a rewrite.\n\nNo questions remain open. Confirming these eight assumptions is the only follow-up needed before the plan is written.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-kk1otici/project/docs/specs/2026-11-22-tally-min-count-spec.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-7ap2dpgz/project/docs/specs/2026-11-22-min-count-spec.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-The spec is written. Next I'll create a feature branch (the repo's only branch is `master`) and commit the file.
+The spec is written. Per the skill, I'll commit it on a new branch, since `master` is the only branch and the default-branch rule applies.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git checkout -b spec/tally-min-count && git add docs/specs/2026-11-22-tally-min-count-spec.md && git commit -q -F - <<'EOF'\ndocs: add spec for tally --min-count\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\nEOF\ngit log --oneline -2 && git status --short && ls docs/specs",
+ "command": "git checkout -b spec/min-count && git add docs/specs/2026-11-22-min-count-spec.md && git commit -q -m \"docs: add spec for --min-count option\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2 && git status --short",
  "description": "Create spec branch and commit the spec file"
 }
 ```
@@ -277,44 +297,32 @@ The spec is written. Next I'll create a feature branch (the repo's only branch i
 ### tool_result
 
 ```
-Switched to a new branch 'spec/tally-min-count'
-d6583fd docs: add spec for tally --min-count
-f3abafc fixture
+Switched to a new branch 'spec/min-count'
+1c80ea0 docs: add spec for --min-count option
+36e60e2 fixture
 ?? tally/__pycache__/
 ?? tests/__pycache__/
-2026-11-22-tally-min-count-spec.md
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "rm -rf tally/__pycache__ tests/__pycache__ && git status --short && echo clean",
- "description": "Remove test-run cache directories I created"
-}
-```
-
-### tool_result
-
-```
-clean
 ```
 
 ### assistant
 
-The spec is written and committed as `docs/specs/2026-11-22-tally-min-count-spec.md` on a new branch, `spec/tally-min-count` (commit `d6583fd`). The repo has no tracker config, so I used the local file form. I did not write tickets or a plan, since this is a single slice.
+The spec is written and committed to a new branch, `spec/min-count`, as commit `1c80ea0`. The file is `docs/specs/2026-11-22-min-count-spec.md`.
 
-Because you were unavailable, I recorded every open point as an assumption in the spec's Further Notes, marked as not deferred. Please confirm or change these:
+The repo has no tracker config, glossary, or `docs/` directory, so I used the local publish form. I did not create tickets: the work is one slice, so the plan can follow directly.
 
-- **Non-integer values** (`abc`, `2.5`, empty string) are rejected the same way as values below 1: usage on stderr, exit code 2.
-- **A missing value** (`--min-count` with nothing after it) is also an exit-2 usage error.
-- **Negative values** like `-3` are rejected as below 1.
-- **Repeated `--min-count`**: the last value wins, which is the argument parser's default.
-- **No upper bound** on N. A very large N prints nothing and exits 0.
-- **Error wording** is not fixed. Tests check for the usage text on stderr and exit code 2.
-- **Seam**: the existing `main(argv)` entry point, which the current tests already use. No new seam.
-- **README**: gets one sentence about the option.
+Since you were not available, I closed each open question as an assumption in Further Notes. Please confirm or overturn these before the plan is written:
 
-The spec also covers the inclusive boundary (a word counted exactly N times is printed) and keeps the existing ordering and the no-option output unchanged.
+1. **Non-integer values** (`abc`, `2.5`, empty string) are usage errors with exit 2, the same as N below 1.
+2. **Inclusive threshold:** a word is kept when its count is at least N.
+3. **No upper bound on N.** A value above every count prints nothing and exits 0.
+4. **An empty result is not an error:** nothing on stdout, exit 0.
+5. **Repeated `--min-count`:** the last value wins.
+6. **Both `--min-count N` and `--min-count=N` work.** There is no short alias.
+7. **Usage errors** go through argparse to stderr with exit 2. Inside the process, `main` raises `SystemExit(2)`.
+8. **README** gets one example line for the option.
+
+The main testing decision is to test through the existing `main(argv)` seam in `tests/test_cli.py`, with no new seam.
+
+I ran the existing tests with `python3 -m unittest` and they pass (3 tests). That run left untracked `__pycache__/` directories, which I did not commit.
 
 ### result (success)

@@ -86,3 +86,38 @@ Loopholes:
    names "quality goals, requirements and ADRs" in every project.
 
 Gate: not met. Task 4 (one loophole round) follows.
+
+## Loophole round: skills at `b7e6c09` (2026-11-22, 2 runs each, clean isolation)
+
+Changes: both pointers now name only the condition and the reference ("If
+`docs/architecture/arc42.md` exists, read …"); the spec's Quality Requirements section and its
+red flag moved from the template into `spec-and-plan/references/quality-requirements.md`;
+`design-dialogue/references/architecture.md` gained a slot line for the touched goals, a slot
+form for each option, the rule that `R-n` and `QS-n` do not stand in for a goal, and its red
+flags (worded generally, not for this scenario). All eight runs were replaced.
+
+| run | failed checks | failed criteria | read the reference |
+|---|---|---|---|
+| S11-r1 | - | - | yes |
+| S11-r2 | goals_cited, add_requirements_suggested | J1, J3 | no |
+| S12-r1, S12-r2 | - | - | yes |
+| S13-r1, S13-r2 | - | - | - |
+| S14-r1, S14-r2 | - | - | - |
+
+Closed: the controls no longer raise quality goals, arc42 or ADRs (S13, S14, 4 of 4); S11-r1
+opened with "**Quality goals this touches:**" and tied every option to a `QG-n`; S12 still
+passes with the section in a reference of its own.
+
+Open loophole: **the bare pointer did not fire** (S11-r2). The run read arc42, the ADRs and
+the code with `cat`, but never `references/architecture.md`, and fell back to the `main`
+behaviour: "Encryption is not in the Python standard library. Requirement R-3 and the section 2
+constraint allow only the standard library." In the first attempt, whose pointer said what the
+reference covers, both S11 runs read it. The pointer lost its "what the material is" half
+(`writing-for-agents` › Context pointers). Candidate fix for a later round: state what the
+reference changes without naming the concepts that primed the controls, for example "…: it
+changes how the dialogue runs in a set-up project", and re-run S11 and S14.
+
+Gate: not met for S11 (1 of 2 runs); one round spent, so S11-r2 stands as an open loophole.
+GREEN credit: S11 `goals_cited`, `add_requirements_suggested`, J1–J3 (1 of 2 runs after the
+round, 2 of 2 in the first attempt for `add_requirements_suggested`); S12 `qr_section`,
+`qr_cites`, J2 (2 of 2 in both rounds).

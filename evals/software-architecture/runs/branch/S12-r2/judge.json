@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Blocker:** ADR-0004 (atomic writes), which the spec relies on, is still `proposed`. The skill says to hold the atomic-write work until the architect accepts it. If it is rejected, the spec needs revising.",
+   "quote": "The spec is written and committed as `1db0e2c` on `master`, but implementation is blocked. ADR-0004 is still `proposed`, and ADR-0002 says work that depends on an unaccepted decision waits.",
    "source": "transcript.md",
-   "reason": "The spec lists ADR-0004 under Blocked by and in its status line, and the final message reports the blocker explicitly."
+   "reason": "The spec's status and Blocked by entry mark the atomic-write dependency as waiting on ADR-0004's acceptance, and the final message says so."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **Keeps:** QS-1 (a crash during the backup leaves PATH either old or complete and the store still opens; the same rule as QS-1 applied to the backup); QS-3 (the backup code lives in `notes/store.py`, with the CLI change confined to `notes/cli.py`).",
-   "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
-   "reason": "The Quality Requirements section names parent requirements R-2 and R-3 under Serves and the scenarios QS-1 and QS-3 under Keeps."
+   "quote": "- **Serves:** R-2 (no note is lost; a copy protects against loss of the main store), R-3 (standard library only).",
+   "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+   "reason": "The Quality Requirements section names the parent requirements (R-2, R-3) and, under Keeps, the quality scenario QS-1."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.18177379999999999
+ "cost_usd": 0.20188979999999998
 }

@@ -1,86 +1,86 @@
 # `--min-count` Option Spec
 
 Status: ready-for-agent
-Source: Conversation with the architect. Approved design: "`tally --min-count N FILE` prints only the words counted at least N times; N is a positive integer; without the option every word is printed, as today; order unchanged; N below 1 is an error: usage message on stderr, exit code 2." The architect was unavailable for the open questions; their answers are stated as assumptions in Further Notes.
+Source: conversation, approved design: "`tally --min-count N FILE` prints only the words counted at least N times."
 
 ## Problem Statement
 
-Someone counting words in a text file gets one line per distinct word, and in a long file most of those lines are words that appear once or twice. To find the words that actually recur, they must scroll or pipe the output through another tool to filter it. The frequent words are what they came for, and the rare ones are noise.
+`tally` prints every word in a file, so on a long text the output is dominated by words that occur once or twice. A user who wants to see only the recurring words has to filter the output by hand (for example with `awk`), and has to know the output format to do it.
 
 ## Solution
 
-`tally` gains an option, `--min-count N`. When it is given, the output lists only the words that occur at least N times in the file. Everything else about the output stays as it is today: one `word count` line per word, most frequent first, ties in alphabetical order. Without the option, the output is unchanged.
+A new option, `--min-count N`, limits the output to words whose count is at least N. Everything else stays as it is: the same input, the same `word count` line format, and the same order (most frequent first, ties in alphabetical order). Without the option, every word is printed, as today. An invalid N is rejected with a usage error.
 
 ## User Stories
 
-1. As a user of `tally`, I want to pass `--min-count 3` with a file, so that only the words appearing at least three times are printed.
-2. As a user, I want a word that appears exactly N times to be printed, so that the threshold is inclusive and "at least N" means what it says.
-3. As a user, I want a word that appears fewer than N times to be left out, so that the rare words do not clutter the result.
-4. As a user, I want the remaining words to keep the usual order (most frequent first), so that the filtered output reads the same way as the unfiltered output.
-5. As a user, I want ties at the same count to stay in alphabetical order, so that the output is predictable when several words share a count.
-6. As a user, I want to run `tally` with no `--min-count` option exactly as before, so that existing scripts keep working.
-7. As a user, I want `--min-count 1` to print the same output as no option at all, so that 1 is the no-op threshold: every word occurs at least once.
-8. As a user, I want N larger than the count of every word to print nothing and exit successfully, so that "no word qualifies" is a normal result and not an error.
-9. As a user, I want N = 0 to be rejected with the usage message on stderr and exit code 2, so that I learn the value is invalid and do not get silently unfiltered output.
-10. As a user, I want a negative N to be rejected the same way as 0, so that every value below 1 gets one consistent answer.
-11. As a user, I want a non-integer N (for example `abc` or `2.5`) to be rejected with the usage message and exit code 2, so that a typo is not silently accepted.
-12. As a user, I want to write the option before or after the file name, and in either `--min-count 3` or `--min-count=3` form, so that the option behaves like other command-line options.
-13. As a user, I want a rejected N to produce no words on stdout, so that a script never consumes partial or unfiltered output from a bad invocation.
-14. As a user, I want a missing or unreadable file to fail as it does today, so that the new option does not change file errors.
-15. As a user, I want an empty file, or a file with no words, to print nothing and exit successfully, with or without `--min-count`, so that empty input behaves as it does today.
-16. As a user, I want the counting rules (case-insensitive, letters and apostrophes) to be unchanged by the option, so that a word counts the same whether or not I filter.
-17. As a user reading the usage text, I want the `--min-count` option to appear in the help output with a short description, so that I can discover it without reading the source.
+1. As a `tally` user, I want to run `tally FILE` with no new options, so that I get exactly the output I get today.
+2. As a `tally` user, I want to pass `--min-count N`, so that only words counted at least N times are printed.
+3. As a `tally` user, I want the filtered output to keep the same order as the unfiltered output (most frequent first, ties in alphabetical order), so that I can read it the same way.
+4. As a `tally` user, I want `--min-count 1` to print the same output as no option, so that 1 is a safe lower bound.
+5. As a `tally` user, I want a threshold above the highest count in the file to print nothing and exit successfully, so that "no word qualifies" is not treated as a failure.
+6. As a `tally` user, I want a threshold equal to a word's count to include that word, so that "at least N" means `>= N`, not `> N`.
+7. As a `tally` user, I want the threshold to apply to case-folded counts, so that `The` and `the` are counted together before the threshold is checked, the same as the counting already does.
+8. As a `tally` user, I want `--min-count` to work whether it comes before or after the file name, so that I can write the command in either order.
+9. As a `tally` user, I want `--min-count=N` to work as well as `--min-count N`, so that I can use either form standard argument parsers accept.
+10. As a `tally` user, I want `--min-count 0` to be rejected with a usage message on stderr and exit code 2, so that I learn the option needs a positive number.
+11. As a `tally` user, I want a negative N (for example `--min-count -1`) to be rejected with the same usage error and exit code 2, so that negative thresholds do not silently print everything.
+12. As a `tally` user, I want a non-integer N (for example `abc`, `2.5`, or an empty string) to be rejected with the same usage error and exit code 2, so that a typo does not silently change the output.
+13. As a `tally` user, I want `--min-count` with no value to be rejected with the usage error and exit code 2, so that a forgotten number is caught.
+14. As a `tally` user, I want the usage error to go to stderr and leave stdout empty, so that a pipeline does not receive error text as data.
+15. As a `tally` user, I want an invalid N to be rejected before the file is read, so that the usage error is the reported problem even when the file is also missing.
+16. As a `tally` user, I want a very large valid N (for example `1000000000`) to be accepted and print nothing, so that large inputs do not need special handling.
+17. As a `tally` user, I want `tally --help` to show the new option with a one-line description, so that I can discover it.
+18. As a `tally` user reading the README, I want the option documented with one example, so that I can use it without reading the code.
+19. As a `tally` user, I want the file-not-found behaviour to stay unchanged by this feature, so that this change does not alter existing error handling.
 
 ## Implementation Decisions
 
-- **Interface change:** the command gains one optional option, `--min-count`, taking one value N. Nothing else in the command-line interface changes. The option name and the value placeholder are fixed by this spec.
-- **Filtering rule:** after words are counted, a word is kept when its count is greater than or equal to N. Words below N are dropped. Filtering happens before the output is formatted, so the ranking and tie-break rules are applied to the kept words only and are not changed.
-- **Output format:** unchanged. Each kept word is printed as `word count`, one per line, in the existing order.
-- **Validation:** N must be a whole number of 1 or more. Any other value is a usage error: 0, negative numbers, and non-integers are all rejected by argument parsing, before the input file is opened. A usage error writes the usage message and the reason to stderr, writes nothing to stdout, and ends with exit code 2. Validation is done by the existing argument parser, which the project already uses, so the usage message follows the project's current style.
-- **Exit codes:** a valid run that finds no qualifying words is not an error: it prints nothing and exits 0. A usage error exits 2. A missing or unreadable file keeps its current behaviour.
-- **Counting:** the way words are found (lowercase, letters and apostrophes) does not change.
-- **Documentation:** the command's help text describes the option. The README's usage section gains one example line showing the option.
+- **Module changed: `tally.cli`.** It gains one command-line option and a threshold filter. No other module changes.
+- **Threshold filter.** The filter is applied to the counts after counting and before ranking. It keeps a word when its count is greater than or equal to N. Ranking (count descending, then word ascending) is unchanged, so the filtered output is exactly the unfiltered output with the low-count lines removed.
+- **Filter location.** The filter lives in the same step that formats counts for output, as an optional parameter that defaults to "no threshold". Existing callers keep their current behaviour without changes. (Decision recorded here; the plan does not revisit it.)
+- **Option type.** `--min-count` takes one value. The value is parsed as an integer in base 10 using Python's `int()`. Values `int()` accepts are valid if they are at least 1 (for example `+3`, `03`, and `1_000` are valid, meaning 3, 3, and 1000). Values `int()` rejects are invalid (for example `abc`, `2.5`, empty string). Invalid values are rejected by the standard argument parser, which prints the usage line and an error line to stderr and exits with code 2. A value of 0 or below is rejected by the same mechanism, with a message naming the option.
+- **Default.** When the option is absent, no threshold is applied and every word is printed.
+- **Exit codes.** Success exits 0, including when nothing meets the threshold. Invalid N exits 2. Other behaviour (such as a missing file) is unchanged.
+- **Ordering of checks.** The option value is validated during argument parsing, before the file is opened.
+- **Output.** Only the `word count` lines that pass the threshold are printed to stdout, one per line, in the existing order. Nothing else is printed to stdout.
+- **Interfaces.** `main(argv)` keeps its signature and return value (0 on success). The option is accepted wherever argparse accepts options, including `--min-count=N`.
+- **Help text.** The option appears in `--help` with a short description saying it keeps words counted at least N times.
+- **README.** The README gains one line describing the option and one example invocation, alongside the existing usage line.
 
 ## Testing Decisions
 
-- **What makes a good test here:** the tests describe what a user sees: the printed lines, their order, and the exit code. They do not check internal data structures or how the filter is implemented.
-- **Seam:** the existing entry point `main(argv)` in the CLI module. It is the highest existing seam and already has tests (the `Main` test class in `tests/test_cli.py`). Tests pass an argument list, capture stdout, and check the return value. For usage errors, the argument parser ends the call with `SystemExit`, so those tests assert that the exit code is 2 and read the message from stderr. The filter can also be tested through the existing `format_counts` / `count_words` tests, if the implementation keeps them as separate steps.
-- **No new seam is proposed.** The option is a thin layer over an existing function, and `main(argv)` proves the behaviour end to end.
-- **Behaviours to test through `main(argv)`:**
-  - the threshold is inclusive (a word at exactly N is printed; N-1 is not);
-  - kept words keep the most-frequent-first order and the alphabetical tie order;
-  - N = 1 prints the same output as no option;
-  - N above every count prints nothing and returns 0;
-  - N = 0, a negative N, and a non-integer N each end with exit code 2, print nothing to stdout, and write the usage message to stderr;
-  - the option works after the file name and in the `--min-count=N` form;
-  - no option gives the same output as the current test `test_prints_every_word`, which must keep passing unchanged.
-- **Prior art:** `tests/test_cli.py`, class `Main`, test `test_prints_every_word`, shows how to write a temp file, call `main`, and capture stdout. `CountWords.test_ranks_by_count_then_alphabetically` shows how ranking is tested.
-- **Run with:** `python3 -m unittest`, as the README says.
-
-## Quality Requirements
-
-Not applicable. The project has no `docs/architecture/arc42.md`, so there are no R-, QS-, or ADR IDs to cite.
+- **What makes a good test.** Tests check external behaviour through `main(argv)`: the lines written to stdout, the text written to stderr, and the return value or the exit code raised by the parser. Tests do not check internal data structures or call the filter with private helpers.
+- **Seam.** One seam: `tally.cli.main(argv)`. It already exists and is the seam the current tests use, so no new seam is introduced. The threshold filter is exercised through `main`, which is the highest seam that can prove the behaviour.
+- **Modules tested.** `tally.cli` only.
+- **Cases the tests must cover.**
+  - No option: output identical to today's output for a fixed input file.
+  - `--min-count 2` on a fixed input: only words with count 2 or more appear, in the existing order.
+  - Threshold equal to a word's count includes that word.
+  - Threshold above the maximum count: empty stdout, return 0.
+  - `--min-count 1`: same output as no option.
+  - Case folding: `The` and `the` add up before the threshold is checked.
+  - Option before and after the file name, and the `--min-count=N` form.
+  - `0`, `-1`, `abc`, `2.5`, and a missing value: `SystemExit` with code 2, usage text on stderr, nothing on stdout.
+  - Invalid N with a missing file: usage error reported, file not opened.
+- **Prior art.** `tests/test_cli.py`. It uses `tempfile` for input files, `redirect_stdout` to capture output, and `main([...])` as the entry point. New tests follow the same pattern and add `redirect_stderr` for the error cases.
+- **Run command.** `python3 -m unittest`, as in the README.
 
 ## Out of Scope
 
-- A maximum count (`--max-count`) or a range of counts.
-- Filtering by word pattern, length, or stop-word list.
-- Changing how words are found or how case is handled.
-- Changing the output format (for example, JSON or tab-separated output).
-- Any change to how a missing or unreadable file is reported.
-- Reading from stdin or accepting several files.
+- Filtering by maximum count, or by a count range. Only a minimum is in scope.
+- Changing how words are tokenised or how case is folded.
+- Changing the output format, the sort order, or the default output.
+- Changing error handling for missing or unreadable files.
+- Reading from stdin or multiple input files.
+- Any new tracker, ticket, or plan artifact. This is one slice, one sitting, one agent, so the spec goes straight to implementation.
 
 ## Further Notes
 
-The architect was unavailable to answer the open points. The following assumptions are made in their place and should be checked when they are next available. None of them contradicts the approved design; each one fills a gap the design does not cover.
+These points are assumptions. The author was not available to answer them, so each was decided here. Reviewers should confirm or overturn them before implementation.
 
-- **A1, non-integer values:** the design covers N below 1 but not non-integer input. This spec treats any non-integer (`abc`, `2.5`, empty string) as a usage error with exit code 2, the same as N below 1.
-- **A2, inclusive threshold:** "counted at least N times" is read as count >= N. A word that appears exactly N times is printed.
-- **A3, no matches:** when no word reaches N, the output is empty and the exit code is 0. This is not treated as an error.
-- **A4, order of checks:** a usage error from the option is reported before the file is opened. A bad N with a missing file therefore reports the usage error.
-- **A5, seam:** the only test seam is the existing `main(argv)` entry point, as described in Testing Decisions. The architect was not asked to confirm this.
-- **A6, documentation:** the README usage section and the command's help text are updated as part of this work. The design did not mention documentation.
-- **A7, vocabulary:** the project has no `GLOSSARY.md` and no ADRs, so no terms were added or checked against one.
-- **A8, option form:** both `--min-count N` and `--min-count=N` are accepted, because the standard argument parser accepts both.
-
-If the architect rejects any of these, the spec should be updated before tickets or a plan are written.
+1. **Non-integer values are errors.** Values that `int()` rejects (`abc`, `2.5`, `""`) are usage errors with exit code 2. Values `int()` accepts but a human might not expect (`+3`, `03`, `1_000`) are accepted as their integer value.
+2. **Usage message content.** "The usage message on stderr" is taken to mean the standard argument-parser output: the usage line followed by an error line naming `--min-count`. The exact wording of the error line is not pinned by this spec.
+3. **Option position.** The option is accepted before or after the file argument, and in `--min-count=N` form, because that is the standard parser behaviour and no restriction was asked for.
+4. **Validation before file access.** An invalid N is reported before the file is opened, so the usage error wins over a file error.
+5. **Negative numbers.** A negative value such as `-1` reaches the integer check as a value and is rejected there. It is not treated as an unknown option.
+6. **README.** The README update is included because the README is the only user documentation and it documents the output contract.

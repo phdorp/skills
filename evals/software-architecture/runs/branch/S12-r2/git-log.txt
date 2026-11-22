@@ -1,2 +1,2 @@
-41327bbb9811e1b7671941bb0b93458f30198da0 docs: add backup command spec
-e484b0c9eea106ffcc0f292b123d70f54c327f32 fixture
+1db0e2c6020b90775d7d75a2f7751e07b6b95dcb docs: specify notes backup command
+fb92ab7508f6fb92016e80ed2cfcc90c92caea2d fixture

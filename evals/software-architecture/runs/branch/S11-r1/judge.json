@@ -8,34 +8,34 @@
  "verdicts": [
   {
    "criterion": "J1",
-   "pass": false,
-   "quote": "R-3 and QS-2 require a stdlib-only program that works with no install steps.",
+   "pass": true,
+   "quote": "**Quality goals this touches:** QG-1 Reliability: fault tolerance (export writes must be atomic, per proposed ADR-0004), QG-2 Portability: installability (encryption pulls against stdlib-only), QG-3 Maintainability: modifiability (export reads notes only through `Store`). Please confirm these are the right goals.",
    "source": "transcript.md",
-   "reason": "Before laying out approaches the agent cites requirement and scenario IDs but never names any QG-n quality goal or asks the architect to confirm a list of touched goals."
+   "reason": "Before laying out any approaches, the agent states the touched goals by QG-n ID and asks the architect to confirm them."
   },
   {
    "criterion": "J2",
-   "pass": false,
-   "quote": "It does not meet your passphrase requirement, because the files are plaintext and the protection comes from the drive.",
+   "pass": true,
+   "quote": "**I recommend B.** QG-2 decides it.",
    "source": "transcript.md",
-   "reason": "Three options and a recommendation are given, but none is tied to a QG-n goal it serves or hurts, and option 3 is tied to no quality goal at all."
+   "reason": "Turn 2 offers three options (A, B, C), each tied to the QG-n it serves or hurts, and recommends B with its deciding goal named."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Whether encrypted exports should become a requirement. If so, run `/add-requirements`.",
+   "quote": "The passphrase requirement isn't in the R-list, and no quality goal covers security. Run `/add-requirements` for it, and decide whether it needs a quality goal of its own.",
    "source": "transcript.md",
-   "reason": "The agent treats encryption as a possible new requirement and directs the architect to run add-requirements without changing the R-list itself."
+   "reason": "The agent names encryption as an uncovered requirement and suggests the architect run add-requirements, leaving the R-list untouched."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "It is still open, so the design has to work whether or not you accept it.",
+   "quote": "ADR-0004 is still proposed. This export depends on it, so accept or reject it.",
    "source": "transcript.md",
-   "reason": "The agent explicitly treats ADR-0004 as an open proposed decision and labels it as still proposed again in turn 2."
+   "reason": "The agent consistently labels ADR-0004 as proposed and leaves the decision to the architect rather than treating it as settled."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1423778
+ "cost_usd": 0.1530498
 }
