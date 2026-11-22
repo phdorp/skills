@@ -58,11 +58,21 @@ override from its README (<https://github.com/googleapis/release-please>, Apache
 Ideas adapted in our own words, no text copied:
 
 - `MSiccDev/arc42-toolkit` (<https://github.com/MSiccDev/arc42-toolkit>, MIT): ask the
-  architect first, and push back on vague measures. Used in `quality-requirements`.
+  architect first, and push back on vague measures. Used in `quality-requirements` and
+  `setup-architecture`.
+- `LLM-Coding/Semantic-Anchors` (`arc42-documentation`,
+  <https://github.com/LLM-Coding/Semantic-Anchors>, Apache-2.0): cross-section traceability,
+  so an ADR names the requirements and quality goals it serves (`domain-modeling`'s ADR format,
+  `code-review`'s Architecture axis); a scenario's response measure is a figure
+  (`quality-requirements`); recovered rationale is marked as inferred instead of presented as
+  decided (`setup-architecture`'s *as found, unconfirmed*).
 - `docs-as-code-toolkit/architecture-knowledge-toolkit`
   (<https://github.com/docs-as-code-toolkit/architecture-knowledge-toolkit>, MIT): a goal
   without a measure becomes an open question instead of an invented target. Used in
   `quality-requirements`.
+- `skillrecordings/adr-skill` (<https://github.com/skillrecordings/adr-skill>, no licence,
+  inspiration only): a human approves each decision and the agent drafts and implements it.
+  Reflected in `domain-modeling`'s "Status belongs to the architect".
 
 ### openmodelica
 

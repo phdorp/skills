@@ -35,13 +35,19 @@ The skills are designed to chain. A typical feature runs:
 
 | Step | Skill | What it produces |
 |---|---|---|
+| 0 | [`setup-architecture`](skills/setup-architecture/SKILL.md) | Once per project, optional: arc42, ranked requirements, quality goals |
 | 1 | [`design-dialogue`](skills/design-dialogue/SKILL.md) | Shared understanding and an approved design |
 | 2 | [`spec-and-plan`](skills/spec-and-plan/SKILL.md) | A spec, a ticket graph, and a task-by-task plan |
 | 3 | [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | An isolated workspace with a clean baseline |
 | 4 | [`executing-plans`](skills/executing-plans/SKILL.md) | Implemented tasks, each verified and reviewed |
-| 5 | [`code-review`](skills/code-review/SKILL.md) | Standards and spec findings, acted on |
+| 5 | [`code-review`](skills/code-review/SKILL.md) | Standards and spec findings, plus Architecture in a set-up project, acted on |
 | 6 | [`finishing-a-development-branch`](skills/finishing-a-development-branch/SKILL.md) | A merge, PR, or preserved branch |
 | 7 | [`retro`](skills/retro/SKILL.md) | Improvements to the environment for next time |
+
+A set-up project has `docs/architecture/arc42.md`. There, new requirements enter through
+[`add-requirements`](skills/add-requirements/SKILL.md), and design, planning, execution and
+review work from the architecture: its quality goals, accepted ADRs and the architect's open
+decisions.
 
 ## All skills
 
@@ -92,8 +98,8 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 
 ### Review and delivery
 
-- **[code-review](skills/code-review/SKILL.md)** - Two-axis review (Standards and Spec), plus
-  how to request, receive, and act on feedback.
+- **[code-review](skills/code-review/SKILL.md)** - Review on two axes (Standards and Spec), with
+  a third, Architecture, in a set-up project, plus how to request, receive, and act on feedback.
 - **[finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md)** - Verify,
   choose merge/PR/keep, and clean up; includes the PR body shape.
 - **[conventional-commits](skills/conventional-commits/SKILL.md)** - Write commit messages in
