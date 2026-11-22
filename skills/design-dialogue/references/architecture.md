@@ -43,7 +43,7 @@ Once the architect picks one, record the choice as a proposed ADR through
 ## 4. New requirements
 
 A need the R-list does not cover, at system level (it constrains the whole system, like
-encryption at rest or a new platform), is a new requirement. Name it as one and suggest that
+an audit trail or a new kind of user), is a new requirement. Name it as one and suggest that
 the architect run `/add-requirements` with it. The R-list changes only through that skill, and
 the architect starts it.
 

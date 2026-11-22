@@ -22,12 +22,14 @@ text, so a scenario's measure stays there.
 - **Blocked by:** <ADR-nnnn, each proposed ADR that settles a decision the work needs>
 ```
 
-A proposed ADR is an open decision: list it under **Blocked by**, mark the spec's status as
-blocked on it, and say so in your final message. The spec builds on it once the architect
-accepts it.
+A proposed ADR is an open decision: list it under **Blocked by**, and say so in your final
+message. While **Blocked by** lists an ADR, the spec's status line reads
+`Status: blocked (ADR-nnnn)`, and a tracker issue gets the blocked marking instead of
+`ready-for-agent`. The spec builds on the decision once the architect accepts the ADR.
 
 ## Red flags
 
 | Thought | Reality |
 |---|---|
-| "The design says ADR-0004, so the spec follows it" | A proposed ADR is open. List it under Blocked by until the architect accepts it. |
+| "The design relies on a proposed ADR, so the spec follows it" | A proposed ADR is open. List it under Blocked by until the architect accepts it. |
+| "Blocked is in the notes, so the status can say ready-for-agent" | The status line is what an agent reads first. It says blocked until **Blocked by** is empty. |

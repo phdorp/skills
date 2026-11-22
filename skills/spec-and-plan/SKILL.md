@@ -55,7 +55,7 @@ Before publishing, list every decision the draft leaves open or hands to "the pl
 
 ### Publish
 
-- **Configured tracker**: create one issue with the spec body and apply the `ready-for-agent` triage label unless the user says otherwise. If the source was an existing issue, publish as its sub-issue or follow the tracker doc.
+- **Configured tracker**: create one issue with the spec body and apply the `ready-for-agent` triage label unless the user says otherwise or the spec's status says blocked. If the source was an existing issue, publish as its sub-issue or follow the tracker doc.
 - **No tracker**: write `docs/specs/YYYY-MM-DD-<topic>-spec.md` and commit it.
 - Never close or rewrite a parent issue as part of publishing.
 
