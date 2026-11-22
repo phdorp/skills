@@ -69,7 +69,7 @@ Same loop in every mode. Mode 1 runs it yourself; mode 2 hand it to a fresh impl
 
 ## Continuous Execution
 
-Do not pause between tasks. Do not ask "should I continue?", do not post progress summaries. The human asked you to execute the plan; execute it. Exactly four things stop you:
+Do not pause between tasks. Do not ask "should I continue?", do not post progress summaries. The human asked you to execute the plan; execute it. Exactly four things stop the whole run:
 
 1. An irreversible or destructive operation.
 2. A security-sensitive action.
@@ -132,7 +132,7 @@ Cheapest sufficient tier, specified explicitly on every dispatch. An omitted mod
 | "I'll run the full suite at the end instead of per step" | Per-step runs tell you which step broke it. The end-of-task run is the contract, not a substitute. |
 | "The plan is wrong here, I'll just do the right thing" | Do the right thing and ledger the ruling. Unledgered deviation is a decision made in secret. |
 | "I'll write the ledger lines after a few tasks" | Compaction does not wait for a convenient moment. One line per task, in the same message as the commit. |
-| "Let me check in before the next task" | They asked you to execute. Progress prompts spend their time instead. Only the four stops stop you. |
+| "Let me check in before the next task" | They asked you to execute. Progress prompts spend their time instead. Only the stops in Continuous Execution stop you. |
 | "Tests should pass, the change was trivial" | "Should" is not evidence. The contract requires the command and its output. |
 | "The reviewer said Minor, so it's Minor" | The label may have graded the spec's silence. Grade what the person using the software gets. |
 | "The fix is obvious, no need for a failing test first" | The failing test is the only proof the finding was real and is now gone. Otherwise you have a diff and a hope. |

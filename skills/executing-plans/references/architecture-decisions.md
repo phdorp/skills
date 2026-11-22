@@ -20,7 +20,8 @@ Done when every task you start has passed this test, or has its open decision.
 
 Call the Skill tool with "domain-modeling" and write the decision as the next ADR in the ADR
 directory, Status `proposed`, its Context citing the requirement and quality-goal IDs that
-exist. Write the options the plan implies; leave the choice to the architect.
+exist. Write the options the plan implies, and put the one you recommend in Decision, marked
+"Recommended, awaiting the architect"; the architect chooses.
 
 Done when the ADR file exists with five fields and Status `proposed`.
 
@@ -46,7 +47,8 @@ line.
   the ADR alone on the working branch (`docs(adr): propose <title>`). When the remote takes pull
   requests, also open one with only the ADR. File no tracker issue: the ADR is the record. End
   with a final report that lists the ADR as proposed, the paused tasks, and what accepting it
-  unblocks. When the change serves a need no `R-n` in arc42 section 1 names, add a line
+  unblocks. A pull request with only the ADR starts from the default branch; merging it accepts
+the ADR and closing it rejects it. When the change serves a need no `R-n` in arc42 section 1 names, add a line
   "New requirement: <need> — suggest running `add-requirements`".
 - **You are a subagent:** the architect is not yours to contact. Commit the ADR alone
   (`docs(adr): propose <title>`) so it reaches your parent's branch, then report
@@ -63,4 +65,5 @@ When a subagent reports `NEEDS_DECISION`, apply sections 3 and 4 as the parent: 
 | "The plan says add a column, so it's decided" | A plan is not an accepted ADR. Draft the ADR. |
 | "I'll rule on it, rulings are how this skill works" | Rulings settle plan conflicts. An architectural decision waits for the architect. |
 | "Nobody is here, so I'll decide and keep going" | Commit the proposed ADR, finish the independent tasks, report. |
+| "The paused feature needs a glossary term" | Name it in the ADR. The term joins the glossary once the decision is accepted. |
 | "The whole plan is blocked now" | Only the tasks behind the decision wait. Finish the rest. |

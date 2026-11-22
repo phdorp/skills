@@ -33,9 +33,11 @@ Subagent (general-purpose):
     **Ask them now.** Raise any concerns before starting work.
 
     **If the project has docs/architecture/arc42.md**, check the task against
-    its architecture before you write code: read the ADR titled "Record
-    architecture decisions" and list what the task changes that its "decided
-    centrally" list names (an on-disk format, a CLI option, an interface).
+    its architecture before you write code: list each choice the task makes
+    that is architectural by the domain-modeling skill's "When a decision
+    needs an ADR" test: expensive to change later, crossing a module boundary,
+    or named on the "decided centrally" list in the ADR titled "Record
+    architecture decisions" (an on-disk format, a CLI option, an interface).
     Each item no accepted ADR settles is an open decision, even when the
     brief spells out how to do it: a brief is not an accepted ADR. Draft it
     with the domain-modeling skill as a proposed ADR and commit it alone
