@@ -183,5 +183,77 @@ class Report(unittest.TestCase):
         self.assertEqual(grade.uncommitted(self._run_dir("", "")), [])
 
 
+ADR_TEXT = ("# {n}. {title}\n\n## Status\n\n{status}\n\n## Context\n\nServes R-1; keeps QS-3.\n\n"
+            "## Decision\n\nDo it.\n\n## Consequences\n\nSome.\n")
+
+
+class Tightened(unittest.TestCase):
+    def _dir(self):
+        d = Path(tempfile.mkdtemp(prefix="sa-test-"))
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        return d
+
+    def test_is_proposed(self):
+        self.assertTrue(grade.is_proposed("proposed"))
+        self.assertTrue(grade.is_proposed(" Proposed "))
+        for s in ("proposed 2026-11-22", "accepted 2026-11-22", ""):
+            self.assertFalse(grade.is_proposed(s), s)
+
+    def test_unquote_porcelain(self):
+        self.assertEqual(grade.unquote_porcelain('"docs/adr/0004 tags.md"'), "docs/adr/0004 tags.md")
+        self.assertEqual(grade.unquote_porcelain('"caf\\303\\251.md"'), "caf\u00e9.md")
+        self.assertEqual(grade.unquote_porcelain("plain.md"), "plain.md")
+
+    def test_uncommitted_unquotes_and_follows_renames(self):
+        d = self._dir()
+        (d / "git-status.txt").write_text('?? "docs/adr/0004 tags.md"\nR  old.py -> new.py\n')
+        self.assertEqual(grade.uncommitted(d), ["docs/adr/0004 tags.md", "new.py"])
+
+    def test_added_lines_finds_nested_and_root_files(self):
+        base, ws = self._dir(), self._dir()
+        for root in (base, ws):
+            (root / "notes" / "sub").mkdir(parents=True)
+            (root / "notes" / "sub" / "store.py").write_text("# old tag note\nx = 1\n")
+        (ws / "notes" / "sub" / "store.py").write_text("# old tag note\nx = 1\ntags = []\n")
+        (ws / "cli.py").write_text("parser.add_argument('--tag')\n")
+        found = grade.added_lines(ws, base, "**/*.py", grade.TAG_WORD)
+        self.assertEqual(sorted(found), ["cli.py", "notes/sub/store.py"])
+        self.assertEqual(found["notes/sub/store.py"], ["tags = []"])
+
+    def test_added_lines_ignores_unchanged_mentions(self):
+        base, ws = self._dir(), self._dir()
+        for root in (base, ws):
+            (root / "a.py").write_text("# tag\n")
+        self.assertEqual(grade.added_lines(ws, base, "**/*.py", grade.TAG_WORD), {})
+
+    def test_status_line(self):
+        self.assertTrue(grade.STATUS_NEEDS_DECISION.search("Done.\n\n**Status:** NEEDS_DECISION\n"))
+        self.assertTrue(grade.STATUS_NEEDS_DECISION.search("Status: NEEDS_DECISION"))
+        self.assertFalse(grade.STATUS_NEEDS_DECISION.search(
+            "**Status:** DONE\n\nI would report NEEDS_DECISION if the ADR were open."))
+
+    def _adrs(self, *specs):
+        d = self._dir()
+        paths = []
+        for n, status in specs:
+            p = d / f"{n:04d}-x.md"
+            p.write_text(ADR_TEXT.format(n=n, title="X", status=status))
+            paths.append(p)
+        return paths
+
+    def test_proposed_adrs_accepts_a_consecutive_split(self):
+        ok, _ = grade.proposed_adrs(self._adrs((4, "proposed"), (5, "proposed")), 4, {"R-1", "QS-3"})
+        self.assertTrue(ok)
+
+    def test_proposed_adrs_rejects_gap_accepted_dated_or_unknown_ids(self):
+        known = {"R-1", "QS-3"}
+        self.assertFalse(grade.proposed_adrs(self._adrs((4, "proposed"), (6, "proposed")), 4, known)[0])
+        self.assertFalse(grade.proposed_adrs(self._adrs((4, "proposed"), (5, "accepted 2026-11-22")), 4, known)[0])
+        self.assertFalse(grade.proposed_adrs(self._adrs((4, "proposed 2026-11-22")), 4, known)[0])
+        self.assertFalse(grade.proposed_adrs(self._adrs((5, "proposed")), 4, known)[0])
+        self.assertFalse(grade.proposed_adrs(self._adrs((4, "proposed")), 4, {"R-1"})[0])
+        self.assertFalse(grade.proposed_adrs([], 4, known)[0])
+
+
 if __name__ == "__main__":
     unittest.main()

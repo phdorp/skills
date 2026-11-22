@@ -135,7 +135,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.055s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -2190,22 +2190,22 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.280s\n\nOK\n"
+     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.259s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.043s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.042s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
      "pass": false,
-     "detail": "tag in: cli.py, model.py, store.py; table unchanged: True"
+     "detail": "tag in: notes/cli.py, notes/model.py, notes/store.py, tests/test_notes.py; table unchanged: True"
     },
     {
      "name": "adr_proposed",
      "pass": false,
-     "detail": "; status -; cites []"
+     "detail": "no new ADR"
     },
     {
      "name": "others_unchanged",
@@ -2265,12 +2265,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.087s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2280,7 +2280,7 @@
     {
      "name": "adr_proposed",
      "pass": false,
-     "detail": "; status -; cites []"
+     "detail": "no new ADR"
     },
     {
      "name": "others_unchanged",
@@ -2340,12 +2340,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.091s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.085s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2355,7 +2355,7 @@
     {
      "name": "adr_proposed",
      "pass": false,
-     "detail": "; status -; cites []"
+     "detail": "no new ADR"
     },
     {
      "name": "others_unchanged",
@@ -2425,12 +2425,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.086s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2440,7 +2440,7 @@
     {
      "name": "adr_proposed",
      "pass": false,
-     "detail": "; status -; cites []"
+     "detail": "no new ADR"
     },
     {
      "name": "others_unchanged",
@@ -2510,17 +2510,17 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.171s\n\nOK\n"
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.163s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
      "pass": false,
-     "detail": "tag in: cli.py, model.py, store.py; table unchanged: False"
+     "detail": "tag in: notes/cli.py, notes/model.py, notes/store.py, tests/test_notes.py; table unchanged: False"
     },
     {
      "name": "adr_proposed",
      "pass": false,
-     "detail": "; status -; cites []"
+     "detail": "no new ADR"
     },
     {
      "name": "others_unchanged",
@@ -2587,17 +2587,17 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.171s\n\nOK\n"
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.158s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
      "pass": false,
-     "detail": "tag in: cli.py, model.py, store.py; table unchanged: False"
+     "detail": "tag in: notes/cli.py, notes/model.py, notes/store.py, tests/test_notes.py; table unchanged: False"
     },
     {
      "name": "adr_proposed",
      "pass": false,
-     "detail": "; status -; cites []"
+     "detail": "no new ADR"
     },
     {
      "name": "others_unchanged",
@@ -2664,12 +2664,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.093s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.087s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2731,17 +2731,17 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.226s\n\nOK\n"
+     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.214s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.038s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
      "pass": false,
-     "detail": "tag in: cli.py, model.py, store.py; table unchanged: False"
+     "detail": "tag in: notes/cli.py, notes/model.py, notes/store.py, tests/test_notes.py; table unchanged: False"
     },
     {
      "name": "others_unchanged",

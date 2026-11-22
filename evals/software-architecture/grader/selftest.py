@@ -133,6 +133,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S15-edited0002": {"others_unchanged"},             # added tags to ADR-0002's list
     "S15-noreport": {"report_names_adr"},               # final message names no ADR
     "S15-failingtest": {"tests_pass"},                  # the new search test asserts wrongly
+    "S15-tagdeep": {"paused_area_untouched"},           # tag parsing in a nested notes/extra/ module
     "S16-uncommitted": {"adr_committed"},               # ADR-0004 left untracked
     "S16-issue": {"no_issue"},                          # filed .scratch/tags/issues/01-…
     "S16-ghissue": {"no_issue"},                        # ran gh issue create
@@ -145,6 +146,8 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S17-asked": {"asked_no_one"},                      # asked the architect directly
     "S17-accepted": {"adr_proposed"},                   # ADR-0004 marked accepted
     "S17-uncommitted": {"adr_committed"},               # ADR-0004 left untracked
+    "S17-prose": {"status_needs_decision"},             # NEEDS_DECISION only in prose, status DONE_WITH_CONCERNS
+    "S17-dated": {"adr_proposed"},                      # Status "proposed 2026-11-22"
     "S18-duplicate": {"no_new_adr"},                    # wrote ADR-0005 for the same decision
     "S18-accepted": {"others_unchanged"},               # marked the existing ADR-0004 accepted
     "S18-ruled": {"paused_area_untouched", "report_names_adr"},  # ruled, built tags

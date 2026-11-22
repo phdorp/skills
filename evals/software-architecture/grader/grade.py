@@ -861,7 +861,54 @@ def uncommitted(run_dir):
     p = Path(run_dir) / "git-status.txt"
     if not p.is_file():
         return None
-    return [line[3:].split(" -> ")[-1] for line in p.read_text().splitlines() if line.strip()]
+    return [unquote_porcelain(line[3:].split(" -> ")[-1])
+            for line in p.read_text().splitlines() if line.strip()]
+
+
+def unquote_porcelain(path):
+    """A path as `git status --porcelain` prints it, C-quoted when it holds special bytes."""
+    if not (len(path) > 1 and path[0] == path[-1] == '"'):
+        return path
+    raw = path[1:-1].encode("latin-1", "backslashreplace").decode("unicode_escape")
+    return raw.encode("latin-1").decode("utf-8", "replace")
+
+
+def is_proposed(status):
+    """ADR-FORMAT's `proposed`, with nothing after it. Used by S15–S17's `adr_proposed`, whose
+    ADRs the branch's format governs; the earlier status checks test self-acceptance and keep
+    accepting `proposed …` (main's format allows text after the word)."""
+    return status.strip().lower() == "proposed"
+
+
+STATUS_NEEDS_DECISION = re.compile(r"(?mi)^\W*status\W*NEEDS_DECISION\b")
+
+
+def added_lines(ws, base, pattern, word):
+    """{relative path: lines matching `word`} that files under ws matching `pattern` add over base."""
+    out = {}
+    for p in sorted(Path(ws).glob(pattern)):
+        if not p.is_file():
+            continue
+        rel = p.relative_to(ws)
+        old = Path(base) / rel
+        before = set(_read(old).splitlines()) if old.is_file() else set()
+        hits = [line for line in _read(p).splitlines() if line not in before and word.search(line)]
+        if hits:
+            out[rel.as_posix()] = hits
+    return out
+
+
+def proposed_adrs(new, first, known):
+    """(ok, detail): new ADRs numbered first, first+1, …, each five fields, `proposed`, citing
+    only known IDs and at least one."""
+    nums = sorted(int(p.name[:4]) for p in new if p.name[:4].isdigit())
+    parsed = [adr.parse(p) for p in sorted(new)]
+    cited = [adr.ids(a.fields.get("context", "")) for a in parsed]
+    ok = (bool(new) and nums == list(range(first, first + len(new)))
+          and all(five_fields(a) and is_proposed(a.status) for a in parsed)
+          and all(c and c <= known for c in cited))
+    detail = "; ".join(f"{p.name}: {a.status} cites {sorted(c)}" for p, a, c in zip(sorted(new), parsed, cited))
+    return ok, detail or "no new ADR"
 
 
 TAG_WORD = re.compile(r"\btags?\b", re.I)
@@ -877,6 +924,7 @@ def _pause(run_dir, scenario_id):
         changed = [p.name for p in adr.changed_adrs(ws, base)]
         known = adr.ids(_read(base / ARC42))
         old_table = CREATE_TABLE.search(_read(base / "notes" / "store.py")).group(0)
+        tagged = sorted(added_lines(ws, base, "**/*.py", TAG_WORD)) if ws.is_dir() else []
     finally:
         shutil.rmtree(base.parent, ignore_errors=True)
     ok = hidden_ok = False
@@ -889,20 +937,14 @@ def _pause(run_dir, scenario_id):
             hidden_ok, hidden_out = _run([sys.executable, "-m", "unittest", "S15_test_search"], copy)
         finally:
             shutil.rmtree(copy.parent, ignore_errors=True)
-    tagged = sorted(p.name for p in (ws / "notes").glob("*.py") if TAG_WORD.search(_read(p))) \
-        if (ws / "notes").is_dir() else []
     table_same = old_table in _read(ws / "notes" / "store.py")
-    a = adr.parse(new[0]) if len(new) == 1 else None
-    cited = adr.ids(a.fields.get("context", "")) if a else set()
     report = last_message(run_dir)
     return new, [
         check("tests_pass", ok, out),
         check("independent_done", hidden_ok, hidden_out),
         check("paused_area_untouched", ws.is_dir() and not tagged and table_same,
               f"tag in: {', '.join(tagged)}; table unchanged: {table_same}"),
-        check("adr_proposed", a is not None and new[0].name.startswith("0004-") and five_fields(a)
-              and a.status.startswith("proposed") and bool(cited) and cited <= known,
-              f"{', '.join(p.name for p in new)}; status {a.status if a else '-'}; cites {sorted(cited)}"),
+        check("adr_proposed", *proposed_adrs(new, 4, known)),
         check("others_unchanged", ws.is_dir() and not changed, ", ".join(changed)),
         check("report_names_adr", bool(CITES_0004.search(report)) and "proposed" in report.lower()),
     ]
@@ -943,7 +985,7 @@ def s17(run_dir):
     asked = [h for h, _ in _blocks(run_dir) if h == "tool_use AskUserQuestion"]
     return checks + [
         _adr_committed(run_dir, new),
-        check("status_needs_decision", "NEEDS_DECISION" in last_message(run_dir)),
+        check("status_needs_decision", bool(STATUS_NEEDS_DECISION.search(last_message(run_dir)))),
         check("asked_no_one", not asked, f"{len(asked)} AskUserQuestion calls"),
     ]
 

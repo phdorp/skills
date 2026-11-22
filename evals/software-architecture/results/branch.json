@@ -99,7 +99,7 @@
   },
   "S17": {
    "runs": 2,
-   "score": 0.938,
+   "score": 1.0,
    "judge": 1.0,
    "cost_usd": 0.021
   },
@@ -2200,12 +2200,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.096s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.099s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2215,7 +2215,7 @@
     {
      "name": "adr_proposed",
      "pass": true,
-     "detail": "0004-store-tags-as-text-column.md; status proposed; cites ['QG-3', 'QS-1', 'QS-3', 'R-1']"
+     "detail": "0004-store-tags-as-text-column.md: proposed cites ['QG-3', 'QS-1', 'QS-3', 'R-1']"
     },
     {
      "name": "others_unchanged",
@@ -2275,12 +2275,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.093s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2290,7 +2290,7 @@
     {
      "name": "adr_proposed",
      "pass": true,
-     "detail": "0004-tags-storage-and-cli-option.md; status proposed; cites ['QG-3', 'QS-1', 'QS-3', 'R-1', 'R-2']"
+     "detail": "0004-tags-storage-and-cli-option.md: proposed cites ['QG-3', 'QS-1', 'QS-3', 'R-1', 'R-2']"
     },
     {
      "name": "others_unchanged",
@@ -2350,7 +2350,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.091s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.093s\n\nOK\n"
     },
     {
      "name": "independent_done",
@@ -2365,7 +2365,7 @@
     {
      "name": "adr_proposed",
      "pass": true,
-     "detail": "0004-store-note-tags-in-a-notes-column.md; status proposed; cites ['QS-1', 'QS-3', 'R-2', 'R-3']"
+     "detail": "0004-store-note-tags-in-a-notes-column.md: proposed cites ['QS-1', 'QS-3', 'R-2', 'R-3']"
     },
     {
      "name": "others_unchanged",
@@ -2435,7 +2435,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.095s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.091s\n\nOK\n"
     },
     {
      "name": "independent_done",
@@ -2450,7 +2450,7 @@
     {
      "name": "adr_proposed",
      "pass": true,
-     "detail": "0004-store-tags-as-a-column-on-notes.md; status proposed; cites ['QG-1', 'QG-3', 'QS-1', 'QS-3']"
+     "detail": "0004-store-tags-as-a-column-on-notes.md: proposed cites ['QG-1', 'QG-3', 'QS-1', 'QS-3']"
     },
     {
      "name": "others_unchanged",
@@ -2520,7 +2520,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.065s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.068s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2530,7 +2530,7 @@
     {
      "name": "adr_proposed",
      "pass": true,
-     "detail": "0004-tag-notes-in-a-comma-separated-column.md; status proposed; cites ['QG-3', 'R-1', 'R-3']"
+     "detail": "0004-tag-notes-in-a-comma-separated-column.md: proposed cites ['QG-3', 'R-1', 'R-3']"
     },
     {
      "name": "others_unchanged",
@@ -2597,7 +2597,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.066s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.072s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2606,8 +2606,8 @@
     },
     {
      "name": "adr_proposed",
-     "pass": false,
-     "detail": "0004-store-tags-as-comma-separated-column.md, 0005-tag-cli-options.md; status -; cites []"
+     "pass": true,
+     "detail": "0004-store-tags-as-comma-separated-column.md: proposed cites ['QG-1', 'QG-3', 'QS-1', 'QS-3', 'R-1', 'R-2']; 0005-tag-cli-options.md: proposed cites ['QG-3', 'QS-3', 'R-1']"
     },
     {
      "name": "others_unchanged",
@@ -2635,9 +2635,9 @@
      "detail": "0 AskUserQuestion calls"
     }
    ],
-   "passed": 7,
+   "passed": 8,
    "total": 8,
-   "score": 0.875,
+   "score": 1.0,
    "valid": true,
    "judge": {
     "criteria": [
@@ -2665,7 +2665,7 @@
     "cost_usd": 0.1762538
    },
    "cost_usd": 0.010833,
-   "needs_review": true
+   "needs_review": false
   },
   {
    "run": "S18-r1",
@@ -2674,12 +2674,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.093s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2741,12 +2741,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.095s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
