@@ -1,6 +1,6 @@
 # Notes backup Spec
 
-Status: draft
+Status: blocked on ADR-0004 (proposed)
 
 ## Problem Statement
 

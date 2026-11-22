@@ -122,6 +122,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S12-twospecs": {"one_spec"},                       # two new specs
     "S12-h3": set(),                                    # "### Quality requirements" heading
     "S12-glossary": set(),                              # glossary term added with the spec
+    "S12-ready": {"status_blocked"},                    # status ready-for-agent while ADR-0004 is proposed
     "S13-qr": {"no_qr_section"},                        # Quality Requirements in a plain project
     "S13-arc42": {"no_architecture_docs"},              # created docs/architecture/arc42.md
     "S14-goals": {"no_quality_goals"},                  # asks about quality goals

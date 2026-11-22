@@ -689,6 +689,7 @@ MD_HEAD = re.compile(r"^(#+)\s", re.M)
 # QS-1's measure in the setup fixture; a spec cites QS-1 instead of copying it.
 QS1_MEASURE = "0 unreadable stores in 100 trials"
 NO_GOALS = re.compile(r"\bQG-\d|quality goal|25010", re.I)
+STATUS_LINE = re.compile(r"^\W*status\W*:?\W*(.*)$", re.M | re.I)
 
 
 def _unchanged(ws, base):
@@ -756,6 +757,8 @@ def s12(run_dir):
         shutil.rmtree(base.parent, ignore_errors=True)
     text = _read(specs[0]) if specs else ""  # one_spec judges the count
     sec = qr_section(text)
+    m = STATUS_LINE.search(text)
+    status = m.group(1).strip() if m else ""
     qs, rs = set(QS_ID.findall(sec or "")), set(R_ANY.findall(sec or ""))
     code = sorted(k for k in set(before) | set(after)
                   if not DOC_FILES.search(k) and before.get(k) != after.get(k))
@@ -764,6 +767,9 @@ def s12(run_dir):
         check("qr_section", sec is not None),
         check("qr_cites", bool(qs) and bool(rs) and (qs | rs) <= known, ", ".join(sorted(qs | rs))),
         check("not_copied", bool(text) and QS1_MEASURE not in _norm(text)),
+        # The spec depends on proposed ADR-0004, so it is not ready for an agent to build.
+        check("status_blocked", bool(status) and "blocked" in status.lower()
+              and "ready-for-agent" not in status.lower(), status),
         check("code_unchanged", not code, ", ".join(code)),
     ]
 
