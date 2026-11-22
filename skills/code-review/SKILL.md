@@ -5,9 +5,9 @@ description: Use when requesting, performing, or receiving review of a branch, P
 
 # Code Review
 
-One loop with three phases: **request** a review, **perform** it on two axes, **receive** the findings and act on them.
+One loop with three phases: **request** a review, **perform** it on separate axes, **receive** the findings and act on them.
 
-## The two axes
+## The axes
 
 - **Standards**: does the diff follow this repo's documented coding standards?
 - **Spec**: does the diff faithfully implement the originating issue or spec?
@@ -31,7 +31,7 @@ Request review when it is mandatory: after each task in subagent-driven executio
 
 Reviewing the diff yourself instead of dispatching a reviewer is a false economy: the diff and its evaluation consume the context you need to keep driving the work. Dispatch, and let only the findings come back.
 
-## Performing the two-axis review
+## Performing the review
 
 ### 1. Pin the fixed point
 

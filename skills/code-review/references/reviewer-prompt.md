@@ -1,4 +1,4 @@
-# Two-axis reviewer prompt
+# Reviewer prompt
 
 Fill this template once per axis (Standards, Spec, and Architecture when [architecture-axis.md](architecture-axis.md) applies) and dispatch each copy to a separate reviewer. Replace everything in `{}`. Delete the sections that belong to the other axes; a reviewer that sees another axis reranks them.
 
@@ -128,7 +128,7 @@ Improvements to quality, architecture, or process that are not blocking.
 |---|---|
 | `{AXIS}` | `Standards`, `Spec` or `Architecture`. One value per copy. |
 | `{DESCRIPTION}` | What the change does, in a few sentences. Facts, not the session's story. |
-| `{GLOBAL_CONSTRAINTS}` | Repo rules that cut across both axes; `none` when there are none. |
+| `{GLOBAL_CONSTRAINTS}` | Repo rules that cut across the axes; `none` when there are none. |
 | `{DIFF_COMMAND}` | The pinned range, e.g. `git diff main...HEAD`. |
 | `{COMMIT_LIST}` | Output of `git log <point>..HEAD --oneline`. |
 | `{SPEC_PATH}` | Path or URL of the originating issue or spec; `none — no spec available` when there is none. |
