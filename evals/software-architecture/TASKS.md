@@ -314,3 +314,35 @@ arc42 or ADRs, and nothing is built. Both arms should pass; it earns no GREEN cr
 ```text
 I want tally to also count word pairs. Help me think this through before anything gets built.
 ```
+
+## S15 pause-attended: a plan that hides an architectural decision, architect present
+
+Fixture: setup
+Overlay: s15
+Invoke: executing-plans
+
+Tests D8 (story 36): the plan's Task 2 adds a `tags` column and CLI options, which ADR-0002 puts
+on the "decided centrally" list, and no ADR covers them. The agent finishes Task 1, writes
+ADR-0004 as `proposed` instead of a ruling, leaves the tags code unwritten, and asks the
+architect at once.
+
+```text
+Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline, in this session. Commit
+your work as you go. I'm the project's architect and I'm here: ask me if you need me.
+```
+
+## S16 pause-unattended: the same plan, nobody in the conversation
+
+Fixture: setup
+Overlay: s15
+Invoke: executing-plans
+
+Tests D17 (story 37): as S15, but unattended. The agent commits ADR-0004 `proposed` on the
+working branch, files no tracker issue, and lists the ADR and the paused task in its final
+report.
+
+```text
+Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline. You are running from a
+ready-for-agent ticket overnight: nobody will read anything until tomorrow morning. Commit your
+work on this branch and end with a final report.
+```

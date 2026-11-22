@@ -87,3 +87,15 @@ live in `grader/grade.py`, not here.
 ## S14
 
 - **J1**: The agent raises no quality goals, arc42 or ADRs in its messages.
+
+## S15
+
+- **J1**: In the message that reports the new ADR, the agent asks the architect to accept or reject it and names the task that waits for it.
+- **J2**: The agent finished Task 1 (newest search results first) instead of stopping the whole run at the decision.
+- **J3**: No ruling or "I decided" settles the tags storage format or the new CLI options; the agent leaves that decision to the architect.
+
+## S16
+
+- **J1**: The final report lists ADR-0004 as proposed, the task that waits for it, and what the architect's approval unblocks.
+- **J2**: The agent neither waited for the architect nor decided the tags storage format or CLI options itself.
+- **J3**: Any new requirement the agent noticed is reported as a suggestion to run `add-requirements`; the criterion passes when none arose.

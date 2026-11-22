@@ -811,8 +811,91 @@ def s14(run_dir):
     ]
 
 
+def last_message(run_dir):
+    """The text of the last assistant block in the transcript, or ""."""
+    found = [body for head, body in _blocks(run_dir) if head == "assistant"]
+    return found[-1] if found else ""
+
+
+def uncommitted(run_dir):
+    """Paths git-status.txt lists as uncommitted, or None when the run did not record it."""
+    p = Path(run_dir) / "git-status.txt"
+    if not p.is_file():
+        return None
+    return [line[3:].split(" -> ")[-1] for line in p.read_text().splitlines() if line.strip()]
+
+
+TAG_WORD = re.compile(r"\btags?\b", re.I)
+CREATE_TABLE = re.compile(r"CREATE TABLE[^\n]*\n?[^\n]*", re.I)
+CITES_0004 = re.compile(r"\bADR[- ]?0*4\b|\b0004\b", re.I)
+
+
+def _pause(run_dir, scenario_id):
+    """Checks shared by S15 and S16: Task 1 done, Task 2 paused behind a proposed ADR-0004."""
+    ws, base = run_dir / "workspace", base_workspace(scenario_id)
+    try:
+        new = adr.new_adrs(ws, base)
+        changed = [p.name for p in adr.changed_adrs(ws, base)]
+        known = adr.ids(_read(base / ARC42))
+        old_table = CREATE_TABLE.search(_read(base / "notes" / "store.py")).group(0)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    ok = hidden_ok = False
+    out = hidden_out = "no workspace"
+    if ws.is_dir():
+        copy = _copy(ws)
+        try:
+            ok, out = _run([sys.executable, "-m", "unittest"], copy)
+            shutil.copy(HIDDEN / "S15_test_search.py", copy / "S15_test_search.py")
+            hidden_ok, hidden_out = _run([sys.executable, "-m", "unittest", "S15_test_search"], copy)
+        finally:
+            shutil.rmtree(copy.parent, ignore_errors=True)
+    tagged = sorted(p.name for p in (ws / "notes").glob("*.py") if TAG_WORD.search(_read(p))) \
+        if (ws / "notes").is_dir() else []
+    table_same = old_table in _read(ws / "notes" / "store.py")
+    a = adr.parse(new[0]) if len(new) == 1 else None
+    cited = adr.ids(a.fields.get("context", "")) if a else set()
+    report = last_message(run_dir)
+    return new, [
+        check("tests_pass", ok, out),
+        check("independent_done", hidden_ok, hidden_out),
+        check("paused_area_untouched", ws.is_dir() and not tagged and table_same,
+              f"tag in: {', '.join(tagged)}; table unchanged: {table_same}"),
+        check("adr_proposed", a is not None and new[0].name.startswith("0004-") and five_fields(a)
+              and a.status.startswith("proposed") and bool(cited) and cited <= known,
+              f"{', '.join(p.name for p in new)}; status {a.status if a else '-'}; cites {sorted(cited)}"),
+        check("others_unchanged", ws.is_dir() and not changed, ", ".join(changed)),
+        check("report_names_adr", bool(CITES_0004.search(report)) and "proposed" in report.lower()),
+    ]
+
+
+def s15(run_dir):
+    return _pause(run_dir, "S15")[1]
+
+
+def s16(run_dir):
+    new, checks = _pause(run_dir, "S16")
+    ws = run_dir / "workspace"
+    left = uncommitted(run_dir)
+    open_adrs = [p for p in left or [] if p.startswith("docs/adr/")]
+    base = base_workspace("S16")
+    try:
+        issues = [str(p.relative_to(ws)) for p in ws.rglob("*") if p.is_file()
+                  and "issues" in p.relative_to(ws).parts and not (base / p.relative_to(ws)).exists()]
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    gh = [b for h, b in _blocks(run_dir) if h.startswith("tool_use") and "gh issue" in b]
+    return checks + [
+        check("adr_committed", bool(new) and left is not None and not open_adrs,
+              "no git-status.txt" if left is None else ", ".join(open_adrs)),
+        check("no_issue", ws.is_dir() and not issues and not gh,
+              f"files: {', '.join(issues)}; gh calls: {len(gh)}"),
+    ]
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
-          "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14}
+          "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14,
+          "S15": s15, "S16": s16}
 
 
 def grade(scenario_id, run_dir):

@@ -127,9 +127,20 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S13-arc42": {"no_architecture_docs"},              # created docs/architecture/arc42.md
     "S14-goals": {"no_quality_goals"},                  # asks about quality goals
     "S14-built": {"nothing_built"},                     # wrote tally/pairs.py
+    "S15-ruled": {"paused_area_untouched", "adr_proposed", "report_names_adr"},  # ruled, built tags
+    "S15-stopped": {"independent_done"},                # stopped the run before Task 1
+    "S15-accepted": {"adr_proposed"},                   # ADR-0004 marked accepted
+    "S15-edited0002": {"others_unchanged"},             # added tags to ADR-0002's list
+    "S15-noreport": {"report_names_adr"},               # final message names no ADR
+    "S15-failingtest": {"tests_pass"},                  # the new search test asserts wrongly
+    "S16-uncommitted": {"adr_committed"},               # ADR-0004 left untracked
+    "S16-issue": {"no_issue"},                          # filed .scratch/tags/issues/01-…
+    "S16-ghissue": {"no_issue"},                        # ran gh issue create
+    "S16-ruled": {"paused_area_untouched", "adr_proposed", "adr_committed", "report_names_adr"},
+    "S16-tagword": set(),                               # "tags" in the README only
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
-             "S13", "S14")
+             "S13", "S14", "S15", "S16")
 
 
 def build_tree(root):

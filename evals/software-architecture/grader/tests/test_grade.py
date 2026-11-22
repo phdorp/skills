@@ -129,5 +129,27 @@ class Turns(unittest.TestCase):
         self.assertFalse(grade.skill_called(other, "add-requirements"))
 
 
+class Report(unittest.TestCase):
+    def _run_dir(self, transcript, status=None):
+        d = Path(tempfile.mkdtemp(prefix="sa-test-"))
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        (d / "transcript.md").write_text(transcript)
+        if status is not None:
+            (d / "git-status.txt").write_text(status)
+        return d
+
+    def test_last_message_is_final_assistant_text(self):
+        d = self._run_dir("### user\n\ngo\n\n### assistant\n\nStarting.\n\n"
+                          + _tool_block("Bash", {"command": "git commit"})
+                          + "### assistant\n\nADR-0004 is proposed.\n\n### result (success)\n")
+        self.assertEqual(grade.last_message(d).strip(), "ADR-0004 is proposed.")
+        self.assertEqual(grade.last_message(self._run_dir("### user\n\ngo\n")), "")
+
+    def test_uncommitted_reads_git_status(self):
+        d = self._run_dir("", "?? docs/adr/0004-tags.md\n M notes/store.py\n")
+        self.assertEqual(grade.uncommitted(d), ["docs/adr/0004-tags.md", "notes/store.py"])
+        self.assertEqual(grade.uncommitted(self._run_dir("", "")), [])
+
+
 if __name__ == "__main__":
     unittest.main()
