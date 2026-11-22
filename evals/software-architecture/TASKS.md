@@ -415,3 +415,21 @@ function as a Standards finding.
 Review the last commit (HEAD~1..HEAD) against main's state before it. The spec is
 docs/specs/stopwords.md. Report your findings; don't change any files.
 ```
+
+## S21 review-proposed: a change that relies on a proposed ADR
+
+Fixture: setup
+Overlay: s03
+Change: s21 feat: export notes to a file atomically
+Invoke: code-review
+
+Tests the Architecture axis's open-decision rule: the change adds `notes export PATH`, which
+writes through `Store.export` with a temporary file, `os.fsync` and `os.replace`, exactly as
+proposed ADR-0004 decides. It breaks no accepted ADR and no section 8 rule. ADR-0004 is
+`proposed`, so the change depends on an open decision; the review reports that under its
+Architecture section, does not call the change conformant, and changes no file.
+
+```text
+Review the last commit (HEAD~1..HEAD) against main's state before it. The spec is
+docs/specs/export.md. Report your findings; don't change any files.
+```

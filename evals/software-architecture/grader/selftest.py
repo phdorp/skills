@@ -162,9 +162,11 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S20-archsection": {"no_architecture_section"},     # an ## Architecture section in a plain project
     "S20-arc42": {"no_architecture_section"},           # suggests setting up arc42
     "S20-edited": {"read_only"},                        # changed tally/cli.py
+    "S21-conforms": {"open_decision_under_architecture"},  # "Compliant with proposed ADR-0004"
+    "S21-edited": {"read_only"},                        # marked ADR-0004 accepted
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
-             "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20")
+             "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20", "S21")
 
 
 def build_tree(root):

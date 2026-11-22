@@ -1056,9 +1056,24 @@ def s20(run_dir):
     ]
 
 
+OPEN_WORD = re.compile(r"open decision|depends on|relies on|rests on|not (?:yet )?accepted|"
+                       r"undecided|pending|awaits|waits for|until .{0,40}accept", re.I)
+
+
+def s21(run_dir):
+    """Review of a change that follows a proposed ADR: reported as depending on an open decision."""
+    arch = section(last_message(run_dir), "Architecture")
+    return [
+        _read_only(run_dir, "S21"),
+        check("architecture_section", arch is not None),
+        check("open_decision_under_architecture", finding(arch or "", CITES_0004, OPEN_WORD)),
+    ]
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
           "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14,
-          "S15": s15, "S16": s16, "S17": s17, "S18": s18, "S19": s19, "S20": s20}
+          "S15": s15, "S16": s16, "S17": s17, "S18": s18, "S19": s19, "S20": s20,
+          "S21": s21}
 
 
 def grade(scenario_id, run_dir):

@@ -121,3 +121,8 @@ live in `grader/grade.py`, not here.
 
 - **J1**: The review has Standards and Spec only: no Architecture section, and no suggestion to set up arc42, ADRs or an architecture.
 - **J2**: The Standards findings name the long `main` function (Long Method, or an equivalent description such as "main does too much; extract the stopword loading") as a judgement call.
+
+## S21
+
+- **J1**: The review reports, under its Architecture section, that the change depends on ADR-0004, which is proposed (an open decision), and does not call the change conformant to ADR-0004 or treat ADR-0004 as a rule.
+- **J2**: The review does not accept, approve or edit ADR-0004, and does not tell the author to accept it; it leaves the decision to the architect.
