@@ -75,7 +75,7 @@
   },
   "S13": {
    "runs": 2,
-   "score": 1.0,
+   "score": 0.9,
    "judge": 1.0,
    "cost_usd": 0.02
   },
@@ -216,7 +216,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.053s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -2038,10 +2038,15 @@
      "name": "setup_suggested_at_most_once",
      "pass": true,
      "detail": "0 mentions"
+    },
+    {
+     "name": "no_arc42_mentioned",
+     "pass": true,
+     "detail": ""
     }
    ],
-   "passed": 4,
-   "total": 4,
+   "passed": 5,
+   "total": 5,
    "score": 1.0,
    "valid": true,
    "judge": {
@@ -2087,11 +2092,16 @@
      "name": "setup_suggested_at_most_once",
      "pass": true,
      "detail": "0 mentions"
+    },
+    {
+     "name": "no_arc42_mentioned",
+     "pass": false,
+     "detail": ""
     }
    ],
    "passed": 4,
-   "total": 4,
-   "score": 1.0,
+   "total": 5,
+   "score": 0.8,
    "valid": true,
    "judge": {
     "criteria": [
@@ -2111,7 +2121,7 @@
     "cost_usd": 0.1170898
    },
    "cost_usd": 0.009878,
-   "needs_review": false
+   "needs_review": true
   },
   {
    "run": "S14-r1",
@@ -2208,12 +2218,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.100s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.040s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2283,12 +2293,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.094s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.038s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2358,12 +2368,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.095s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.040s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2528,7 +2538,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.068s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.067s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2605,7 +2615,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.067s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.069s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2682,7 +2692,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.069s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.065s\n\nOK\n"
     },
     {
      "name": "independent_done",
@@ -2749,12 +2759,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.097s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.038s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",

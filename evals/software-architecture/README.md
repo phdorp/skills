@@ -91,7 +91,7 @@ with the agents' wording: [campaigns/](campaigns/).
 | S10 recovery-dataflow (three turns) | 0.000 | 0.000 | 1.000 | 0.875 | 2 of 2 (slash) |
 | S11 dialogue-setup (two turns) | 0.500 | 0.250 | 0.750 | 0.500 | 2 of 2 (slash); 1 read the reference |
 | S12 spec-setup | 0.500 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S13 spec-plain (control) | 1.000 | 1.000 | 0.900 | 1.000 | 2 of 2 (slash) |
 | S14 dialogue-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S15 pause-attended | 0.584 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S16 pause-unattended | 0.625 | 0.667 | 1.000 | 1.000 | 2 of 2 (slash) |
@@ -204,8 +204,9 @@ $1.11, judges $6.92), 42 runs each. A turn takes 20–60 s.
   Standards. On the branch, both report it under `## Architecture` ("relies on a proposed
   ADR"). Ticket 11 also tightened four grader checks, fixed the deferred wording Minors and
   gave each open loophole one more round. Every branch run was then re-run at `5faee30`.
-  Closed: S08's safety-net test (both runs defer it to the ADR), S13's and S20's gate
-  narration, S17's split ADRs (the grader accepts a split). S11's J4 held in the run that read
+  Closed: S08's safety-net test (both runs defer it to the ADR), S20's gate narration, S17's
+  split ADRs (the grader accepts a split). S13-r2 still narrates the gate mid-run, which the
+  check `no_arc42_mentioned`, added in the review fix pass, catches. S11's J4 held in the run that read
   `design-dialogue`'s architecture reference; S11-r1 never read it and failed J1–J4.
 - Reviewed runs (flagged by `summarize.py`):
   - `baseline/S02-r2`: the grader's `cites_ids` failure stands, because R-6 does not exist.
@@ -215,6 +216,8 @@ $1.11, judges $6.92), 42 runs each. A turn takes 20–60 s.
     the empty section 7 (ticket 07's open loophole).
   - `branch/S18-r1`: Task 1 was done in a git worktree, which the grader cannot see. The judge's
     pass stands.
+  - `branch/S13-r2`: `no_arc42_mentioned` fails ("no tracker config, glossary, ADRs, or arc42
+    doc"); the judge's J1 pass is overruled, since J1 forbids raising arc42 in any message.
 
 ## Known gaps
 
@@ -246,6 +249,7 @@ $1.11, judges $6.92), 42 runs each. A turn takes 20–60 s.
   - S11-r1 skipped `design-dialogue`'s architecture reference despite the gated pointer, so
     pointer compliance varies (1 of 2).
   - S10-r1 gives the as-found sections as a range (J3).
+  - S13-r2 says mid-run that the repo has no arc42 doc (`no_arc42_mentioned`).
   - `executing-plans`' subagent implementer detects decisions by the domain-modeling test;
     only the decided-centrally case has a scenario.
 - Spec story 16 (a multi-context repo with `GLOSSARY-MAP.md`) has no fixture.

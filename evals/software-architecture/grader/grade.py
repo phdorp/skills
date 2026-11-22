@@ -832,6 +832,7 @@ def s13(run_dir):
         check("no_qr_section", bool(text) and qr_section(text) is None),
         check("no_architecture_docs", ws.is_dir() and not arch, ", ".join(arch)),
         check("setup_suggested_at_most_once", n <= 1, f"{n} mentions"),
+        check("no_arc42_mentioned", "arc42" not in assistant_text(run_dir).lower()),
     ]
 
 
@@ -1056,8 +1057,17 @@ def s20(run_dir):
     ]
 
 
-OPEN_WORD = re.compile(r"open decision|depends on|relies on|rests on|not (?:yet )?accepted|"
-                       r"undecided|pending|awaits|waits for|until .{0,40}accept", re.I)
+OPEN_WORD = re.compile(r"\bproposed\b|open decision|not (?:yet )?accepted", re.I)
+CONFORM_WORD = re.compile(r"\bconform\w*|\bcomplian\w*|\bcomplies\b", re.I)
+NEGATED_CONFORM = re.compile(r"\b(?:not|no|never|doesn't|does not)\b[^.;:]{0,20}?"
+                             r"(?:conform|complian|complies)", re.I)
+
+
+def open_decision(body):
+    """One item cites ADR-0004 as proposed or open and does not call the change conformant."""
+    return any(CITES_0004.search(i) and OPEN_WORD.search(i)
+               and (not CONFORM_WORD.search(i) or NEGATED_CONFORM.search(i))
+               for i in items(body))
 
 
 def s21(run_dir):
@@ -1066,7 +1076,7 @@ def s21(run_dir):
     return [
         _read_only(run_dir, "S21"),
         check("architecture_section", arch is not None),
-        check("open_decision_under_architecture", finding(arch or "", CITES_0004, OPEN_WORD)),
+        check("open_decision_under_architecture", open_decision(arch or "")),
     ]
 
 

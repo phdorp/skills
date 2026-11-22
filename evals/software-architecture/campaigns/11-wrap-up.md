@@ -70,6 +70,7 @@ All 42 runs passed isolation. Every scenario scores 1.000 on grader and judge, e
 |---|---|---|
 | S10-r1 | - | J3 |
 | S11-r1 | goals_cited, add_requirements_suggested | J1, J2, J3, J4 |
+| S13-r2 | no_arc42_mentioned (added in the review fix pass) | J1 (judge passed; overruled) |
 | S18-r1 | independent_done | - |
 
 S21 on the branch: both runs report the open decision under `## Architecture`. S21-r1: "**Important:
@@ -82,8 +83,11 @@ Loophole verdicts after this round:
 - **S08 safety-net test: closed.** S08-r1 lists it as a consequence of ADR-0002: "A safety-net test
   … follows this ADR once accepted; it is not part of this decision." S08-r2: "Follow-on work
   waits for acceptance: the code change … and a safety-net check for the wiring."
-- **S13 gate narration: closed.** Both runs pass J1. S13-r2 now says "The repo has no tracker
-  config, glossary, or ADRs, so the spec went to a local file," which no longer mentions arc42.
+- **S13 gate narration: open.** The judge passed J1 on both runs, but S13-r2 still narrates the
+  gate mid-run: "The repo has no tracker config, glossary, ADRs, or arc42 doc, so the spec goes
+  to a local file." Only its final message dropped arc42. The review fix pass added the grader
+  check `no_arc42_mentioned` (every assistant message), which S13-r2 fails; the judge's J1 pass
+  on S13-r2 is overruled.
 - **S20 gate narration: closed.** Both runs pass `no_architecture_section` and J1. Neither
   final message mentions arc42.
 - **S17 split ADRs: closed by the grader.** Both runs pass `adr_proposed`.
@@ -103,5 +107,33 @@ Reviewed runs:
 - S18-r1: Task 1 is correct (`ORDER BY id DESC`, committed) on branch `feat/search-and-tags` in
   a worktree under `.worktrees/`, which the grader cannot see (known gap). The judge's pass
   stands.
+
+## Review fix pass (fresh Opus review of 99e12ed..c7aae15)
+
+Two Important findings, each with a check that failed first:
+
+1. **S13's gate narration was called closed while S13-r2 still showed it** (above). Check
+   `no_arc42_mentioned` in S13, self-test variant `S13-narrated`. Re-grading changed only
+   branch S13-r2; both baseline S13 runs pass it.
+2. **S21's `open_decision_under_architecture` passed "Conforms to ADR-0004: the export depends on
+   its temp-file rule." and "No findings pending against ADR-0004."**, and failed "ADR-0004 is
+   proposed; the change follows it." The check now needs an item citing ADR-0004 as `proposed`,
+   an open decision or not accepted, without an un-negated "conforms"/"compliant". Unit tests
+   for each wording, self-test variant `S21-conforms-depends`. Re-grading S21 changed nothing:
+   both branch runs say "relies on a proposed ADR".
+
+Deferred Minor findings:
+- `skills/setup-project-workflow/agents/openai.yaml` still has `display_name: "Setup Matt
+  Pocock Skills"`; the validator does not scan YAML.
+- `unquote_porcelain` raises on non-Latin-1 characters in a quoted path (git with
+  `core.quotePath=false`); `run.py` does not pin `quotePath`.
+- `design-dialogue/references/architecture.md` states "rely on code and accepted ADRs" in five
+  places.
+- The implementer prompt's restated decision test omits domain-modeling's building-block
+  exception.
+- `architecture-decisions.md` §4: the ADR-only PR's branch is not named, a merged ADR stays
+  `proposed` with its recommendation marker, and a continuation line is not indented.
+- `code-review`'s plain-project sentence adds "the report opens with the change it reviewed",
+  a rule the set-up path does not have.
 
 Cost: branch runs $1.11, judges $6.92; S21 baseline runs $0.02, judges $0.27.

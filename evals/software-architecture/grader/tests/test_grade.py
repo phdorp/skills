@@ -255,5 +255,21 @@ class Tightened(unittest.TestCase):
         self.assertFalse(grade.proposed_adrs([], 4, known)[0])
 
 
+class OpenDecision(unittest.TestCase):
+    def test_open_decision_passes_proposed_and_open_wording(self):
+        for t in ("- ADR-0004 is proposed; the change follows it.",
+                  "- Important: relies on a proposed ADR (ADR-0004).",
+                  "- The change rests on ADR-0004, an open decision.",
+                  "- ADR-0004 is not accepted, so this does not conform to a rule yet."):
+            self.assertTrue(grade.open_decision(t), t)
+
+    def test_open_decision_fails_conformance_and_loose_words(self):
+        for t in ("- Conforms to ADR-0004: the export depends on its temp-file rule.",
+                  "- No findings pending against ADR-0004.",
+                  "- Compliant with proposed ADR-0004: writes atomically.",
+                  "- ADR-0003 is proposed."):
+            self.assertFalse(grade.open_decision(t), t)
+
+
 if __name__ == "__main__":
     unittest.main()

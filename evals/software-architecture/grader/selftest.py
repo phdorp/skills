@@ -125,6 +125,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S12-ready": {"status_blocked"},                    # status ready-for-agent while ADR-0004 is proposed
     "S13-qr": {"no_qr_section"},                        # Quality Requirements in a plain project
     "S13-arc42": {"no_architecture_docs"},              # created docs/architecture/arc42.md
+    "S13-narrated": {"no_arc42_mentioned"},             # says the repo has no arc42 docs
     "S14-goals": {"no_quality_goals"},                  # asks about quality goals
     "S14-built": {"nothing_built"},                     # wrote tally/pairs.py
     "S15-ruled": {"paused_area_untouched", "adr_proposed", "report_names_adr"},  # ruled, built tags
@@ -163,6 +164,7 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S20-arc42": {"no_architecture_section"},           # suggests setting up arc42
     "S20-edited": {"read_only"},                        # changed tally/cli.py
     "S21-conforms": {"open_decision_under_architecture"},  # "Compliant with proposed ADR-0004"
+    "S21-conforms-depends": {"open_decision_under_architecture"},  # "Conforms … depends on"
     "S21-edited": {"read_only"},                        # marked ADR-0004 accepted
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
