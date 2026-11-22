@@ -84,6 +84,10 @@ with the agents' wording: [campaigns/](campaigns/).
 | S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 0.916 | 0.875 | 2 of 2 (slash) |
 | S09 recovery-python (three turns) | 0.000 | 0.000 | 0.928 | 1.000 | 2 of 2 (slash) |
 | S10 recovery-dataflow (three turns) | 0.000 | 0.000 | 1.000 | 0.875 | 2 of 2 (slash) |
+| S11 dialogue-setup (two turns) | 0.500 | 0.250 | 0.750 | 0.750 | 2 of 2 (slash); 1 of 2 read the reference |
+| S12 spec-setup | 0.600 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S14 dialogue-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -132,6 +136,15 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   dataflow blocks `in`/`out` columns in section 5. Open loopholes: S09-r2 filed an unmeasured
   goal; S10-r1's final message did not list the as-found sections for review. S06 and S07 were
   re-run because `setup-architecture` changed; S06-r2 ranked requirements without reasons (J1).
+- S11–S14 (ticket 08, [campaign](campaigns/08-dialogue-and-spec.md)): fixtures `setup` with
+  overlay `s03` (proposed ADR-0004) and `plain`. On `main`, the dialogue argued from R- and
+  QS-IDs and ADRs but named no quality goal and treated encryption as an ADR, and the spec had
+  no Quality Requirements section; both already treated ADR-0004 as open (no GREEN credit). On
+  the branch, both pointers are gated on `docs/architecture/arc42.md` and name nothing else; the
+  set-up guidance lives in `design-dialogue/references/architecture.md` and
+  `spec-and-plan/references/quality-requirements.md`. One loophole round moved that guidance out
+  of always-read text after the S13 and S14 controls each regressed once. Open loophole: S11-r2
+  did not follow the bare pointer. No S01–S10 run loads either skill, so none was re-run.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
