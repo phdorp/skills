@@ -758,7 +758,7 @@ def s12(run_dir):
     sec = qr_section(text)
     qs, rs = set(QS_ID.findall(sec or "")), set(R_ANY.findall(sec or ""))
     code = sorted(k for k in set(before) | set(after)
-                  if not re.match(r"^(docs/|\.scratch/)", k) and before.get(k) != after.get(k))
+                  if not DOC_FILES.search(k) and before.get(k) != after.get(k))
     return [
         check("one_spec", len(specs) == 1, ", ".join(p.name for p in specs)),
         check("qr_section", sec is not None),
