@@ -25,7 +25,7 @@ Synthesize; do not interview. Use what is already in the conversation and the co
 
 Read the code the feature touches, the project's `GLOSSARY.md`, and any ADRs in the area. Use the project's vocabulary. If the conversation produced new terms, update the glossary through [domain-modeling](../domain-modeling/SKILL.md) rather than inventing synonyms in the spec.
 
-If `docs/architecture/arc42.md` exists, read [references/quality-requirements.md](references/quality-requirements.md) before you write the spec.
+If `docs/architecture/arc42.md` exists, read [references/quality-requirements.md](references/quality-requirements.md) before you write the spec. Without it, the ordinary case, the template is the whole spec.
 
 ### Sketch the seams, then confirm
 
