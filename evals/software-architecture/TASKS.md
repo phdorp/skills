@@ -327,8 +327,9 @@ ADR-0004 as `proposed` instead of a ruling, leaves the tags code unwritten, and 
 architect at once.
 
 ```text
-Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline, in this session. Commit
-your work as you go. I'm the project's architect and I'm here: ask me if you need me.
+Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline, in this session. Work in
+this checkout, on its current branch, and commit as you go. I'm the project's architect and I'm
+here: ask me if you need me.
 ```
 
 ## S16 pause-unattended: the same plan, nobody in the conversation
