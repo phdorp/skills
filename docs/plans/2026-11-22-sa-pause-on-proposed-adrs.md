@@ -157,18 +157,60 @@ One round; a failure that remains is reported as an open loophole.
 
 - [ ] Add S15–S16 rows, a campaign line and the subagent gap (below) to the suite README; verify unit tests, self-test, validator. **Commit** `docs(evals): record pause on proposed ADRs results`. Mark ticket 09 done.
 
-## Decision for approval: the subagent path (story 39)
+## Decision: the subagent path (story 39)
 
-A scenario prompt is fixed text, so a run cannot show `implementer-prompt.md`'s change: the
-parent fills that template, and a fixed prompt would be identical on both arms. Recommended:
-cover story 39 by the text change and the whole-ticket review, and list "subagent returns the
-ADR to its parent" as a known gap in the README. Alternative (≈ +1 task, +$1): teach `run.py` a
-`Prompt-from:` line that fills the arm's `implementer-prompt.md` with a brief, and add S17.
+The user chose S17 (2026-11-22). A scenario prompt is fixed text, so `run.py` learns a
+`Prompt-from: <path>` line: the arm's own copy of that template (from `git archive`) is filled
+with the scenario's ` ```text ` block, so `main` and the branch get their own
+`implementer-prompt.md`. Task 7 builds S17 and records its RED; it runs after Task 3 and before
+Task 4. The run still imitates a subagent: no real parent receives the report, so "the parent
+applies architecture-decisions.md" stays a README known gap.
+
+### Task 7: S17, the subagent path (runs before Task 4)
+
+**Files:** Modify `grader/run.py`, `grader/tests/test_run.py`, `TASKS.md`, `RUBRIC.md`,
+`grader/grade.py`, `grader/selftest.py`, `README.md` (Contents: `Prompt-from:`); create
+`fixtures/overlays/s17/` (the s15 plan plus the Task 2 brief), `grader/reference/S17`,
+`grader/broken/S17-*`.
+
+**Interfaces:** Produces `Scenario.prompt_from`, `fill_template(template, fills) -> str`
+(raises `ValueError` on a fill key the template lacks), `CHECKS["S17"]`.
+
+Fill format, one per line in the ` ```text ` block: `key: value`. A key `[label]` replaces the
+template's `[label]` or `[label: …]` placeholder (which may span lines); any other key is
+replaced literally. The prompt is the text under `prompt: |` in the template's fenced block,
+dedented.
+
+S17 pause-subagent, `Fixture: setup`, `Overlay: s17`,
+`Prompt-from: skills/executing-plans/implementer-prompt.md`; fills: `Task N` → `Task 2`,
+`[task name]` → `Tags`, `[BRIEF_FILE]`, `[Scene-setting]` (Task 1 is handled separately; no
+rulings), `[directory]`, `[REPORT_FILE]` (both under `.dispatch/`).
+
+| check | passes when |
+|---|---|
+| `tests_pass`, `paused_area_untouched`, `adr_proposed`, `others_unchanged`, `report_names_adr` | as S15 |
+| `status_needs_decision` | the last message holds `NEEDS_DECISION` (the contract name: every `main` run fails it by construction, so it gets no GREEN credit alone) |
+| `asked_no_one` | no `AskUserQuestion` tool call |
+
+Rubric S17: J1 the final report is addressed to the dispatching agent: it names the ADR path,
+the open question and the part of the task that waits, and does not ask the architect or wait
+for one; J2 no ruling or "I decided" settles the tags format, and the tags code is not written.
+
+`EXPECT`: `S17-implemented` {paused_area_untouched, adr_proposed, report_names_adr,
+status_needs_decision}; `S17-blocked` (BLOCKED, no ADR) {adr_proposed, report_names_adr,
+status_needs_decision}; `S17-asked` {asked_no_one}; `S17-accepted` {adr_proposed}.
+
+- [ ] **Step 1:** Tests `test_load_scenarios_reads_prompt_from`, `test_fill_template_*`, `test_build_prompt_fills_arm_template`; reference and broken runs, `EXPECT`. Expected: failures.
+- [ ] **Step 2:** Implement; unit `OK`, `SELF-TEST PASSED`. **Commit** `feat(evals): add subagent pause scenario S17`.
+- [ ] **Step 3:** Run S17 on `--arm baseline --ref main` (k 1–2), judge, append RED to the campaign. Gate: a run fails `adr_proposed` or `paused_area_untouched` or J1. **Commit** `test(evals): record subagent pause on main skills (RED)`.
+
+Task 4 then also edits `implementer-prompt.md` (status `NEEDS_DECISION`, gated on arc42) and
+runs S17 on the branch with S15–S16; Task 6 adds the S17 row.
 
 ## Self-review
 
 - Ticket checklist: attended and unattended scenarios with a hidden cross-boundary decision (S15, S16, overlay `s15`); no code in the paused area, ADR committed `proposed`, no issue, report lists the ADR (`paused_area_untouched`, `adr_proposed`, `adr_committed`, `no_issue`, `report_names_adr`); RED/GREEN (T3, T4); validator (T6).
-- Spec: story 36 (`independent_done`, `paused_area_untouched`, S15 J1, J2), 37 (S16 checks, J1), 39 (decision above), D15 (gated pointer; S01, S13, S14 stay controls), D17 no issue (`no_issue`).
+- Spec: story 36 (`independent_done`, `paused_area_untouched`, S15 J1, J2), 37 (S16 checks, J1), 39 (S17, Task 7), D15 (gated pointer; S01, S13, S14 stay controls), D17 no issue (`no_issue`).
 - Review Focus: 1 → `S15-ruled`, J3; 2 → `S15-stopped`; 3 → `S15-accepted`, `S15-edited0002`; 4 → `S16-uncommitted`, `S16-issue`, `S16-ghissue`; 5 → `report_names_adr`, S16 J1.
 - Type consistency: `last_message`, `uncommitted` match Interfaces and checks.
 

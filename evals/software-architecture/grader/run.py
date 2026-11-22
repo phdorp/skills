@@ -23,6 +23,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -43,6 +44,8 @@ SECTION = re.compile(r"^## (S\d+)\b.*$", re.M)
 FIXTURE = re.compile(r"^Fixture:\s*(\S+)\s*$", re.M)
 OVERLAY = re.compile(r"^Overlay:\s*(\S+)\s*$", re.M)
 INVOKE = re.compile(r"^Invoke:\s*(\S+)\s*$", re.M)
+PROMPT_FROM = re.compile(r"^Prompt-from:\s*(\S+)\s*$", re.M)
+TEMPLATE_PROMPT = re.compile(r"^```\n.*?^(\s*)prompt: \|\n(.*?)^```", re.M | re.S)
 PROMPT = re.compile(r"^```text\n(.*?)^```\s*$", re.M | re.S)
 REPLY = re.compile(r"^```reply\n(.*?)^```\s*$", re.M | re.S)
 # Bytecode a local test run leaves in a fixture (git-ignored) is not part of the fixture.
@@ -56,6 +59,7 @@ class Scenario:
     prompt: str
     overlay: str | None = None
     invoke: str | None = None
+    prompt_from: str | None = None
     replies: list[str] = field(default_factory=list)
 
 
@@ -72,15 +76,44 @@ def load_scenarios(tasks_md):
         if len(prompts) != 1:
             raise ValueError(f"{m.group(1)}: expected one ```text block, found {len(prompts)}")
         overlay, invoke = OVERLAY.search(body), INVOKE.search(body)
+        prompt_from = PROMPT_FROM.search(body)
         scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0],
                                          overlay.group(1) if overlay else None,
                                          invoke.group(1) if invoke else None,
+                                         prompt_from.group(1) if prompt_from else None,
                                          REPLY.findall(body))
     return scenarios
 
 
+def fill_template(template, fills):
+    """The `prompt: |` text of a dispatch template's fenced block, dedented, with each
+    `key: value` line of fills applied: `[label]` replaces the `[label]` or `[label: …]`
+    placeholder (which may span lines), any other key is replaced literally."""
+    m = TEMPLATE_PROMPT.search(template)
+    if not m:
+        raise ValueError("template has no fenced block with `prompt: |`")
+    text = textwrap.dedent(m.group(2))
+    for line in fills.splitlines():
+        if not line.strip():
+            continue
+        key, _, value = line.partition(": ")
+        if key.startswith("[") and key.endswith("]"):
+            pattern = re.compile(re.escape(key[:-1]) + r"(?::[^\]]*)?\]", re.S)
+            text, n = pattern.subn(lambda _m: value, text)
+        else:
+            n = text.count(key)
+            text = text.replace(key, value)
+        if not n:
+            raise ValueError(f"template has no placeholder {key!r}")
+    return text
+
+
 def build_prompt(scenario, plugin_dir):
-    """The prompt, prefixed with `/sa:<invoke> ` when the arm has the user-invoked skill."""
+    """The prompt: the arm's own template filled with the scenario's text when it has a
+    `Prompt-from:` line; else the text, prefixed with `/sa:<invoke> ` when the arm has the
+    user-invoked skill."""
+    if scenario.prompt_from:
+        return fill_template((Path(plugin_dir) / scenario.prompt_from).read_text(), scenario.prompt)
     if scenario.invoke and (Path(plugin_dir) / "skills" / scenario.invoke / "SKILL.md").is_file():
         return f"/{PLUGIN_NAME}:{scenario.invoke} {scenario.prompt}"
     return scenario.prompt
@@ -305,7 +338,8 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
                 "cost_usd": summary["cost_usd"], "duration_s": round(duration, 1),
                 "exit_code": summary["exit_code"], "exit_codes": summary["exit_codes"],
                 "turns": len(turns), "session_ids": [i.get("session_id") for i in inits],
-                "invoked": prompt != scenario.prompt,
+                "invoked": prompt.startswith(f"/{PLUGIN_NAME}:"),
+                "prompt_from": scenario.prompt_from,
                 "isolation_ok": not errors, "isolation_errors": errors}
         (run_dir / "meta.json").write_text(json.dumps(meta, indent=1) + "\n")
         shutil.rmtree(ws.parent, ignore_errors=True)

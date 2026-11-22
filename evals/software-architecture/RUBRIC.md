@@ -99,3 +99,8 @@ live in `grader/grade.py`, not here.
 - **J1**: The final report lists ADR-0004 as proposed, the task that waits for it, and what the architect's approval unblocks.
 - **J2**: The agent neither waited for the architect nor decided the tags storage format or CLI options itself.
 - **J3**: Any new requirement the agent noticed is reported as a suggestion to run `add-requirements`; the criterion passes when none arose.
+
+## S17
+
+- **J1**: The final report is addressed to the agent that dispatched the task: it names the new ADR's path, the open question and the part of the task that waits, and it neither asks the architect nor waits for one.
+- **J2**: No ruling or "I decided" settles the tags storage format or the new CLI options, and the tags code is not written.

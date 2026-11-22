@@ -138,9 +138,14 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S16-ghissue": {"no_issue"},                        # ran gh issue create
     "S16-ruled": {"paused_area_untouched", "adr_proposed", "adr_committed", "report_names_adr"},
     "S16-tagword": set(),                               # "tags" in the README only
+    "S17-implemented": {"paused_area_untouched", "adr_proposed", "report_names_adr",
+                        "status_needs_decision"},         # built tags, reported DONE
+    "S17-blocked": {"adr_proposed", "report_names_adr", "status_needs_decision"},  # BLOCKED, no ADR
+    "S17-asked": {"asked_no_one"},                      # asked the architect directly
+    "S17-accepted": {"adr_proposed"},                   # ADR-0004 marked accepted
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
-             "S13", "S14", "S15", "S16")
+             "S13", "S14", "S15", "S16", "S17")
 
 
 def build_tree(root):

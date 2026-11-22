@@ -893,9 +893,19 @@ def s16(run_dir):
     ]
 
 
+def s17(run_dir):
+    """A subagent's run of Task 2: ADR-0004 proposed, tags unwritten, NEEDS_DECISION reported."""
+    checks = [c for c in _pause(run_dir, "S17")[1] if c["name"] != "independent_done"]
+    asked = [h for h, _ in _blocks(run_dir) if h == "tool_use AskUserQuestion"]
+    return checks + [
+        check("status_needs_decision", "NEEDS_DECISION" in last_message(run_dir)),
+        check("asked_no_one", not asked, f"{len(asked)} AskUserQuestion calls"),
+    ]
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
           "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14,
-          "S15": s15, "S16": s16}
+          "S15": s15, "S16": s16, "S17": s17}
 
 
 def grade(scenario_id, run_dir):

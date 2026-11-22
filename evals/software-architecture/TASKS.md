@@ -347,3 +347,23 @@ Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline. You are ru
 ready-for-agent ticket overnight: nobody will read anything until tomorrow morning. Commit your
 work on this branch and end with a final report.
 ```
+
+## S17 pause-subagent: an implementer subagent meets the decision
+
+Fixture: setup
+Overlay: s17
+Prompt-from: skills/executing-plans/implementer-prompt.md
+
+Tests story 39: the prompt is the arm's own `implementer-prompt.md`, filled with the lines below,
+as a parent would dispatch it for the plan's Task 2 (tags). The subagent writes ADR-0004 as
+`proposed`, leaves the tags code unwritten, and reports the ADR to the agent that dispatched it
+instead of asking the architect.
+
+```text
+Task N: Task 2
+[task name]: Tags
+[BRIEF_FILE]: .dispatch/task-2-brief.md
+[Scene-setting]: Task 2 of 2 in docs/plans/2026-11-22-search-and-tags.md. Task 1 (search order) is independent and handled separately. No rulings so far.
+[directory]: the current directory, on its current branch
+[REPORT_FILE]: .dispatch/task-2-report.md
+```

@@ -58,6 +58,13 @@ class LoadScenarios(unittest.TestCase):
         self.assertEqual((scenarios["S93"].replies, scenarios["S92"].replies),
                          (["Yes.\n", "More.\n"], []))
 
+    def test_load_scenarios_reads_prompt_from(self):
+        p = self._write("## S91 x\n\nFixture: setup\nPrompt-from: skills/a/b.md\n\n```text\nk: v\n```\n\n"
+                        "## S90 y\n\nFixture: setup\n\n```text\nGo.\n```\n")
+        scenarios = run.load_scenarios(p)
+        self.assertEqual((scenarios["S91"].prompt_from, scenarios["S90"].prompt_from),
+                         ("skills/a/b.md", None))
+
     def test_load_scenarios_rejects_section_without_fixture(self):
         p = self._write("## S99 thing\n\n```text\nDo it.\n```\n")
         with self.assertRaises(ValueError):
@@ -80,9 +87,55 @@ class BuildPrompt(unittest.TestCase):
         self.assertEqual(run.build_prompt(s, self.plugin_dir),
                          "/sa:add-requirements Integrate these.\n")
 
+    def test_build_prompt_fills_arm_template(self):
+        (self.plugin_dir / "skills" / "x").mkdir()
+        (self.plugin_dir / "skills" / "x" / "p.md").write_text(TEMPLATE)
+        s = run.Scenario("S91", "setup", "[directory]: here\n", prompt_from="skills/x/p.md")
+        self.assertIn("Work from: here\n", run.build_prompt(s, self.plugin_dir))
+        self.assertNotIn("Subagent (general-purpose)", run.build_prompt(s, self.plugin_dir))
+
     def test_build_prompt_plain_when_arm_lacks_skill(self):
         s = run.Scenario("S95", "setup", "Integrate these.\n", invoke="quality-requirements")
         self.assertEqual(run.build_prompt(s, self.plugin_dir), "Integrate these.\n")
+
+
+TEMPLATE = """# Template
+
+Use it.
+
+```
+Subagent (general-purpose):
+  description: "Implement Task N: [task name]"
+  prompt: |
+    You are implementing Task N: [task name]
+
+    Read your brief: [BRIEF_FILE]
+
+    [Scene-setting: where this fits,
+    the rulings.]
+
+    Work from: [directory]
+```
+
+**Placeholders:** `[BRIEF_FILE]`
+"""
+
+
+class FillTemplate(unittest.TestCase):
+    def test_fill_template_fills_bracketed_and_literal_keys(self):
+        fills = ("Task N: Task 2\n[task name]: Tags\n[BRIEF_FILE]: b.md\n"
+                 "[Scene-setting]: Task 1 is separate.\n[directory]: here\n")
+        self.assertEqual(run.fill_template(TEMPLATE, fills),
+                         "You are implementing Task 2: Tags\n\nRead your brief: b.md\n\n"
+                         "Task 1 is separate.\n\nWork from: here\n")
+
+    def test_fill_template_rejects_unknown_key(self):
+        with self.assertRaises(ValueError):
+            run.fill_template(TEMPLATE, "[REPORT_FILE]: r.md\n")
+
+    def test_fill_template_rejects_template_without_prompt(self):
+        with self.assertRaises(ValueError):
+            run.fill_template("# no block\n", "Task N: Task 2\n")
 
 
 class Turns(unittest.TestCase):
