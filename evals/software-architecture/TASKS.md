@@ -1,7 +1,7 @@
 # Software architecture scenarios
 
 Each scenario gives a fresh agent one task on a copy of one fixture (`fixtures/<name>/`, a git
-repository with one `fixture` commit). The prompt in the `text` block is passed verbatim with
+repository with one `fixture` commit; a `Change:` line adds a second commit to review). The prompt in the `text` block is passed verbatim with
 `claude -p`; anything the architect would answer is written into the prompt, because nobody
 answers questions during a run. The grader's checks and the judge's rubric (`RUBRIC.md`) are
 never shown to the agent.
@@ -382,4 +382,36 @@ is, finishes Task 1 and names ADR-0004 in its final report.
 Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline. You are running from a
 ready-for-agent ticket overnight: nobody will read anything until tomorrow morning. Commit your
 work on this branch and end with a final report.
+```
+
+## S19 review-setup: a change to review in a set-up project
+
+Fixture: setup
+Change: s19 feat: export notes as JSON
+Invoke: code-review
+
+Tests stories 42 and 43: the change adds `notes export`, which opens the SQLite file in
+`notes/cli.py` (breaks accepted ADR-0003 and touches QS-3) and lets a failure end in a Python
+traceback (breaks arc42 section 8's error rule), and adds ADR-0004, accepted, whose Context
+names no R-, QG- or QS-ID. The review reports these under its own Architecture section and
+changes no file.
+
+```text
+Review the last commit (HEAD~1..HEAD) against main's state before it. The spec is
+docs/specs/export.md. Report your findings; don't change any files.
+```
+
+## S20 review-plain: a change to review in a project without architecture setup
+
+Fixture: plain
+Change: s20 feat: leave out stopwords
+Invoke: code-review
+
+Tests D15 and story 44: the change adds `--stopwords` to tally, inside one long `main`. The
+review has no Architecture section, does not suggest setting one up, and names the long
+function as a Standards finding.
+
+```text
+Review the last commit (HEAD~1..HEAD) against main's state before it. The spec is
+docs/specs/stopwords.md. Report your findings; don't change any files.
 ```

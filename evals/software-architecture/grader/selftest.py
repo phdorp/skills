@@ -148,9 +148,18 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S18-duplicate": {"no_new_adr"},                    # wrote ADR-0005 for the same decision
     "S18-accepted": {"others_unchanged"},               # marked the existing ADR-0004 accepted
     "S18-ruled": {"paused_area_untouched", "report_names_adr"},  # ruled, built tags
+    "S19-standards": {"architecture_section", "adr_under_architecture",
+                      "section8_under_architecture", "qs_under_architecture",
+                      "trace_under_architecture"},  # every architecture finding under ## Standards
+    "S19-noqs": {"qs_under_architecture"},              # QS-3 not named
+    "S19-notrace": {"trace_under_architecture"},        # ADR-0004's missing IDs not reported
+    "S19-edited": {"read_only"},                        # changed notes/cli.py
+    "S20-archsection": {"no_architecture_section"},     # an ## Architecture section in a plain project
+    "S20-arc42": {"no_architecture_section"},           # suggests setting up arc42
+    "S20-edited": {"read_only"},                        # changed tally/cli.py
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
-             "S13", "S14", "S15", "S16", "S17", "S18")
+             "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20")
 
 
 def build_tree(root):

@@ -719,6 +719,42 @@ def qr_section(text):
     return text[m.end():nxt[0].start() if nxt else len(text)]
 
 
+HEADING_DECOR = re.compile(r"^[\d.]*\s*|[*_`]|\s*\(.*\)\s*$|:\s*$|\s+(axis|findings|review)\s*$", re.I)
+
+
+def heading_name(line_text):
+    """A heading's text without numbering, emphasis, a trailing colon or parenthetical, or a
+    trailing "axis"/"findings"/"review": "3. **Architecture** findings:" -> "Architecture"."""
+    t = line_text.strip()
+    for _ in range(3):
+        t = HEADING_DECOR.sub("", t).strip()
+    return t
+
+
+FENCE = re.compile(r"^```.*?^```[^\n]*$", re.M | re.S)
+
+
+def _headings(text, start=0):
+    """MD_HEAD matches from `start` that are not inside a fenced code block."""
+    fences = [(f.start(), f.end()) for f in FENCE.finditer(text)]
+    return [m for m in MD_HEAD.finditer(text, start)
+            if not any(a <= m.start() < b for a, b in fences)]
+
+
+def section(text, heading):
+    """The body under the first Markdown heading named `heading` (see heading_name), up to the
+    next heading of the same or higher level, or None. Bold text and `#` lines inside code
+    fences are not headings."""
+    for m in _headings(text):
+        line = text[m.end():text.find("\n", m.end()) if "\n" in text[m.end():] else len(text)]
+        if heading_name(line).lower() != heading.lower():
+            continue
+        level, start = len(m.group(1)), m.end() + len(line)
+        nxt = [h for h in _headings(text, start) if len(h.group(1)) <= level]
+        return text[start:nxt[0].start() if nxt else len(text)]
+    return None
+
+
 def _turn_tool_bodies(run_dir, turn):
     """Bodies of the tool calls in turn `turn` (1-based)."""
     out, k = [], 0
@@ -919,9 +955,49 @@ def s18(run_dir):
     return checks + [check("no_new_adr", not new, ", ".join(p.name for p in new))]
 
 
+CITES_0003 = re.compile(r"\bADR[- ]?0*3\b|\b0003\b", re.I)
+SECTION8_RULE = re.compile(r"stderr|section 8|§ ?8", re.I)
+QS3 = re.compile(r"\bQS-3\b")
+
+
+def _read_only(run_dir, scenario_id):
+    ws, base = run_dir / "workspace", base_workspace(scenario_id)
+    try:
+        ok, detail = _unchanged(ws, base)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    return check("read_only", ok, detail)
+
+
+def s19(run_dir):
+    """Review of a change in a set-up project: the last message's Architecture section."""
+    arch = section(last_message(run_dir), "Architecture")
+    body = arch or ""
+    return [
+        _read_only(run_dir, "S19"),
+        check("architecture_section", arch is not None),
+        check("adr_under_architecture", bool(CITES_0003.search(body))),
+        check("section8_under_architecture", bool(SECTION8_RULE.search(body))),
+        check("qs_under_architecture", bool(QS3.search(body))),
+        check("trace_under_architecture", bool(CITES_0004.search(body))),
+    ]
+
+
+def s20(run_dir):
+    """Review of a change in a plain project: two axes, no architecture setup advice."""
+    last = last_message(run_dir)
+    arch = section(last, "Architecture")
+    return [
+        _read_only(run_dir, "S20"),
+        check("no_architecture_section", (run_dir / "workspace").is_dir() and arch is None
+              and "arc42" not in last.lower(),
+              f"section: {arch is not None}; arc42: {'arc42' in last.lower()}"),
+    ]
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
           "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14,
-          "S15": s15, "S16": s16, "S17": s17, "S18": s18}
+          "S15": s15, "S16": s16, "S17": s17, "S18": s18, "S19": s19, "S20": s20}
 
 
 def grade(scenario_id, run_dir):

@@ -109,3 +109,15 @@ live in `grader/grade.py`, not here.
 
 - **J1**: The final report says Task 2 waits for the existing proposed ADR-0004 and what accepting it unblocks.
 - **J2**: The agent neither decided the tags format itself nor wrote a second ADR for the same decision.
+
+## S19
+
+- **J1**: The ADR-0003 breach (`notes/cli.py` opening the database with `sqlite3`) is a finding under the Architecture section, citing ADR-0003 as its source, not under Standards or Spec.
+- **J2**: ADR-0004's Context naming no requirement or quality goal (no R-, QG- or QS-ID) is reported as a traceability finding.
+- **J3**: The review names QS-3 as the quality scenario the change touches and says how (a storage swap would now also change `notes/cli.py`).
+- **J4**: The axes are reported in separate sections, and the closing line names the worst issue per axis.
+
+## S20
+
+- **J1**: The review has Standards and Spec only: no Architecture section, and no suggestion to set up arc42, ADRs or an architecture.
+- **J2**: The Standards findings name the long `main` function (Long Method, or an equivalent description such as "main does too much; extract the stopword loading") as a judgement call.

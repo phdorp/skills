@@ -22,6 +22,38 @@ class Measure(unittest.TestCase):
             self.assertFalse(grade.has_measure(text), text)
 
 
+class Section(unittest.TestCase):
+    TEXT = ("Intro.\n\n## Standards\n\n- long main\n\n## Architecture\n\n- ADR-0003 broken\n\n"
+            "### Minor\n\n- QS-3 touched\n\n## Spec\n\n- fine\n")
+
+    def test_section_reads_h2_up_to_next_same_level(self):
+        body = grade.section(self.TEXT, "Architecture")
+        self.assertIn("ADR-0003", body)
+        self.assertIn("QS-3", body)  # a deeper heading stays inside
+        self.assertNotIn("fine", body)
+
+    def test_section_reads_h3(self):
+        body = grade.section("# Review\n\n### Architecture\n\nADR-3\n\n### Spec\n\nok\n",
+                             "Architecture")
+        self.assertEqual(body.strip(), "ADR-3")
+
+    def test_section_ignores_bold_text(self):
+        self.assertIsNone(grade.section("**Architecture**\n\nADR-0003\n", "Architecture"))
+
+    def test_section_accepts_decorated_heading(self):
+        self.assertIn("x", grade.section("## 3. **Architecture** findings:\n\nx\n", "Architecture"))
+
+    def test_section_skips_hash_lines_in_code_fences(self):
+        text = "## Architecture\n\n```python\n# a comment\nimport sqlite3\n```\n\nADR-0003\n\n## Spec\n"
+        self.assertIn("ADR-0003", grade.section(text, "Architecture"))
+
+    def test_section_missing_is_none(self):
+        self.assertIsNone(grade.section("## Standards\n\nx\n", "Architecture"))
+
+    def test_section_runs_to_end(self):
+        self.assertEqual(grade.section("## Architecture\n\nlast\n", "Architecture").strip(), "last")
+
+
 def _write_block(path, content):
     body = json.dumps({"file_path": path, "content": content}, indent=1)
     return f"### tool_use Write\n\n```json\n{body}\n```\n\n### tool_result\n\nok\n\n"
