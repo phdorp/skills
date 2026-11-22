@@ -1,48 +1,53 @@
-# Task 2: Tags — report
+# Task 2 report: Tags
 
 **Status:** NEEDS_DECISION
 
+## Why this is blocked
+
+The brief changes two things that `docs/adr/0002-record-architecture-decisions.md` lists as
+decided centrally:
+
+- the on-disk format: a new `tags` column on the `notes` table;
+- CLI options: `add --tag` and `list --tag`.
+
+No accepted ADR settles either. The brief is not an accepted ADR, so the architect has to
+decide. I did not write the code, the tests, or the migration.
+
 ## What I did
 
-Checked the task against `docs/architecture/arc42.md` and the ADR "Record architecture decisions"
-(ADR-0002). Its "decided centrally" list names the on-disk format and CLI interface. Task 2 changes
-both: it adds a `tags` column to the `notes` table and adds `--tag` options to `add` and `list`.
-No accepted ADR settles either. Per the brief rules, I did not write the tag code or its tests.
+- Drafted a proposed ADR: `docs/adr/0004-tag-notes-in-a-comma-separated-column.md`
+  (status `proposed`). It records the comma-separated column with `ALTER TABLE` migration,
+  and repeatable `--tag` on `add` and `list`.
+- Committed it alone: `c8088e8 docs(adr): propose tag notes in a comma-separated column`.
 
-Drafted the decision as a **proposed** ADR:
+## Question for the architect
 
-- `docs/adr/0004-tags-storage-and-cli-option.md` (Status: `proposed`)
-  Question for the architect to approve: *Store tags as a comma-separated `tags` column (migrated
-  with `ALTER TABLE`), and add repeatable `--tag` to `add` and `list`?*
+Approve ADR-0004 as written, or change it? Points that need a decision:
 
-Also added one glossary term (`GLOSSARY.md`): **Tag**.
+1. Comma-separated text in the `notes` row (the brief's choice), or a separate `tags` table?
+   The ADR picks the column and rejects the table for now. A table would allow listing and
+   renaming tags.
+2. Tags may not contain commas. `add` rejects such a tag with exit code 1.
+3. `list --tag` matches whole tags only.
 
 ## Tests
 
-Baseline before any change: `python3 -m unittest` → `Ran 3 tests … OK`.
-No tag tests written (they depend on the unapproved format and option). No code changed.
+- Baseline `python3 -m unittest`: 3 tests, OK (no code changed).
+- No TDD slices were written. No failing test was produced, because the behaviour depends on
+  the unaccepted decision.
 
 ## Slices
 
-| Test | RED: command and failing line | GREEN: result | Commit |
-|------|-------------------------------|---------------|--------|
-| — | not started: blocked on ADR-0004 | — | — |
+| Test | RED | GREEN | Commit |
+|------|-----|-------|--------|
+| (none: blocked on ADR-0004) | - | - | - |
 
-## Files changed (uncommitted)
+## Files changed
 
-- `docs/adr/0004-tags-storage-and-cli-option.md` (new, proposed)
-- `GLOSSARY.md` (added Tag)
-
-No commits created.
-
-## Waiting for the architect
-
-- **ADR-0004 — Store tags as a comma-separated column and add `--tag` options.**
-  Question: approve the comma-separated `tags` column with `ALTER TABLE` migration, and the
-  repeatable `--tag` on `add` and `list`? Or prefer a join table (see Consequences)?
-  Once accepted, Task 2 can proceed exactly as the brief specifies.
+- `docs/adr/0004-tag-notes-in-a-comma-separated-column.md` (new, in commit c8088e8)
+- `.dispatch/task-2-report.md` (this file, not committed)
 
 ## Concerns
 
-- Comma-separated tags cannot contain commas; the ADR leaves reject-vs-escape open.
-- Task 1 (search order) is independent and untouched.
+- Task 1 (`docs/plans/...` search order) is independent and was not touched here.
+- Once ADR-0004 is accepted, Task 2 can proceed with the brief's steps as written.

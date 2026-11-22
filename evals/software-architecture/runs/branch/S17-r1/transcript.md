@@ -28,10 +28,11 @@ architecture decisions" and list what the task changes that its "decided
 centrally" list names (an on-disk format, a CLI option, an interface).
 Each item no accepted ADR settles is an open decision, even when the
 brief spells out how to do it: a brief is not an accepted ADR. Draft it
-with the domain-modeling skill as a proposed ADR, leave the code behind
-it unwritten, finish the rest of the task, and report NEEDS_DECISION
-with the ADR's path. The architect is not yours to ask, and the decision
-is not yours to make.
+with the domain-modeling skill as a proposed ADR and commit it alone
+(docs(adr): propose <title>). Leave the code behind it unwritten, finish
+the rest of the task, and report NEEDS_DECISION with the ADR's path.
+The architect is not yours to ask, and the decision is not yours to
+make.
 
 ## Your Job
 
@@ -171,7 +172,7 @@ silently produce work you're unsure about.
 
 ```json
 {
- "command": "cat .dispatch/task-2-brief.md && echo ---- && git status --short && git log --oneline | head -5 && ls docs/architecture 2>/dev/null",
+ "command": "cat .dispatch/task-2-brief.md && git status --short && git log --oneline | head -5 && ls docs/architecture 2>/dev/null",
  "description": "Read task brief and check repo state"
 }
 ```
@@ -194,8 +195,7 @@ Plan: docs/plans/2026-11-22-search-and-tags.md
 
 - [ ] **Step 1:** Tests: `notes add --tag work "Call Ann"` stores the tag; `notes list --tag work` prints only notes tagged `work`; a store created before this change still opens. Expected: fail.
 - [ ] **Step 2:** Add a `tags` column (comma-separated text, default empty) to the `notes` table, migrating an existing table with `ALTER TABLE`; `Note` gains `tags`; `add` takes `--tag` (repeatable); `list` takes `--tag`. Expected: all tests pass. **Commit** `feat: tag notes and filter list by tag`.
-----
-e266739 fixture
+fde0866 fixture
 arc42.md
 ```
 
@@ -203,8 +203,8 @@ arc42.md
 
 ```json
 {
- "command": "cat docs/architecture/arc42.md && echo ---- && cat docs/plans/2026-11-22-search-and-tags.md 2>/dev/null; echo ----; ls -R notes tests docs 2>/dev/null; echo ----; cat notes/*.py; echo ----; cat tests/test_notes.py",
- "description": "Read architecture doc, plan, and code"
+ "command": "cat docs/architecture/arc42.md && echo ---- && cat docs/plans/2026-11-22-search-and-tags.md && echo ---- && find . -path ./.git -prune -o -type f -print && echo ---- && cat notes/*.py && echo ---- && cat tests/test_notes.py",
+ "description": "Read architecture, plan, and source files"
 }
 ```
 
@@ -310,15 +310,15 @@ See [GLOSSARY.md](../../GLOSSARY.md).
 
 - [ ] **Step 1:** Tests: `notes add --tag work "Call Ann"` stores the tag; `notes list --tag work` prints only notes tagged `work`; a store created before this change still opens. Expected: fail.
 - [ ] **Step 2:** Add a `tags` column (comma-separated text, default empty) to the `notes` table, migrating an existing table with `ALTER TABLE`; `Note` gains `tags`; `add` takes `--tag` (repeatable); `list` takes `--tag`. Expected: all tests pass. **Commit** `feat: tag notes and filter 
-[... 4094 chars cut]
+[... 4181 chars cut]
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in docs/adr/*.md; do echo \"==== $f\"; cat \"$f\"; done; ls GLOSSARY.md 2>/dev/null && cat GLOSSARY.md",
- "description": "Read all ADRs and glossary"
+ "command": "for f in docs/adr/*.md; do echo \"==== $f\"; cat \"$f\"; done; echo ====; cat GLOSSARY.md; echo ====; cat README.md; git log --stat --oneline | head -30",
+ "description": "Read all ADRs, glossary, README, and history"
 }
 ```
 
@@ -394,19 +394,50 @@ Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli
 ## Consequences
 
 Any new command that reads or writes notes goes through `Store`.
-GLOSSARY.md
+====
 # Glossary
 
 **Note**: a short piece of text a user keeps, with an id and the time it was created.
 
 **Store**: the place notes are kept between runs.
+====
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
+fde0866 fixture
+ .dispatch/task-2-brief.md                          | 15 +++++
+ GLOSSARY.md                                        |  5 ++
+ README.md                                          | 12 ++++
+ docs/adr/0001-use-sqlite-for-storage.md            | 19 ++++++
+ docs/adr/0002-record-architecture-decisions.md     | 29 +++++++++
+ .../0003-cli-reaches-storage-only-through-store.md | 18 ++++++
+ docs/architecture/arc42.md                         | 74 ++++++++++++++++++++++
+ docs/plans/2026-11-22-search-and-tags.md           | 24 +++++++
+ notes/__init__.py                                  |  1 +
+ notes/__main__.py                                  |  5 ++
+ notes/cli.py                                       | 29 +++++++++
+ notes/model.py                                     |  8 +++
+ notes/store.py                                     | 37 +++++++++++
+ tests/__init__.py                                  |  0
+ tests/test_notes.py                                | 43 +++++++++++++
+ 15 files changed, 319 insertions(+)
 ```
 
 ### tool_use Skill
 
 ```json
 {
- "skill": "sa:domain-modeling"
+ "skill": "sa:domain-modeling",
+ "args": "Draft a proposed ADR (status: proposed) in docs/adr/ for tagging notes. Decision needed: how tags are stored on disk (a tags column on the notes table holding comma-separated text, default empty, migrated with ALTER TABLE for existing stores) and the CLI surface (`add --tag` repeatable, `list --tag` filter). Both touch items the ADR-0002 central list names: the on-disk format and CLI options/command names. No accepted ADR settles this. Number it 0004. Do not write implementation code."
 }
 ```
 
@@ -420,8 +451,8 @@ Launching skill: sa:domain-modeling
 
 ```json
 {
- "command": "cat /tmp/sa-arm-ztgmejtv/sa/skills/domain-modeling/ADR-FORMAT.md; echo ----; cat /tmp/sa-arm-ztgmejtv/sa/skills/domain-modeling/GLOSSARY-FORMAT.md | head -40; echo ----; cd /tmp/sa-eval-un0g076s/project && python3 -m unittest 2>&1 | tail -3",
- "description": "Read ADR format guide and run baseline tests"
+ "command": "cat /tmp/sa-arm-ru5zwgud/sa/skills/domain-modeling/ADR-FORMAT.md 2>/dev/null || echo \"no ADR-FORMAT.md\"",
+ "description": "Read the ADR format reference"
 }
 ```
 
@@ -474,49 +505,54 @@ Examples of decisions that meet the rule in SKILL.md:
 - **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
 - **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
 - **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
-----
-# GLOSSARY.md Format
-
-## Structure
-
-```md
-# {Context Name}
-
-{One or two sentence description of what this context is and why it exists.}
-
-## Language
-
-**Order**:
-{A one or two sentence description of the term}
-_Avoid_: Purchase, transaction
-
-**Invoice**:
-A request for payment sent to a customer after delivery.
-_Avoid_: Bill, payment request
-
-**Customer**:
-A person or organization that places orders.
-_Avoid_: Client, buyer, account
 ```
 
-## Rules
+### tool_use Write
 
-- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
-- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
-- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
-- **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
+```json
+{
+ "file_path": "/tmp/sa-eval-atprhh8n/project/docs/adr/0004-tag-notes-in-a-comma-separated-column.md",
+ "content": "# 4. Tag notes in a comma-separated column\n\n## Status\n\nproposed\n\n## Context\n\nUsers want to group notes and list one group (R-1: users add, list and search notes from the\ncommand line). The change touches two decisions that ADR-0002 reserves for the architect: the\non-disk format (the `notes` table gains a column) and the CLI surface (`add` and `list` gain\noptions). Existing stores must keep opening without manual steps (QG-3: maintainability, and\nthe store stays the only block that knows the storage, ADR-0003). The program stays on the\nstandard library (R-3), so tags are held in the same SQLite file as ADR-0001 requires.\n\n## Decision\n\nWe will add a `tags` column to the `notes` table: comma-separated text, default empty. An\nexisting table is migrated with `ALTER TABLE ... ADD COLUMN tags`. `Note` gains a `tags` field.\n\nWe will add `--tag` to `notes add`, repeatable, one tag per flag. We will add `--tag` to\n`notes list`, which shows only notes carrying that tag. Command names and exit codes do not\nchange.\n\n## Consequences\n\n- A tag cannot contain a comma. `add --tag` rejects such a tag with the usual\n  `notes: <message>` error and exit code 1 (arc42 section 8).\n- Filtering matches whole tags, not substrings, so `work` does not match `homework`.\n- Tags are stored as text inside the note row, so a separate `tags` table, which would allow\n  listing all tags and renaming one, is not provided. Adding it later needs a new ADR that\n  replaces this one.\n- Stores created before this change are changed in place by the migration. Downgrading the\n  program does not remove the column, and older builds ignore it.\n- No other ADR is affected. The work that follows: the plan's Task 2 in\n  `docs/plans/2026-11-22-search-and-tags.md` waits for this ADR to be accepted.\n"
+}
+```
 
-## Single vs multi-context repos
+### tool_result
 
-**Single context (most repos):** One `GLOSSARY.md` at the repo root.
+```
+File created successfully at: /tmp/sa-eval-atprhh8n/project/docs/adr/0004-tag-notes-in-a-comma-separated-column.md (file state is current in your context — no need to Read it back)
+```
 
-**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
+### tool_use Bash
 
-```md
-# Glossary Map
+```json
+{
+ "command": "git add docs/adr/0004-tag-notes-in-a-comma-separated-column.md && git commit -q -m \"docs(adr): propose tag notes in a comma-separated column\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2 && git status --short",
+ "description": "Commit the proposed ADR alone"
+}
+```
 
-----
-Ran 3 tests in 0.073s
+### tool_result
+
+```
+c8088e8 docs(adr): propose tag notes in a comma-separated column
+fde0866 fixture
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "timeout 600000 python3 -m unittest 2>&1 | tail -5",
+ "description": "Run the test suite to confirm baseline"
+}
+```
+
+### tool_result
+
+```
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.069s
 
 OK
 ```
@@ -525,58 +561,25 @@ OK
 
 ```json
 {
- "file_path": "/tmp/sa-eval-un0g076s/project/docs/adr/0004-tags-storage-and-cli-option.md",
- "content": "# 4. Store tags as a comma-separated column and add `--tag` options\n\n## Status\n\nproposed\n\n## Context\n\nUsers need to group notes so that `list` can show one group (R-1, QG-3). Tags change the on-disk\nformat of the `notes` table, which is decided centrally (ADR-0002) and rests on the SQLite file\nof ADR-0001. Existing stores must keep opening without loss, as crash safety requires (R-2, QS-1).\nThe `--tag` option adds to the CLI surface, which ADR-0002 also keeps central. Only `notes/store.py`\ntouches the database (ADR-0003).\n\n## Decision\n\nWe will add a `tags` column to the `notes` table: comma-separated text, default empty. An existing\ntable is migrated with `ALTER TABLE notes ADD COLUMN tags`. `add` takes `--tag` (repeatable) and\n`list` takes `--tag` to show only notes carrying that tag.\n\n## Consequences\n\n- Stores created before this change still open and read as untagged.\n- Tags are plain text, so a tag cannot contain a comma; the CLI or store must reject or escape one.\n  Filtering by tag matches whole tags, not substrings of the column.\n- A comma-separated column makes per-tag queries and a tag list harder than a join table would.\n  A join table is the alternative if tags grow beyond simple filtering.\n- Only `notes/store.py` changes for the storage part (QS-3); `cli.py` gains the two options.\n- ADR-0001 and ADR-0003 are unchanged.\n"
+ "file_path": "/tmp/sa-eval-atprhh8n/project/.dispatch/task-2-report.md",
+ "content": "# Task 2 report: Tags\n\n**Status:** NEEDS_DECISION\n\n## Why this is blocked\n\nThe brief changes two things that `docs/adr/0002-record-architecture-decisions.md` lists as\ndecided centrally:\n\n- the on-disk format: a new `tags` column on the `notes` table;\n- CLI options: `add --tag` and `list --tag`.\n\nNo accepted ADR settles either. The brief is not an accepted ADR, so the architect has to\ndecide. I did not write the code, the tests, or the migration.\n\n## What I did\n\n- Drafted a proposed ADR: `docs/adr/0004-tag-notes-in-a-comma-separated-column.md`\n  (status `proposed`). It records the comma-separated column with `ALTER TABLE` migration,\n  and repeatable `--tag` on `add` and `list`.\n- Committed it alone: `c8088e8 docs(adr): propose tag notes in a comma-separated column`.\n\n## Question for the architect\n\nApprove ADR-0004 as written, or change it? Points that need a decision:\n\n1. Comma-separated text in the `notes` row (the brief's choice), or a separate `tags` table?\n   The ADR picks the column and rejects the table for now. A table would allow listing and\n   renaming tags.\n2. Tags may not contain commas. `add` rejects such a tag with exit code 1.\n3. `list --tag` matches whole tags only.\n\n## Tests\n\n- Baseline `python3 -m unittest`: 3 tests, OK (no code changed).\n- No TDD slices were written. No failing test was produced, because the behaviour depends on\n  the unaccepted decision.\n\n## Slices\n\n| Test | RED | GREEN | Commit |\n|------|-----|-------|--------|\n| (none: blocked on ADR-0004) | - | - | - |\n\n## Files changed\n\n- `docs/adr/0004-tag-notes-in-a-comma-separated-column.md` (new, in commit c8088e8)\n- `.dispatch/task-2-report.md` (this file, not committed)\n\n## Concerns\n\n- Task 1 (`docs/plans/...` search order) is independent and was not touched here.\n- Once ADR-0004 is accepted, Task 2 can proceed with the brief's steps as written.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-un0g076s/project/docs/adr/0004-tags-storage-and-cli-option.md (file state is current in your context — no need to Read it back)
-```
-
-### tool_use Edit
-
-```json
-{
- "replace_all": false,
- "file_path": "/tmp/sa-eval-un0g076s/project/GLOSSARY.md",
- "old_string": "**Store**: the place notes are kept between runs.",
- "new_string": "**Store**: the place notes are kept between runs.\n\n**Tag**: a short label a user puts on a note so that `list` can show only the notes that carry it."
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-un0g076s/project/GLOSSARY.md has been updated successfully.
-```
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-un0g076s/project/.dispatch/task-2-report.md",
- "content": "# Task 2: Tags — report\n\n**Status:** NEEDS_DECISION\n\n## What I did\n\nChecked the task against `docs/architecture/arc42.md` and the ADR \"Record architecture decisions\"\n(ADR-0002). Its \"decided centrally\" list names the on-disk format and CLI interface. Task 2 changes\nboth: it adds a `tags` column to the `notes` table and adds `--tag` options to `add` and `list`.\nNo accepted ADR settles either. Per the brief rules, I did not write the tag code or its tests.\n\nDrafted the decision as a **proposed** ADR:\n\n- `docs/adr/0004-tags-storage-and-cli-option.md` (Status: `proposed`)\n  Question for the architect to approve: *Store tags as a comma-separated `tags` column (migrated\n  with `ALTER TABLE`), and add repeatable `--tag` to `add` and `list`?*\n\nAlso added one glossary term (`GLOSSARY.md`): **Tag**.\n\n## Tests\n\nBaseline before any change: `python3 -m unittest` → `Ran 3 tests … OK`.\nNo tag tests written (they depend on the unapproved format and option). No code changed.\n\n## Slices\n\n| Test | RED: command and failing line | GREEN: result | Commit |\n|------|-------------------------------|---------------|--------|\n| — | not started: blocked on ADR-0004 | — | — |\n\n## Files changed (uncommitted)\n\n- `docs/adr/0004-tags-storage-and-cli-option.md` (new, proposed)\n- `GLOSSARY.md` (added Tag)\n\nNo commits created.\n\n## Waiting for the architect\n\n- **ADR-0004 — Store tags as a comma-separated column and add `--tag` options.**\n  Question: approve the comma-separated `tags` column with `ALTER TABLE` migration, and the\n  repeatable `--tag` on `add` and `list`? Or prefer a join table (see Consequences)?\n  Once accepted, Task 2 can proceed exactly as the brief specifies.\n\n## Concerns\n\n- Comma-separated tags cannot contain commas; the ADR leaves reject-vs-escape open.\n- Task 1 (search order) is independent and untouched.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-un0g076s/project/.dispatch/task-2-report.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-atprhh8n/project/.dispatch/task-2-report.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
 **Status:** NEEDS_DECISION
 
-- Commits created: none. Task 2 is blocked before any code is written.
-- Test summary: baseline `python3 -m unittest` gives 3/3 passing. No tag code or tests written.
-- Concern: arc42 says the on-disk format and CLI interface are decided centrally (ADR-0002). Task 2 adds a `tags` column and `--tag` options, and no accepted ADR covers either. I drafted `docs/adr/0004-tags-storage-and-cli-option.md` as **proposed**. The architect needs to approve it: comma-separated `tags` column with `ALTER TABLE` migration, plus repeatable `--tag` on `add` and `list`. Tags containing commas still need a reject-or-escape decision.
-- Also added a **Tag** term to `GLOSSARY.md`. Both files are uncommitted.
-- Task 1 is untouched.
-- Report: `.dispatch/task-2-report.md`
+- Commit: `c8088e8 docs(adr): propose tag notes in a comma-separated column` (the ADR only)
+- Test: baseline `python3 -m unittest` runs 3 tests, OK. No code changed, so no new slices.
+- Concern: Task 2 changes the on-disk format (a `tags` column) and CLI options (`add --tag`, `list --tag`). ADR-0002 reserves both for the architect, and no accepted ADR covers them. I drafted ADR-0004 as `proposed` and wrote no implementation or tests.
+- Question for the architect: approve ADR-0004 as written, or change it? The main point is comma-separated text in the notes row versus a separate `tags` table. The ADR picks the column, and tags can't contain commas.
+- Report: `/tmp/sa-eval-atprhh8n/project/.dispatch/task-2-report.md` (not committed)
 
 ### result (success)

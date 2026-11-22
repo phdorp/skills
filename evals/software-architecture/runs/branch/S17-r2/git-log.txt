@@ -1,1 +1,3 @@
-e266739eedbe25ed7d9ade532cf9ac5847e5eb09 fixture
+f0ed061896aef85ecfac9151fdec94125c7fa406 docs(adr): propose tag CLI options --tag on add and list
+9fc2b7f92c41218fdb704518c75545d0530d74d0 docs(adr): propose store tags as a comma-separated column
+fde086631603350f862e7469d6a5e6b2faed5a76 fixture

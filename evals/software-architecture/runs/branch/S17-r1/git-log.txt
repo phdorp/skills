@@ -1,1 +1,2 @@
-e266739eedbe25ed7d9ade532cf9ac5847e5eb09 fixture
+c8088e8c74abf6667e90e3408e6e1250916be2ce docs(adr): propose tag notes in a comma-separated column
+fde086631603350f862e7469d6a5e6b2faed5a76 fixture

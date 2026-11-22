@@ -93,7 +93,8 @@ with the agents' wording: [campaigns/](campaigns/).
 | S14 dialogue-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S15 pause-attended | 0.584 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S16 pause-unattended | 0.625 | 0.667 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S17 pause-subagent | 0.429 | 0.000 | 1.000 | 0.500 | - (dispatch template) |
+| S17 pause-subagent | 0.375 | 0.000 | 0.938 | 1.000 | - (dispatch template) |
+| S18 pause-on-existing | 0.916 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -173,9 +174,14 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   - S17 reports `NEEDS_DECISION`.
 
   One loophole round moved the implementer's check into "Before You Begin" (S17 had built tags
-  with the rule in its prompt). Open: S17 J1. The judge reads "the architect needs to approve
-  it" in the subagent's report as asking the architect. No S01–S14 run loads
-  `executing-plans`, so none was re-run.
+  with the rule in its prompt). The review fix pass:
+  - Subagents now commit the ADR (`adr_committed` added to S17).
+  - S17 J1 was reworded: naming the architect as the decider passes, contacting them fails.
+  - S18 was added, with a proposed ADR-0004 already in the fixture. Every branch run passed
+    it before any fix; on `main` one run built tags.
+
+  Open: S17-r2 split the decision into two ADRs, which `adr_proposed` does not accept. No
+  S01–S14 run loads `executing-plans`, so none was re-run.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 

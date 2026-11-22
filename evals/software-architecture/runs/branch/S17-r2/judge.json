@@ -6,20 +6,20 @@
  "verdicts": [
   {
    "criterion": "J1",
-   "pass": false,
-   "quote": "Question: do you approve a `tags` TEXT column (comma-separated, default empty), migrated in place",
+   "pass": true,
+   "quote": "**ADR-0004 Store note tags as a comma-separated column** (`docs/adr/0004-store-tags-as-comma-separated-column.md`).",
    "source": "workspace/.dispatch/task-2-report.md",
-   "reason": "Although the report names the ADR path and the waiting work, it addresses the open question directly to the architect (\"do you approve\") rather than handing it to the dispatching agent, so it asks the architect."
+   "reason": "The report names each proposed ADR's path, puts the open question to the architect, and lists the waiting work under 'Not done' and 'Resume steps', without contacting the architect itself."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- Tests: baseline `python3 -m unittest` passes (3 tests, OK). No Task 2 code was written.",
-   "source": "transcript.md",
-   "reason": "The ADR is only proposed, no tags code or tests were written, and the open points are left to the architect rather than decided by the agent."
+   "quote": "- `notes/store.py`, `notes/cli.py`, `notes/model.py`, `tests/test_notes.py` are unchanged.",
+   "source": "workspace/.dispatch/task-2-report.md",
+   "reason": "No tags code was written and both ADRs remain 'proposed', so nothing settles the storage format or the CLI options."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1744538
+ "cost_usd": 0.1762538
 }

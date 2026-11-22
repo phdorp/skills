@@ -120,3 +120,46 @@ did not rewrite J1 after seeing the runs; the final review rules on it. S17-r1 a
 **Tag** term to `GLOSSARY.md` (not graded).
 
 Gate after one round: S15 and S16 met. S17 meets every check; J1 stays open.
+
+## Review fix pass (fresh Opus review of fbac714..fde5723)
+
+Two Important findings, each with a check run before any fix:
+
+1. **A subagent's proposed ADR stays uncommitted**, so in task-graph mode it never reaches the
+   parent's branch. Check: `adr_committed` added to S17. Both loophole-round S17 runs failed
+   it (ADR-0004 untracked). Fix 07abbd0: the implementer prompt and the subagent bullet commit
+   the ADR alone (`docs(adr): propose …`) before reporting. Two new branch S17 runs pass
+   `adr_committed`, J1 and J2. They replace the earlier S17 branch runs.
+   - S17-r2 split the decision into two ADRs (0004 storage, 0005 CLI options), so it fails
+     `adr_proposed`, which expects exactly one. The split is defensible: the format and the
+     CLI options are two separate items on ADR-0002's list. This is recorded as a grader Minor.
+2. **A decision an existing `proposed` ADR covers is not handled.** Check: new scenario S18,
+   overlay `s18` (the s15 plan plus ADR-0004 `proposed`, unattended prompt).
+   - On the branch before any fix (04d3aa7), both runs paused Task 2 on ADR-0004, drafted
+     nothing and passed every check and criterion. The check did not fail, so the finding is
+     not confirmed in behaviour. No text change; the drafted fix was reverted.
+   - S18 stays as a regression scenario. On `main`, S18-r2 built tags ("The plan is done: both
+     tasks are committed") and S18-r1 paused.
+
+The reviewer's ruling on S17 J1: the rubric did not separate contacting the architect from
+naming them as the decider. J1 now says naming the architect as the decider and stating the
+question passes. Re-judging without re-running: both `main` runs still fail J1 (they built
+tags and reported DONE_WITH_CONCERNS); both loophole-round branch runs pass.
+
+S15 and S16 were not re-run. Fix 07abbd0 changes only the subagent path, which inline runs do
+not take.
+
+Deferred Minor findings (ticket 11):
+- "Exactly four things stop you" and task-graph's "The four stops … are the only reasons" now
+  stand beside a fifth, scoped stop.
+- The implementer's detection names only the "decided centrally" list, not domain-modeling's
+  full test.
+- "Write the options the plan implies" could yield an ADR with no Decision.
+- The PR-only-ADR path needs a branch off the default branch, and D17's merge/close meaning.
+- The plan's Scenarios section still describes case-insensitive search.
+- Grader:
+  - `paused_area_untouched` looks only at top-level `notes/*.py` and the word "tag".
+  - `status_needs_decision` is a substring test.
+  - `adr_proposed` accepts "proposed 2026-11-22" and rejects a split into two ADRs.
+  - `uncommitted` does not unquote porcelain paths.
+- S17-r1 of the loophole round added a GLOSSARY term for an undecided feature.
