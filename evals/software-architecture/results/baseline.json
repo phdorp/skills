@@ -120,6 +120,12 @@
    "score": 1.0,
    "judge": 1.0,
    "cost_usd": 0.015
+  },
+  "S21": {
+   "runs": 2,
+   "score": 0.333,
+   "judge": 0.5,
+   "cost_usd": 0.018
   }
  },
  "runs": [
@@ -135,7 +141,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.055s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -2190,12 +2196,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.259s\n\nOK\n"
+     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.289s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.042s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.043s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2265,12 +2271,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.087s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.091s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2340,12 +2346,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.085s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2425,12 +2431,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.086s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2510,7 +2516,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.163s\n\nOK\n"
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.165s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2587,7 +2593,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.158s\n\nOK\n"
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.166s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2664,12 +2670,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.087s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.089s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2731,12 +2737,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.214s\n\nOK\n"
+     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.215s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.033s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -3049,6 +3055,110 @@
     "cost_usd": 0.10147779999999999
    },
    "cost_usd": 0.008336,
+   "needs_review": false
+  },
+  {
+   "run": "S21-r1",
+   "scenario": "S21",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "open_decision_under_architecture",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 1,
+   "total": 3,
+   "score": 0.333,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "ADR-0004 doesn't require cleanup, so this is a hygiene issue, not a violation.",
+      "source": "transcript.md",
+      "reason": "The review has no Architecture section (only Standards and Spec), and although it notes ADR-0004 is proposed, it then judges the code against ADR-0004 as if it were a binding rule."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "The code also cites ADR-0004 as its basis, but ADR-0004 is still `proposed`.",
+      "source": "transcript.md",
+      "reason": "The review only reports that ADR-0004 is still proposed; it does not accept or edit it, and does not tell the author to accept it."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1320258
+   },
+   "cost_usd": 0.008788,
+   "needs_review": false
+  },
+  {
+   "run": "S21-r2",
+   "scenario": "S21",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "open_decision_under_architecture",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 1,
+   "total": 3,
+   "score": 0.333,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "1. **Important: the implementation rests on decisions whose ADRs are not accepted.** `store.py:37` cites ADR-0004 as its basis, but ADR-0004 is `proposed`.",
+      "source": "transcript.md",
+      "reason": "The review correctly flags ADR-0004 as proposed and does not call the change conformant, but it places this under a Standards section and has no Architecture section, so the required placement is not met."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ADR-0002 lists \"import and export formats\" as a decision the architect must accept centrally, and no accepted ADR covers the JSON-lines export format. ADR-0002 also says work depending on such a decision waits until its ADR is accepted. This commit should wait for ADR acceptance, or the ADRs should be accepted first.",
+      "source": "transcript.md",
+      "reason": "The agent changed no files and leaves acceptance to the architect rather than telling the author to accept ADR-0004."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1397138
+   },
+   "cost_usd": 0.009477,
    "needs_review": false
   }
  ]
