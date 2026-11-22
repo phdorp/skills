@@ -73,8 +73,8 @@ reviews every listed run, plus a sample of the rest.
 ## Results
 
 Haiku 5.5 medium runs, Opus 5.5 judge, 2 runs per scenario and arm. `baseline` ran the skills
-at `main`; `branch` ran the skills at the commit named in each run's `meta.json`. A branch run
-is replaced when the skills it ran change; git history keeps the old runs. Campaign records
+at `main` (`ee3e907`); every `branch` run ran the skills at `5faee30` (ticket 11's full run).
+A branch run is replaced when the skills it ran change; git history keeps the old runs. Campaign records
 with the agents' wording: [campaigns/](campaigns/).
 
 | scenario | baseline grader | baseline judge | branch grader | branch judge | branch runs that loaded the target skill |
@@ -84,23 +84,25 @@ with the agents' wording: [campaigns/](campaigns/).
 | S03 lifecycle | 0.400 | 0.250 | 1.000 | 1.000 | 2 of 2 |
 | S04 add-requirements-propose | 0.500 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S05 add-requirements-confirmed | 0.375 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 0.875 | 2 of 2 (slash) |
+| S06 setup-fresh (two turns) | 0.000 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S07 setup-documented (two turns) | 0.071 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 0.916 | 0.875 | 2 of 2 (slash) |
-| S09 recovery-python (three turns) | 0.000 | 0.000 | 0.928 | 1.000 | 2 of 2 (slash) |
+| S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S09 recovery-python (three turns) | 0.000 | 0.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S10 recovery-dataflow (three turns) | 0.000 | 0.000 | 1.000 | 0.875 | 2 of 2 (slash) |
-| S11 dialogue-setup (two turns) | 0.500 | 0.250 | 1.000 | 0.750 | 2 of 2 (slash) |
+| S11 dialogue-setup (two turns) | 0.500 | 0.250 | 0.750 | 0.500 | 2 of 2 (slash); 1 read the reference |
 | S12 spec-setup | 0.500 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 0.500 | 2 of 2 (slash) |
+| S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S14 dialogue-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S15 pause-attended | 0.584 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S16 pause-unattended | 0.625 | 0.667 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S17 pause-subagent | 0.375 | 0.000 | 0.938 | 1.000 | - (dispatch template) |
-| S18 pause-on-existing | 0.916 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S17 pause-subagent | 0.375 | 0.000 | 1.000 | 1.000 | - (dispatch template) |
+| S18 pause-on-existing | 0.916 | 0.750 | 0.916 | 1.000 | 2 of 2 (slash) |
 | S19 review-setup | 0.167 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S20 review-plain (control) | 1.000 | 1.000 | 0.750 | 1.000 | 2 of 2 (slash) |
+| S20 review-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S21 review-proposed | 0.333 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
 
-Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
+Cost of the recorded runs: baseline ≈ $7.80 (runs $0.96, judges $6.87), branch ≈ $8.00 (runs
+$1.11, judges $6.92), 42 runs each. A turn takes 20–60 s.
 
 - S01: no run loaded a skill on either arm. It shows an ordinary change stays ordinary, not
   that the skills stay quiet once loaded.
@@ -197,10 +199,22 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   loophole round, the pointer says a two-axis report has exactly two sections. Open: S20-r2
   still says "No `docs/architecture/arc42.md`, so there are two axes." No S01–S18 run loads or
   reads `code-review`, so none was re-run.
-- Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
-  failure stands because R-6 does not exist; `branch/S20-r2`, where `no_architecture_section`
-  fails on the gate narrated in one sentence and the judge passes J1, since no section or setup
-  advice follows.
+- S21 and the full run (ticket 11, [campaign](campaigns/11-wrap-up.md)): S21 reviews a change
+  that follows proposed ADR-0004. On `main`, both runs saw the open decision but filed it under
+  Standards. On the branch, both report it under `## Architecture` ("relies on a proposed
+  ADR"). Ticket 11 also tightened four grader checks, fixed the deferred wording Minors and
+  gave each open loophole one more round. Every branch run was then re-run at `5faee30`.
+  Closed: S08's safety-net test (both runs defer it to the ADR), S13's and S20's gate
+  narration, S17's split ADRs (the grader accepts a split). S11's J4 held in the run that read
+  `design-dialogue`'s architecture reference; S11-r1 never read it and failed J1–J4.
+- Reviewed runs (flagged by `summarize.py`):
+  - `baseline/S02-r2`: the grader's `cites_ids` failure stands, because R-6 does not exist.
+  - `branch/S08-r1`: the J2 quote differs from the transcript only by JSON escaping (`\"`), so
+    J2's pass stands.
+  - `branch/S10-r1`: J3 fails because the as-found sections are given as a range that includes
+    the empty section 7 (ticket 07's open loophole).
+  - `branch/S18-r1`: Task 1 was done in a git worktree, which the grader cannot see. The judge's
+    pass stands.
 
 ## Known gaps
 
@@ -223,8 +237,17 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
 - A legacy ADR's exemption from the Architecture axis's traceability check has no scenario.
 - The smell baseline's "(OO)" marks and Large Class are not exercised; S20 exercises Long Method
   only.
-- The Architecture axis's "a change that relies on a proposed ADR depends on an open decision"
-  has no scenario: S19 has no proposed ADR in the change's area.
+- The reviewer-subagent path of `code-review` is not exercised: no S19–S21 run dispatched a
+  reviewer, so the reviewer prompt's Architecture block and `{ARCHITECTURE_SOURCES}` never ran.
+- `setup-project-workflow`'s pointer to `setup-architecture` has no scenario.
+- Grader limits: `paused_area_untouched` matches the word "tag" in added Python lines, so a
+  tags feature under another name passes it.
+- Open loopholes after ticket 11's round:
+  - S11-r1 skipped `design-dialogue`'s architecture reference despite the gated pointer, so
+    pointer compliance varies (1 of 2).
+  - S10-r1 gives the as-found sections as a range (J3).
+  - `executing-plans`' subagent implementer detects decisions by the domain-modeling test;
+    only the decided-centrally case has a scenario.
 - Spec story 16 (a multi-context repo with `GLOSSARY-MAP.md`) has no fixture.
 - Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 in early runs, 2 of 2 in the ticket 04 re-run). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the
