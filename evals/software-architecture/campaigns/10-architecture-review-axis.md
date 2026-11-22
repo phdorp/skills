@@ -45,3 +45,39 @@ Prompt note: the prompt says "against main's state before it", but the workspace
 names. Kept as is for GREEN comparability.
 
 Gate: met (every S19 run fails `architecture_section`).
+
+## GREEN round 1: branch at `f383d3d` (superseded; runs in that commit's history)
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S19-r1 | - | - |
+| S19-r2 | - | - |
+| S20-r1 | - | J2 |
+| S20-r2 | no_architecture_section | J1 |
+
+S19 passed every check and criterion in both runs, each with an `## Architecture` section:
+"**Traceability, `docs/adr/0004-export-as-json-lines.md`:** the ADR is `accepted 2026-11-20`,
+so it is not legacy, and its Context names no `R-n`, `QG-n` or `QS-n`." (S19-r1), and a closing
+line per axis: "Standards 2 findings (worst: no test for the new command). Spec 1 finding (worst:
+export crashes on a fresh DB). Architecture 4 findings (worst: ADR-0003 breach at
+`notes/cli.py:3`)." The Standards section deferred ADRs to Architecture (S19-r2).
+
+Two S20 regressions against `main`, which passed both:
+
+1. **The gate reported as a section** (S20-r2, `no_architecture_section`, J1): "## Architecture
+   / Skipped: `docs/architecture/arc42.md` does not exist." The run read the pointer and the
+   aggregate step's "(and `## Architecture` when that axis ran)" and reported the skip.
+2. **Long method not labelled a judgement call** (S20-r1, J2): "1. **Duplicated logic in
+   `main` (Important).** … `main` is also a long method". The run took README as the only
+   standard and graded smells without the judgement-call label; nothing in the change points
+   at this, and `main`'s runs varied the same way in wording ("Minor: long `main()`").
+
+No branch run dispatched a reviewer subagent.
+
+## Loophole round (`18ca2f3`)
+
+`SKILL.md`'s pointer now ends "Otherwise the review has these two axes, and its report has
+exactly two sections, `## Standards` and `## Spec`.", and step 5 no longer names
+`## Architecture` (the reference adds it). S20-r1's J2 failure has no cause in the change, so
+the round leaves it to the re-run. All four branch runs are re-run, since every one loaded the
+changed `SKILL.md`.
