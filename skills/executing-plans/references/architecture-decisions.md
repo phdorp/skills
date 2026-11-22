@@ -46,8 +46,8 @@ line.
   the ADR alone on the working branch (`docs(adr): propose <title>`). When the remote takes pull
   requests, also open one with only the ADR. File no tracker issue: the ADR is the record. End
   with a final report that lists the ADR as proposed, the paused tasks, and what accepting it
-  unblocks. A need the requirements do not cover goes in the report as "suggest running
-  `add-requirements`".
+  unblocks. When the change serves a need no `R-n` in arc42 section 1 names, add a line
+  "New requirement: <need> — suggest running `add-requirements`".
 - **You are a subagent:** the architect is not yours to contact. Report `NEEDS_DECISION` to the
   agent that dispatched you, with the ADR's path, the question, and the part of the task that
   waits.

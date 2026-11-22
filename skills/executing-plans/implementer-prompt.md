@@ -32,6 +32,17 @@ Subagent (general-purpose):
 
     **Ask them now.** Raise any concerns before starting work.
 
+    **If the project has docs/architecture/arc42.md**, check the task against
+    its architecture before you write code: read the ADR titled "Record
+    architecture decisions" and list what the task changes that its "decided
+    centrally" list names (an on-disk format, a CLI option, an interface).
+    Each item no accepted ADR settles is an open decision, even when the
+    brief spells out how to do it: a brief is not an accepted ADR. Draft it
+    with the domain-modeling skill as a proposed ADR, leave the code behind
+    it unwritten, finish the rest of the task, and report NEEDS_DECISION
+    with the ADR's path. The architect is not yours to ask, and the decision
+    is not yours to make.
+
     ## Your Job
 
     Once you're clear on requirements:
@@ -105,13 +116,6 @@ Subagent (general-purpose):
 
     **How to escalate:** report status BLOCKED or NEEDS_CONTEXT. Describe
     specifically what you're stuck on, what you tried, and what help you need.
-
-    **Architectural decisions:** if the project has docs/architecture/arc42.md
-    and the task needs an architectural decision that no accepted ADR settles
-    (domain-modeling's "When a decision needs an ADR"), draft it with the
-    domain-modeling skill as a proposed ADR, leave the code behind it
-    unwritten, finish the rest of the task, and report NEEDS_DECISION with
-    the ADR's path. Never ask the architect yourself, and never decide it.
 
     ## Before Reporting Back: Self-Review
 
