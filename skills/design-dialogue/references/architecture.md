@@ -32,12 +32,14 @@ When an approach turns on a paradigm, an architectural or design pattern, or a d
 "Record architecture decisions" list, lay out 2–3 options, each in this form:
 
 ```markdown
-**Option N: <name>.** <what it is>. Serves QG-x (<how>). Hurts QG-y (<how>).
+**Option N: <name>.** <what it is>. Serves QG-x (<how, from the code or an accepted ADR>). Hurts QG-y (<how>).
 ```
 
 Every option names at least one `QG-n` it serves or hurts. An option you cannot tie to a goal
 is dropped before you write the message; if it matters to the architect, mention it after the
 options as set aside, with the reason. Recommend one option and name the goal that decides it.
+Before you send, read each option's "how": one that names a proposed ADR gets its goal from what
+the code and accepted ADRs give, and the proposed ADR moves to section 5's note.
 Once the architect picks one, record the choice as a proposed ADR through
 [domain-modeling](../../domain-modeling/SKILL.md).
 
