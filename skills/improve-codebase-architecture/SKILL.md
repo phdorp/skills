@@ -64,7 +64,7 @@ Do NOT propose interfaces yet. After the file is written, ask the user: "Which o
 
 ### 3. Grilling loop
 
-**In a set-up project, an accepted candidate is a decision first.** When the architect accepts a candidate, call the Skill tool with "domain-modeling" and record it as an ADR whose Context cites the quality goal. The run ends with that ADR: code, models and tests stay as they are until the architect accepts it, including parts the "made centrally" list leaves to the blocks. Accepting a candidate is not accepting its ADR.
+**In a set-up project, an accepted candidate is a decision first.** When the architect accepts a candidate, call the Skill tool with "domain-modeling" and record it as an ADR whose Context cites the quality goal. The run ends with that ADR: code, models and tests stay as they are until the architect accepts it, including parts the "made centrally" list leaves to the blocks. Accepting a candidate is not accepting its ADR. A safety-net test for the change is part of the change, so it waits for the ADR too.
 
 Once the user picks a candidate, call the Skill tool with "design-dialogue" to walk the decision tree with them: constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
 
