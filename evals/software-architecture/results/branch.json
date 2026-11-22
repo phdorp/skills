@@ -60,6 +60,30 @@
    "score": 1.0,
    "judge": 0.875,
    "cost_usd": 0.125
+  },
+  "S11": {
+   "runs": 2,
+   "score": 0.875,
+   "judge": 0.625,
+   "cost_usd": 0.038
+  },
+  "S12": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.038
+  },
+  "S13": {
+   "runs": 2,
+   "score": 0.875,
+   "judge": 0.5,
+   "cost_usd": 0.022
+  },
+  "S14": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 0.5,
+   "cost_usd": 0.009
   }
  },
  "runs": [
@@ -150,7 +174,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.055s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1665,6 +1689,462 @@
     "cost_usd": 0.2278338
    },
    "cost_usd": 0.058585,
+   "needs_review": false
+  },
+  {
+   "run": "S11-r1",
+   "scenario": "S11",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": "turn 1: ; end: "
+    },
+    {
+     "name": "arc42_read",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_cited",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "add_requirements_suggested",
+     "pass": true,
+     "detail": "named True; loaded False"
+    }
+   ],
+   "passed": 3,
+   "total": 4,
+   "score": 0.75,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "R-3 and QS-2 require a stdlib-only program that works with no install steps.",
+      "source": "transcript.md",
+      "reason": "Before laying out approaches the agent cites requirement and scenario IDs but never names any QG-n quality goal or asks the architect to confirm a list of touched goals."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "It does not meet your passphrase requirement, because the files are plaintext and the protection comes from the drive.",
+      "source": "transcript.md",
+      "reason": "Three options and a recommendation are given, but none is tied to a QG-n goal it serves or hurts, and option 3 is tied to no quality goal at all."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Whether encrypted exports should become a requirement. If so, run `/add-requirements`.",
+      "source": "transcript.md",
+      "reason": "The agent treats encryption as a possible new requirement and directs the architect to run add-requirements without changing the R-list itself."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "It is still open, so the design has to work whether or not you accept it.",
+      "source": "transcript.md",
+      "reason": "The agent explicitly treats ADR-0004 as an open proposed decision and labels it as still proposed again in turn 2."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1423778
+   },
+   "cost_usd": 0.018861,
+   "needs_review": false
+  },
+  {
+   "run": "S11-r2",
+   "scenario": "S11",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": "turn 1: ; end: "
+    },
+    {
+     "name": "arc42_read",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_cited",
+     "pass": true,
+     "detail": "QG-1, QG-2"
+    },
+    {
+     "name": "add_requirements_suggested",
+     "pass": true,
+     "detail": "named True; loaded False"
+    }
+   ],
+   "passed": 4,
+   "total": 4,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Quality goals:** A new dependency hurts QG-2 (portability). Atomic export writes touch QG-1. Keeping export behind `Store` serves QG-3.",
+      "source": "transcript.md",
+      "reason": "Before laying out approaches, the agent names each touched quality goal by ID with how the export bears on it, and asks to be corrected."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "   - Rejected: the stick-loss goal fails, which is the reason you asked for the feature.",
+      "source": "transcript.md",
+      "reason": "Option 3 cites no QG-n and option 2 cites R-3/QS-2 instead of QG IDs with no goal hurt, so not every option is tied to the quality goals it serves or hurts."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Encryption at rest is a system-level need, so it is a new requirement. I suggest running `/add-requirements` for it.",
+      "source": "transcript.md",
+      "reason": "The agent names encryption as a new system-level requirement and defers to the architect to run add-requirements, leaving arc42 unchanged."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "Serves: QG-1 (atomic writes via ADR-0004 if accepted).",
+      "source": "transcript.md",
+      "reason": "The agent treats ADR-0004 as conditional on acceptance, after noting it is still proposed, rather than as a settled rule."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1459138
+   },
+   "cost_usd": 0.019293,
+   "needs_review": true
+  },
+  {
+   "run": "S12-r1",
+   "scenario": "S12",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-backup-command-spec.md"
+    },
+    {
+     "name": "qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "qr_cites",
+     "pass": true,
+     "detail": "QS-1, QS-2, QS-3, R-2"
+    },
+    {
+     "name": "not_copied",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**ADR-0004**, \"Write notes atomically via a temporary file and rename\", status `proposed`. The atomic-write requirement rests on it. This spec does not build on it until the architect accepts it.",
+      "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+      "reason": "The spec marks the atomic-write dependency as blocked until ADR-0004 is accepted, and the final message reports that ADR-0004 is proposed and blocks the spec."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Serves:** R-2 (no note is lost; a copy on another disk survives the loss of this one), QG-1, and the stakeholder expectation that users keep notes for years without losing any.",
+      "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+      "reason": "The Quality Requirements section names parent requirement R-2 and lists QS-1, QS-2 and QS-3 under Keeps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1893018
+   },
+   "cost_usd": 0.022002,
+   "needs_review": false
+  },
+  {
+   "run": "S12-r2",
+   "scenario": "S12",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-backup-spec.md"
+    },
+    {
+     "name": "qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "qr_cites",
+     "pass": true,
+     "detail": "QS-1, QS-3, R-2, R-3"
+    },
+    {
+     "name": "not_copied",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Blocker:** ADR-0004 (atomic writes), which the spec relies on, is still `proposed`. The skill says to hold the atomic-write work until the architect accepts it. If it is rejected, the spec needs revising.",
+      "source": "transcript.md",
+      "reason": "The spec lists ADR-0004 under Blocked by and in its status line, and the final message reports the blocker explicitly."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Keeps:** QS-1 (a crash during the backup leaves PATH either old or complete and the store still opens; the same rule as QS-1 applied to the backup); QS-3 (the backup code lives in `notes/store.py`, with the CLI change confined to `notes/cli.py`).",
+      "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
+      "reason": "The Quality Requirements section names parent requirements R-2 and R-3 under Serves and the scenarios QS-1 and QS-3 under Keeps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.18177379999999999
+   },
+   "cost_usd": 0.01585,
+   "needs_review": false
+  },
+  {
+   "run": "S13-r1",
+   "scenario": "S13",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-tally-min-count-spec.md"
+    },
+    {
+     "name": "no_qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_docs",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 4,
+   "total": 4,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The repo has no tracker config, so I used the local file form. I did not write tickets or a plan, since this is a single slice.",
+      "source": "transcript.md",
+      "reason": "The spec and final report contain no quality goals, arc42 or ADR content, and the only ADR mention is an observation that none exist."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1217578
+   },
+   "cost_usd": 0.01123,
+   "needs_review": false
+  },
+  {
+   "run": "S13-r2",
+   "scenario": "S13",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-min-count-spec.md"
+    },
+    {
+     "name": "no_qr_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_docs",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 4,
+   "score": 0.75,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "Not applicable. The project has no `docs/architecture/arc42.md`, so there are no R-, QS-, or ADR IDs to cite.",
+      "source": "workspace/docs/specs/2026-11-22-min-count-spec.md",
+      "reason": "The spec includes a Quality Requirements section that names arc42 and ADR IDs (and its messages mention ADRs), so it raised these topics instead of leaving them out."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.12684579999999998
+   },
+   "cost_usd": 0.010594,
+   "needs_review": false
+  },
+  {
+   "run": "S14-r1",
+   "scenario": "S14",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_quality_goals",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "There are no architecture docs, so the design doesn't have to fit an existing ADR set.",
+      "source": "transcript.md",
+      "reason": "The agent's message to the user explicitly mentions ADRs, which the criterion says it must not raise."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0485538
+   },
+   "cost_usd": 0.004304,
+   "needs_review": true
+  },
+  {
+   "run": "S14-r2",
+   "scenario": "S14",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_quality_goals",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Before I propose how to build this, I need to know what you want pairs for.",
+      "source": "transcript.md",
+      "reason": "The agent's messages discuss tokenizing and the output contract and ask about the user's purpose, with no mention of quality goals, arc42 or ADRs."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0446578
+   },
+   "cost_usd": 0.00453,
    "needs_review": false
   }
  ]

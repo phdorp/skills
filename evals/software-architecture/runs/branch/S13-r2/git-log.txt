@@ -1,0 +1,2 @@
+a6e91801fb2bf80f79ab2901c5407789c3ad64ab docs: add spec for tally --min-count option
+f3abafc92ad27f9af26434f1777d894e30568104 fixture

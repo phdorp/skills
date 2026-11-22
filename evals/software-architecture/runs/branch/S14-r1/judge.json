@@ -1,0 +1,17 @@
+{
+ "criteria": [
+  "J1"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": false,
+   "quote": "There are no architecture docs, so the design doesn't have to fit an existing ADR set.",
+   "source": "transcript.md",
+   "reason": "The agent's message to the user explicitly mentions ADRs, which the criterion says it must not raise."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.0485538
+}

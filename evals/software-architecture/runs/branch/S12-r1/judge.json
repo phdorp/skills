@@ -1,0 +1,25 @@
+{
+ "criteria": [
+  "J1",
+  "J2"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "**ADR-0004**, \"Write notes atomically via a temporary file and rename\", status `proposed`. The atomic-write requirement rests on it. This spec does not build on it until the architect accepts it.",
+   "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+   "reason": "The spec marks the atomic-write dependency as blocked until ADR-0004 is accepted, and the final message reports that ADR-0004 is proposed and blocks the spec."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "- **Serves:** R-2 (no note is lost; a copy on another disk survives the loss of this one), QG-1, and the stakeholder expectation that users keep notes for years without losing any.",
+   "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+   "reason": "The Quality Requirements section names parent requirement R-2 and lists QS-1, QS-2 and QS-3 under Keeps."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1893018
+}

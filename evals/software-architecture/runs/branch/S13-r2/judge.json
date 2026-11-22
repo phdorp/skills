@@ -1,0 +1,17 @@
+{
+ "criteria": [
+  "J1"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": false,
+   "quote": "Not applicable. The project has no `docs/architecture/arc42.md`, so there are no R-, QS-, or ADR IDs to cite.",
+   "source": "workspace/docs/specs/2026-11-22-min-count-spec.md",
+   "reason": "The spec includes a Quality Requirements section that names arc42 and ADR IDs (and its messages mention ADRs), so it raised these topics instead of leaving them out."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.12684579999999998
+}

@@ -48,3 +48,41 @@ failed `code_unchanged`. A glossary entry is documentation, as S09/S10's `DOC_FI
 say; the check now allows `GLOSSARY.md` (self-test case `S12-glossary`), and S12-r1 passes it.
 
 Gate: met (both S11 runs fail `goals_cited` and J1–J3; both S12 runs fail `qr_section` and J2).
+
+## GREEN, first attempt: skills at `890c456` (2026-11-22, 2 runs each, clean isolation)
+
+Every run started with `/sa:<skill>`. Both S11 runs read `references/architecture.md` in turn
+1; both S12 runs read the template. S12 was re-run after a session restart cut its first two
+runs off; S11, S13 and S14 completed before it. No earlier scenario loads or names
+`design-dialogue` or `spec-and-plan` (grep of `runs/branch/S0*`, `S10*`), so S01–S10 keep
+their branch runs.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S11-r1 | goals_cited | J1, J2 |
+| S11-r2 | - | J2 |
+| S12-r1, S12-r2 | - | - |
+| S13-r1 | - | - |
+| S13-r2 | no_qr_section | J1 |
+| S14-r1 | - | J1 |
+| S14-r2 | - | - |
+
+What the change fixed: both S12 specs carry the section, cite IDs and list ADR-0004 under
+"Blocked by"; both S11 runs suggest the skill instead of running it ("Whether encrypted exports
+should become a requirement. If so, run `/add-requirements`." S11-r1).
+
+Loopholes:
+
+1. **Requirement and scenario IDs stand in for goals** (S11-r1 J1, J2, `goals_cited`): the run
+   read the reference and argued from "R-3 and QS-2 require a stdlib-only program that works
+   with no install steps." but named no `QG-n`.
+2. **An option tied to no goal is still offered** (S11-r1, S11-r2 J2): "3. Write plain Markdown
+   into `DIR` and encrypt the drive" cites no quality goal in either run.
+3. **The plain-project spec grows the section** (S13-r2, regression): the template's section
+   is visible in every project, and the run filled it: "Not applicable. The project has no
+   `docs/architecture/arc42.md`, so there are no R-, QS-, or ADR IDs to cite."
+4. **The pointer primes ADR talk in a plain project** (S14-r1, regression): "There are no
+   architecture docs, so the design doesn't have to fit an existing ADR set." The pointer
+   names "quality goals, requirements and ADRs" in every project.
+
+Gate: not met. Task 4 (one loophole round) follows.
