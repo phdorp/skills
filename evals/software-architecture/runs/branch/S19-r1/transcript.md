@@ -7,55 +7,48 @@ docs/specs/export.md. Report your findings; don't change any files.
 
 ```json
 {
- "command": "BASE_SHA=$(git rev-parse HEAD~1) && HEAD_SHA=$(git rev-parse HEAD) && echo \"BASE=$BASE_SHA HEAD=$HEAD_SHA\" && git log HEAD~1..HEAD --format='%H %s%n%b' && echo \"--- stat\" && git diff --stat HEAD~1..HEAD && echo \"--- files\" && git ls-files | head -100 && echo \"--- spec\" && ls -la docs/specs/ 2>&1; ls docs/architecture 2>&1; ls CODING_STANDARDS.md CONTRIBUTING.md 2>&1",
- "description": "Pin commits, list diff stat and repo files"
+ "command": "git rev-parse HEAD~1 HEAD main 2>&1; echo ---; git log HEAD~1..HEAD --oneline; echo ---; git diff --stat HEAD~1..HEAD; echo ---; ls docs docs/specs docs/architecture 2>&1; echo ---; find . -path ./.git -prune -o \\( -iname 'CODING_STANDARDS.md' -o -iname 'CONTRIBUTING.md' -o -iname 'AGENTS.md' -o -iname 'CLAUDE.md' -o -iname '.editorconfig' -o -iname 'arc42.md' \\) -print",
+ "description": "Resolve refs, list commit, diffstat, and find standards files"
 }
 ```
 
 ### tool_result
 
 ```
-Exit code 2
-BASE=21d00184f0eba051a9da3fc41661484e5986544e HEAD=7b808460ba6d7f67add4ad9fca4f8522884be943
-7b808460ba6d7f67add4ad9fca4f8522884be943 feat: export notes as JSON
-
---- stat
+fatal: ambiguous argument 'main': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+86784f6c5d2a529595b63e1975ee969fe2439d00
+b2e768114ef39f0973455cfd5c9a0d12ba68dabd
+main
+---
+b2e7681 feat: export notes as JSON
+---
  docs/adr/0004-export-as-json-lines.md | 20 ++++++++++++++++++++
  docs/specs/export.md                  | 19 +++++++++++++++++++
  notes/cli.py                          | 10 ++++++++++
  3 files changed, 49 insertions(+)
---- files
-GLOSSARY.md
-README.md
-docs/adr/0001-use-sqlite-for-storage.md
-docs/adr/0002-record-architecture-decisions.md
-docs/adr/0003-cli-reaches-storage-only-through-store.md
-docs/adr/0004-export-as-json-lines.md
-docs/architecture/arc42.md
-docs/specs/export.md
-notes/__init__.py
-notes/__main__.py
-notes/cli.py
-notes/model.py
-notes/store.py
-tests/__init__.py
-tests/test_notes.py
---- spec
-total 12
-drwxr-xr-x 2 root root 4096 Nov 22 16:02 .
-drwxr-xr-x 5 root root 4096 Nov 22 16:02 ..
--rw-r--r-- 1 root root  383 Nov 22 16:02 export.md
+---
+docs:
+adr
+architecture
+specs
+
+docs/architecture:
 arc42.md
-ls: cannot access 'CODING_STANDARDS.md': No such file or directory
-ls: cannot access 'CONTRIBUTING.md': No such file or directory
+
+docs/specs:
+export.md
+---
+./docs/architecture/arc42.md
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git diff HEAD~1..HEAD && echo ==== SPEC && cat docs/specs/export.md && echo ==== ADR4 && cat docs/adr/0004-export-as-json-lines.md && echo ==== ADR3 && cat docs/adr/0003-cli-reaches-storage-only-through-store.md && echo ==== REFS && ls /tmp/sa-arm-go_0b2t8/sa/skills/code-review/references/",
- "description": "Show the commit diff, spec, and related ADRs"
+ "command": "git diff HEAD~1..HEAD",
+ "description": "Show full diff of the last commit"
 }
 ```
 
@@ -140,48 +133,170 @@ index 96974cd..58fb479 100644
      try:
          store = Store(default_path())
      except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
-==== SPEC
-# Export notes as JSON
-
-## Problem
-
-Users cannot take their notes to other tools.
-
-## Behaviour
-
-`notes export` prints every note as one JSON line, oldest first:
-
-```text
-{"id": 1, "text": "Buy milk", "created": "2026-11-20T09:00:00+00:00"}
 ```
 
-Each line holds the fields `id`, `text` and `created`. The command takes no arguments.
+### tool_use Bash
 
-## Out of scope
+```json
+{
+ "command": "cat /tmp/sa-arm-z6ntv9bk/sa/skills/code-review/references/architecture-axis.md; echo ======; cat docs/architecture/arc42.md; echo ======; ls -R notes tests 2>/dev/null; echo ======; cat notes/cli.py; echo ======; cat notes/store.py 2>/dev/null; echo ======; cat /tmp/sa-arm-z6ntv9bk/sa/skills/code-review/references/standards-and-smells.md | head -80",
+ "description": "Read architecture axis reference, arc42, and source files"
+}
+```
 
-Importing notes; other formats.
-==== ADR4
-# 4. Export notes as JSON lines
+### tool_result
+
+```
+# The Architecture axis
+
+Part of [code-review](../SKILL.md). Read this when `docs/architecture/arc42.md` exists: the
+review then has three axes, Standards, Spec and Architecture, each with its own reviewer and its
+own report section. Without that file the review keeps two axes and says nothing about
+architecture.
+
+## 1. Sources
+
+Collect these before dispatching; the Architecture reviewer gets them and nothing else.
+
+- **arc42 section 1:** the requirement IDs (`R-n`) and quality goal IDs (`QG-n`).
+- **arc42 section 8:** every crosscutting rule, verbatim (error handling, logging, units).
+- **arc42 section 10:** the quality scenarios (`QS-n`), each with its stimulus, response and
+  measure.
+- **ADRs:** every ADR in the directory that section 9 links, with its status.
+  - Accepted, and so a rule: Status `accepted <date>`, `accepted (legacy)`, or no Status at all
+    (a legacy ADR, as `domain-modeling` reads it).
+  - Not a rule: `proposed` (an open decision) and `rejected`. A `superseded` ADR is replaced by
+    the ADR that supersedes it.
+
+ADRs, arc42 and other architecture notes are Architecture's sources here, not Standards'.
+
+Done when: you hold the section 1 IDs, the section 8 rules, the section 10 scenarios and the
+list of ADRs with their statuses.
+
+## 2. Checks
+
+The reviewer checks the diff against each source:
+
+- **ADR conformance:** for each accepted ADR whose area the change falls in, does the diff keep
+  its Decision? Quote the Decision sentence it breaks.
+- **Section 8 rules:** does every new or changed code path follow every section 8 rule?
+- **Quality scenarios:** for each `QS-n` whose stimulus or response the change bears on, does
+  the change keep its measure? Name the scenario and say how the change affects it, even when
+  the measure still holds.
+- **Traceability:** an accepted ADR that the change adds or relies on, whose Context names no
+  `R-n`, `QG-n` or `QS-n`, is a finding: nobody can tell which requirement it serves. A legacy
+  ADR (`accepted (legacy)` or no Status) is exempt.
+- **Open decisions:** a change that relies on a `proposed` ADR is a finding: it depends on an
+  open decision. It neither conforms to nor breaks that ADR.
+
+Done when: each accepted ADR in the change's area, each section 8 rule and each touched
+scenario has a verdict, and each ADR the change adds or relies on has a traceability verdict.
+
+## 3. Report
+
+Each finding gives:
+
+1. The location: `file:line`.
+2. The source: `ADR-NNNN` and the Decision sentence, `arc42 §8: <rule>`, `QS-n`, or
+   `traceability: ADR-NNNN`.
+3. The evidence: the quoted hunk.
+4. The fix: one sentence.
+
+Severity is graded as on the other axes. A breach of an accepted ADR or a section 8 rule is a
+documented-rule breach, never a judgement call.
+
+Done when: every finding names its source.
+
+## 4. Dispatch and aggregate
+
+- Dispatch a third reviewer with the Architecture block of
+  [reviewer-prompt.md](reviewer-prompt.md), together with the Standards and Spec reviewers.
+  Fill `{ARCHITECTURE_SOURCES}` with the sources from step 1, pasted.
+- Give the Standards reviewer no ADR or arc42 file: a breach of an ADR or a section 8 rule is
+  reported under Architecture, not Standards.
+- Present `## Architecture` beside `## Standards` and `## Spec`, as its own section.
+- The closing line names the findings and the worst issue for each of the three axes.
+
+Done when: the report has an `## Architecture` section and the closing line covers it.
+
+## Red flags
+
+| Thought | Reality |
+|---|---|
+| "The ADR breach is a coding-standard breach" | ADRs and section 8 rules are Architecture's sources. Report it there. |
+| "The ADR is proposed, but the change follows it, so it conforms" | A proposed ADR is not a rule. Report that the change depends on an open decision. |
+| "The new ADR is accepted, so it needs no check" | Accepted ADRs are what traceability checks. Name the missing ID. |
+| "No scenario's measure broke, so there is nothing to say about quality" | Name each scenario the change touches a
+[... 10665 chars cut]
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "ls docs/adr; for f in docs/adr/000[123]*.md; do echo \"== $f\"; cat \"$f\"; done; echo ======; cat tests/test_notes.py; echo ======; cat notes/model.py; echo ======; ls GLOSSARY.md 2>&1; git status --short",
+ "description": "Read ADRs, tests, and check working tree"
+}
+```
+
+### tool_result
+
+```
+0001-use-sqlite-for-storage.md
+0002-record-architecture-decisions.md
+0003-cli-reaches-storage-only-through-store.md
+0004-export-as-json-lines.md
+== docs/adr/0001-use-sqlite-for-storage.md
+# 1. Use SQLite for storage
 
 ## Status
 
-accepted 2026-11-20
+accepted 2026-10-01
 
 ## Context
 
-People want to take their notes to other tools. Several export formats were possible: CSV,
-one JSON document, or one JSON object per line.
+Notes must survive crashes (R-2, QG-1, QS-1) and the program may use only the Python standard
+library (R-3, QG-2). The standard library ships `sqlite3`, whose transactions are atomic.
 
 ## Decision
 
-`notes export` prints every note as one JSON object per line, with the fields `id`, `text`
-and `created`, oldest first.
+Store all notes in one SQLite database file, by default `~/.notes.db`.
 
 ## Consequences
 
-Other tools can read the export line by line. A note containing a newline stays on one line,
-because JSON escapes it.
-==== ADR3
+Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
+repaired with a text editor.
+== docs/adr/0002-record-architecture-decisions.md
+# 2. Record architecture decisions
+
+## Status
+
+accepted 2026-10-01
+
+## Context
+
+The architect decides the architecture; contributors and agents implement it. We need a line
+between decisions the architect makes centrally and decisions left to whoever builds a block
+(R-1, QG-3).
+
+## Decision
+
+We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
+
+Decided centrally (needs an ADR the architect accepts):
+
+- the storage engine and the on-disk format;
+- the dependency rule between blocks: `cli` → `store` → `model`;
+- import and export formats;
+- CLI command names and exit codes;
+- third-party dependencies.
+
+Left to the building blocks (no ADR): internal helpers, SQL query structure, test layout.
+
+## Consequences
+
+Work that depends on a decision on the list waits until its ADR is accepted.
+== docs/adr/0003-cli-reaches-storage-only-through-store.md
 # 3. CLI reaches storage only through the store module
 
 ## Status
@@ -200,463 +315,128 @@ Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli
 ## Consequences
 
 Any new command that reads or writes notes goes through `Store`.
-==== REFS
-architecture-axis.md
-receiving-feedback.md
-reviewer-prompt.md
-standards-and-smells.md
-```
+======
+import io
+import os
+import tempfile
+import unittest
+from contextlib import redirect_stdout
+from pathlib import Path
+from unittest import mock
 
-### tool_use Read
+from notes.cli import main
+from notes.store import Store
 
-```json
-{
- "file_path": "/tmp/sa-arm-go_0b2t8/sa/skills/code-review/references/architecture-axis.md"
-}
-```
 
-### tool_result
+class StoreTest(unittest.TestCase):
+    def setUp(self):
+        self.store = Store(Path(tempfile.mkdtemp()) / "n.db")
 
-```
-1	# The Architecture axis
-2	
-3	Part of [code-review](../SKILL.md). Read this when `docs/architecture/arc42.md` exists: the
-4	review then has three axes, Standards, Spec and Architecture, each with its own reviewer and its
-5	own report section. Without that file the review keeps two axes and says nothing about
-6	architecture.
-7	
-8	## 1. Sources
-9	
-10	Collect these before dispatching; the Architecture reviewer gets them and nothing else.
-11	
-12	- **arc42 section 1:** the requirement IDs (`R-n`) and quality goal IDs (`QG-n`).
-13	- **arc42 section 8:** every crosscutting rule, verbatim (error handling, logging, units).
-14	- **arc42 section 10:** the quality scenarios (`QS-n`), each with its stimulus, response and
-15	  measure.
-16	- **ADRs:** every ADR in the directory that section 9 links, with its status.
-17	  - Accepted, and so a rule: Status `accepted <date>`, `accepted (legacy)`, or no Status at all
-18	    (a legacy ADR, as `domain-modeling` reads it).
-19	  - Not a rule: `proposed` (an open decision) and `rejected`. A `superseded` ADR is replaced by
-20	    the ADR that supersedes it.
-21	
-22	ADRs, arc42 and other architecture notes are Architecture's sources here, not Standards'.
-23	
-24	Done when: you hold the section 1 IDs, the section 8 rules, the section 10 scenarios and the
-25	list of ADRs with their statuses.
-26	
-27	## 2. Checks
-28	
-29	The reviewer checks the diff against each source:
-30	
-31	- **ADR conformance:** for each accepted ADR whose area the change falls in, does the diff keep
-32	  its Decision? Quote the Decision sentence it breaks.
-33	- **Section 8 rules:** does every new or changed code path follow every section 8 rule?
-34	- **Quality scenarios:** for each `QS-n` whose stimulus or response the change bears on, does
-35	  the change keep its measure? Name the scenario and say how the change affects it, even when
-36	  the measure still holds.
-37	- **Traceability:** an accepted ADR that the change adds or relies on, whose Context names no
-38	  `R-n`, `QG-n` or `QS-n`, is a finding: nobody can tell which requirement it serves. A legacy
-39	  ADR (`accepted (legacy)` or no Status) is exempt.
-40	- **Open decisions:** a change that relies on a `proposed` ADR is a finding: it depends on an
-41	  open decision. It neither conforms to nor breaks that ADR.
-42	
-43	Done when: each accepted ADR in the change's area, each section 8 rule and each touched
-44	scenario has a verdict, and each ADR the change adds or relies on has a traceability verdict.
-45	
-46	## 3. Report
-47	
-48	Each finding gives:
-49	
-50	1. The location: `file:line`.
-51	2. The source: `ADR-NNNN` and the Decision sentence, `arc42 §8: <rule>`, `QS-n`, or
-52	   `traceability: ADR-NNNN`.
-53	3. The evidence: the quoted hunk.
-54	4. The fix: one sentence.
-55	
-56	Severity is graded as on the other axes. A breach of an accepted ADR or a section 8 rule is a
-57	documented-rule breach, never a judgement call.
-58	
-59	Done when: every finding names its source.
-60	
-61	## 4. Dispatch and aggregate
-62	
-63	- Dispatch a third reviewer with the Architecture block of
-64	  [reviewer-prompt.md](reviewer-prompt.md), together with the Standards and Spec reviewers.
-65	  Fill `{ARCHITECTURE_SOURCES}` with the sources from step 1, pasted.
-66	- Give the Standards reviewer no ADR or arc42 file: a breach of an ADR or a section 8 rule is
-67	  reported under Architecture, not Standards.
-68	- Present `## Architecture` beside `## Standards` and `## Spec`, as its own section.
-69	- The closing line names the findings and the worst issue for each of the three axes.
-70	
-71	Done when: the report has an `## Architecture` section and the closing line covers it.
-72	
-73	## Red flags
-74	
-75	| Thought | Reality |
-76	|---|---|
-77	| "The ADR breach is a coding-standard breach" | ADRs and section 8 rules are Architecture's sources. Report it there. |
-78	| "The ADR is proposed, but the change follows it, so it conforms" | A proposed ADR is not a rule. Report that the change depends on an open decision. |
-79	| "The
-[... 278 chars cut]
-```
+    def tearDown(self):
+        self.store.close()
 
-### tool_use Read
+    def test_add_then_list(self):
+        self.store.add("Buy milk")
+        self.assertEqual([n.text for n in self.store.all()], ["Buy milk"])
 
-```json
-{
- "file_path": "/tmp/sa-arm-go_0b2t8/sa/skills/code-review/references/reviewer-prompt.md"
-}
-```
+    def test_search_matches_substring(self):
+        self.store.add("Buy milk")
+        self.store.add("Call Ann")
+        self.assertEqual([n.text for n in self.store.search("mil")], ["Buy milk"])
 
-### tool_result
 
-```
-1	# Two-axis reviewer prompt
-2	
-3	Fill this template once per axis (Standards, Spec, and Architecture when [architecture-axis.md](architecture-axis.md) applies) and dispatch each copy to a separate reviewer. Replace everything in `{}`. Delete the sections that belong to the other axes; a reviewer that sees another axis reranks them.
-4	
-5	```
-6	You are a senior code reviewer. You review one axis of one change and report findings. You do not fix anything.
-7	
-8	## Axis
-9	
-10	{AXIS}  <!-- "Standards", "Spec" or "Architecture" -->
-11	
-12	## What was implemented
-13	
-14	{DESCRIPTION}
-15	
-16	## Global constraints
-17	
-18	- This review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state. Inspect with `git show`, `git diff`, `git log`. If you need another revision checked out, use a separate temporary worktree (`git worktree add /tmp/review-<sha> <sha>`); never move HEAD here.
-19	- Do all of the review yourself. Never spawn a subagent, and never ask another reviewer for a second opinion. If the diff feels too large for one pass, review it in passes and say so.
-20	- Do not report anything tooling already enforces (formatter, linter, type checker, CI checks).
-21	- Stay under 400 words. Findings only, no restating the change.
-22	- {GLOBAL_CONSTRAINTS}  <!-- repo-wide rules: generated files to ignore, forbidden APIs, compatibility floors -->
-23	
-24	## Git range
-25	
-26	Diff (three-dot, against the merge-base):
-27	
-28	    {DIFF_COMMAND}
-29	
-30	Commits under review:
-31	
-32	    {COMMIT_LIST}
-33	
-34	Start from the diff. Read surrounding code when a hunk's correctness depends on it.
-35	
-36	## Spec  <!-- Spec axis only -->
-37	
-38	Path: {SPEC_PATH}
-39	
-40	Contents:
-41	
-42	{SPEC_CONTENTS}
-43	
-44	The spec is a vision document. It says what the software must do; it does not enumerate every input, environment, or condition. Where the spec is silent, judge by what a reasonable person using this software would expect. A reasonable person's expectation is a requirement, and the spec's silence is not permission. Grade such findings by their effect on that person, not by whether the spec mentions the trigger.
-45	
-46	## Standards  <!-- Standards axis only -->
-47	
-48	Documented sources in this repo:
-49	
-50	{STANDARDS_SOURCES}  <!-- file paths, or pasted rules when the reviewer cannot read them -->
-51	
-52	The repo overrides the baseline: where a documented standard endorses something the baseline would flag, suppress the smell. Never report a smell as a hard violation.
-53	
-54	Smell baseline (Fowler, _Refactoring_ ch. 3). Each entry is *what it is* → *how to fix*:
-55	
-56	{SMELL_BASELINE}
-57	
-58	## Architecture  <!-- Architecture axis only -->
-59	
-60	Sources (arc42 sections 1, 8 and 10; the ADRs with their statuses):
-61	
-62	{ARCHITECTURE_SOURCES}
-63	
-64	An ADR is a rule when its Status is `accepted <date>`, `accepted (legacy)` or missing (legacy). A `proposed` or `rejected` ADR is not a rule. A breach of an accepted ADR or a section 8 rule is a documented-rule breach, not a judgement call.
-65	
-66	## Declined to judge
-67	
-68	Before your verdict, list every behavior you considered and set aside as outside your axis, one line each, with the reason. The implementer rules on each line; nothing you set aside is dropped silently. An empty list means you set nothing aside.
-69	
-70	## What to check
-71	
-72	Standards axis:
-73	
-74	- Every place the diff violates a documented standard. Cite the standard (file + the rule).
-75	- Any baseline smell you spot. Name it and quote the hunk. Label it a judgement call.
-76	- Anything tooling does not cover but a maintainer would raise in review.
-77	
-78	Spec axis:
-79	
-80	- Requirements the spec asked for that are missing or partial.
-81	- Behaviour in the diff that was not asked for (scope creep).
-82	- Requirements that look implemented but where the implementation is wrong.
-83	
-84	Architecture axis:
-85	
-86	- Each accepted ADR whose area the change falls in: does the diff keep its Decision? Cite 
-[... 3668 chars cut]
-```
+class CliTest(unittest.TestCase):
+    def test_add_and_search(self):
+        db = Path(tempfile.mkdtemp()) / "n.db"
+        with mock.patch.dict(os.environ, {"NOTES_DB": str(db)}):
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(main(["add", "Buy milk"]), 0)
+            out = io.StringIO()
+            with redirect_stdout(out):
+                self.assertEqual(main(["search", "milk"]), 0)
+        self.assertIn("Buy milk", out.getvalue())
 
-### tool_use Read
 
-```json
-{
- "file_path": "/tmp/sa-arm-go_0b2t8/sa/skills/code-review/references/standards-and-smells.md"
-}
-```
+if __name__ == "__main__":
+    unittest.main()
+======
+from dataclasses import dataclass
 
-### tool_result
 
-```
-1	# Standards sources and the smell baseline
-2	
-3	The Standards axis asks whether the diff conforms to how this repo writes code. Two kinds of source answer that: what the repo documents, and a fixed baseline of code smells for what it does not.
-4	
-5	## 1. Find the documented standards
-6	
-7	Search the repo for every file that says how code should be written. Typical candidates:
-8	
-9	- `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, `README.md` sections on style.
-10	- `docs/` conventions, ADRs, architecture notes, review checklists, `STYLE.md`. When `docs/architecture/arc42.md` exists, ADRs and arc42 belong to the Architecture axis ([architecture-axis.md](architecture-axis.md)), not here.
-11	- Linter and formatter configs (`.eslintrc*`, `eslint.config.*`, `ruff.toml`, `pyproject.toml`, `.golangci.yml`, `.rubocop.yml`, `.editorconfig`) — these show what tooling enforces, which you must not re-report.
-12	- Language- or area-specific docs (`docs/api-guidelines.md`, `packages/*/README.md`).
-13	- Domain vocabulary in `GLOSSARY.md`: a name that contradicts the glossary is a Mysterious Name finding with a documented fix.
-14	
-15	List the files you found and check they exist in the checkout at `HEAD`. The reviewer has no other way to read them if you only name a path, so either pass their contents or confirm the reviewer can read them in its own checkout.
-16	
-17	**Skip anything tooling already enforces.** A linter, formatter, or type checker that runs in CI owns those findings. Re-reporting them wastes the reviewer's budget and buries the judgement calls.
-18	
-19	## 2. Apply the smell baseline
-20	
-21	On top of whatever the repo documents, always carry this fixed set of Fowler code smells (_Refactoring_, ch. 3). Two rules bind it:
-22	
-23	- **The repo overrides.** A documented repo standard always wins. Where a repo standard endorses something the baseline would flag, suppress the smell and say nothing.
-24	- **Always a judgement call.** Each smell is a labelled heuristic ("possible Feature Envy"), never a hard violation. A documented-standard breach can be hard; a smell cannot.
-25	
-26	Each smell reads *what it is* → *how to fix*. **(OO)** marks a smell that assumes objects and classes; its entry names the dataflow counterpart (blocks, connections, signals, as in `codebase-design`) where one exists. Match it against the diff:
-27	
-28	- **Long Method**: a function so long that its parts need comments or names of their own. → extract the parts into named functions.
-29	- **Large Class**: a class or module holding many unrelated fields or responsibilities. → split it along its responsibilities.
-30	- **Mysterious Name**: a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
-31	- **Duplicated Code**: the same logic shape appears in more than one hunk or file in the change. → extract the shared shape, call it from both.
-32	- **Feature Envy** (OO): a method that reaches into another object's data more than its own. → move the method onto the data it envies. Dataflow: a block reading another block's internal variables instead of its outputs → read its output signal, or add one.
-33	- **Data Clumps**: the same few fields or params keep travelling together (a type wanting to be born). → bundle them into one type, pass that.
-34	- **Primitive Obsession**: a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
-35	- **Repeated Switches**: the same `switch`/`if`-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
-36	- **Shotgun Surgery**: one logical change forces scattered edits across many files in the diff. → gather what changes together into one module.
-37	- **Divergent Change**: one file or module is edited for several unrelated reasons. → split so each module changes for one reason.
-38	- **Speculative Generality**: abstraction, p
-[... 1274 chars cut]
+@dataclass(frozen=True)
+class Note:
+    id: int
+    text: str
+    created: str
+======
+GLOSSARY.md
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in docs/architecture/arc42.md GLOSSARY.md README.md notes/store.py notes/model.py notes/cli.py notes/__main__.py tests/test_notes.py docs/adr/0001-use-sqlite-for-storage.md docs/adr/0002-record-architecture-decisions.md docs/adr/0003-cli-reaches-storage-only-through-store.md; do echo \"==== $f\"; cat -n \"$f\"; done",
- "description": "Read architecture, standards, and source files"
+ "command": "D=$(mktemp -d) && echo \"fresh db: $D/fresh.db\" && NOTES_DB=$D/fresh.db PYTHONPATH=. python3 -m notes export; echo \"exit=$?\"; echo ---; NOTES_DB=$D/n.db PYTHONPATH=. python3 -m notes add 'line one\nline two \"q\" é' >/dev/null && NOTES_DB=$D/n.db PYTHONPATH=. python3 -m notes export; echo \"exit=$?\"; echo ---; NOTES_DB=/nonexistent/dir/x.db PYTHONPATH=. python3 -m notes export 2>&1 | tail -2; echo \"exit=${PIPESTATUS[0]}\"; echo ---; PYTHONPATH=. python3 -m pytest -q 2>&1 | tail -3; python3 -m unittest discover -s tests -q 2>&1 | tail -3",
+ "description": "Run export on fresh, populated, and bad-path DBs, then tests"
 }
 ```
 
 ### tool_result
 
 ```
-==== docs/architecture/arc42.md
-     1	# notes: architecture
-     2	
-     3	Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
-     4	
-     5	## 1. Introduction and goals
-     6	
-     7	### Requirements overview
-     8	
-     9	| ID | requirement | rank | status | reason |
-    10	|---|---|---|---|---|
-    11	| R-1 | Users add, list and search notes from the command line. | 1 | active | core use |
-    12	| R-2 | No note is lost when the process or machine crashes. | 2 | active | users keep notes for years |
-    13	| R-3 | Runs on Linux and macOS with only the Python standard library. | 3 | active | installed on locked-down machines |
-    14	| R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
-    15	| R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
-    16	
-    17	### Quality goals
-    18	
-    19	| ID | goal (ISO/IEC 25010) | from | scenario |
-    20	|---|---|---|---|
-    21	| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
-    22	| QG-2 | Portability: installability | R-3 | QS-2 |
-    23	| QG-3 | Maintainability: modifiability | R-1 | QS-3 |
-    24	
-    25	### Stakeholders
-    26	
-    27	| role | expectation |
-    28	|---|---|
-    29	| Architect (project owner) | decides the architecture; accepts ADRs |
-    30	| Users | keep notes for years without losing any |
-    31	| Contributors | change one part without learning the whole program |
-    32	
-    33	## 2. Constraints
-    34	
-    35	- Python 3.11 or later, standard library only (R-3).
-    36	
-    37	## 3. Context and scope
-    38	
-    39	## 4. Solution strategy
-    40	
-    41	## 5. Building block view
-    42	
-    43	| block | responsibility | may use |
-    44	|---|---|---|
-    45	| `cli` | parse commands, print results and errors | `store`, `model` |
-    46	| `store` | keep notes between runs; the only block that knows the storage | `model` |
-    47	| `model` | the `Note` value | - |
-    48	
-    49	## 6. Runtime view
-    50	
-    51	## 7. Deployment view
-    52	
-    53	## 8. Crosscutting concepts
-    54	
-    55	- Errors: reported on stderr as `notes: <message>`, exit code 1.
-    56	
-    57	## 9. Architecture decisions
-    58	
-    59	Decisions are recorded as ADRs in [docs/adr/](../adr/). What is decided centrally is listed in
-    60	[ADR-0002 Record architecture decisions](../adr/0002-record-architecture-decisions.md).
-    61	
-    62	## 10. Quality requirements
-    63	
-    64	| ID | goal | stimulus | environment | response | measure |
-    65	|---|---|---|---|---|---|
-    66	| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the note is either fully stored or absent; the store still opens | 0 unreadable stores in 100 trials |
-    67	| QS-2 | QG-2 | a user runs `python3 -m notes list` | fresh Linux or macOS with Python 3.11+ | it works without installing anything | 0 install steps |
-    68	| QS-3 | QG-3 | a contributor swaps the storage engine | development | only `notes/store.py` and its tests change | 0 other files changed |
-    69	
-    70	## 11. Risks and technical debt
-    71	
-    72	## 12. Glossary
-    73	
-    74	See [GLOSSARY.md](../../GLOSSARY.md).
-==== GLOSSARY.md
-     1	# Glossary
-     2	
-     3	**Note**: a short piece of text a user keeps, with an id and the time it was created.
-     4	
-     5	**Store**: the place notes are kept between runs.
-==== README.md
-     1	# notes
-     2	
-     3	Keep short notes from the command line.
-     4	
-     5	```sh
-     6	python3 -m notes add "Buy milk"
-     7	python3 -m notes list
-     8	python3 -m notes search milk
-     9	```
-    10	
-    11	Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
-    12	`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
-==== notes/store.py
-     1	"""The only module that knows how notes are stored (ADR-0001, ADR-0003)."""
-     2	import os
-     3	import sqlite3
-    
-[... 7328 chars cut]
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "cd /tmp && T=$(mktemp -d) && cd /tmp/sa-eval-_8doovcu/project && echo \"--- fresh DB, export:\" && NOTES_DB=$T/fresh.db PYTHONDONTWRITEBYTECODE=1 python3 -I -m notes export; echo \"exit=$?\"; echo \"--- fresh DB, list:\" && NOTES_DB=$T/fresh2.db PYTHONDONTWRITEBYTECODE=1 python3 -I -m notes list; echo \"exit=$?\"; echo \"--- populated, newline note:\" && NOTES_DB=$T/pop.db PYTHONDONTWRITEBYTECODE=1 python3 -I -m notes add \"$(printf 'line1\\nline2')\" && NOTES_DB=$T/pop.db PYTHONDONTWRITEBYTECODE=1 python3 -I -m notes export; echo \"exit=$?\"; rm -rf \"$T\"; git status --short",
- "description": "Probe export on fresh DB and newline text in temp dir"
-}
-```
-
-### tool_result
-
-```
---- fresh DB, export:
-/usr/bin/python3: No module named notes
-exit=1
---- fresh DB, list:
-/usr/bin/python3: No module named notes
-exit=1
---- populated, newline note:
-/usr/bin/python3: No module named notes
-exit=1
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "T=$(mktemp -d); export PYTHONPATH=/tmp/sa-eval-_8doovcu/project PYTHONDONTWRITEBYTECODE=1; echo \"--- fresh DB, export:\"; NOTES_DB=$T/fresh.db python3 -m notes export; echo \"exit=$?\"; echo \"--- fresh DB, list:\"; NOTES_DB=$T/fresh2.db python3 -m notes list; echo \"exit=$?\"; echo \"--- populated, newline note:\"; NOTES_DB=$T/pop.db python3 -m notes add \"$(printf 'line1\\nline2')\"; NOTES_DB=$T/pop.db python3 -m notes export; echo \"exit=$?\"; rm -rf \"$T\"; cd /tmp/sa-eval-_8doovcu/project && git status --short",
- "description": "Rerun probes with PYTHONPATH set to the repo"
-}
-```
-
-### tool_result
-
-```
---- fresh DB, export:
+fresh db: /tmp/tmp.hefQVECkzU/fresh.db
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "/tmp/sa-eval-_8doovcu/project/notes/__main__.py", line 5, in <module>
+  File "/tmp/sa-eval-p9zdrvrd/project/notes/__main__.py", line 5, in <module>
     sys.exit(main())
              ~~~~^^
-  File "/tmp/sa-eval-_8doovcu/project/notes/cli.py", line 19, in main
+  File "/tmp/sa-eval-p9zdrvrd/project/notes/cli.py", line 19, in main
     rows = db.execute("SELECT id, text, created FROM notes ORDER BY id")
 sqlite3.OperationalError: no such table: notes
 exit=1
---- fresh DB, list:
+---
+{"id": 1, "text": "line one\nline two \"q\" \u00e9", "created": "2026-11-22T15:09:06+00:00"}
 exit=0
---- populated, newline note:
-1
-{"id": 1, "text": "line1\nline2", "created": "2026-11-22T15:07:27+00:00"}
-exit=0
+---
+    db = sqlite3.connect(default_path())
+sqlite3.OperationalError: unable to open database file
+exit=1
+---
+/usr/bin/python3: No module named pytest
+Ran 3 tests in 0.073s
+
+OK
 ```
 
 ### assistant
 
+Base: the repo has no `main` branch, so I used `HEAD~1` (86784f6) as the fixed point, which is the state before `b2e7681`. No files were changed. I ran the export against temporary databases and ran the test suite; I did the review inline rather than dispatching reviewers.
+
 ## Standards
 
-Documented standards in the repo: `GLOSSARY.md` and the README. No `CODING_STANDARDS.md`, `CONTRIBUTING.md`, or lint/format config exists. The diff breaks no written style rule. Smell-baseline findings are judgement calls.
+No documented standards exist here (no `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, lint or editor config). Findings use the smell baseline, so each is a judgement call.
 
-- **Possible Duplicated Code**, `notes/cli.py:19`: `SELECT id, text, created FROM notes ORDER BY id` repeats the query in `notes/store.py:28`. Judgement call: route export through a `Store` method, which also fixes the Architecture finding below.
-- **Test gap (Important)**, `tests/test_notes.py`: the commit adds no test for `export`, although `CliTest` covers `add` and `search`. A maintainer would raise this in review. A test of the one-line-per-note output, plus one with a newline in the text, would cover the new code.
-
-**Worst Standards issue:** missing test for the new command.
+- **possible Duplicated Code** (`notes/cli.py:19`): the `SELECT id, text, created FROM notes ORDER BY id` query and the row-to-note mapping repeat `Store.all()` (`notes/store.py:28`). Fix: call `store.all()` and format the returned `Note` values.
+- **possible Divergent Change** (`notes/cli.py:17-23`): `main()` gains a second storage path, so it now changes for storage reasons as well as CLI reasons. Fix: move the query into `Store`, as in the Architecture finding below.
+- **Inconsistent resource handling** (`notes/cli.py:18-22`): `db.close()` is not in a `finally`, unlike the store path directly below (`cli.py:30-40`). Fix: follow the file's own pattern, or drop the raw connection entirely (see the Architecture finding).
 
 ## Spec
 
-Matches on the happy path. Verified: output for a populated DB is `{"id": 1, "text": "line1\nline2", "created": "..."}`, one line per note, with the fields and key format the spec gives. The command takes no arguments, as specified.
+`docs/specs/export.md` is implemented as written. With a populated database, output is one JSON object per line, oldest first, with `id`, `text`, `created`, and no arguments. Newlines in note text are escaped correctly.
 
-- **Important, `notes/cli.py:18-19`:** on a fresh install, where `notes.db` does not yet contain the `notes` table, `notes export` crashes with a traceback (`sqlite3.OperationalError: no such table: notes`, exit 1). The spec says the command prints every note, and a user with no notes would reasonably expect empty output and exit 0. `notes list` on the same fresh DB exits 0 with no output, because `Store.__init__` creates the table. The export path bypasses `Store`, so it never creates the table.
-
-**Declined to judge:** "oldest first" is implemented by `ORDER BY id`, not by `created`. Ids are monotonic because no delete command exists, so this conforms. Out-of-scope items (import, other formats) are absent from the diff, as intended.
-
-**Worst Spec issue:** export crashes on a fresh or empty database.
+- **Important, empty or fresh store** (`notes/cli.py:18-19`): the spec says the command prints every note. With no notes, the table has not been created yet, so the command crashes with `sqlite3.OperationalError: no such table: notes` and a traceback, exit 1. I reproduced this on a fresh `NOTES_DB`. The expected behaviour is empty output and exit 0. Fix: open the database through `Store(default_path())` first, which creates the table, then export through the store.
+- **Minor, no test** (`tests/test_notes.py`, unchanged): nothing exercises `export`. The spec does not require a test, but this is why the crash above went unnoticed.
 
 ## Architecture
 
-Three ADR and arc42 checks apply here, since `docs/architecture/arc42.md` exists.
+Sources: arc42 §5, §8, §10 (QS-3), ADR-0002, ADR-0003, ADR-0004.
 
-- **Important, ADR-0003 breach, `notes/cli.py:3, 18-19`:** the accepted ADR says "Only `notes/store.py` imports `sqlite3` or touches the database file." The diff adds `import sqlite3` to `cli.py`, opens the database with `sqlite3.connect(default_path())`, and runs SQL there. The same breach breaks the arc42 §5 rule that `cli` may use only `store` and `model`, which ADR-0002 decides centrally.
-- **Important, arc42 §8 breach, `notes/cli.py:18-23`:** the crosscutting rule is "Errors: reported on stderr as `notes: <message>`, exit code 1." The export branch returns before the `try/except` at lines 24-28, so the error above appears as a raw traceback, not `notes: no such table: notes`.
-- **QS-3 weakened (not a breach yet):** the measure is "0 other files changed" when the storage engine is swapped. With the diff, swapping the engine also requires editing `cli.py`, so the measure fails for this command.
-- **Traceability, `docs/adr/0004-export-as-json-lines.md`:** the ADR is `accepted 2026-11-20`, so it is not legacy, and its Context names no `R-n`, `QG-n` or `QS-n`. No arc42 requirement covers export, so nobody can tell which requirement it serves. Note that the spec's Problem statement could serve as the missing source.
-- **Conforms:** the ADR-0004 Decision (one JSON object per line, fields `id`, `text`, `created`, oldest first) matches the code. QS-1 (crash safety) and QS-2 (stdlib only, no install steps) are unaffected: export is read-only and adds no dependency.
+- **Important, breach of ADR-0003** (`notes/cli.py:3, 18`): the accepted Decision says "Only `notes/store.py` imports `sqlite3` or touches the database file." `cli.py` now imports `sqlite3`, calls `sqlite3.connect`, and runs SQL. Fix: add an export or read method to `Store`, and have `cli.py` call it with the same `try`/`finally` as the other commands.
+- **Important, arc42 §8 error convention** (`notes/cli.py:18-19`): errors are supposed to go to stderr as `notes: <message>` with exit 1. The export path has no `try`, so sqlite errors surface as tracebacks. I reproduced this with `NOTES_DB=/nonexistent/dir/x.db`, which prints `sqlite3.OperationalError: unable to open database file` as a traceback. Fix: route through the same `try`/`except` as the other commands. Moving the query into `Store` covers this too.
+- **Minor, weakened QS-3** (arc42 §10): the measure "0 other files changed" when the storage engine is swapped no longer holds, because `cli.py` now depends on the storage engine. Fix: the same as the ADR-0003 finding.
+- **Minor, traceability** (`docs/adr/0004-export-as-json-lines.md:7-8`): ADR-0004 is accepted and its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves. Fix: the architect should name the requirement in Context, or add one to arc42 §1 if none fits. This is for you to decide, not me.
 
-**Worst Architecture issue:** the ADR-0003 breach at `notes/cli.py:3`, where the CLI reaches the database directly.
-
----
-
-**Summary:** Standards 2 findings (worst: no test for the new command). Spec 1 finding (worst: export crashes on a fresh DB). Architecture 4 findings (worst: ADR-0003 breach at `notes/cli.py:3`).
-
-I ran three inline passes rather than dispatching subagents, since you did not ask for them; the axes were kept separate. I also ran `notes export` against temporary databases outside the repo, to confirm the crash and the newline escaping. No files in the repo were changed.
+Worst issue per axis: Standards, duplicated query (judgement call); Spec, crash on an empty or fresh store; Architecture, breach of ADR-0003 (sqlite access outside `store.py`).
 
 ### result (success)

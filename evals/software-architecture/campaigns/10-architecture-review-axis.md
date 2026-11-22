@@ -81,3 +81,35 @@ exactly two sections, `## Standards` and `## Spec`.", and step 5 no longer names
 `## Architecture` (the reference adds it). S20-r1's J2 failure has no cause in the change, so
 the round leaves it to the re-run. All four branch runs are re-run, since every one loaded the
 changed `SKILL.md`.
+
+## GREEN: branch at `1087264` (after the loophole round)
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S19-r1 | - | - |
+| S19-r2 | - | - |
+| S20-r1 | - | - |
+| S20-r2 | no_architecture_section | - |
+
+Every check and criterion `main` failed now passes in both S19 runs:
+
+- `architecture_section`, `adr_under_architecture`, J1: "- **Important, breach of ADR-0003**
+  (`notes/cli.py:3, 18`): the accepted Decision says "Only `notes/store.py` imports `sqlite3` or
+  touches the database file."" (S19-r1, under `## Architecture`).
+- `trace_under_architecture`, J2: "- **[Minor] Traceability.** ADR-0004 is `accepted`, not
+  legacy, and its Context names no `R-n`, `QG-n` or `QS-n`." (S19-r2).
+- J4: "- Architecture: 4 findings. Worst: ADR-0003 breach (Important). - Standards: 2 findings.
+  … - Spec: 1 finding." (S19-r2).
+- `section8_under_architecture` and `qs_under_architecture` pass in both.
+
+S20: the "Skipped" section is gone, and r1 labels the long `main` a judgement call again (J2).
+Neither run suggests setting up an architecture (J1 passes in both). S20-r2 still narrates the
+gate in its preamble: "No `docs/architecture/arc42.md`, so there are two axes." That fails
+`no_architecture_section` (it names arc42); the judge passes J1, since no section or setup
+advice follows, so `summarize.py` marks the run "needs review". No branch run dispatched a
+reviewer subagent.
+
+Gate: met for S19 (every check and criterion `main` failed now passes). S20 has no GREEN credit
+(it passed on `main`); it regressed in round 1 and, after the loophole round, keeps one open
+loophole: the gate narrated in one sentence (1 of 2 runs). Stays open; the one loophole round
+is spent.

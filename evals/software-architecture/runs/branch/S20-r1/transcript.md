@@ -7,8 +7,8 @@ docs/specs/stopwords.md. Report your findings; don't change any files.
 
 ```json
 {
- "command": "git rev-parse HEAD~1 main HEAD && git log HEAD~1..HEAD --oneline && git diff --stat main..HEAD~0 2>/dev/null | tail -3; echo ---; git diff HEAD~1..HEAD --stat; echo ---; ls docs docs/specs 2>/dev/null; ls docs/architecture 2>/dev/null; find . -path ./node_modules -prune -o \\( -iname 'CODING_STANDARDS.md' -o -iname 'CONTRIBUTING.md' -o -iname 'AGENTS.md' -o -iname 'CLAUDE.md' -o -iname '.editorconfig' -o -iname 'eslint*' -o -iname 'pyproject.toml' -o -iname 'setup.cfg' -o -name '.flake8' -o -name 'ruff.toml' \\) -print",
- "description": "Resolve commits, diff stat, and find spec and standards files"
+ "command": "git rev-parse HEAD~1 HEAD main && git log main..HEAD --oneline && echo \"--- stat\" && git diff --stat HEAD~1..HEAD && echo \"--- files\" && ls docs docs/specs docs/architecture 2>&1; ls docs/architecture/arc42.md 2>&1; git ls-files | grep -iE 'standard|contrib|agents\\.md|claude\\.md|readme|eslint|prettier|editorconfig|\\.md$' | head -50",
+ "description": "Resolve SHAs, list commit, diff stat, and standards files"
 }
 ```
 
@@ -18,37 +18,26 @@ docs/specs/stopwords.md. Report your findings; don't change any files.
 fatal: ambiguous argument 'main': unknown revision or path not in the working tree.
 Use '--' to separate paths from revisions, like this:
 'git <command> [<revision>...] -- [<file>...]'
-5d0bd65954345f31b9e3a020427686dfceee0b0d
+ea68a1763ef851679805c61aacf01de49feb5fe1
+ad8e7b442f98183d8c92aa75804bd1705041a977
 main
----
- docs/specs/stopwords.md | 15 +++++++++++++++
- tally/cli.py            | 29 ++++++++++++++++++++++++++---
- tests/test_cli.py       |  9 +++++++++
- 3 files changed, 50 insertions(+), 3 deletions(-)
----
-docs:
-specs
-
-docs/specs:
-stopwords.md
+ls: cannot access 'docs/architecture/arc42.md': No such file or directory
+README.md
+docs/specs/stopwords.md
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git branch -a && git log --oneline -5 && echo --- && git diff HEAD~1..HEAD && echo --- && cat docs/specs/stopwords.md && echo --- && find . -path ./.git -prune -o -type f -print | grep -v __pycache__ | head -50",
- "description": "Show branches, recent log, diff, spec, and file list"
+ "command": "git diff HEAD~1..HEAD",
+ "description": "Show full diff of the last commit"
 }
 ```
 
 ### tool_result
 
 ```
-* master
-e4ec04c feat: leave out stopwords
-5d0bd65 fixture
----
 diff --git a/docs/specs/stopwords.md b/docs/specs/stopwords.md
 new file mode 100644
 index 0000000..e93f913
@@ -130,7 +119,20 @@ index a64f0f8..c3d8e21 100644
  
  if __name__ == "__main__":
      unittest.main()
----
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "cat docs/specs/stopwords.md",
+ "description": "Read the stopwords spec"
+}
+```
+
+### tool_result
+
+```
 # Leave out stopwords
 
 ## Problem
@@ -146,28 +148,32 @@ word per line; `#` starts a comment; blank lines are ignored; matching ignores c
 ## Out of scope
 
 A built-in stopword list.
----
-./README.md
-./tally/__main__.py
-./tally/cli.py
-./tally/__init__.py
-./tests/test_cli.py
-./tests/__init__.py
-./docs/specs/stopwords.md
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat -n tally/cli.py | head -20 && echo --- && cat README.md && echo --- && cat tests/test_cli.py | head -28 && echo --- && git show HEAD~1:tally/cli.py | sed -n 1,20p && echo --- && (python3 -m unittest discover -s tests -t . 2>&1 | tail -5)",
- "description": "Read cli.py header, README, tests, base version, and run tests"
+ "command": "git branch -a && git log --oneline -5 && echo \"--- files\" && git ls-files && echo \"--- cli.py\" && cat -n tally/cli.py && echo \"--- tests\" && cat -n tests/test_cli.py && echo \"--- README\" && cat README.md && echo \"--- run tests\" && python -m unittest discover -s tests -q 2>&1 | tail -5",
+ "description": "Inspect branches, files, source, tests, README, and run tests"
 }
 ```
 
 ### tool_result
 
 ```
+* master
+ad8e7b4 feat: leave out stopwords
+ea68a17 fixture
+--- files
+README.md
+docs/specs/stopwords.md
+tally/__init__.py
+tally/__main__.py
+tally/cli.py
+tests/__init__.py
+tests/test_cli.py
+--- cli.py
      1	import argparse
      2	import re
      3	from collections import Counter
@@ -188,7 +194,75 @@ A built-in stopword list.
     18	    parser = argparse.ArgumentParser(prog="tally", description="Count word frequencies.")
     19	    parser.add_argument("file", help="text file to count")
     20	    parser.add_argument("--stopwords", metavar="FILE",
----
+    21	                        help="file of words to leave out, one per line")
+    22	    args = parser.parse_args(argv)
+    23	    with open(args.file, encoding="utf-8") as f:
+    24	        text = f.read()
+    25	    # read the stopword file: one word per line, '#' starts a comment
+    26	    stopwords = set()
+    27	    if args.stopwords:
+    28	        with open(args.stopwords, encoding="utf-8") as f:
+    29	            for raw in f:
+    30	                line = raw.split("#", 1)[0].strip().lower()
+    31	                if not line:
+    32	                    continue
+    33	                stopwords.add(line)
+    34	    # count every word that is not a stopword
+    35	    counts = Counter()
+    36	    for word in WORD.findall(text.lower()):
+    37	        if word in stopwords:
+    38	            continue
+    39	        counts[word] += 1
+    40	    # rank: most frequent first, ties in alphabetical order
+    41	    ranked = []
+    42	    for word, n in counts.items():
+    43	        ranked.append((-n, word))
+    44	    ranked.sort()
+    45	    # print one "word count" line per word
+    46	    for neg, word in ranked:
+    47	        print(f"{word} {-neg}")
+    48	    return 0
+--- tests
+     1	import io
+     2	import tempfile
+     3	import unittest
+     4	from contextlib import redirect_stdout
+     5	from pathlib import Path
+     6	
+     7	from tally.cli import count_words, format_counts, main
+     8	
+     9	
+    10	class CountWords(unittest.TestCase):
+    11	    def test_counts_case_insensitively(self):
+    12	        self.assertEqual(count_words("The cat and the hat"),
+    13	                         {"the": 2, "cat": 1, "and": 1, "hat": 1})
+    14	
+    15	    def test_ranks_by_count_then_alphabetically(self):
+    16	        self.assertEqual(format_counts({"b": 1, "a": 1, "c": 3}), ["c 3", "a 1", "b 1"])
+    17	
+    18	
+    19	class Main(unittest.TestCase):
+    20	    def test_prints_every_word(self):
+    21	        path = Path(tempfile.mkdtemp()) / "in.txt"
+    22	        path.write_text("b a b")
+    23	        out = io.StringIO()
+    24	        with redirect_stdout(out):
+    25	            self.assertEqual(main([str(path)]), 0)
+    26	        self.assertEqual(out.getvalue(), "b 2\na 1\n")
+    27	
+    28	    def test_stopwords_are_left_out(self):
+    29	        d = Path(tempfile.mkdtemp())
+    30	        (d / "in.txt").write_text("The cat and the hat")
+    31	        (d / "stop.txt").write_text("# common\nthe\n\nAND\n")
+    32	        out = io.StringIO()
+    33	        with redirect_stdout(out):
+    34	            self.assertEqual(main([str(d / "in.txt"), "--stopwords", str(d / "stop.txt")]), 0)
+    35	        self.assertEqual(out.getvalue(), "cat 1\nhat 1\n")
+    36	
+    37	
+    38	if __name__ == "__main__":
+    39	    unittest.main()
+--- README
 # tally
 
 Counts word frequencies in a text file.
@@ -199,98 +273,91 @@ python3 -m tally notes.txt
 
 Prints one `word count` line per word, most frequent first, ties in alphabetical order.
 Run the tests with `python3 -m unittest`.
----
-import io
-import tempfile
-import unittest
-from contextlib import redirect_stdout
-from pathlib import Path
+--- run tests
+/bin/bash: line 1: python: command not found
+```
 
-from tally.cli import count_words, format_counts, main
+### tool_use Bash
 
+```json
+{
+ "command": "python3 -m unittest -q 2>&1 | tail -4; echo \"--- old vs new, no --stopwords, on sample text\"; rm -rf /tmp/review-old && mkdir -p /tmp/review-old && git archive HEAD~1 | tar -x -C /tmp/review-old && printf 'b a b\\nThe cat, the dog. Don'\"'\"'t tie: zz yy zz yy\\n' > /tmp/review-sample.txt && (cd /tmp/review-old && python3 -I -m tally /tmp/review-sample.txt) > /tmp/review-old.out; python3 -I -m tally /tmp/review-sample.txt > /tmp/review-new.out; diff /tmp/review-old.out /tmp/review-new.out && echo IDENTICAL; echo \"--- edge: inline comment, empty --stopwords, missing stopwords file\"; printf 'the # article\\n' > /tmp/review-stop.txt; python3 -I -m tally /tmp/review-sample.txt --stopwords /tmp/review-stop.txt | head -3; python3 -I -m tally /tmp/review-sample.txt --stopwords \"\" | head -2; python3 -I -m tally /tmp/review-sample.txt --stopwords /nonexistent 2>&1 | tail -1",
+ "description": "Run tests and compare old/new output and edge cases"
+}
+```
 
-class CountWords(unittest.TestCase):
-    def test_counts_case_insensitively(self):
-        self.assertEqual(count_words("The cat and the hat"),
-                         {"the": 2, "cat": 1, "and": 1, "hat": 1})
+### tool_result
 
-    def test_ranks_by_count_then_alphabetically(self):
-        self.assertEqual(format_counts({"b": 1, "a": 1, "c": 3}), ["c 3", "a 1", "b 1"])
-
-
-class Main(unittest.TestCase):
-    def test_prints_every_word(self):
-        path = Path(tempfile.mkdtemp()) / "in.txt"
-        path.write_text("b a b")
-        out = io.StringIO()
-        with redirect_stdout(out):
-            self.assertEqual(main([str(path)]), 0)
-        self.assertEqual(out.getvalue(), "b 2\na 1\n")
-
-    def test_stopwords_are_left_out(self):
----
-import argparse
-import re
-from collections import Counter
-
-WORD = re.compile(r"[a-z']+")
-
-
-def count_words(text):
-    return Counter(WORD.findall(text.lower()))
-
-
-def format_counts(counts):
-    ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
-    return [f"{word} {n}" for word, n in ranked]
-
-
-def main(argv=None):
-    parser = argparse.ArgumentParser(prog="tally", description="Count word frequencies.")
-    parser.add_argument("file", help="text file to count")
-    args = parser.parse_args(argv)
----
-....
+```
 ----------------------------------------------------------------------
 Ran 4 tests in 0.002s
 
 OK
+--- old vs new, no --stopwords, on sample text
+/usr/bin/python3: No module named tally
+/usr/bin/python3: No module named tally
+IDENTICAL
+--- edge: inline comment, empty --stopwords, missing stopwords file
+/usr/bin/python3: No module named tally
+/usr/bin/python3: No module named tally
+/usr/bin/python3: No module named tally
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "cd /tmp/review-old && python3 -m tally /tmp/review-sample.txt > /tmp/review-old.out; cd /tmp/sa-eval-wx7ukj9k/project && python3 -m tally /tmp/review-sample.txt > /tmp/review-new.out; diff /tmp/review-old.out /tmp/review-new.out && echo IDENTICAL; cat /tmp/review-new.out | tr '\\n' '|'; echo; echo \"--- inline comment stopword\"; python3 -m tally /tmp/review-sample.txt --stopwords /tmp/review-stop.txt | tr '\\n' '|'; echo; echo \"--- empty --stopwords\"; python3 -m tally /tmp/review-sample.txt --stopwords \"\" | head -1; echo \"--- missing stopwords file\"; python3 -m tally /tmp/review-sample.txt --stopwords /nonexistent 2>&1 | tail -1; echo \"--- apostrophe stopword\"; printf \"don't\\n\" > /tmp/review-apos.txt; python3 -m tally /tmp/review-sample.txt --stopwords /tmp/review-apos.txt | tr '\\n' '|'; echo; rm -rf /tmp/review-old /tmp/review-*.txt /tmp/review-*.out",
+ "description": "Compare outputs and run edge cases, then clean temp files"
+}
+```
+
+### tool_result
+
+```
+IDENTICAL
+b 2|the 2|yy 2|zz 2|a 1|cat 1|dog 1|don't 1|tie 1|
+--- inline comment stopword
+b 2|yy 2|zz 2|a 1|cat 1|dog 1|don't 1|tie 1|
+--- empty --stopwords
+b 2
+--- missing stopwords file
+FileNotFoundError: [Errno 2] No such file or directory: '/nonexistent'
+--- apostrophe stopword
+b 2|the 2|yy 2|zz 2|a 1|cat 1|dog 1|tie 1|
 ```
 
 ### assistant
 
 ## Standards
 
-Repo has no `CODING_STANDARDS.md`, `CONTRIBUTING.md`, or lint config. The only documented standard is `README.md`, so I checked against it and the existing code's structure.
+No documented coding standards exist in this repo: there is no CONTRIBUTING, CODING_STANDARDS, or lint config, and the README covers usage only. I applied the Fowler smell baseline.
 
-1. **Duplicated logic in `main` (Important).** `main` re-implements counting and ranking instead of reusing `count_words` and `format_counts`, which still exist and are still tested. The stopword filter could be an optional argument to `count_words`, which would keep `main` to argument parsing, file IO, and printing. As written, the ranking logic now lives in two places that can drift apart. `main` is also a long method (args, file IO, stopword parsing, counting, ranking, printing).
-   - `tally/cli.py:35-53`
-2. **Less readable ranking idiom (Minor).** The `ranked.append((-n, word))` / `for neg, word in ranked` / `-neg` pattern is harder to follow than the existing `sorted(..., key=lambda item: (-item[1], item[0]))` already used in `format_counts`.
-   - `tally/cli.py:45-52`
-3. **README not updated (Minor).** The README documents usage, and the new `--stopwords FILE` flag is not mentioned.
-   - `README.md`
+- **Duplicated logic, `tally/cli.py:35-47` (Important):** `main()` re-implements the counting and ranking that `count_words` and `format_counts` already do. The ranking now lives in two places, and `format_counts` is no longer used by the CLI, though its unit test still exercises it. Fix: filter stopwords inside the existing helpers, or have `main` call them.
+- **Long method, `tally/cli.py:17-48` (Minor):** `main()` handles argument parsing, file reading, stopword parsing, counting, ranking, and printing. Extracting `load_stopwords(path)` would make it readable and testable.
+- **Roundabout ranking, `tally/cli.py:40-47` (Minor):** the code builds a list of negated-count tuples and calls `.sort()`, where `sorted(counts.items(), key=...)` as in `format_counts` is the idiom already used in this file.
+- **Comments narrate code, `tally/cli.py:25,34,40,45` (Minor):** comments like "read the stopword file" restate the next line.
+- **Docs gap, `README.md` (Minor):** the new `--stopwords` option is not documented in the README.
 
 ## Spec
 
-Spec: `docs/specs/stopwords.md`. The implementation meets every stated behaviour.
+Spec source: `docs/specs/stopwords.md`. Every behaviour in it is implemented, and the out-of-scope built-in list is absent.
 
-- `--stopwords WORDS` is added and leaves out every listed word: met (`tally/cli.py:20-21`, filter at line 41).
-- One word per line: met.
-- `#` starts a comment: met (`raw.split("#", 1)[0]`).
-- Blank lines are ignored: met (`if not line: continue`).
-- Matching ignores case: met (stopwords and text are both lowercased).
-- Without `--stopwords` the output is unchanged: met by reading. The new inline ranking sorts by `(-count, word)`, the same key as the old `format_counts`, and the counting uses the same `WORD` regex on lowercased text. The existing `test_prints_every_word` covers this path.
-- Out of scope (built-in stopword list): not added.
+- `--stopwords FILE` leaves out listed words: verified.
+- One word per line, `#` starts a comment, blank lines ignored, case-insensitive matching: all implemented and covered by `test_stopwords_are_left_out`.
+- Without `--stopwords` the output is unchanged: I ran the HEAD~1 and HEAD code on the same sample text and the output was byte-identical.
+- The test suite passes (4/4 via `python3 -m unittest`).
 
-Tests: `python3 -m unittest discover -s tests -t .` runs 4 tests, all passing. The new `test_stopwords_are_left_out` covers comment, blank line, and case-insensitive matching.
+Not specified, so not violations, but worth a decision (Minor):
+- `--stopwords ""` is silently treated as "no flag" because of the `if args.stopwords:` check.
+- A missing stopwords file produces a raw `FileNotFoundError` traceback. Missing input files behave the same way today.
+- Inline comments (`the # article`) are handled, but no test covers them.
 
-No spec gaps found, so there are no spec findings to report.
+**Summary:** Standards has 5 findings; the worst is the duplicated counting and ranking logic in `main()` (`tally/cli.py:35-47`). Spec has 0 violations; the worst is the unspecified empty `--stopwords ""` case.
 
-**Summary:** Standards: 3 findings, worst is the duplicated counting and ranking logic in `main` (Important). Spec: 0 findings.
-
-Notes on the run:
-- The repo has no `main` branch (only `master`), so I used `HEAD~1` (`5d0bd65`) as the base, as you specified.
-- I ran both axes inline rather than dispatching reviewer subagents, since you didn't ask for subagents.
-- No files were changed.
+Notes on the review itself:
+- The ref `main` does not exist locally; the branch is `master`. I used HEAD~1 (`ea68a17`) as the base, which is the state before this commit.
+- The review ran inline as two separate passes rather than dispatched subagents, to keep the two axes apart.
+- No repository files were changed. I only wrote temp files outside the repo and removed them afterwards.
 
 ### result (success)

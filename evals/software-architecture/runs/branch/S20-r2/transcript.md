@@ -5,14 +5,14 @@ docs/specs/stopwords.md. Report your findings; don't change any files.
 
 ### assistant
 
-I'll run this inline: one pass per axis, kept separate, since I'm not dispatching subagents for this review.
+I'll pin the commits, read the spec, and find the standards docs before reviewing the diff.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git rev-parse main HEAD~1 HEAD && git log main..HEAD --oneline && git log -1 --format='%H%n%s%n%b' HEAD && git diff --stat main HEAD~1..HEAD; echo \"---\"; git diff HEAD~1..HEAD; echo \"--- spec\"; ls docs/specs 2>/dev/null; ls docs/architecture 2>/dev/null; find . -maxdepth 3 \\( -iname 'CODING_STANDARDS.md' -o -iname 'CONTRIBUTING.md' -o -iname 'AGENTS.md' -o -iname 'CLAUDE.md' -o -iname '.editorconfig' -o -iname 'README.md' \\) -not -path './node_modules/*' -not -path './.git/*'",
- "description": "Resolve refs, show commit diff, list spec and standards files"
+ "command": "git rev-parse main HEAD~1 HEAD && git log main..HEAD --oneline; echo \"---\"; git log HEAD~1..HEAD --oneline; echo \"---\"; git diff --stat main HEAD~1..HEAD 2>/dev/null; git diff --stat HEAD~1 HEAD; echo \"---\"; ls docs docs/specs docs/architecture 2>&1; ls; echo \"---\"; find . -path ./node_modules -prune -o \\( -iname 'CODING_STANDARDS.md' -o -iname 'CONTRIBUTING.md' -o -iname 'AGENTS.md' -o -iname 'CLAUDE.md' -o -iname '.editorconfig' -o -iname 'STYLE*' \\) -print",
+ "description": "Resolve refs, list commits, diff stat, and find standards docs"
 }
 ```
 
@@ -24,6 +24,44 @@ Use '--' to separate paths from revisions, like this:
 'git <command> [<revision>...] -- [<file>...]'
 main
 ---
+ad8e7b4 feat: leave out stopwords
+---
+ docs/specs/stopwords.md | 15 +++++++++++++++
+ tally/cli.py            | 29 ++++++++++++++++++++++++++---
+ tests/test_cli.py       |  9 +++++++++
+ 3 files changed, 50 insertions(+), 3 deletions(-)
+---
+ls: cannot access 'docs/architecture': No such file or directory
+docs:
+specs
+
+docs/specs:
+stopwords.md
+README.md
+docs
+tally
+tests
+---
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "git branch -a; echo \"--- commit\"; git log -1 --format='%H%n%B' HEAD; echo \"--- diff\"; git diff HEAD~1 HEAD; echo \"--- spec\"; cat docs/specs/stopwords.md; echo \"--- README\"; cat README.md | head -80",
+ "description": "Show branches, commit, diff, spec, and README"
+}
+```
+
+### tool_result
+
+```
+* master
+--- commit
+ad8e7b442f98183d8c92aa75804bd1705041a977
+feat: leave out stopwords
+
+--- diff
 diff --git a/docs/specs/stopwords.md b/docs/specs/stopwords.md
 new file mode 100644
 index 0000000..e93f913
@@ -106,30 +144,111 @@ index a64f0f8..c3d8e21 100644
  if __name__ == "__main__":
      unittest.main()
 --- spec
-stopwords.md
-./README.md
+# Leave out stopwords
+
+## Problem
+
+Counts are dominated by words like "the" and "and".
+
+## Behaviour
+
+`tally FILE --stopwords WORDS` leaves out every word listed in the file WORDS. WORDS holds one
+word per line; `#` starts a comment; blank lines are ignored; matching ignores case. Without
+`--stopwords` the output is unchanged.
+
+## Out of scope
+
+A built-in stopword list.
+--- README
+# tally
+
+Counts word frequencies in a text file.
+
+```sh
+python3 -m tally notes.txt
 ```
 
-### assistant
+Prints one `word count` line per word, most frequent first, ties in alphabetical order.
+Run the tests with `python3 -m unittest`.
+```
 
-The `main` ref doesn't resolve here, so I'll check branches and read the full post-commit files.
-
-### tool_use Bash
+### tool_use Read
 
 ```json
 {
- "command": "git branch -a && git rev-parse HEAD~1 HEAD && echo \"--- cli.py\" && cat -n tally/cli.py && echo \"--- tally package\" && ls tally && cat -n tally/__init__.py 2>/dev/null; echo \"--- tests\" && cat -n tests/test_cli.py && echo \"--- README\" && cat README.md && echo \"--- tests run\" && (python -m unittest discover -s tests -q 2>&1 | tail -5)",
- "description": "List branches, read cli, tests, README, and run tests"
+ "file_path": "/tmp/sa-arm-myo9ygwk/sa/skills/code-review/references/standards-and-smells.md"
 }
 ```
 
 ### tool_result
 
 ```
-* master
-5d0bd65954345f31b9e3a020427686dfceee0b0d
-e4ec04c8ea30002539608e05c0a6c95804a8e9df
---- cli.py
+1	# Standards sources and the smell baseline
+2	
+3	The Standards axis asks whether the diff conforms to how this repo writes code. Two kinds of source answer that: what the repo documents, and a fixed baseline of code smells for what it does not.
+4	
+5	## 1. Find the documented standards
+6	
+7	Search the repo for every file that says how code should be written. Typical candidates:
+8	
+9	- `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, `README.md` sections on style.
+10	- `docs/` conventions, ADRs, architecture notes, review checklists, `STYLE.md`. When `docs/architecture/arc42.md` exists, ADRs and arc42 belong to the Architecture axis ([architecture-axis.md](architecture-axis.md)), not here.
+11	- Linter and formatter configs (`.eslintrc*`, `eslint.config.*`, `ruff.toml`, `pyproject.toml`, `.golangci.yml`, `.rubocop.yml`, `.editorconfig`) — these show what tooling enforces, which you must not re-report.
+12	- Language- or area-specific docs (`docs/api-guidelines.md`, `packages/*/README.md`).
+13	- Domain vocabulary in `GLOSSARY.md`: a name that contradicts the glossary is a Mysterious Name finding with a documented fix.
+14	
+15	List the files you found and check they exist in the checkout at `HEAD`. The reviewer has no other way to read them if you only name a path, so either pass their contents or confirm the reviewer can read them in its own checkout.
+16	
+17	**Skip anything tooling already enforces.** A linter, formatter, or type checker that runs in CI owns those findings. Re-reporting them wastes the reviewer's budget and buries the judgement calls.
+18	
+19	## 2. Apply the smell baseline
+20	
+21	On top of whatever the repo documents, always carry this fixed set of Fowler code smells (_Refactoring_, ch. 3). Two rules bind it:
+22	
+23	- **The repo overrides.** A documented repo standard always wins. Where a repo standard endorses something the baseline would flag, suppress the smell and say nothing.
+24	- **Always a judgement call.** Each smell is a labelled heuristic ("possible Feature Envy"), never a hard violation. A documented-standard breach can be hard; a smell cannot.
+25	
+26	Each smell reads *what it is* → *how to fix*. **(OO)** marks a smell that assumes objects and classes; its entry names the dataflow counterpart (blocks, connections, signals, as in `codebase-design`) where one exists. Match it against the diff:
+27	
+28	- **Long Method**: a function so long that its parts need comments or names of their own. → extract the parts into named functions.
+29	- **Large Class**: a class or module holding many unrelated fields or responsibilities. → split it along its responsibilities.
+30	- **Mysterious Name**: a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
+31	- **Duplicated Code**: the same logic shape appears in more than one hunk or file in the change. → extract the shared shape, call it from both.
+32	- **Feature Envy** (OO): a method that reaches into another object's data more than its own. → move the method onto the data it envies. Dataflow: a block reading another block's internal variables instead of its outputs → read its output signal, or add one.
+33	- **Data Clumps**: the same few fields or params keep travelling together (a type wanting to be born). → bundle them into one type, pass that.
+34	- **Primitive Obsession**: a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
+35	- **Repeated Switches**: the same `switch`/`if`-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
+36	- **Shotgun Surgery**: one logical change forces scattered edits across many files in the diff. → gather what changes together into one module.
+37	- **Divergent Change**: one file or module is edited for several unrelated reasons. → split so each module changes for one reason.
+38	- **Speculative Generality**: abstraction, p
+[... 1274 chars cut]
+```
+
+### assistant
+
+The spec is short, so the Spec axis mostly turns on whether the new code matches it and leaves the no-flag path unchanged. The diff stops using `count_words` and `format_counts` in `main`, so I need the full module to check that path.
+
+### tool_use Bash
+
+```json
+{
+ "command": "for f in tally/*.py tests/*.py; do echo \"=== $f\"; cat -n \"$f\"; done; echo \"=== grep\"; grep -rn \"count_words\\|format_counts\\|WORD\\b\" --include=*.py . ",
+ "description": "Print all Python sources and search for helper usages"
+}
+```
+
+### tool_result
+
+```
+=== tally/__init__.py
+     1	"""Word frequency counter."""
+=== tally/__main__.py
+     1	import sys
+     2	
+     3	from tally.cli import main
+     4	
+     5	sys.exit(main())
+=== tally/cli.py
      1	import argparse
      2	import re
      3	from collections import Counter
@@ -178,12 +297,8 @@ e4ec04c8ea30002539608e05c0a6c95804a8e9df
     46	    for neg, word in ranked:
     47	        print(f"{word} {-neg}")
     48	    return 0
---- tally package
-__init__.py
-__main__.py
-cli.py
-     1	"""Word frequency counter."""
---- tests
+=== tests/__init__.py
+=== tests/test_cli.py
      1	import io
      2	import tempfile
      3	import unittest
@@ -223,31 +338,20 @@ cli.py
     37	
     38	if __name__ == "__main__":
     39	    unittest.main()
---- README
-# tally
-
-Counts word frequencies in a text file.
-
-```sh
-python3 -m tally notes.txt
+=== grep
+tests/test_cli.py:7:from tally.cli import count_words, format_counts, main
+tests/test_cli.py:12:        self.assertEqual(count_words("The cat and the hat"),
+tests/test_cli.py:16:        self.assertEqual(format_counts({"b": 1, "a": 1, "c": 3}), ["c 3", "a 1", "b 1"])
+tally/cli.py:5:WORD = re.co
+[... 220 chars cut]
 ```
-
-Prints one `word count` line per word, most frequent first, ties in alphabetical order.
-Run the tests with `python3 -m unittest`.
---- tests run
-/bin/bash: line 1: python: command not found
-```
-
-### assistant
-
-The base is `5d0bd65` and the commit is `e4ec04c` on `master`; there is no `main` branch in this repo. Next I'll run the suite and read the standards reference the skill points to.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "python3 -m unittest -v 2>&1 | tail -12; echo \"--- git show base for count of main() behaviour\"; git stash list | head -1; ls /tmp/sa-arm-q2tpg6rc/sa/skills/code-review/references/ && cat /tmp/sa-arm-q2tpg6rc/sa/skills/code-review/references/standards-and-smells.md",
- "description": "Run unit tests and read standards reference"
+ "command": "python3 -B -m unittest -v 2>&1 | tail -15; git status --short",
+ "description": "Run unit tests without writing bytecode and check tree state"
 }
 ```
 
@@ -263,80 +367,32 @@ test_stopwords_are_left_out (tests.test_cli.Main.test_stopwords_are_left_out) ..
 Ran 4 tests in 0.002s
 
 OK
---- git show base for count of main() behaviour
-architecture-axis.md
-receiving-feedback.md
-reviewer-prompt.md
-standards-and-smells.md
-# Standards sources and the smell baseline
-
-The Standards axis asks whether the diff conforms to how this repo writes code. Two kinds of source answer that: what the repo documents, and a fixed baseline of code smells for what it does not.
-
-## 1. Find the documented standards
-
-Search the repo for every file that says how code should be written. Typical candidates:
-
-- `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, `README.md` sections on style.
-- `docs/` conventions, ADRs, architecture notes, review checklists, `STYLE.md`. When `docs/architecture/arc42.md` exists, ADRs and arc42 belong to the Architecture axis ([architecture-axis.md](architecture-axis.md)), not here.
-- Linter and formatter configs (`.eslintrc*`, `eslint.config.*`, `ruff.toml`, `pyproject.toml`, `.golangci.yml`, `.rubocop.yml`, `.editorconfig`) — these show what tooling enforces, which you must not re-report.
-- Language- or area-specific docs (`docs/api-guidelines.md`, `packages/*/README.md`).
-- Domain vocabulary in `GLOSSARY.md`: a name that contradicts the glossary is a Mysterious Name finding with a documented fix.
-
-List the files you found and check they exist in the checkout at `HEAD`. The reviewer has no other way to read them if you only name a path, so either pass their contents or confirm the reviewer can read them in its own checkout.
-
-**Skip anything tooling already enforces.** A linter, formatter, or type checker that runs in CI owns those findings. Re-reporting them wastes the reviewer's budget and buries the judgement calls.
-
-## 2. Apply the smell baseline
-
-On top of whatever the repo documents, always carry this fixed set of Fowler code smells (_Refactoring_, ch. 3). Two rules bind it:
-
-- **The repo overrides.** A documented repo standard always wins. Where a repo standard endorses something the baseline would flag, suppress the smell and say nothing.
-- **Always a judgement call.** Each smell is a labelled heuristic ("possible Feature Envy"), never a hard violation. A documented-standard breach can be hard; a smell cannot.
-
-Each smell reads *what it is* → *how to fix*. **(OO)** marks a smell that assumes objects and classes; its entry names the dataflow counterpart (blocks, connections, signals, as in `codebase-design`) where one exists. Match it against the diff:
-
-- **Long Method**: a function so long that its parts need comments or names of their own. → extract the parts into named functions.
-- **Large Class**: a class or module holding many unrelated fields or responsibilities. → split it along its responsibilities.
-- **Mysterious Name**: a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
-- **Duplicated Code**: the same logic shape appears in more than one hunk or file in the change. → extract the shared shape, call it from both.
-- **Feature Envy** (OO): a method that reaches into another object's data more than its own. → move the method onto the data it envies. Dataflow: a block reading another block's internal variables instead of its outputs → read its output signal, or add one.
-- **Data Clumps**: the same few fields or params keep travelling together (a type wanting to be born). → bundle them into one type, pass that.
-- **Primitive Obsession**: a primitive or string standing in for a domain concept that deserves its own type. → give the conce
-[... 1727 chars cut]
 ```
 
 ### assistant
 
+Review of `ad8e7b4` (`feat: leave out stopwords`) against its parent `HEAD~1`. No `main` branch exists in this repo, so I used `HEAD~1` as the base, as you described. No `docs/architecture/arc42.md`, so there are two axes. I ran the review inline rather than dispatching reviewers. Nothing was changed; the working tree is clean. All 4 tests pass (`python3 -B -m unittest`).
+
 ## Standards
 
-No documented standards exist: there is no `CODING_STANDARDS.md`, `CONTRIBUTING.md`, or linter config. `README.md` has no style section. So these are judgement-call smells from the Fowler baseline, not documented-rule breaches.
+No standards docs exist (no `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`, `.editorconfig`, or lint config), so these are smell-baseline judgement calls, not documented-rule breaches.
 
-1. **Duplicated Code** (possible), `tally/cli.py:40-47` and `tally/cli.py:13-14`. `main()` re-implements the ranking and formatting that `format_counts()` already does, using a negated-count tuple trick. Before this commit the CLI called `count_words` and `format_counts`. Now both helpers are dead on the CLI path and only their unit tests use them. Fix: build `counts` as a `Counter` and call `format_counts(counts)` again, which restores the original ordering logic.
-2. **Long Method** (possible), `tally/cli.py:17-48`. `main()` now does argument parsing, file reading, stopword loading, counting, ranking, and printing, and it needs comment labels to show its parts. Fix: extract `load_stopwords(path)` for lines 25-33 and let `main()` read like its comments.
-3. **Mysterious Name** (minor), `tally/cli.py:41-47`. `neg` and `-neg` exist only to sort descending while keeping alphabetical ties. Fix: `sorted(counts.items(), key=...)` as `format_counts` already does, which makes the tie-break visible.
+1. **possible Duplicated Code** (`tally/cli.py:35-47`, vs `:8-14`). `main` re-implements `count_words` (lines 36-39 duplicate lines 9) and `format_counts` (lines 41-47 duplicate lines 13-14). As a result, both helpers are now used only by the tests. Fix: call `count_words(text)`, drop stopwords from the result, then call `format_counts`. You decide whether the helpers should stay as the single implementation.
+2. **possible Long Method** (`tally/cli.py:17-48`). `main` now parses args, reads files, parses the stopword file, counts, ranks, and prints. The `# ...` comments mark sections that should be named functions. Fix: extract something like `load_stopwords(path) -> set[str]`.
+3. **possible Mysterious Name** (`tally/cli.py:46`). `neg` holds `-count`, which is confusing. Low severity. Fix: use `(count, word)` with `sorted(..., key=...)`, as `format_counts` does.
 
 ## Spec
 
-Source: `docs/specs/stopwords.md`. All four behaviour clauses are implemented:
-- `--stopwords FILE` leaves out listed words.
-- One word per line, blank lines ignored, `#` starts a comment (`split("#", 1)`).
-- Matching ignores case (both the stopwords and the text are lowercased).
-- Without `--stopwords`, output is unchanged. The ordering and format are the same as before, and `test_prints_every_word` passes.
-- Built-in stopword list is not added, as the spec's out-of-scope section requires.
+Spec source: `docs/specs/stopwords.md`. No findings. Each behaviour checks out:
 
-Gap (minor): `test_stopwords_are_left_out` does not prove comment handling. The `# common` line would not match any word in the input `"The cat and the hat"` even if comments were not stripped, so the test passes either way. Fix: put `common` in the input text, and add an inline-comment case such as `the # article`.
+- `--stopwords WORDS` leaves out listed words: `cli.py:20-21, 36-38`.
+- One word per line, `#` starts a comment, blank lines ignored: `cli.py:30-33`. Inline comments are handled too, which matches "`#` starts a comment".
+- Matching ignores case: both the file lines (`.lower()`, line 30) and the text (`text.lower()`, line 36) are lowercased.
+- Without `--stopwords`, output is unchanged. The regex, lowercasing, ranking key (`-count`, then word), and `word count` output format all match the removed `count_words`/`format_counts` path. `test_prints_every_word` still covers this.
+- Out of scope (built-in list): not implemented, as the spec requires.
 
-Not specified by the spec and not covered: a missing stopwords file produces a raw traceback. This is an open question for the spec author, not a violation.
+Test coverage note: `test_stopwords_are_left_out` covers comments, blank lines, and case. The spec does not say what happens when the stopword file is missing, and no test covers it.
 
-## Architecture
-
-Skipped: `docs/architecture/arc42.md` does not exist.
-
-## Summary
-
-- Standards: 3 judgement-call findings. Worst: Duplicated Code in `main()` (`cli.py:40-47`), which bypasses the existing `format_counts`.
-- Spec: 0 unmet requirements. Worst: the comment-handling test does not verify comment stripping (`tests/test_cli.py:28-35`).
-
-Notes: the repo has no `main` branch, so I took the base as `HEAD~1` (`5d0bd65`) against `HEAD` (`e4ec04c`) on `master`. The suite passes (4 tests, `python3 -m unittest`). I did not dispatch reviewer subagents; I ran each axis as a separate pass. No files were changed.
+**Worst per axis:** Standards: possible Duplicated Code (`cli.py:35-47`). Spec: none.
 
 ### result (success)

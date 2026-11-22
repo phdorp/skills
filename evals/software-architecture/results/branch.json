@@ -113,13 +113,13 @@
    "runs": 2,
    "score": 1.0,
    "judge": 1.0,
-   "cost_usd": 0.021
+   "cost_usd": 0.02
   },
   "S20": {
    "runs": 2,
    "score": 0.75,
-   "judge": 0.5,
-   "cost_usd": 0.014
+   "judge": 1.0,
+   "cost_usd": 0.016
   }
  },
  "runs": [
@@ -135,7 +135,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -210,7 +210,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.062s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -2200,12 +2200,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.096s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.039s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2275,12 +2275,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.085s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.035s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2350,7 +2350,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.089s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.091s\n\nOK\n"
     },
     {
      "name": "independent_done",
@@ -2435,12 +2435,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.088s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.095s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2520,7 +2520,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.060s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.065s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2597,7 +2597,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.063s\n\nOK\n"
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.066s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2674,7 +2674,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.086s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
     },
     {
      "name": "independent_done",
@@ -2741,12 +2741,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.088s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.032s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2851,37 +2851,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "**Important, ADR-0003 breach, `notes/cli.py:3, 18-19`:** the accepted ADR says \"Only `notes/store.py` imports `sqlite3` or touches the database file.\"",
+      "quote": "- **Important, breach of ADR-0003** (`notes/cli.py:3, 18`): the accepted Decision says \"Only `notes/store.py` imports `sqlite3` or touches the database file.\"",
       "source": "transcript.md",
-      "reason": "The ADR-0003 breach appears under the Architecture section and cites ADR-0003 with its Decision sentence."
+      "reason": "The ADR-0003 breach is listed under the Architecture section and cites ADR-0003 with its Decision sentence."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**Traceability, `docs/adr/0004-export-as-json-lines.md`:** the ADR is `accepted 2026-11-20`, so it is not legacy, and its Context names no `R-n`, `QG-n` or `QS-n`.",
+      "quote": "- **Minor, traceability** (`docs/adr/0004-export-as-json-lines.md:7-8`): ADR-0004 is accepted and its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves.",
       "source": "transcript.md",
-      "reason": "ADR-0004's missing requirement or quality goal IDs are reported as a traceability finding."
+      "reason": "The missing requirement or quality ID in ADR-0004's Context is reported as a traceability finding."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "With the diff, swapping the engine also requires editing `cli.py`, so the measure fails for this command.",
+      "quote": "- **Minor, weakened QS-3** (arc42 \u00a710): the measure \"0 other files changed\" when the storage engine is swapped no longer holds, because `cli.py` now depends on the storage engine.",
       "source": "transcript.md",
-      "reason": "The review names QS-3 and explains that a storage swap would now also touch cli.py."
+      "reason": "The review names QS-3 and explains that a storage swap would now also require changing cli.py."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "**Summary:** Standards 2 findings (worst: no test for the new command). Spec 1 finding (worst: export crashes on a fresh DB). Architecture 4 findings (worst: ADR-0003 breach at `notes/cli.py:3`).",
+      "quote": "Worst issue per axis: Standards, duplicated query (judgement call); Spec, crash on an empty or fresh store; Architecture, breach of ADR-0003 (sqlite access outside `store.py`).",
       "source": "transcript.md",
-      "reason": "Each axis has its own section, and the closing line names the worst issue for each of the three axes."
+      "reason": "The report has separate Standards, Spec and Architecture sections, and the closing line names the worst issue for each axis."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1727378
+    "cost_usd": 0.1355498
    },
-   "cost_usd": 0.011639,
+   "cost_usd": 0.009901,
    "needs_review": false
   },
   {
@@ -2934,37 +2934,37 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "1. **Critical: ADR-0003 breach**, `notes/cli.py:3` and `:18`. ADR-0003 (accepted) states: \"Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the `Store` class and the `Note` value.\"",
+      "quote": "- **[Important] ADR-0003 breach.** `notes/cli.py:4` adds `import sqlite3`, and `cli.py:18-19` opens the database and runs raw SQL. ADR-0003's Decision says:",
       "source": "transcript.md",
-      "reason": "The sqlite3 breach is reported under the Architecture section and cites ADR-0003, while Standards defers ADRs to Architecture."
+      "reason": "The sqlite3 breach is reported under the Architecture section and cites ADR-0003's Decision as its source."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "3. **Important: traceability**, `docs/adr/0004-export-as-json-lines.md`. ADR-0004 is accepted, but its Context names no `R-n`, `QG-n` or `QS-n`.",
+      "quote": "- **[Minor] Traceability.** ADR-0004 is `accepted`, not legacy, and its Context names no `R-n`, `QG-n` or `QS-n`.",
       "source": "transcript.md",
       "reason": "The missing requirement or quality-goal ID in ADR-0004's Context is reported as a traceability finding."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "Because `cli.py` now talks to SQLite, a storage swap would also have to change `cli.py`.",
+      "quote": "Storage access now also lives in `cli.py`, so a storage change touches a file outside `store.py`.",
       "source": "transcript.md",
-      "reason": "The review names QS-3 and explains that a storage swap would now also change cli.py."
+      "reason": "The review names QS-3 and explains that swapping the storage engine would now also change cli.py."
      },
      {
       "criterion": "J4",
       "pass": true,
-      "quote": "**Summary:** Standards: 2 judgement calls, worst is the missing export test. Spec: 1 finding, worst is the uncaught traceback on a missing DB (Important). Architecture: 4 findings, worst is the ADR-0003 breach where `cli.py` imports `sqlite3` (Critical).",
+      "quote": "- Architecture: 4 findings. Worst: ADR-0003 breach (Important).\n- Standards: 2 findings. Worst: possible Duplicated Code (Minor).\n- Spec: 1 finding. Worst: empty store fails (Important).",
       "source": "transcript.md",
-      "reason": "The axes have separate sections, and the closing summary names the worst issue for each axis."
+      "reason": "The axes are reported in separate sections, and the closing summary names the worst issue for each axis."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.15987379999999998
+    "cost_usd": 0.14458580000000001
    },
-   "cost_usd": 0.009646,
+   "cost_usd": 0.010229,
    "needs_review": false
   },
   {
@@ -2995,24 +2995,24 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "**Summary:** Standards: 3 findings, worst is the duplicated counting and ranking logic in `main` (Important). Spec: 0 findings.",
+      "quote": "**Summary:** Standards has 5 findings; the worst is the duplicated counting and ranking logic in `main()` (`tally/cli.py:35-47`). Spec has 0 violations; the worst is the unspecified empty `--stopwords \"\"` case.",
       "source": "transcript.md",
-      "reason": "The review contains only Standards and Spec sections, with no Architecture section and no suggestion to set up arc42, ADRs or an architecture."
+      "reason": "The report has only Standards and Spec sections, with no Architecture section and no suggestion to set up arc42, ADRs or an architecture."
      },
      {
       "criterion": "J2",
-      "pass": false,
-      "quote": "1. **Duplicated logic in `main` (Important).**",
+      "pass": true,
+      "quote": "- **Long method, `tally/cli.py:17-48` (Minor):** `main()` handles argument parsing, file reading, stopword parsing, counting, ranking, and printing. Extracting `load_stopwords(path)` would make it readable and testable.",
       "source": "transcript.md",
-      "reason": "The long-method remark sits inside a finding rated Important and is never presented as a judgement call."
+      "reason": "The Standards section names main's Long Method smell as a Minor finding from the smell baseline and suggests extracting the stopword loading, though it never uses the words 'judgement call'."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0838258
+    "cost_usd": 0.1016938
    },
-   "cost_usd": 0.006262,
-   "needs_review": true
+   "cost_usd": 0.007922,
+   "needs_review": false
   },
   {
    "run": "S20-r2",
@@ -3026,7 +3026,7 @@
     {
      "name": "no_architecture_section",
      "pass": false,
-     "detail": "section: True; arc42: True"
+     "detail": "section: False; arc42: True"
     }
    ],
    "passed": 1,
@@ -3041,25 +3041,25 @@
     "verdicts": [
      {
       "criterion": "J1",
-      "pass": false,
-      "quote": "## Architecture\n\nSkipped: `docs/architecture/arc42.md` does not exist.",
+      "pass": true,
+      "quote": "No `docs/architecture/arc42.md`, so there are two axes.",
       "source": "transcript.md",
-      "reason": "The review includes an Architecture section heading, although it only says the axis was skipped, so it does not have Standards and Spec only."
+      "reason": "The final review contains only Standards and Spec sections and never suggests adopting arc42, ADRs or an architecture."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "2. **Long Method** (possible), `tally/cli.py:17-48`. `main()` now does argument parsing, file reading, stopword loading, counting, ranking, and printing, and it needs comment labels to show its parts. Fix: extract `load_stopwords(path)` for lines 25-33 and let `main()` read like its comments.",
+      "quote": "2. **possible Long Method** (`tally/cli.py:17-48`). `main` now parses args, reads files, parses the stopword file, counts, ranks, and prints.",
       "source": "transcript.md",
-      "reason": "The Standards section names the long main function as a possible Long Method under judgement-call smells and suggests extracting the stopword loading."
+      "reason": "The Standards findings name the long `main` as a possible Long Method, presented as a smell-baseline judgement call, and suggest extracting the stopword loading."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0983818
+    "cost_usd": 0.1044338
    },
-   "cost_usd": 0.007732,
-   "needs_review": false
+   "cost_usd": 0.007867,
+   "needs_review": true
   }
  ]
 }

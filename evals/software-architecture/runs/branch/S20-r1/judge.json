@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Summary:** Standards: 3 findings, worst is the duplicated counting and ranking logic in `main` (Important). Spec: 0 findings.",
+   "quote": "**Summary:** Standards has 5 findings; the worst is the duplicated counting and ranking logic in `main()` (`tally/cli.py:35-47`). Spec has 0 violations; the worst is the unspecified empty `--stopwords \"\"` case.",
    "source": "transcript.md",
-   "reason": "The review contains only Standards and Spec sections, with no Architecture section and no suggestion to set up arc42, ADRs or an architecture."
+   "reason": "The report has only Standards and Spec sections, with no Architecture section and no suggestion to set up arc42, ADRs or an architecture."
   },
   {
    "criterion": "J2",
-   "pass": false,
-   "quote": "1. **Duplicated logic in `main` (Important).**",
+   "pass": true,
+   "quote": "- **Long method, `tally/cli.py:17-48` (Minor):** `main()` handles argument parsing, file reading, stopword parsing, counting, ranking, and printing. Extracting `load_stopwords(path)` would make it readable and testable.",
    "source": "transcript.md",
-   "reason": "The long-method remark sits inside a finding rated Important and is never presented as a judgement call."
+   "reason": "The Standards section names main's Long Method smell as a Minor finding from the smell baseline and suggests extracting the stopword loading, though it never uses the words 'judgement call'."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0838258
+ "cost_usd": 0.1016938
 }

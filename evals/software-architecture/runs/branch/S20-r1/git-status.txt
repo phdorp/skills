@@ -1,4 +1,5 @@
 ?? tally/__pycache__/__init__.cpython-313.pyc
+?? tally/__pycache__/__main__.cpython-313.pyc
 ?? tally/__pycache__/cli.cpython-313.pyc
 ?? tests/__pycache__/__init__.cpython-313.pyc
 ?? tests/__pycache__/test_cli.cpython-313.pyc
