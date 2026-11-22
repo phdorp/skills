@@ -97,6 +97,8 @@ with the agents' wording: [campaigns/](campaigns/).
 | S16 pause-unattended | 0.625 | 0.667 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S17 pause-subagent | 0.375 | 0.000 | 0.938 | 1.000 | - (dispatch template) |
 | S18 pause-on-existing | 0.916 | 0.750 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S19 review-setup | 0.167 | 0.250 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S20 review-plain (control) | 1.000 | 1.000 | 0.750 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -184,8 +186,21 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
 
   Open: S17-r2 split the decision into two ADRs, which `adr_proposed` does not accept. No
   S01–S14 run loads `executing-plans`, so none was re-run.
+- S19–S20 (ticket 10, [campaign](campaigns/10-architecture-review-axis.md)): fixtures `setup`
+  and `plain`, each with a `Change:` commit to review. On `main`, both S19 runs found the
+  ADR-0003 breach, the §8 error rule and QS-3, but reported them under `## Standards`, read
+  arc42 and the ADRs as coding standards, and called ADR-0004 "Compliant" without checking its
+  traceability. On the branch, `code-review` points (gated on arc42) to
+  `references/architecture-axis.md`: both S19 runs report a separate `## Architecture`
+  section with every finding and name the worst issue per axis. S20 (D15 control) passed
+  everything on `main`. On the branch, round 1 added "## Architecture / Skipped"; after one
+  loophole round, the pointer says a two-axis report has exactly two sections. Open: S20-r2
+  still says "No `docs/architecture/arc42.md`, so there are two axes." No S01–S18 run loads or
+  reads `code-review`, so none was re-run.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
-  failure stands because R-6 does not exist.
+  failure stands because R-6 does not exist; `branch/S20-r2`, where `no_architecture_section`
+  fails on the gate narrated in one sentence and the judge passes J1, since no section or setup
+  advice follows.
 
 ## Known gaps
 
@@ -205,6 +220,11 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   `NEEDS_DECISION` report, so the parent's side (`handling-reports.md`) is not exercised. The
   grader also cannot see work done in a git worktree outside the checkout (ticket 09's first S15
   runs).
+- A legacy ADR's exemption from the Architecture axis's traceability check has no scenario.
+- The smell baseline's "(OO)" marks and Large Class are not exercised; S20 exercises Long Method
+  only.
+- The Architecture axis's "a change that relies on a proposed ADR depends on an open decision"
+  has no scenario: S19 has no proposed ADR in the change's area.
 - Spec story 16 (a multi-context repo with `GLOSSARY-MAP.md`) has no fixture.
 - Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 in early runs, 2 of 2 in the ticket 04 re-run). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the
