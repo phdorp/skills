@@ -23,7 +23,8 @@ helps or hurts, and ask the architect to confirm it:
 **Quality goals this touches:** QG-1 <name> (<how the change bears on it>), QG-2 <name> (...)
 ```
 
-Cite only IDs arc42 defines.
+Cite only IDs arc42 defines. When you say how the change bears on a goal, rely only on code
+and accepted ADRs.
 
 ## 3. Structural choices
 
@@ -49,8 +50,10 @@ the architect starts it.
 
 ## 5. Proposed ADRs
 
-A `proposed` ADR is an open decision. Name it as open wherever the design touches it, and build
-the approaches so each one still stands if the architect rejects it.
+A `proposed` ADR is an open decision. An option, a goal line or a recommendation rests on code
+and accepted ADRs only. Where a proposed ADR bears on the design, name it once, after the
+options, as an open decision: what changes in the options if the architect accepts it, and what
+if they reject it.
 
 ## Red flags
 
@@ -58,4 +61,5 @@ the approaches so each one still stands if the architect rejects it.
 |---|---|
 | "The requirements and scenarios I cited cover the goals" | Name the `QG-n` they belong to. Requirements and scenarios support goals; they are not goals. |
 | "This option has no goal, but it is worth listing too" | Tie it to a goal or set it aside after the options. |
+| "This option gets QG-n from the proposed ADR's mechanism" | The ADR is open. Tie the option to what the code and accepted ADRs give; name the proposed ADR after the options. |
 | "The change needs a new capability, I'll add it to the requirements" | Suggest `/add-requirements`. The R-list changes only through it. |
