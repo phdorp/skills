@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Proposed QG-4 with scenario: *stimulus*: someone copies the store file without the key; *response*: no note text is recoverable; *measure*: 0 plaintext note bytes in the stored file across a test corpus. Add QG-4 with this scenario?",
+   "quote": "R-8 touches a confidentiality goal that no QG covers. Proposed: QG-5 Security: confidentiality, measured as \"0 plaintext note bytes recoverable from the store file without the key\".",
    "source": "transcript.md",
-   "reason": "The final message proposes a security goal with a scenario and measure and asks the architect, without adding it to arc42.md."
+   "reason": "The final message proposes a security goal with a measure and asks the architect to decide on it, without adding it to the goal tables."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- Set the ranks: R-7 is proposed at 4, R-8 at 5.",
+   "quote": "Set the order for R-7 and R-8 (proposed 4 and 5).",
    "source": "transcript.md",
-   "reason": "The agent proposes ranks for both new active requirements and asks the architect to set them."
+   "reason": "The agent proposes ranks 4 and 5 for the new active requirements and asks the architect to set the order."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- Approve ADR-0004. Storage work waits until you accept it.",
-   "source": "transcript.md",
-   "reason": "The final message states that storage work depending on the new ADR waits for its acceptance."
+   "quote": "No storage code changes until this ADR is accepted.",
+   "source": "workspace/docs/adr/0004-store-notes-as-plain-text.md",
+   "reason": "The agent states that storage work waits for ADR-0004 to be accepted."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1278698
+ "cost_usd": 0.1284418
 }

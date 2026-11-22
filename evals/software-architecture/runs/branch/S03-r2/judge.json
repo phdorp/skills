@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "rejected 2026-11-21: a server database contradicts R-3",
+   "quote": "rejected 2026-11-22: a server database contradicts R-3 (standard library only); we will not run a second storage engine.",
    "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
-   "reason": "ADR-0005 is rejected with the architect's reason, ADR-0004 is accepted, ADR-0006 is a new ADR recording the move off SQLite, and no other ADR was changed."
+   "reason": "ADR-0004 was accepted, ADR-0005 rejected with the given reason, and ADR-0006 was added for the move off SQLite, while ADR-0001 to ADR-0003 are unchanged."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "I left it `proposed` even though you dictated it, because the rules only make an ADR `accepted` on your explicit approval of that ADR.",
+   "quote": "**Waiting for your approval:** ADR-0006",
    "source": "transcript.md",
-   "reason": "ADR-0006 stays proposed, ADR-0001 stays accepted, and the final message says ADR-0006 waits for the architect's approval."
+   "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message says ADR-0006 waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1039858
+ "cost_usd": 0.1256538
 }

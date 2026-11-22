@@ -24,8 +24,7 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 5. Building block view
 
-The three parts of shelf (`cli.py`, `catalog.py`, `isbn.py`) are described in the README: see
-[README › How it works](../../README.md#how-it-works).
+The parts of the system are described in [README › How it works](../../README.md#how-it-works).
 
 | block | responsibility | may use |
 |---|---|---|
@@ -38,8 +37,9 @@ The three parts of shelf (`cli.py`, `catalog.py`, `isbn.py`) are described in th
 
 ## 9. Architecture decisions
 
-The ADRs are in [docs/decisions/](../decisions/). The "Record architecture decisions" ADR is
-pending and is written, as the next free number, once the architect confirms its list.
+The ADRs are in [docs/decisions/](../decisions/). The "Record architecture decisions" ADR, which
+draws the line between central and block-level decisions, is proposed as ADR 0003 and is not yet
+written.
 
 ## 10. Quality requirements
 

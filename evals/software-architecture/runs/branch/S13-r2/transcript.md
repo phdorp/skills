@@ -11,35 +11,36 @@ Write the spec. I'm not available: where you would ask me, state the assumption 
 
 ### assistant
 
-I'll start by reading the repo layout, the existing `tally` code, and any tracker or glossary docs.
+I'll start by reading the project layout, the existing tally code, and any tracker or glossary docs.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200 && cat docs/agents/issue-tracker.md 2>/dev/null; ls docs 2>/dev/null; cat GLOSSARY.md 2>/dev/null | head -80",
- "description": "Inspect repo files, tracker config, and glossary"
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200 && echo --- && ls -la docs docs/agents 2>/dev/null; cat docs/agents/issue-tracker.md 2>/dev/null; cat GLOSSARY.md 2>/dev/null | head -100",
+ "description": "Inspect repo files, git state, and tracker docs"
 }
 ```
 
 ### tool_result
 
 ```
-3d007ba fixture
+1dd54cd fixture
 ./README.md
 ./tally/__main__.py
 ./tally/cli.py
 ./tally/__init__.py
 ./tests/test_cli.py
 ./tests/__init__.py
+---
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in README.md tally/__main__.py tally/cli.py tally/__init__.py tests/test_cli.py; do echo \"=== $f\"; cat -n \"$f\"; done",
- "description": "Read the tally source, tests, and README"
+ "command": "for f in README.md tally/__main__.py tally/cli.py tally/__init__.py tests/test_cli.py tests/__init__.py; do echo \"=== $f\"; cat -n \"$f\"; done",
+ "description": "Read all project source, tests, and README"
 }
 ```
 
@@ -122,18 +123,19 @@ I'll start by reading the repo layout, the existing `tally` code, and any tracke
     28	
     29	if __name__ == "__main__":
     30	    unittest.main()
+=== tests/__init__.py
 ```
 
 ### assistant
 
-The repo has no tracker config, glossary, or arc42 docs, so the spec goes to `docs/specs/` and gets committed. Next I'll read the spec template from the skill.
+The repo has no tracker config, glossary, ADRs, or arc42 doc, so the spec goes to a local file. I'll read the spec template next.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat /tmp/sa-arm-swvhrgat/sa/skills/spec-and-plan/references/spec-template.md; echo ====; ls /tmp/sa-arm-swvhrgat/sa/skills/spec-and-plan/references/",
- "description": "Read the spec template from the skill"
+ "command": "cat /tmp/sa-arm-wh21g_wi/sa/skills/spec-and-plan/references/spec-template.md; echo ===; cd /tmp/sa-eval-3tuntnjl/project && python3 -m unittest 2>&1 | tail -3; python3 --version",
+ "description": "Read spec template and run existing tests"
 }
 ```
 
@@ -224,74 +226,41 @@ What this spec deliberately does not cover, and where that work goes instead if 
 ### Further Notes
 
 Anything else the planner or builder needs: open assumptions, links to ADRs or research, rollout notes.
-====
-plan-template.md
-quality-requirements.md
-spec-template.md
-ticket-template.md
+===
+Ran 3 tests in 0.001s
+
+OK
+Python 3.13.5
 ```
 
 ### assistant
 
-The template is clear. Before pinning the N<1 behaviour in the spec, I'll confirm what argparse actually does for a bad `type` value.
-
-### tool_use Bash
-
-```json
-{
- "command": "cd /tmp && cat > /tmp/probe_argparse.py <<'EOF'\nimport argparse\ndef pos(s):\n    n = int(s)\n    if n < 1:\n        raise argparse.ArgumentTypeError(\"must be a positive integer\")\n    return n\np = argparse.ArgumentParser(prog=\"tally\")\np.add_argument(\"file\")\np.add_argument(\"--min-count\", type=pos)\nfor argv in ([\"--min-count\", \"0\", \"x\"], [\"--min-count\", \"-3\", \"x\"], [\"--min-count\", \"abc\", \"x\"], [\"x\", \"--min-count\", \"2\"]):\n    try:\n        print(argv, \"->\", p.parse_args(argv))\n    except SystemExit as e:\n        print(argv, \"-> SystemExit\", e.code)\nEOF\npython3 -I /tmp/probe_argparse.py; echo \"--- stderr check\"; python3 -I -c '\nimport sys, argparse\nsys.argv=[\"x\"]\ndef pos(s):\n    n=int(s)\n    if n<1: raise argparse.ArgumentTypeError(\"must be a positive integer\")\n    return n\np=argparse.ArgumentParser(prog=\"tally\"); p.add_argument(\"file\"); p.add_argument(\"--min-count\", type=pos)\np.parse_args([\"--min-count\",\"0\",\"x\"])' ; echo \"exit=$?\"; rm -f /tmp/probe_argparse.py",
- "description": "Probe argparse behaviour for invalid --min-count values"
-}
-```
-
-### tool_result
-
-```
-usage: tally [-h] [--min-count MIN_COUNT] file
-tally: error: argument --min-count: must be a positive integer
-usage: tally [-h] [--min-count MIN_COUNT] file
-tally: error: argument --min-count: must be a positive integer
-usage: tally [-h] [--min-count MIN_COUNT] file
-tally: error: argument --min-count: invalid pos value: 'abc'
-['--min-count', '0', 'x'] -> SystemExit 2
-['--min-count', '-3', 'x'] -> SystemExit 2
-['--min-count', 'abc', 'x'] -> SystemExit 2
-['x', '--min-count', '2'] -> Namespace(file='x', min_count=2)
---- stderr check
-usage: tally [-h] [--min-count MIN_COUNT] file
-tally: error: argument --min-count: must be a positive integer
-exit=2
-Shell cwd was reset to /tmp/sa-eval-48neathh/project
-```
-
-### assistant
-
-Argparse with a `type` validator gives the required behaviour: usage plus error on stderr and `SystemExit(2)`. Now I'll write the spec.
+The repo has one module, `tally/cli.py`, whose `main(argv)` is the existing seam. The spec goes to `docs/specs/`, and since this is a single slice I'll skip tickets. Writing the spec now.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-48neathh/project/docs/specs/2026-11-22-min-count-spec.md",
- "content": "# `--min-count` Spec\n\nStatus: ready-for-agent\nSource: conversation (approved design for a new `tally` option: \"Here is the approved design for a new tally option. Write the spec.\")\n\n## Problem Statement\n\n`tally` prints every word in a text file, one `word count` line each. On a long file most lines are words that occur once or twice, and the user has to scan past them to find the words that repeat. They want to see only the words that occur often enough to matter.\n\n## Solution\n\n`tally` gets a new option, `--min-count N`. With it, `tally --min-count N FILE` prints only the words that occur at least `N` times in `FILE`. Each printed line keeps today's `word count` format. Ordering does not change: most frequent first, ties in alphabetical order. Without the option, `tally FILE` behaves exactly as it does today.\n\n## User Stories\n\n1. As a user counting words in a file, I want `--min-count N` to print only words counted at least N times, so that I can see the recurring words without scanning past one-off words.\n2. As a user, I want the printed lines to keep the `word count` format, so that output from `--min-count` can be read or piped exactly like today's output.\n3. As a user, I want the most frequent words to still come first and ties to stay alphabetical, so that the filtered list reads in the same order as the full list.\n4. As a user who does not pass `--min-count`, I want every word printed as before, so that existing scripts and habits keep working.\n5. As a user passing `--min-count 1`, I want every word printed, since every word occurs at least once, so that the value 1 is a harmless no-op.\n6. As a user whose `N` is larger than the count of every word, I want no lines printed and exit code 0, so that \"nothing repeats that often\" is reported as an empty result, not an error.\n7. As a user whose file contains no words (empty file, or only punctuation and digits), I want no lines printed and exit code 0 with or without `--min-count`, so that an empty file is not an error.\n8. As a user who passes `--min-count 0`, I want a usage message on stderr and exit code 2, so that I learn the value is invalid instead of getting a silently wrong result.\n9. As a user who passes a negative `N`, such as `--min-count -3`, I want the same usage message on stderr and exit code 2 as for `0`.\n10. As a user who passes a value that is not an integer, such as `--min-count abc` or `--min-count 2.5`, I want the same usage message on stderr and exit code 2, since the value is not a positive integer.\n11. As a user who passes `--min-count` without a value, I want the standard argument error on stderr and exit code 2, so that a missing value is reported like any other bad argument.\n12. As a user, I want to place `--min-count N` before or after the file name, so that both `tally --min-count 2 FILE` and `tally FILE --min-count 2` work.\n13. As a user who passes an invalid `N`, I want nothing printed to stdout, so that a script never receives a partial or unfiltered list from a bad call.\n14. As a user who passes a very large `N` (larger than any count), I want the same empty result as in story 6, so that there is no upper limit to document.\n15. As a user with a missing or unreadable file, I want the behaviour unchanged from today, so that this feature does not alter file-error handling. (Out of scope to improve; see Out of Scope.)\n\n## Implementation Decisions\n\n- **Module changed:** `tally/cli.py` only. The filter is applied in the same place the existing ranking happens, after counting and before printing. Counting (`count_words`) and ordering (`format_counts`) keep their current behaviour and signatures.\n- **Interface change:** `main(argv=None)` accepts one new optional argument, `--min-count` with a value. Its value is stored as an integer. Without the option, the value is absent and no filtering happens.\n- **Validation:** a value is valid only if it is a base-10 integer of at least 1. Validation is done at argument-parse time, not after counting, so an invalid value fails before the file is read. Use argparse's own type-validation mechanism so the error path is the standard argparse one: a usage line and an error line on stderr, then exit status 2.\n- **Error contract:** for any invalid value (zero, negative, non-integer, or missing), `main` ends with exit status 2 and writes the usage message to stderr. Nothing is written to stdout. Because argparse signals this by raising `SystemExit` with code 2, callers of `main` observe `SystemExit` with `code == 2`. This is the behaviour tests pin; `main` does not return 2 in this case.\n- **Filter rule:** keep a word if and only if its count is greater than or equal to `N`. The comparison uses the same counts `count_words` produces (lowercased, same word pattern). No other rule (no stopword list, no length limit).\n- **Output contract:** each kept word is printed as `word count` on its own line, using the existing format. Lines are sorted with the existing rule: descending count, then ascending alphabetical word. The filter does not change the sort key.\n- **Return value:** a successful run, filtered or not, returns `0`, as today.\n- **README:** the usage section gains one example of `--min-count` and one sentence describing it. This is documentation only.\n- **Assumption (non-integer values):** the spec treats non-integer values such as `2.5` and `abc` as invalid in the same way as values below 1. The user did not state this; it is the natural reading of \"N is a positive integer\".\n- **Assumption (position of the option):** the option may appear before or after the positional file argument. This is argparse's default and the spec does not restrict it.\n- **Assumption (no upper bound):** there is no maximum for `N`. Any integer at least 1 is valid.\n\n## Testing Decisions\n\n- **What good tests look like here:** they call `main` with an argument list and check what is printed to stdout, the return value, and, for invalid input, the `SystemExit` code and stderr text. They do not check private helpers' internals or the argparse object.\n- **Seam:** `tally.cli.main(argv)`. It is the highest seam that proves every behaviour in this spec, including the exit code and the stderr usage message. Existing tests already drive it this way, so no new seam is needed.\n- **Modules tested:** `tally/cli.py` only, through `main`.\n- **Prior art:** `tests/test_cli.py`, class `Main`, method `test_prints_every_word`. It writes a temporary file, redirects stdout with `contextlib.redirect_stdout`, calls `main([str(path)])`, and checks the output string. New tests follow this pattern. For stderr, use `redirect_stderr` in the same way.\n- **Tests to add (each named by behaviour):**\n  - prints only words with count at or above N, in the existing order (stories 1, 3);\n  - keeps the `word count` line format (story 2);\n  - without the option, prints every word, unchanged from the existing test (story 4);\n  - `N = 1` prints every word (story 5);\n  - `N` above every count prints nothing and returns 0 (stories 6, 14);\n  - an empty file prints nothing and returns 0, with and without the option (story 7);\n  - `N = 0`, `N = -3`, `N = abc`, and `N = 2.5` each raise `SystemExit` with code 2, print the usage line to stderr, and print nothing to stdout (stories 8–10, 13);\n  - `--min-count` with no value raises `SystemExit` with code 2 (story 11);\n  - the option works both before and after the file argument (story 12).\n- **Not tested:** the exact wording of argparse's error text beyond the `usage:` prefix and the phrase `--min-count`. Those are argparse's responsibility.\n\n## Out of Scope\n\n- Changing how a missing or unreadable file is reported. Today it raises an uncaught exception; this feature leaves that as is.\n- Other filters (maximum count, minimum word length, stopwords, top-N limits).\n- Changing counting rules, the word pattern, or the sort order.\n- Machine-readable output formats.\n- Any change to the `format_counts` or `count_words` signatures.\n\n## Further Notes\n\n- **Assumptions made without the user:** the user was not available to answer questions. The assumptions are stated inline in Implementation Decisions. The main ones are: non-integer values are invalid like values below 1; the option works in either position; there is no upper bound on `N`; invalid values exit 2 through `SystemExit`, the standard argparse path.\n- **Behaviour verified against the installed Python:** an argparse parser using a type function that raises `ArgumentTypeError` for values below 1 prints `usage: tally [-h] [--min-count MIN_COUNT] file` and `tally: error: argument --min-count: ...` to stderr and raises `SystemExit(2)` for `0`, `-3`, and `abc`; and accepts `--min-count 2` after the positional argument. The implementer should re-check this with the tests.\n- **Open decisions:** none. Every decision the design left open has an assumption stated above.\n"
+ "file_path": "/tmp/sa-eval-3tuntnjl/project/docs/specs/2026-11-22-min-count-spec.md",
+ "content": "# `--min-count` Option Spec\n\nStatus: ready-for-agent\nSource: Approved design from the conversation: `tally --min-count N FILE` prints only the words counted at least N times.\n\n## Problem Statement\n\n`tally` prints every word in a file with its count. On a long text, most of the output is words that appear once or twice, and the words that matter (the frequent ones) are buried among them. A user who wants only the recurring vocabulary has to filter the output by hand.\n\n## Solution\n\nA user can pass `--min-count N` to print only the words that occur at least N times. Everything else stays as it is today: the same counting, the same ordering (most frequent first, ties in alphabetical order), and the same output format (`word count`, one per line). Without the option, every word is printed.\n\n## User Stories\n\n1. As a writer, I want to pass `--min-count N` to `tally`, so that I see only the words I used at least N times.\n2. As a writer, I want the filtered output to keep the most-frequent-first order, so that I can read the top of the list first.\n3. As a writer, I want ties broken alphabetically within the filtered output, so that the list is stable across runs.\n4. As a writer, I want a word counted exactly N times to be included, so that `--min-count 3` means \"three or more\".\n5. As a user, I want to run `tally` without the option and get every word, exactly as before, so that existing scripts keep working.\n6. As a user, I want to place `--min-count` before or after the file name, so that I can write the command either way.\n7. As a user, I want `--min-count` to accept a large N with no upper limit, so that I can ask for only the very frequent words.\n8. As a user, I want a value of N that no word reaches to print nothing and exit successfully, so that \"no matches\" is not reported as a failure.\n9. As a user, I want N of 0 to be rejected, so that I am told the option needs a positive number.\n10. As a user, I want a negative N to be rejected, so that a typo does not silently print everything.\n11. As a user, I want a non-integer N (for example `abc`, `2.5`, or an empty string) to be rejected, so that I am told the value must be a whole number.\n12. As a user, I want a rejected N to print the usage message to stderr and exit with status 2, so that I can recognise a usage error the way I recognise other argument errors.\n13. As a user, I want a rejected N to print nothing to stdout, so that a script does not mistake an error for an empty result.\n14. As a user, I want the `--help` output to describe `--min-count` with its N value, so that I can discover the option.\n15. As a user, I want the README to show how to use `--min-count`, so that the option is documented next to the basic usage.\n16. As a user, I want a missing input file to behave as it does today, so that this change does not alter unrelated errors.\n\n## Implementation Decisions\n\n- **Option**: a single long option `--min-count` taking one integer value, shown in help with the metavar `N`. No short form.\n- **Validation**: the value must be an integer and at least 1. Non-integers and values below 1 are rejected through the same argument-error path the command already uses for bad arguments. That path prints the usage line and an error message to stderr and exits with status 2. Nothing is printed to stdout in this case.\n- **Filtering**: after counting and before formatting, keep only words whose count is greater than or equal to N. Filtering does not change counts.\n- **Ordering**: unchanged. The existing ranking (descending count, then ascending word) applies to the filtered words.\n- **Output format**: unchanged (`word count`, one line per word).\n- **No matches**: when no word meets the threshold, nothing is printed and the exit status is 0.\n- **Default**: when the option is absent, behaviour is identical to today.\n- **Interfaces that change**: the command-line interface gains the option. The public counting and formatting functions keep their current behaviour when called without a threshold.\n- **Documentation**: the README usage section shows the option with one example.\n\n## Testing Decisions\n\nWhat makes a good test here: the command's observable behaviour (stdout, stderr, exit status) for a given input file and argument list. Tests should not check how filtering is implemented.\n\nSeam: the existing `main(argv)` entry point. It already accepts an argument list and a file path, and the current tests drive it and capture stdout. The new tests use the same seam. No new seam is needed. The existing `format_counts` seam is not used for these tests because the option lives in the command-line layer.\n\nBehaviours to test through `main`:\n\n- With `--min-count 2`, a file with words counted 3, 2, and 1 times prints only the 3 and the 2, in that order.\n- A word counted exactly N times is included (boundary).\n- Ties among retained words are alphabetical.\n- With the option placed after the file name, the output is the same.\n- Without the option, output is unchanged (the existing `test_prints_every_word` covers this; keep it passing).\n- When no word reaches N, stdout is empty and the return value is 0.\n- N = 0, N = -1, N = `abc`, and N = `2.5` each: stdout is empty, stderr contains the usage line, and the exit status is 2. Because the argument error path raises `SystemExit` with code 2 inside `main`, the test asserts that exception's code and the stderr text.\n\nPrior art: `tests/test_cli.py`, class `Main`, with its use of `redirect_stdout` and temporary files. Extend that class, or add a sibling class in the same file.\n\n## Out of Scope\n\n- Changing the counting rules (what counts as a word, case handling).\n- Changing the ordering rules.\n- A maximum value for N or a separate upper-bound check.\n- Other filters (maximum count, word length, stop words).\n- Changing how a missing or unreadable input file is reported.\n- Multiple input files.\n\n## Further Notes\n\nThe approved design was given without follow-up questions, and the user was unavailable to answer the questions below. Each point is an assumption made by the spec author, recommended as stated. The user should confirm them before implementation; if the user changes one, update this spec first.\n\n1. **Integer syntax.** Values are parsed by the standard integer conversion used for command-line arguments. Values such as `+3` or ` 3` are accepted as the integer they denote. Values such as `2.5`, `1e3`, or an empty string are rejected. Recommended: as stated.\n2. **Threshold comparison.** The threshold is inclusive: a word is kept when its count is at least N. This follows the design's \"counted at least N times\". Recommended: as stated.\n3. **Argument position.** The option may appear before or after the file argument, as usual for this kind of command-line parser. Recommended: as stated.\n4. **Repeated option.** If `--min-count` appears more than once, the last value is used. This is the default behaviour of the argument parser. The alternative would be to reject repeats; recommended: last value wins, to keep the change small.\n5. **No matches.** An empty result is a success (exit status 0) and prints nothing. The design does not specify this; treating it as an error would make `tally --min-count 1000 FILE` fail in scripts for a valid query. Recommended: as stated.\n6. **Usage message.** \"The usage message on stderr\" is taken to mean the standard usage line followed by the error message, as the argument parser prints it. Recommended: as stated.\n7. **Help text and README.** The option appears in `--help`, and the README gains one example. These are small documentation changes that go with the feature. Recommended: as stated.\n\nOpen decisions: none remain in the published spec beyond the assumptions above, which the user has not yet confirmed.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-48neathh/project/docs/specs/2026-11-22-min-count-spec.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-3tuntnjl/project/docs/specs/2026-11-22-min-count-spec.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-The spec is written. The skill says to commit it when there is no tracker, so I'll commit on the current branch with the required attribution line.
+The spec skill says to commit the spec when there is no tracker, so I'll commit it with a conventional-commit message.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git add docs/specs/2026-11-22-min-count-spec.md && git commit -q -m \"docs(spec): add --min-count option spec\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2 && git status --short",
+ "command": "git add docs/specs/2026-11-22-min-count-spec.md && git commit -q -m \"docs: add spec for --min-count option\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2 && git status --short",
  "description": "Commit the spec file and confirm clean status"
 }
 ```
@@ -299,26 +268,43 @@ The spec is written. The skill says to commit it when there is no tracker, so I'
 ### tool_result
 
 ```
-de32b80 docs(spec): add --min-count option spec
-3d007ba fixture
+3255a3e docs: add spec for --min-count option
+1dd54cd fixture
+?? tally/__pycache__/
+?? tests/__pycache__/
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "rm -rf tally/__pycache__ tests/__pycache__ && git status --short && echo clean",
+ "description": "Remove test-run caches I created"
+}
+```
+
+### tool_result
+
+```
+clean
 ```
 
 ### assistant
 
-I wrote the spec and committed it as `de32b80` at `docs/specs/2026-11-22-min-count-spec.md`. The repo has no tracker config, glossary, or arc42 docs, so this was the local-file path. I did not write tickets or a plan, since this is one small slice in one file.
+The spec is written and committed at `docs/specs/2026-11-22-min-count-spec.md` (commit `3255a3e`). I did not write tickets or a plan: this is one slice, and you asked only for the spec.
 
-Since you were not available, I stated these assumptions in the spec instead of asking:
+The repo has no tracker config, glossary, or ADRs, so the spec went to a local file. The seam is the existing `main(argv)` in `tally/cli.py`; the new tests extend `tests/test_cli.py`.
 
-- **Non-integer values** such as `abc` and `2.5` are invalid, the same as `0` and negatives. Each gets the usage message on stderr and exit 2.
-- **Missing value** (`--min-count` with nothing after it) also exits 2 with the argparse error.
-- **Option position**: `--min-count N` works before or after the file name.
-- **No upper bound** on N. A value above every count prints nothing and exits 0.
-- **Empty file** prints nothing and exits 0.
-- **Error path**: argparse raises `SystemExit(2)` for invalid values, so the tests check for that exception. `main` does not return 2 in that case.
-- **Scope**: the change is in `tally/cli.py`, plus one README example. Missing-file handling stays as it is today and is listed as out of scope.
+Where you would have been asked, I chose these and recorded them in the spec's Further Notes for you to confirm:
 
-I checked the argparse error behaviour by running a probe, not just from memory. Tests should drive `main(argv)` and follow the existing `Main` test pattern in `tests/test_cli.py`.
+1. **Integer syntax:** standard argument-parser integer conversion, so `+3` and ` 3` are accepted, while `2.5`, `1e3`, and empty strings are rejected.
+2. **Threshold:** inclusive, so a word counted exactly N times is kept.
+3. **Argument position:** the option may come before or after the file.
+4. **Repeated option:** the last value wins.
+5. **No matches:** prints nothing and exits 0. The design didn't cover this; treating it as an error would make valid queries fail in scripts.
+6. **Usage message:** the standard usage line plus the error message on stderr, exit 2, nothing on stdout.
+7. **Docs:** the option appears in `--help`, and the README gets one example.
 
-I committed on `master`, the branch that was checked out. The git status names `main` as the main branch, so tell me if the spec should go somewhere else.
+I ran the existing test suite (3 tests, passing) to confirm the baseline. I then removed the `__pycache__` directories it created, so the working tree is clean apart from the new commit.
 
 ### result (success)

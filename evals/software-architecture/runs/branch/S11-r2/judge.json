@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Quality goals this touches:** QG-1 Reliability: fault tolerance (every exported file is written atomically, ADR-0004, QS-1). QG-2 Portability: installability (no install steps, R-3, QS-2). QG-3 Maintainability: modifiability (export goes through `Store`, ADR-0003, QS-3). Please confirm these.",
+   "quote": "**Quality goals this touches:** QG-1 Reliability: fault tolerance (a crash mid-export must not leave a half-written file, ADR-0004), QG-2 Portability: installability (stdlib only, R-3, QS-2), QG-3 Maintainability: modifiability (export reads through `Store.all()`, ADR-0003, and the crypto stays in one module).",
    "source": "transcript.md",
-   "reason": "Before laying out the options, the agent states the quality goals by QG-n ID and asks the architect to confirm them."
+   "reason": "Before the options, the agent states the goals the export touches and names each by its QG ID."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Recommendation: Option 1.** It keeps one encrypted Markdown file per note and adds no install step on the platforms R-3 names. QG-2 decides it.",
+   "quote": "**Recommendation: Option 1.** It is the only option that keeps the Python code stdlib-only while using a reviewed cipher.",
    "source": "transcript.md",
-   "reason": "Two options are each tied to QG-n goals they serve or hurt, and one is recommended with its deciding goal."
+   "reason": "Three options are given, each naming QG goals it serves or hurts, and Option 1 is recommended."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Encryption of exports is not in arc42. It is a system-level need, so I suggest running `/add-requirements` before the design goes further.",
+   "quote": "arc42 has no quality goal for confidentiality. R-3 and QS-2 concern installation, not secrecy. If \"a lost stick exposes nothing\" should bind the whole system, run `/add-requirements` with it.",
    "source": "transcript.md",
-   "reason": "The agent names encryption as a new system-level need and suggests the architect run add-requirements without editing the R-list itself."
+   "reason": "The agent identifies the encryption need as uncovered by the requirements, suggests the architect run /add-requirements, and leaves arc42 unchanged."
   },
   {
    "criterion": "J4",
-   "pass": false,
-   "quote": "Serves QG-1: the atomic write rule from ADR-0004 applies.",
+   "pass": true,
+   "quote": "ADR-0004 (proposed) decides whether export writes are crash-safe. Accepting it means temp file, fsync, then replace; rejecting it means a crash can leave a partial export.",
    "source": "transcript.md",
-   "reason": "The agent builds Option 1's QG-1 benefit on proposed ADR-0004 as if it were settled, and never names it as an open decision with accept/reject consequences."
+   "reason": "ADR-0004 is named as an open decision with the outcome of accepting or rejecting it, and no option depends on it."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1502898
+ "cost_usd": 0.1603338
 }

@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Proposed as a question, not a row: QG-4 with a scenario where a thief reads the stored file without the key, and the measure \"0 plaintext note strings found across 100 stored test notes\".",
+   "quote": "3. Do you want QG-4 with the scenario above?",
    "source": "transcript.md",
-   "reason": "The agent asks whether a security goal is needed, with a proposed scenario and measure, and does not add a QG row."
+   "reason": "The agent proposed a security goal with a scenario and measure and asked the architect instead of adding it; the quality goals table is unchanged."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "R-7 at 4 and R-8 at 5 are proposals. Please set the order.",
+   "quote": "1. Set the order. Proposed: R-1, R-2, R-3, R-7 (4), R-8 (5).",
    "source": "transcript.md",
-   "reason": "The agent proposes ranks for the new active requirements and asks the architect to set the order."
+   "reason": "The agent proposed ranks for R-7 and R-8 and asked the architect to set the order."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**ADR-0004 waits for you.** Accepting it unlocks the storage change.",
+   "quote": "5. ADR-0004 waits for your approval, and the work that depends on it waits until you accept it.",
    "source": "transcript.md",
-   "reason": "The agent says the storage change waits for the new ADR's acceptance."
+   "reason": "The agent states that dependent storage work waits for the new ADR's acceptance."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.12296979999999999
+ "cost_usd": 0.1226298
 }

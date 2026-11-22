@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Blocker:** ADR-0004 (atomic write via temp file and rename) is still `proposed`. The backup's atomic write depends on it, and ADR-0002 says work that depends on an unaccepted decision waits.",
+   "quote": "**The spec's status is `blocked (ADR-0004)`.** ADR-0004 (atomic writes) is still `proposed`.",
    "source": "transcript.md",
-   "reason": "The spec is marked blocked on the proposed ADR-0004 (status line and Blocked by entry), and the final message tells the user so."
+   "reason": "The spec is marked blocked until the proposed ADR-0004 is accepted, and the final message tells the user so."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **Keeps:** QS-1 (a crash leaves the store and the backup readable), QS-3 (only the store block and",
+   "quote": "- **Serves:** R-2 (no note is lost; a user-kept copy protects against loss of the machine).",
    "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
-   "reason": "The Quality Requirements section names the parent requirements (Serves: R-2, R-3) and the quality scenarios to keep (Keeps: QS-1, QS-3)."
+   "reason": "The Quality Requirements section names R-2 as the parent requirement and lists QS-1, QS-2 and QS-3 under Keeps."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1894138
+ "cost_usd": 0.1918098
 }

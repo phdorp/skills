@@ -7,28 +7,21 @@ docs/specs/export.md. Report your findings; don't change any files.
 
 ```json
 {
- "command": "git rev-parse HEAD~1 HEAD main 2>&1; echo ---; git log HEAD~1..HEAD --oneline; echo ---; git diff --stat HEAD~1..HEAD; echo ---; ls docs docs/specs docs/architecture 2>&1; echo ---; find . -path ./.git -prune -o \\( -iname 'CODING_STANDARDS.md' -o -iname 'CONTRIBUTING.md' -o -iname 'AGENTS.md' -o -iname 'CLAUDE.md' -o -iname '.editorconfig' -o -iname 'arc42.md' \\) -print",
- "description": "Resolve refs, list commit, diffstat, and find standards files"
+ "command": "BASE_SHA=$(git rev-parse HEAD~1) && HEAD_SHA=$(git rev-parse HEAD) && echo \"BASE $BASE_SHA\" && echo \"HEAD $HEAD_SHA\" && git log HEAD~1..HEAD --oneline && git diff --stat HEAD~1..HEAD && ls docs docs/specs docs/architecture 2>&1; ls -a; find . -path ./.git -prune -o \\( -iname 'CODING_STANDARDS.md' -o -iname 'CONTRIBUTING.md' -o -iname 'AGENTS.md' -o -iname 'CLAUDE.md' -o -iname '*style*.md' -o -iname '.editorconfig' -o -iname '.eslintrc*' -o -iname 'biome.json*' -o -iname '.prettierrc*' \\) -print",
+ "description": "Resolve SHAs, list commits, diff stats, and find standards files"
 }
 ```
 
 ### tool_result
 
 ```
-fatal: ambiguous argument 'main': unknown revision or path not in the working tree.
-Use '--' to separate paths from revisions, like this:
-'git <command> [<revision>...] -- [<file>...]'
-86784f6c5d2a529595b63e1975ee969fe2439d00
-b2e768114ef39f0973455cfd5c9a0d12ba68dabd
-main
----
-b2e7681 feat: export notes as JSON
----
+BASE 61604089270ba97dde5c260ae761e738d364b5b9
+HEAD 13c3cf27907ecaa2284bd514ade7bef1f5753231
+13c3cf2 feat: export notes as JSON
  docs/adr/0004-export-as-json-lines.md | 20 ++++++++++++++++++++
  docs/specs/export.md                  | 19 +++++++++++++++++++
  notes/cli.py                          | 10 ++++++++++
  3 files changed, 49 insertions(+)
----
 docs:
 adr
 architecture
@@ -39,16 +32,22 @@ arc42.md
 
 docs/specs:
 export.md
----
-./docs/architecture/arc42.md
+.
+..
+.git
+GLOSSARY.md
+README.md
+docs
+notes
+tests
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git diff HEAD~1..HEAD",
- "description": "Show full diff of the last commit"
+ "command": "git diff HEAD~1...HEAD 2>/dev/null || git diff HEAD~1 HEAD",
+ "description": "Show the full diff of the last commit"
 }
 ```
 
@@ -139,8 +138,8 @@ index 96974cd..58fb479 100644
 
 ```json
 {
- "command": "cat /tmp/sa-arm-z6ntv9bk/sa/skills/code-review/references/architecture-axis.md; echo ======; cat docs/architecture/arc42.md; echo ======; ls -R notes tests 2>/dev/null; echo ======; cat notes/cli.py; echo ======; cat notes/store.py 2>/dev/null; echo ======; cat /tmp/sa-arm-z6ntv9bk/sa/skills/code-review/references/standards-and-smells.md | head -80",
- "description": "Read architecture axis reference, arc42, and source files"
+ "command": "cat /tmp/sa-arm-0irqx61n/sa/skills/code-review/references/architecture-axis.md; echo ----; cat /tmp/sa-arm-0irqx61n/sa/skills/code-review/references/standards-and-smells.md | head -80; echo ----; cat docs/architecture/arc42.md; echo ----; cat notes/store.py; echo ----; cat README.md GLOSSARY.md; ls notes tests docs/adr; cat docs/adr/*.md | head -150",
+ "description": "Read review references, architecture doc, store module, and docs"
 }
 ```
 
@@ -227,216 +226,118 @@ Done when: the report has an `## Architecture` section and the closing line cove
 | "The ADR is proposed, but the change follows it, so it conforms" | A proposed ADR is not a rule. Report that the change depends on an open decision. |
 | "The new ADR is accepted, so it needs no check" | Accepted ADRs are what traceability checks. Name the missing ID. |
 | "No scenario's measure broke, so there is nothing to say about quality" | Name each scenario the change touches a
-[... 10665 chars cut]
+[... 12042 chars cut]
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "ls docs/adr; for f in docs/adr/000[123]*.md; do echo \"== $f\"; cat \"$f\"; done; echo ======; cat tests/test_notes.py; echo ======; cat notes/model.py; echo ======; ls GLOSSARY.md 2>&1; git status --short",
- "description": "Read ADRs, tests, and check working tree"
+ "command": "cat notes/cli.py && echo ---- && grep -n \"def test\\|export\" tests/test_notes.py | head -40 && echo ---- && tmp=$(mktemp -d) && NOTES_DB=$tmp/fresh.db python3 -m notes export; echo \"exit=$?\"; ls -la $tmp; NOTES_DB=$tmp/new.db python3 -m notes add \"a\nb\" >/dev/null && NOTES_DB=$tmp/new.db python3 -m notes export; echo \"exit=$?\"; python3 -m unittest 2>&1 | tail -3",
+ "description": "Read cli.py, grep tests, and exercise export on fresh and populated DBs"
 }
 ```
 
 ### tool_result
 
 ```
-0001-use-sqlite-for-storage.md
-0002-record-architecture-decisions.md
-0003-cli-reaches-storage-only-through-store.md
-0004-export-as-json-lines.md
-== docs/adr/0001-use-sqlite-for-storage.md
-# 1. Use SQLite for storage
+import argparse
+import json
+import sqlite3
+import sys
 
-## Status
-
-accepted 2026-10-01
-
-## Context
-
-Notes must survive crashes (R-2, QG-1, QS-1) and the program may use only the Python standard
-library (R-3, QG-2). The standard library ships `sqlite3`, whose transactions are atomic.
-
-## Decision
-
-Store all notes in one SQLite database file, by default `~/.notes.db`.
-
-## Consequences
-
-Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
-repaired with a text editor.
-== docs/adr/0002-record-architecture-decisions.md
-# 2. Record architecture decisions
-
-## Status
-
-accepted 2026-10-01
-
-## Context
-
-The architect decides the architecture; contributors and agents implement it. We need a line
-between decisions the architect makes centrally and decisions left to whoever builds a block
-(R-1, QG-3).
-
-## Decision
-
-We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
-
-Decided centrally (needs an ADR the architect accepts):
-
-- the storage engine and the on-disk format;
-- the dependency rule between blocks: `cli` → `store` → `model`;
-- import and export formats;
-- CLI command names and exit codes;
-- third-party dependencies.
-
-Left to the building blocks (no ADR): internal helpers, SQL query structure, test layout.
-
-## Consequences
-
-Work that depends on a decision on the list waits until its ADR is accepted.
-== docs/adr/0003-cli-reaches-storage-only-through-store.md
-# 3. CLI reaches storage only through the store module
-
-## Status
-
-accepted 2026-10-01
-
-## Context
-
-Contributors should be able to swap the storage engine by changing one module (QG-3, QS-3).
-
-## Decision
-
-Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
-`Store` class and the `Note` value.
-
-## Consequences
-
-Any new command that reads or writes notes goes through `Store`.
-======
-import io
-import os
-import tempfile
-import unittest
-from contextlib import redirect_stdout
-from pathlib import Path
-from unittest import mock
-
-from notes.cli import main
-from notes.store import Store
+from notes.store import Store, default_path
 
 
-class StoreTest(unittest.TestCase):
-    def setUp(self):
-        self.store = Store(Path(tempfile.mkdtemp()) / "n.db")
-
-    def tearDown(self):
-        self.store.close()
-
-    def test_add_then_list(self):
-        self.store.add("Buy milk")
-        self.assertEqual([n.text for n in self.store.all()], ["Buy milk"])
-
-    def test_search_matches_substring(self):
-        self.store.add("Buy milk")
-        self.store.add("Call Ann")
-        self.assertEqual([n.text for n in self.store.search("mil")], ["Buy milk"])
-
-
-class CliTest(unittest.TestCase):
-    def test_add_and_search(self):
-        db = Path(tempfile.mkdtemp()) / "n.db"
-        with mock.patch.dict(os.environ, {"NOTES_DB": str(db)}):
-            with redirect_stdout(io.StringIO()):
-                self.assertEqual(main(["add", "Buy milk"]), 0)
-            out = io.StringIO()
-            with redirect_stdout(out):
-                self.assertEqual(main(["search", "milk"]), 0)
-        self.assertIn("Buy milk", out.getvalue())
-
-
-if __name__ == "__main__":
-    unittest.main()
-======
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class Note:
-    id: int
-    text: str
-    created: str
-======
-GLOSSARY.md
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "D=$(mktemp -d) && echo \"fresh db: $D/fresh.db\" && NOTES_DB=$D/fresh.db PYTHONPATH=. python3 -m notes export; echo \"exit=$?\"; echo ---; NOTES_DB=$D/n.db PYTHONPATH=. python3 -m notes add 'line one\nline two \"q\" é' >/dev/null && NOTES_DB=$D/n.db PYTHONPATH=. python3 -m notes export; echo \"exit=$?\"; echo ---; NOTES_DB=/nonexistent/dir/x.db PYTHONPATH=. python3 -m notes export 2>&1 | tail -2; echo \"exit=${PIPESTATUS[0]}\"; echo ---; PYTHONPATH=. python3 -m pytest -q 2>&1 | tail -3; python3 -m unittest discover -s tests -q 2>&1 | tail -3",
- "description": "Run export on fresh, populated, and bad-path DBs, then tests"
-}
-```
-
-### tool_result
-
-```
-fresh db: /tmp/tmp.hefQVECkzU/fresh.db
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("add", help="add a note").add_argument("text")
+    sub.add_parser("list", help="list all notes")
+    sub.add_parser("search", help="find notes containing a term").add_argument("term")
+    sub.add_parser("export", help="print every note as one JSON line")
+    args = parser.parse_args(argv)
+    if args.command == "export":
+        db = sqlite3.connect(default_path())
+        rows = db.execute("SELECT id, text, created FROM notes ORDER BY id")
+        for note_id, text, created in rows:
+            print(json.dumps({"id": note_id, "text": text, "created": created}))
+        db.close()
+        return 0
+    try:
+        store = Store(default_path())
+    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
+        print(f"notes: {e}", file=sys.stderr)
+        return 1
+    try:
+        if args.command == "add":
+            note = store.add(args.text)
+            print(note.id)
+        else:
+            found = store.all() if args.command == "list" else store.search(args.term)
+            for note in found:
+                print(f"{note.id}\t{note.created}\t{note.text}")
+    finally:
+        store.close()
+    return 0
+----
+20:    def test_add_then_list(self):
+24:    def test_search_matches_substring(self):
+31:    def test_add_and_search(self):
+----
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "/tmp/sa-eval-p9zdrvrd/project/notes/__main__.py", line 5, in <module>
+  File "/tmp/sa-eval-dv80fohw/project/notes/__main__.py", line 5, in <module>
     sys.exit(main())
              ~~~~^^
-  File "/tmp/sa-eval-p9zdrvrd/project/notes/cli.py", line 19, in main
+  File "/tmp/sa-eval-dv80fohw/project/notes/cli.py", line 19, in main
     rows = db.execute("SELECT id, text, created FROM notes ORDER BY id")
 sqlite3.OperationalError: no such table: notes
 exit=1
----
-{"id": 1, "text": "line one\nline two \"q\" \u00e9", "created": "2026-11-22T15:09:06+00:00"}
+total 516
+drwx------     2 root root   4096 Nov 22 18:20 .
+drwxrwxrwt 17990 root root 520192 Nov 22 18:20 ..
+-rw-r--r--     1 root root      0 Nov 22 18:20 fresh.db
+{"id": 1, "text": "a\nb", "created": "2026-11-22T17:20:47+00:00"}
 exit=0
----
-    db = sqlite3.connect(default_path())
-sqlite3.OperationalError: unable to open database file
-exit=1
----
-/usr/bin/python3: No module named pytest
-Ran 3 tests in 0.073s
+Ran 3 tests in 0.071s
 
 OK
 ```
 
 ### assistant
 
-Base: the repo has no `main` branch, so I used `HEAD~1` (86784f6) as the fixed point, which is the state before `b2e7681`. No files were changed. I ran the export against temporary databases and ran the test suite; I did the review inline rather than dispatching reviewers.
+**Reviewed:** `13c3cf2` "feat: export notes as JSON" (`6160408..13c3cf2`), 3 files: `notes/cli.py`, `docs/specs/export.md`, `docs/adr/0004-export-as-json-lines.md`. Spec: `docs/specs/export.md`. `docs/architecture/arc42.md` exists, so the review has three axes. No files were changed. I ran the export against a fresh and a populated temp DB under `/tmp`, and the existing tests pass (3 OK).
 
 ## Standards
 
-No documented standards exist here (no `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, lint or editor config). Findings use the smell baseline, so each is a judgement call.
+No `CODING_STANDARDS.md`, `CONTRIBUTING.md`, or lint config exists in the repo, so the smell baseline applies.
 
-- **possible Duplicated Code** (`notes/cli.py:19`): the `SELECT id, text, created FROM notes ORDER BY id` query and the row-to-note mapping repeat `Store.all()` (`notes/store.py:28`). Fix: call `store.all()` and format the returned `Note` values.
-- **possible Divergent Change** (`notes/cli.py:17-23`): `main()` gains a second storage path, so it now changes for storage reasons as well as CLI reasons. Fix: move the query into `Store`, as in the Architecture finding below.
-- **Inconsistent resource handling** (`notes/cli.py:18-22`): `db.close()` is not in a `finally`, unlike the store path directly below (`cli.py:30-40`). Fix: follow the file's own pattern, or drop the raw connection entirely (see the Architecture finding).
+1. **Possible Long Method** (judgement call), `notes/cli.py:17-23`. The export logic (connect, query, print, close) sits inline in `main()`, between argument parsing and the store-based dispatch. → Move it into a named function, or into `Store` (see Architecture).
+2. **No test for export** (judgement call), `tests/test_notes.py`. `add`, `list` and `search` each have tests; `export` has none. That is why the fresh-DB crash below went unnoticed. → Add a test that runs `export` against a temp `NOTES_DB`.
+
+**Worst Standards issue:** Minor (possible Long Method).
 
 ## Spec
 
-`docs/specs/export.md` is implemented as written. With a populated database, output is one JSON object per line, oldest first, with `id`, `text`, `created`, and no arguments. Newlines in note text are escaped correctly.
+Spec conformance holds for populated databases: fields `id`, `text`, `created`, oldest first, no arguments, and newlines inside a note are escaped on one line. The gap is an empty or fresh database:
 
-- **Important, empty or fresh store** (`notes/cli.py:18-19`): the spec says the command prints every note. With no notes, the table has not been created yet, so the command crashes with `sqlite3.OperationalError: no such table: notes` and a traceback, exit 1. I reproduced this on a fresh `NOTES_DB`. The expected behaviour is empty output and exit 0. Fix: open the database through `Store(default_path())` first, which creates the table, then export through the store.
-- **Minor, no test** (`tests/test_notes.py`, unchanged): nothing exercises `export`. The spec does not require a test, but this is why the crash above went unnoticed.
+- **Important**, `notes/cli.py:18`. With `NOTES_DB` pointing at a new file, `sqlite3.connect` creates an empty file, and the query then fails with `sqlite3.OperationalError: no such table: notes` and a traceback, exit 1. The spec says the command prints every note, so a store with none should print nothing and exit 0. Store's `__init__` creates the table; this path skips it. → Create the table, or route through `Store`, which already does.
+
+**Worst Spec issue:** Important (fresh-DB crash).
 
 ## Architecture
 
-Sources: arc42 §5, §8, §10 (QS-3), ADR-0002, ADR-0003, ADR-0004.
+- **Critical: ADR-0003 breach**, `notes/cli.py:3` and `notes/cli.py:18-19`. ADR-0003 (accepted) says "Only `notes/store.py` imports `sqlite3` or touches the database file." This diff imports `sqlite3` in `cli.py` and runs SQL there. arc42 §5 also says `store` is "the only block that knows the storage." Quoted hunk: `db = sqlite3.connect(default_path())` / `rows = db.execute("SELECT id, text, created FROM notes ORDER BY id")`. → Use the existing `Store.all()` and drop the `sqlite3` import from `cli.py`.
+- **Important: arc42 §8 error rule**, `notes/cli.py:18`. The export path sits before the `try` that reports errors as `notes: <message>` on stderr with exit 1. The fresh-DB failure therefore escapes as a traceback. This is the same root cause as the Spec finding; the fix above covers both.
+- **Minor: traceability**, `docs/adr/0004-export-as-json-lines.md:9-11`. ADR-0004 is accepted, and its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves. R-1 (CLI use) looks like the candidate, but that is your call as the architect. → Name the requirement in Context.
+- **Quality scenario QS-3 weakened**, measure "0 other files changed" for swapping the storage engine (arc42 §10). After this diff, a storage swap must also change `notes/cli.py`. → Resolved by the `Store.all()` fix above.
 
-- **Important, breach of ADR-0003** (`notes/cli.py:3, 18`): the accepted Decision says "Only `notes/store.py` imports `sqlite3` or touches the database file." `cli.py` now imports `sqlite3`, calls `sqlite3.connect`, and runs SQL. Fix: add an export or read method to `Store`, and have `cli.py` call it with the same `try`/`finally` as the other commands.
-- **Important, arc42 §8 error convention** (`notes/cli.py:18-19`): errors are supposed to go to stderr as `notes: <message>` with exit 1. The export path has no `try`, so sqlite errors surface as tracebacks. I reproduced this with `NOTES_DB=/nonexistent/dir/x.db`, which prints `sqlite3.OperationalError: unable to open database file` as a traceback. Fix: route through the same `try`/`except` as the other commands. Moving the query into `Store` covers this too.
-- **Minor, weakened QS-3** (arc42 §10): the measure "0 other files changed" when the storage engine is swapped no longer holds, because `cli.py` now depends on the storage engine. Fix: the same as the ADR-0003 finding.
-- **Minor, traceability** (`docs/adr/0004-export-as-json-lines.md:7-8`): ADR-0004 is accepted and its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves. Fix: the architect should name the requirement in Context, or add one to arc42 §1 if none fits. This is for you to decide, not me.
+**Worst Architecture issue:** Critical (ADR-0003 breach).
 
-Worst issue per axis: Standards, duplicated query (judgement call); Spec, crash on an empty or fresh store; Architecture, breach of ADR-0003 (sqlite access outside `store.py`).
+---
+
+**Summary:** Standards: 2 findings, worst Minor. Spec: 1 finding, worst Important. Architecture: 3 findings, worst Critical.
 
 ### result (success)

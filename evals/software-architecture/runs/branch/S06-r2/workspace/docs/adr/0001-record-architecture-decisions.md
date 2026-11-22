@@ -6,10 +6,7 @@ proposed
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. Sightings must survive
-crashes (R-1, QG-1) and the tool must work offline everywhere with only Python (R-2, QG-2), so
-the storage design and the dependency rule are decided centrally. The eBird export is an external
-format and is decided centrally too (R-4, QG-3).
+The architect decides the architecture; contributors and agents build it. Sightings must survive crashes (R-2, QG-1), work everywhere with only Python (R-3, QG-2), and export to eBird CSV (R-4, QG-3).
 
 ## Decision
 
@@ -17,20 +14,17 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- storage engine, on-disk format of the sighting store, and its crash-safety mechanism (R-1);
-- the eBird CSV export format and any other import or export format (R-4);
-- interfaces between building blocks (CLI, store, export) and the dependency rule between them;
-- versioning of the store format and of the CLI commands;
-- crosscutting conventions: timestamps and time zone, error handling, exit codes;
-- third-party dependencies: the Python standard library only (R-2).
+- storage engine and on-disk data format (R-2, R-3, R-5)
+- export format: eBird CSV and its column set (R-4)
+- dependency rule: standard library only at runtime (R-3)
+- versioning of the sightings store's format
+- crosscutting conventions: time storage and time zones, error handling, the unit of count
+- minimum Python version (R-3)
 
 Left to the building blocks (no ADR):
 
-- internal helper functions and structure inside one block;
-- argument parsing details inside the CLI block;
-- test layout.
+- argument parsing details, internal helpers, test layout
 
 ## Consequences
 
-Work that depends on a decision on the list waits until its ADR is accepted. Nothing in the
-storage, dependency or export area is built before that.
+Work that depends on a decision on the list waits until its ADR is accepted.

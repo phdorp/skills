@@ -1,2 +1,2 @@
-595bb67529830f153c9e6a41b976ab077f314dcb docs: add backup command spec and glossary term
-abf3a9de5a872f888c64e32936f5965b6cb334a0 fixture
+49bc8a33a76af0135a221dabb0df9b3f10bb8d95 docs: specify notes backup command
+88d3d4e62e369fe88efa90818d72b415bd55addf fixture

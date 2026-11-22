@@ -6,12 +6,12 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "❓ **Q1** - **What is a word pair for you?** Picture one line of the output that shows a pair. What are the two words, what is the pair for, and what would you do with the list?",
+   "quote": "**What do you want to learn from the pairs that the single-word list doesn't show you?**",
    "source": "transcript.md",
-   "reason": "The agent's messages only cover what the code does and ask about the user's meaning of a word pair, with no mention of quality goals, arc42 or ADRs."
+   "reason": "The agent's messages stick to the code's behaviour and ask about the user's goal for pairs, without raising quality goals, arc42 or ADRs."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.0471058
+ "cost_usd": 0.0483138
 }

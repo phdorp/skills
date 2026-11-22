@@ -9,33 +9,35 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "I read HeatingLib as a Modelica library, so I mapped the design vocabulary onto dataflow terms.",
+   "quote": "The fix is to make `C` a parameter of `Thermostat` with no default, bound in `System` as `Thermostat thermostat(C = room.C)`.",
    "source": "transcript.md",
-   "reason": "The agent frames coupling as parameters wired through System and blocks bypassing their ports, which are dataflow terms rather than object-oriented classes, methods or inheritance."
+   "reason": "Coupling and fixes are framed as parameters, parameter bindings, ports and connections rather than OO classes, methods or inheritance."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "QG-3 · Reliability: faultlessness (R-3, QS-3)",
+   "quote": "QG-3 (QS-3): \"every model checks\" becomes true for each block, not only for System.",
    "source": "transcript.md",
-   "reason": "Every candidate card in the report has a QG badge: QG-2 for candidates 1 and 2, QG-3 for candidates 3 and 4."
+   "reason": "Every candidate card has a QG badge and a Quality goal line (QG-2/QG-1, QG-2, QG-3)."
   },
   {
    "criterion": "J3",
-   "pass": false,
-   "quote": "I did not create a `GLOSSARY.md`, since the report is the only output requested.",
+   "pass": true,
+   "quote": "Accepting a candidate means recording its ADR first, so no model code changes until you accept one.\n\nWhich of these would you like to explore?",
    "source": "transcript.md",
-   "reason": "Turn 1 ends with judgement-call notes and never asks the architect which candidate to explore."
+   "reason": "Turn 1's final message ends by asking the architect which candidate to explore."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "**Held until you accept ADR-0002:** removing `roomHeatCapacity` from `package.mo`, adding `C` to `Thermostat`, and wiring `Thermostat thermostat(C = room.C)` in `System.mo`. The model files are unchanged",
+   "quote": "The decision is recorded as a proposed ADR, and no model, test, or arc42 code has changed.",
    "source": "transcript.md",
-   "reason": "The final message says the change is recorded as a proposed ADR awaiting the architect's approval and that the model files are unchanged."
+   "reason": "The final message states the ADR is proposed and awaits the architect's approval, and that no model was changed."
   }
  ],
- "quote_errors": [],
- "needs_review": false,
- "cost_usd": 0.40445380000000003
+ "quote_errors": [
+  "J2: quote not found in transcript.md"
+ ],
+ "needs_review": true,
+ "cost_usd": 0.2481618
 }

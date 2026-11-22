@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **[Important] ADR-0003 breach.** `notes/cli.py:4` adds `import sqlite3`, and `cli.py:18-19` opens the database and runs raw SQL. ADR-0003's Decision says:",
+   "quote": "1. **Important: breaches ADR-0003.** `notes/cli.py:3` imports `sqlite3` and `cli.py:16-17` queries the database directly. ADR-0003 says: \"Only `notes/store.py` imports `sqlite3` or touches the database file.\"",
    "source": "transcript.md",
-   "reason": "The sqlite3 breach is reported under the Architecture section and cites ADR-0003's Decision as its source."
+   "reason": "The breach is listed under the Architecture section and cites ADR-0003 with its Decision sentence."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **[Minor] Traceability.** ADR-0004 is `accepted`, not legacy, and its Context names no `R-n`, `QG-n` or `QS-n`.",
+   "quote": "4. **Traceability:** ADR-0004 is accepted and new, but its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves.",
    "source": "transcript.md",
-   "reason": "The missing requirement or quality-goal ID in ADR-0004's Context is reported as a traceability finding."
+   "reason": "The missing requirement or quality-goal ID in ADR-0004 is reported as a traceability finding."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Storage access now also lives in `cli.py`, so a storage change touches a file outside `store.py`.",
+   "quote": "The export query in `cli.py` breaks that, because a swap would now also touch `cli.py`.",
    "source": "transcript.md",
-   "reason": "The review names QS-3 and explains that swapping the storage engine would now also change cli.py."
+   "reason": "The review names QS-3 and explains that a storage swap would now also change cli.py."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "- Architecture: 4 findings. Worst: ADR-0003 breach (Important).\n- Standards: 2 findings. Worst: possible Duplicated Code (Minor).\n- Spec: 1 finding. Worst: empty store fails (Important).",
+   "quote": "Closing: Standards 2 findings, worst is possible Duplicated Code (judgement call). Spec 3 findings, worst is the crash on an empty store (Important). Architecture 4 findings, worst is the ADR-0003 breach (Important).",
    "source": "transcript.md",
-   "reason": "The axes are reported in separate sections, and the closing summary names the worst issue for each axis."
+   "reason": "The report uses separate Standards, Spec and Architecture sections, and the closing line names the worst issue per axis."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.14458580000000001
+ "cost_usd": 0.1201498
 }

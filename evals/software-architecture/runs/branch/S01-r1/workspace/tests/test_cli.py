@@ -15,47 +15,36 @@ class CountWords(unittest.TestCase):
     def test_ranks_by_count_then_alphabetically(self):
         self.assertEqual(format_counts({"b": 1, "a": 1, "c": 3}), ["c 3", "a 1", "b 1"])
 
+    def test_top_keeps_only_most_frequent(self):
+        counts = {"b": 1, "a": 1, "c": 3, "d": 2}
+        self.assertEqual(format_counts(counts, top=2), ["c 3", "d 2"])
+
+    def test_top_larger_than_vocabulary_prints_all(self):
+        self.assertEqual(format_counts({"a": 1}, top=5), ["a 1"])
+
 
 class Main(unittest.TestCase):
-    def setUp(self):
-        self.path = Path(tempfile.mkdtemp()) / "in.txt"
-        self.path.write_text("b a b c c c")
-
-    def run_main(self, argv):
+    def test_prints_every_word(self):
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("b a b")
         out = io.StringIO()
         with redirect_stdout(out):
-            code = main([str(self.path), *argv])
-        return code, out.getvalue()
+            self.assertEqual(main([str(path)]), 0)
+        self.assertEqual(out.getvalue(), "b 2\na 1\n")
 
-    def test_prints_every_word(self):
-        code, out = self.run_main([])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "c 3\nb 2\na 1\n")
+    def test_top_option_prints_only_n_words(self):
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("b a b c c c")
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(main([str(path), "--top", "2"]), 0)
+        self.assertEqual(out.getvalue(), "c 3\nb 2\n")
 
-    def test_top_prints_only_the_n_most_frequent_words(self):
-        code, out = self.run_main(["--top", "2"])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "c 3\nb 2\n")
-
-    def test_top_larger_than_vocabulary_prints_all_words(self):
-        code, out = self.run_main(["--top", "10"])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "c 3\nb 2\na 1\n")
-
-    def test_top_zero_prints_nothing(self):
-        code, out = self.run_main(["--top", "0"])
-        self.assertEqual(code, 0)
-        self.assertEqual(out, "")
-
-    def test_top_rejects_negative_numbers(self):
-        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as cm:
-            self.run_main(["--top", "-1"])
-        self.assertEqual(cm.exception.code, 2)
-
-    def test_top_rejects_non_integers(self):
-        with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as cm:
-            self.run_main(["--top", "many"])
-        self.assertEqual(cm.exception.code, 2)
+    def test_top_must_be_positive(self):
+        path = Path(tempfile.mkdtemp()) / "in.txt"
+        path.write_text("a")
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            main([str(path), "--top", "0"])
 
 
 if __name__ == "__main__":

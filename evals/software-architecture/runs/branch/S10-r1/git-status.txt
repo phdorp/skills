@@ -1,0 +1,7 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-blocks-communicate-through-typed-connectors.md
+?? docs/adr/0003-blocks-read-a-shared-heat-capacity-constant.md
+?? docs/adr/0004-si-units-with-kelvin-temperatures.md
+?? docs/adr/0005-library-names-of-blocks-connectors-and-parameters.md
+?? docs/adr/0006-openmodelica-is-the-only-third-party-tool.md
+?? docs/architecture/arc42.md

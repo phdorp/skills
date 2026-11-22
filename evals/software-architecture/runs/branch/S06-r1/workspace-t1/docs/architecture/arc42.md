@@ -14,6 +14,8 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 | ID | goal (ISO/IEC 25010) | from | scenario |
 |---|---|---|---|
 
+### Stakeholders
+
 ## 2. Constraints
 
 ## 3. Context and scope
@@ -33,7 +35,9 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 9. Architecture decisions
 
-The ADRs are in [`../adr/`](../adr/). The decision on which decisions the architect makes centrally is the ADR "Record architecture decisions", proposed as [`../adr/0001-record-architecture-decisions.md`](../adr/0001-record-architecture-decisions.md) and written once the architect confirms the setup proposal.
+The ADRs live in [`docs/adr/`](../adr/). The "Record architecture decisions" ADR is
+[`0001-record-architecture-decisions.md`](../adr/0001-record-architecture-decisions.md); it is
+proposed and gets written once the architect confirms the setup proposal.
 
 ## 10. Quality requirements
 

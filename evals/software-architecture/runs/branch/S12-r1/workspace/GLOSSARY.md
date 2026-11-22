@@ -4,5 +4,4 @@
 
 **Store**: the place notes are kept between runs.
 
-**Backup**: a copy of the store, written to a file a user chooses so they can keep it on another disk.
-_Avoid_: export, dump
+**Backup**: a copy of the store that a user writes to a file of their choice, to keep on another disk. Restoring it means copying the file back over the store.

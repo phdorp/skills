@@ -1,0 +1,2 @@
+ M GLOSSARY.md
+?? docs/adr/0004-export-notes-as-jsonl-via-export-command.md

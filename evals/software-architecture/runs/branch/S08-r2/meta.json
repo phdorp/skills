@@ -2,11 +2,11 @@
  "scenario": "S08",
  "arm": "branch",
  "ref": "design/software-architecture-skill-set",
- "sha": "af42af5585243b134d73194bad9e20d3ee68e575",
+ "sha": "5faee30a38947f583f1812b0b6b72de5c1453eae",
  "model": "claude-haiku-5-5",
  "effort": "medium",
- "cost_usd": 0.048468,
- "duration_s": 113.8,
+ "cost_usd": 0.04004,
+ "duration_s": 88.0,
  "exit_code": 0,
  "exit_codes": [
   0,
@@ -14,10 +14,11 @@
  ],
  "turns": 2,
  "session_ids": [
-  "a9f7f056-adc2-4d53-9f9a-4b549d784dc6",
-  "a9f7f056-adc2-4d53-9f9a-4b549d784dc6"
+  "2102c003-93f9-4387-8a52-9a9c4b7f6aaa",
+  "2102c003-93f9-4387-8a52-9a9c4b7f6aaa"
  ],
  "invoked": true,
+ "prompt_from": null,
  "isolation_ok": true,
  "isolation_errors": []
 }

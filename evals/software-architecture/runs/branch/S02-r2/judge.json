@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "It is `proposed`, not accepted, so the team cannot start building until the architect approves it.",
+   "quote": "I wrote the export decision as ADR-0004, but it is `proposed`, not accepted. ADR-0002 reserves export formats and CLI command names for the architect, so the team should not start building until you approve it.",
    "source": "transcript.md",
-   "reason": "The final message presents ADR 0004 as proposed and waiting on the architect's approval."
+   "reason": "The final message presents the ADR as proposed and waiting for the architect's approval."
   },
   {
    "criterion": "J2",
    "pass": true,
    "quote": "=== docs/adr/0002-record-architecture-decisions.md",
    "source": "transcript.md",
-   "reason": "The agent read ADR-0002 before drafting the decision, and its full text appears in the tool output."
+   "reason": "The agent printed ADR-0002 in full before writing the new ADR."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "may use only the standard library (R-3, QG-2)",
-   "source": "workspace/docs/adr/0004-export-notes-as-json-lines.md",
-   "reason": "The Context cites requirement and quality-goal IDs (R-2, QG-1, R-3, QG-2) for the forces the decision serves."
+   "quote": "The export must work with the\nstandard library only (R-3, QG-2) and must not weaken the storage rules: all reads go through\n`Store` (ADR-0003, QG-3).",
+   "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-export-command.md",
+   "reason": "The Context cites by ID the requirement and quality goals the decision serves (R-3, QG-2, QG-3)."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1258018
+ "cost_usd": 0.1256498
 }

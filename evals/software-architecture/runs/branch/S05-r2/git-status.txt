@@ -1,0 +1,3 @@
+ M docs/architecture/arc42.md
+?? .scratch/requirements/issues/01-list-newest-first.md
+?? docs/adr/0004-store-notes-as-text-files.md

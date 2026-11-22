@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- `docs/decisions/` → arc42 section 9 (linked). The ADRs stay where and as they are.",
+   "quote": "README › How it works → section 5, linked. The README stays as it is.",
    "source": "transcript.md",
-   "reason": "In turn 1 the agent maps the ADRs to section 9 and, on the line before, the README's How it works to section 5, saying both stay where they are."
+   "reason": "In turn 1 the agent maps the README section to arc42 section 5 and docs/decisions/ to section 9, and says both documents stay as they are."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "## Legacy ADRs (offered as one batch)",
+   "quote": "ADRs 0001 and 0002 have no Status. I propose upgrading them in one batch to `accepted (legacy)`, with their Decision text unchanged.",
    "source": "transcript.md",
-   "reason": "Both 0001 and 0002 are offered together for upgrade to accepted (legacy), with their Decision text unchanged and no re-decision proposed."
+   "reason": "Both existing ADRs are offered for upgrade together, and their decisions are kept unchanged."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**ADR 0003 awaits your approval.** Once it is accepted, work on any listed decision may start.",
+   "quote": "ADR 0003, \"Record architecture decisions\", stays `proposed` until you approve its text.",
    "source": "transcript.md",
-   "reason": "The final message states that ADR-0003 waits for the architect's approval."
+   "reason": "The final message says the new ADR waits for the architect's approval."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "Status `accepted (legacy)`. Context now cites R-2 and R-3. The Decision text is unchanged.",
+   "quote": "`docs/decisions/0001-store-books-in-one-json-file.md`: upgraded to `accepted (legacy)`.",
    "source": "transcript.md",
-   "reason": "The final message presents the existing ADRs as accepted (legacy) with unchanged decisions, not as decisions awaiting approval."
+   "reason": "The final message presents the legacy ADRs as accepted (legacy), not as decisions to approve again."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1737298
+ "cost_usd": 0.1953098
 }

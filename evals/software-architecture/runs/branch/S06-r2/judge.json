@@ -8,34 +8,34 @@
  "verdicts": [
   {
    "criterion": "J1",
-   "pass": false,
-   "quote": "3. R-3 log from CLI: `3 (proposed)`.",
+   "pass": true,
+   "quote": "1. **Confirm or change** the outcomes, the rank, and the R-2 / R-5 tie-breaker.",
    "source": "transcript.md",
-   "reason": "The ranking gives reasons only for R-1 and R-2; R-3, R-4 and R-5 are listed without a reason."
+   "reason": "Turn 1 ends with a triage table covering all six requirements, a ranking with one reason each, candidate goals QG-1 to QG-3 each citing R-IDs with a scenario, and this request to confirm."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "| **Open question** Performance efficiency: time behaviour | R-5 | — | No measure yet. What response time for `add` and `list`, and at how many stored sightings? |",
-   "source": "transcript.md",
-   "reason": "Fast is kept as an open question asking for a measure, and no goal row was filed for it."
+   "quote": "Open question (no goal row until a measure is given): performance efficiency, time behaviour, from R-5.",
+   "source": "workspace/docs/architecture/arc42.md",
+   "reason": "\"Fast\" is kept as an open question with no goal row and no invented measure."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- **Security: confidentiality.** Are exact locations of rare birds sensitive, so the data should stay local and never be shared by default?",
+   "quote": "6. **Gaps:** did you leave out any of these?",
    "source": "transcript.md",
-   "reason": "Gap questions about unsupported characteristics were asked, and the only goals filed are QG-1 to QG-3 from R-1, R-2 and R-4."
+   "reason": "The agent asked about unsupported characteristics (confidentiality, user error protection, interoperability, capacity) and filed only QG-1 to QG-3, none of which covers them."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "`docs/adr/0001-record-architecture-decisions.md`: status `proposed`, with the central-decision list. Its text needs your approval before it becomes `accepted`.",
+   "quote": "`docs/adr/0001-record-architecture-decisions.md`: status `proposed`. It needs your approval before its list counts as decided.",
    "source": "transcript.md",
-   "reason": "The final message states that ADR 0001 is proposed and needs the architect's approval."
+   "reason": "The final message states that ADR-0001 is proposed and waits for the architect's approval."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1694978
+ "cost_usd": 0.1713498
 }

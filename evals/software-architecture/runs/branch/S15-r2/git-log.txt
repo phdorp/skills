@@ -1,2 +1,3 @@
-1b8c6051ed1d72c9be2c264468341bd163eaae96 feat: list search results newest first
-f40bb0b91e687cb98deee68bc32501671abf414d fixture
+d55571ddc6449e4c123fc8998f140bcbdeec9b6c docs(adr): propose storing tags as a comma-separated column
+7f69b1a7a4e6abc6d05277b5504b923d368bdefd feat: list search results newest first
+3f89b5eac3ec0fdc0250cd4f9dff171dfb680464 fixture

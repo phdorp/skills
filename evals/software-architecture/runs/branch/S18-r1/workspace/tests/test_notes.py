@@ -26,12 +26,6 @@ class StoreTest(unittest.TestCase):
         self.store.add("Call Ann")
         self.assertEqual([n.text for n in self.store.search("mil")], ["Buy milk"])
 
-    def test_search_lists_newest_first(self):
-        self.store.add("Buy milk")
-        self.store.add("Milk the budget")
-        self.assertEqual([n.text for n in self.store.search("milk")],
-                         ["Milk the budget", "Buy milk"])
-
 
 class CliTest(unittest.TestCase):
     def test_add_and_search(self):

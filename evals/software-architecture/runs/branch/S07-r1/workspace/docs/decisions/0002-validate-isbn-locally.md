@@ -6,7 +6,8 @@ accepted (legacy)
 
 ## Context
 
-Books are often added offline, and a wrong ISBN makes `find` miss them later (R-4, QG-2).
+Serves R-4 (a book is stored only if its ISBN passes the check-digit test), that is QG-2.
+Books are often added offline, and a wrong ISBN makes `find` miss them later.
 
 ## Decision
 

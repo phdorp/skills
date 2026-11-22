@@ -6,8 +6,9 @@ accepted (legacy)
 
 ## Context
 
-Serves R-2 (a crash mid-write leaves the catalog readable) and R-3 (only the standard library).
-A personal catalog is small, and the standard library reads and writes JSON.
+The catalog must survive a crash mid-write (R-2), and the program must run with only the Python
+standard library (R-3). The Context was added when this ADR was upgraded at setup; the decision
+predates it.
 
 ## Decision
 
@@ -16,5 +17,5 @@ because a personal catalog is small and the standard library reads and writes JS
 
 ## Consequences
 
-Every read and write handles the whole catalog, which is acceptable for a personal catalog and
-gives no partial writes on a crash. Scaling to large catalogs would need a new decision.
+Every change rewrites the whole file. The temporary file is renamed into place without being
+flushed to disk first, so a power failure can still lose the write.

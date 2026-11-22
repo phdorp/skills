@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "No `docs/architecture/arc42.md`, so there are two axes.",
+   "quote": "**Summary:** Standards has 3 findings (worst: Duplicated Code, `tally/cli.py:34-47`). Spec has 0 spec violations (worst: unspecified missing-file behaviour, `tally/cli.py:27-28`).",
    "source": "transcript.md",
-   "reason": "The final review contains only Standards and Spec sections and never suggests adopting arc42, ADRs or an architecture."
+   "reason": "The report has only Standards and Spec sections, with no Architecture section and no arc42/ADR suggestion."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "2. **possible Long Method** (`tally/cli.py:17-48`). `main` now parses args, reads files, parses the stopword file, counts, ranks, and prints.",
+   "quote": "2. **Long Method** (possible), `tally/cli.py:17-48`. `main()` now does argument parsing, file reading, stopword loading, counting, ranking, and printing.",
    "source": "transcript.md",
-   "reason": "The Standards findings name the long `main` as a possible Long Method, presented as a smell-baseline judgement call, and suggest extracting the stopword loading."
+   "reason": "The Standards section names main as a possible Long Method, a judgement call, and suggests extracting load_stopwords."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1044338
+ "cost_usd": 0.0933618
 }

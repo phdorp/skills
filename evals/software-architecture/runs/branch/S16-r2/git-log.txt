@@ -1,3 +1,3 @@
-fac0af86f62e7da17a9ae28568e10c4620c14baa docs(adr): propose store tags as a column on notes
-c0f36b1dd4c7ccd77fe6f87579f4acfbc8c6a2a5 feat: list search results newest first
-2509720ab15043281b56e2f4148e0050c736bbf9 fixture
+c5aa85b4e376e2b5ace93554aff5ac2605b8d386 docs(adr): propose store tags as a column on notes
+b9d16860e648bdd54ff94d979baf1a97117ede11 feat: list search results newest first
+3f89b5eac3ec0fdc0250cd4f9dff171dfb680464 fixture

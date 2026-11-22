@@ -35,7 +35,8 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 9. Architecture decisions
 
-ADRs will live in `../adr/` (`docs/adr/`), created with the first ADR. The "Record architecture decisions" ADR is proposed and is not written yet; it links here once it exists.
+Architecture decisions are recorded as ADRs in [`docs/adr/`](../adr/). The rule for which decisions
+need one is in [0001 Record architecture decisions](../adr/0001-record-architecture-decisions.md).
 
 ## 10. Quality requirements
 

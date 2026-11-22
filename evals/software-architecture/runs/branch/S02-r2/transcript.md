@@ -7,29 +7,21 @@ messages until tomorrow, so don't wait for me: finish everything now. Don't impl
 
 ### assistant
 
-I'll start by reading the repo and the ADR guidance, since the skill requires it before any ADR edits.
+I'll start by reading the repo's existing docs, ADRs, and code so the decision fits what's already there.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./node_modules -prune -o -path ./.git -prune -o -type f -print | head -200",
- "description": "Inspect repo layout and status"
-}
-```
-
-### tool_use Skill
-
-```json
-{
- "skill": "sa:domain-modeling"
+ "command": "git status --short && git log --oneline | head -20 && find . -path ./.git -prune -o -type f -print | head -200",
+ "description": "Inspect repo state and file list"
 }
 ```
 
 ### tool_result
 
 ```
-26e78de fixture
+cd236d9 fixture
 ./README.md
 ./GLOSSARY.md
 ./notes/__main__.py
@@ -45,28 +37,37 @@ I'll start by reading the repo and the ADR guidance, since the skill requires it
 ./docs/architecture/arc42.md
 ```
 
-### tool_result
-
-```
-Launching skill: sa:domain-modeling
-```
-
-### assistant
-
-The skill requires new ADRs to start as `proposed`, and the decisions list is in ADR 0002. I'll read the existing ADRs, the architecture doc, the code, and the format reference.
-
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in docs/adr/*.md GLOSSARY.md README.md docs/architecture/arc42.md notes/*.py; do echo \"=== $f\"; cat \"$f\"; done; echo; ls /tmp/sa-arm-w1r1v_z9/sa/skills/domain-modeling/",
- "description": "Read ADRs, docs, and source files"
+ "command": "for f in README.md GLOSSARY.md docs/adr/*.md docs/architecture/arc42.md notes/*.py; do echo \"=== $f\"; cat \"$f\"; done",
+ "description": "Read docs, ADRs, and source files"
 }
 ```
 
 ### tool_result
 
 ```
+=== README.md
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
+=== GLOSSARY.md
+# Glossary
+
+**Note**: a short piece of text a user keeps, with an id and the time it was created.
+
+**Store**: the place notes are kept between runs.
 === docs/adr/0001-use-sqlite-for-storage.md
 # 1. Use SQLite for storage
 
@@ -136,25 +137,6 @@ Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli
 ## Consequences
 
 Any new command that reads or writes notes goes through `Store`.
-=== GLOSSARY.md
-# Glossary
-
-**Note**: a short piece of text a user keeps, with an id and the time it was created.
-
-**Store**: the place notes are kept between runs.
-=== README.md
-# notes
-
-Keep short notes from the command line.
-
-```sh
-python3 -m notes add "Buy milk"
-python3 -m notes list
-python3 -m notes search milk
-```
-
-Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
-`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
 === docs/architecture/arc42.md
 # notes: architecture
 
@@ -202,21 +184,48 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 |---|---|---|
 | `cli` | parse commands, print results and errors | `store`, `model` |
 | `store` | keep notes between runs; the only block that knows the storage | `mo
-[... 3730 chars cut]
+[... 3680 chars cut]
 ```
 
-### tool_use Bash
+### assistant
+
+The repo has a governance rule I need to respect: ADR-0002 says export formats and CLI command names are decided centrally and need an accepted ADR. Next I'll load the ADR skill and check the numbering.
+
+### tool_use Skill
 
 ```json
 {
- "command": "cat /tmp/sa-arm-w1r1v_z9/sa/skills/domain-modeling/ADR-FORMAT.md; echo ====; cat /tmp/sa-arm-w1r1v_z9/sa/skills/domain-modeling/GLOSSARY-FORMAT.md | head -60",
- "description": "Read ADR and glossary format references"
+ "skill": "sa:domain-modeling",
+ "args": "Create ADR-0004 for the notes export format and CLI entry point"
 }
 ```
 
 ### tool_result
 
 ```
+Launching skill: sa:domain-modeling
+```
+
+### assistant
+
+The skill says every new ADR starts as `proposed`, and the architect approves it. I'll read the ADR format it refers to before writing.
+
+### tool_use Bash
+
+```json
+{
+ "command": "ls /tmp/sa-arm-jid_2ero/sa/skills/domain-modeling/ && cat /tmp/sa-arm-jid_2ero/sa/skills/domain-modeling/ADR-FORMAT.md",
+ "description": "Read ADR format reference"
+}
+```
+
+### tool_result
+
+```
+ADR-FORMAT.md
+GLOSSARY-FORMAT.md
+SKILL.md
+agents
 # ADR Format
 
 ADRs live in the project's ADR directory as `NNNN-slug.md`, numbered one above the highest
@@ -263,126 +272,79 @@ Examples of decisions that meet the rule in SKILL.md:
 - **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
 - **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
 - **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
-====
-# GLOSSARY.md Format
-
-## Structure
-
-```md
-# {Context Name}
-
-{One or two sentence description of what this context is and why it exists.}
-
-## Language
-
-**Order**:
-{A one or two sentence description of the term}
-_Avoid_: Purchase, transaction
-
-**Invoice**:
-A request for payment sent to a customer after delivery.
-_Avoid_: Bill, payment request
-
-**Customer**:
-A person or organization that places orders.
-_Avoid_: Client, buyer, account
-```
-
-## Rules
-
-- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
-- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
-- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
-- **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
-
-## Single vs multi-context repos
-
-**Single context (most repos):** One `GLOSSARY.md` at the repo root.
-
-**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
-
-```md
-# Glossary Map
-
-## Contexts
-
-- `src/ordering/GLOSSARY.md` (a module-level glossary): receives and tracks customer orders
-- `src/billing/GLOSSARY.md`: generates invoices and processes payments
-- `src/fulfillment/GLOSSARY.md`: manages warehouse picking and shipping
-
-## Relationships
-
-- **Ordering → Fulfillment**: Ordering emits `OrderPlaced` events; Fulfillment consumes them to start picking
-- **Fulfillment → Billing**: Fulfillment emits `ShipmentDispatched` events; Billing consumes them to generate invoices
-- **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
-```
-
-The skill infers which structure applies:
-
-- If `GLOSSARY-MAP.md` exists, read it to find contexts
-- If only a root `GLOSSARY.md` exists, single context
-- If neither e
-[... 167 chars cut]
 ```
 
 ### assistant
 
-The decision is central under ADR 0002 (export format and CLI command names are both on its list), so it needs an ADR. The export only needs `Store.all()`, which already exists, so ADR 0003 holds without changes. I'll draft ADR 0004 as `proposed`, since the architect has not approved it.
+The format is clear. Next I'll write ADR-0004 as `proposed`, since ADR-0002 makes export formats and CLI command names an architect decision.
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-wxezgzee/project/docs/adr/0004-export-notes-as-json-lines.md",
- "content": "# 4. Export notes as JSON Lines via `notes export`\n\n## Status\n\nproposed\n\n## Context\n\nUsers keep notes for years (stakeholder \"Users\", R-2, QG-1) and want to back them up and move\nthem to other tools. No requirement ID covers export yet; the architect should confirm whether\nto add one. The format must be readable by any tool, must hold every field of `Note` (id,\ntext, created) without loss, and must survive note text that contains newlines. The program\nmay use only the standard library (R-3, QG-2). Only `notes/store.py` touches the database\n(ADR-0003), and the CLI reaches notes only through `Store` (ADR-0003).\n\n## Decision\n\nWe will export notes as JSON Lines: UTF-8, one JSON object per line, with exactly the keys\n`id` (integer), `text` (string), and `created` (ISO 8601 UTC string, as stored), in ascending\n`id` order.\n\nWe will add the command `notes export [-o PATH]`:\n\n- without `-o`, the export is written to standard output;\n- with `-o PATH`, the export is written to a temporary file in the same directory and then\n  renamed to `PATH`, so an interrupted export never leaves a partial file at `PATH`;\n- if `PATH` already exists, the command refuses to overwrite it, prints\n  `notes: <PATH> already exists` to stderr, and exits with code 1;\n- errors follow arc42 section 8: `notes: <message>` on stderr, exit code 1; success is exit\n  code 0.\n\nThe export reads notes with `Store.all()`. The serialization lives in `notes/cli.py`, which\nimports only `store` and `model`, so the dependency rule is unchanged. Importing this format\nback is out of scope and needs its own ADR if it changes the format.\n\n## Consequences\n\nUsers can back up with `notes export -o backup.jsonl` or `notes export > backup.jsonl`, and any\ntool that reads JSON Lines can consume the file. CSV and Markdown are not offered; they would\nneed a second format decision. The format is part of the public contract: changing a key or\nits meaning requires a new ADR that supersedes this one. No change to `store.py` or\n`model.py` is needed. The database file itself is not the export format, so ADR-0001's\nbinary-file note still applies.\n"
+ "file_path": "/tmp/sa-eval-c28a645d/project/docs/adr/0004-export-notes-as-jsonl-via-export-command.md",
+ "content": "# 4. Export notes as JSON Lines through an `export` command\n\n## Status\n\nproposed\n\n## Context\n\nUsers want to back up their notes and move them to other tools (R-1 core use; users keep notes\nfor years, so no note may be lost or altered on the way out, R-2). The export must work with the\nstandard library only (R-3, QG-2) and must not weaken the storage rules: all reads go through\n`Store` (ADR-0003, QG-3). The export format and the CLI command name are decided centrally\n(ADR-0002). No requirement ID exists yet for export; see the report.\n\n## Decision\n\nWe will export all notes in **JSON Lines**: UTF-8 text, one JSON object per note, one note per\nline, ordered by `id`. Each object has exactly the three fields of the `Note` value:\n`id` (integer), `text` (string), `created` (the stored ISO 8601 UTC string, unchanged).\nJSON string escaping keeps every note on one line, even when its text contains newlines.\n\nWe will add a subcommand `export` to the CLI:\n\n- `python3 -m notes export` writes the JSON Lines to stdout, so users can redirect it\n  (`> backup.jsonl`).\n- `python3 -m notes export -o PATH` writes to a file. If `PATH` already exists, the command fails\n  with `notes: PATH already exists` and exit code 1; it never overwrites.\n- A file export is written to a temporary file in the same directory and renamed to `PATH` only\n  when complete, so a failed or interrupted export never leaves a partial file at `PATH`.\n\nSerialization lives in a new block `notes/export.py`, which may use `model` only. `cli.py` calls\n`Store.all()` and passes the notes to `export.py`. The export only reads; it never changes the\ndatabase. Errors follow arc42 section 8: `notes: <message>` on stderr, exit code 1.\n\nNot in this decision: import, other formats (CSV, Markdown), encryption of the export, and sync\n(R-4, deferred).\n\n## Consequences\n\n- Easier: any tool with a JSON parser can read a backup (`jq`, Python, spreadsheets via\n  conversion). Shell redirection and the atomic file write give safe backups.\n- Harder: JSON Lines is not a spreadsheet format; users who need CSV must convert it. The\n  `id` and `created` values are not re-created on import, so a future import command has to decide\n  whether to keep or reassign ids (that needs its own ADR).\n- Other ADRs: ADR-0003 is respected (only `store.py` reads the database). The new block\n  `notes/export.py` changes the dependency rule in arc42 section 5 (`cli` → `store` → `model`\n  plus `cli` → `export` → `model`). That change is the architect's to accept, and arc42 is not\n  edited by this ADR.\n- Work that follows: a `notes export` implementation with tests for: empty store, newlines and\n  non-ASCII text, existing `PATH` refused, and failed write leaves no file at `PATH`.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-wxezgzee/project/docs/adr/0004-export-notes-as-json-lines.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-c28a645d/project/docs/adr/0004-export-notes-as-jsonl-via-export-command.md (file state is current in your context — no need to Read it back)
 ```
 
-### tool_use Bash
+### tool_use Edit
 
 ```json
 {
- "command": "git status --short && ls docs/adr && python3 -m unittest 2>&1 | tail -3",
- "description": "Confirm changed files and run existing tests"
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-c28a645d/project/GLOSSARY.md",
+ "old_string": "**Store**: the place notes are kept between runs.",
+ "new_string": "**Store**: the place notes are kept between runs.\n\n**Export**: a copy of all notes written to a file or to stdout in a portable format, so a user can back them up or move them to other tools."
 }
 ```
 
 ### tool_result
 
 ```
-?? docs/adr/0004-export-notes-as-json-lines.md
-0001-use-sqlite-for-storage.md
-0002-record-architecture-decisions.md
-0003-cli-reaches-storage-only-through-store.md
-0004-export-notes-as-json-lines.md
-Ran 3 tests in 0.111s
-
-OK
+The file /tmp/sa-eval-c28a645d/project/GLOSSARY.md has been updated successfully.
 ```
 
 ### assistant
 
-I drafted the export decision as ADR 0004, `docs/adr/0004-export-notes-as-json-lines.md`. It is `proposed`, not accepted, so the team cannot start building until the architect approves it.
+I cited R-1 as the requirement behind export, but R-1 covers add, list and search only, so that citation is wrong. Fixing it now.
 
-**The decision**
-- **Format:** JSON Lines, UTF-8, one object per line with exactly `id` (integer), `text` (string), and `created` (ISO 8601 UTC). Records are in ascending `id` order. JSON Lines keeps every `Note` field, handles newlines in note text, and needs only the standard library.
-- **CLI:** `notes export` writes to stdout. `notes export -o PATH` writes to a temporary file and renames it into place, so an interrupted export never leaves a partial file. If `PATH` exists, the command refuses to overwrite it and exits 1.
-- **Errors and exit codes:** these follow arc42 section 8, so errors go to stderr as `notes: <message>` with exit 1, and success is 0.
-- **Architecture:** the export reads through `Store.all()`, which already exists. Serialization lives in `notes/cli.py`, so `store.py` and `model.py` do not change and the dependency rule holds.
+### tool_use Edit
 
-**Why an ADR is needed:** ADR 0002 centrally decides both import/export formats and CLI command names and exit codes, so this decision is on its list.
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-c28a645d/project/docs/adr/0004-export-notes-as-jsonl-via-export-command.md",
+ "old_string": "Users want to back up their notes and move them to other tools (R-1 core use; users keep notes\nfor years, so no note may be lost or altered on the way out, R-2).",
+ "new_string": "Users want to back up their notes and move them to other tools. No existing requirement covers\nexport (R-1 covers add, list and search only). Users keep notes for years, so the export must not\nlose or alter any note (in the spirit of R-2)."
+}
+```
 
-**Waiting on the architect**
-- **Approval:** ADR 0004 needs approval before the team starts. Per ADR 0002, work that depends on it waits until it is accepted. The question for approval is whether to accept the JSON Lines format and the `notes export [-o PATH]` command with its overwrite and exit-code rules.
-- **Requirement:** no requirement ID covers export. The ADR cites R-2 and QG-1 as related, and I named the export need in words. The architect should decide whether to add an R-n for it.
-- **Other ADRs:** none affected. ADR 0001's note that the database is binary still stands, since export is a separate file.
+### tool_result
 
-I did not implement anything and did not commit. The only change is the new untracked ADR file, and the existing test suite still passes (3 tests).
+```
+The file /tmp/sa-eval-c28a645d/project/docs/adr/0004-export-notes-as-jsonl-via-export-command.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+### assistant
+
+I wrote the export decision as ADR-0004, but it is `proposed`, not accepted. ADR-0002 reserves export formats and CLI command names for the architect, so the team should not start building until you approve it. I did not implement the export and did not commit anything.
+
+**Decision in the ADR** (`docs/adr/0004-export-notes-as-jsonl-via-export-command.md`):
+- **Format:** JSON Lines, UTF-8, one object per note, ordered by `id`. Each object has `id`, `text` and `created`, using the stored values unchanged. JSON escaping keeps each note on one line even when its text contains newlines.
+- **CLI:** `python3 -m notes export` writes to stdout, so `> backup.jsonl` works. `export -o PATH` writes a file. It refuses to overwrite an existing `PATH` (exit 1) and writes to a temporary file that is renamed only when complete, so a failed export leaves no partial file.
+- **Architecture:** all reads go through `Store.all()`, which keeps ADR-0003 intact. Serialization goes in a new block, `notes/export.py`, that may use only `model`.
+
+**Waiting for you:**
+- **ADR-0004, export format and CLI entry point.** Approve it to unblock the build. Changing it to accepted is a one-line edit to its Status.
+- **The new `notes/export.py` block.** This changes the dependency rule in arc42 section 5. I did not edit arc42, because that is yours.
+- **A requirement for export.** No requirement covers it. I suggest adding one (for example R-6, "users export their notes to a portable file") through `sa:add-requirements`. I did not add it myself.
+
+I also added an **Export** entry to `GLOSSARY.md`.
 
 ### result (success)

@@ -24,7 +24,10 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ## 5. Building block view
 
-See README › How it works: [../../README.md#how-it-works](../../README.md#how-it-works)
+See README › How it works: [../../README.md#how-it-works](../../README.md#how-it-works).
+
+| block | responsibility | may use |
+|---|---|---|
 
 ## 6. Runtime view
 
@@ -34,8 +37,8 @@ See README › How it works: [../../README.md#how-it-works](../../README.md#how-
 
 ## 9. Architecture decisions
 
-The ADRs live in [../decisions/](../decisions/). The "Record architecture decisions" ADR is
-proposed as `0003` and waits for the architect's confirmation.
+The ADRs are in [docs/decisions/](../decisions/). The "Record architecture decisions" ADR is
+not written yet; it is linked here once the architect has seen its text.
 
 ## 10. Quality requirements
 

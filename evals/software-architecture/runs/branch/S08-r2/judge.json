@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "<code>Thermostat</code> takes <code>C</code> as a parameter; <code>System</code> binds it to <code>room.C</code>.",
+   "quote": "The fix is to pass the room's capacity into `Thermostat` as a parameter and have `System` connect the two.",
    "source": "transcript.md",
-   "reason": "Coupling is described as parameters, ports and bindings wired by System, in dataflow terms rather than OO classes or methods."
+   "reason": "Coupling is described through parameters, ports and System's wiring, not object-oriented classes, methods or inheritance."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "3. **Make Room a replaceable seam** (Speculative, QG-2).",
+   "quote": "2. **Worth exploring: Give Room and Thermostat their own test surface (QG-3).**",
    "source": "transcript.md",
-   "reason": "All three candidates carry a QG badge (QG-3, QG-2, QG-2) in the report and the summary."
+   "reason": "Both candidates name a quality goal: candidate 1 names QG-2 replaceability and candidate 2 names QG-3."
   },
   {
    "criterion": "J3",
    "pass": true,
    "quote": "Which of these would you like to explore?",
    "source": "transcript.md",
-   "reason": "Turn 1's final message ends by asking the architect which candidate to explore."
+   "reason": "Turn 1 ends by asking the architect which candidate to explore."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "I wrote that ADR as `proposed`, and it's the only change in the repo.",
+   "quote": "I've drafted the ADR for the accepted candidate. It is still `proposed`, so the code is unchanged.",
    "source": "transcript.md",
-   "reason": "The final message states the ADR is proposed and awaiting approval, and that nothing else (no model) was changed."
+   "reason": "The final message states the ADR is proposed and awaiting approval, and that no model files were changed."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2191578
+ "cost_usd": 0.2049698
 }

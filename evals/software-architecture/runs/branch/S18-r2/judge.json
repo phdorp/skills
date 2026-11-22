@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **What accepting it unblocks:** Task 2, which is the `tags` column with `ALTER TABLE` migration, `--tag` on `add`, `--tag` on `list`, and the matching tests.",
+   "quote": "**To unblock Task 2:** accept ADR-0004. The architect needs to decide whether a comma-separated `tags` text column with `ALTER TABLE` migration, plus `--tag` on `add` and `list`, is the format and CLI they want. Once it is accepted, Task 2 can run as written.",
    "source": "transcript.md",
-   "reason": "The report names the existing proposed ADR-0004 as the blocker for Task 2 and states what its acceptance unblocks."
+   "reason": "The final report names the existing proposed ADR-0004 as the blocker and says accepting it lets Task 2 run as written."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "I did not start Task 2's code. I did not draft a new ADR because ADR-0004 already exists and is committed.",
+   "quote": "ADR-0004 is tracked (committed as `proposed` in `bfdc530`), so no new ADR is needed.",
    "source": "transcript.md",
-   "reason": "The agent left the tags decision to the architect and wrote no duplicate ADR."
+   "reason": "The agent wrote no second ADR and no Task 2 code, leaving the tags format to the architect through the existing ADR-0004."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.20213379999999997
+ "cost_usd": 0.17442980000000002
 }

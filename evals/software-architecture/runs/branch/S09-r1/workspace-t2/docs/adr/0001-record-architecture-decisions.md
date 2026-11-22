@@ -1,4 +1,4 @@
-# 0001. Record architecture decisions
+# 1. Record architecture decisions
 
 ## Status
 
@@ -6,10 +6,7 @@ proposed
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. Pantry must not lose
-an item when the machine crashes mid-write (R-2, QG-1), must run with only the Python standard
-library (R-3, QG-3), must keep each new command within `cli.py` and one new module (R-4, QG-4),
-and must list expiring items correctly (R-1, QG-2).
+The architect decides the architecture; contributors and agents build it. Crash-safe storage of pantry items (R-2, QG-1) and a runtime that needs only the Python standard library (R-3) set the storage format and the dependency rule.
 
 ## Decision
 
@@ -17,22 +14,16 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- Storage format: an append-only JSON Lines file, one record per line, replayed on read; the
-  default path is `~/.pantry.jsonl`, overridable by `PANTRY_FILE` (R-2).
-- Durability: each record is fsynced before a command reports success (R-2).
-- Dependencies: the Python standard library only (R-3).
-- Building-block interfaces and dependency rule: `cli` may use `dates` and `store`; `store` may
-  use `model`; `model` uses nothing. Each new command adds at most one module (R-4).
-- CLI interface: command names, arguments and exit codes (0 success, 1 user error, 2 bad usage)
-  are versioned; changing them needs an ADR.
-- Conventions: dates are ISO 8601 in the file and in output.
+- Storage format: an append-only JSON Lines file at `~/.pantry.jsonl` (override with `PANTRY_FILE`), with `add` and `remove` records.
+- Dependency rule: `cli` → `store` → `model`; `dates` is used by `cli`; `model` does no I/O.
+- CLI versioning: command names, flags, date forms (ISO, `today`, `tomorrow`, `+Nd`, `+Nw`), and exit codes 0, 1 and 2.
+- Error handling: user errors go to stderr with exit 1.
+- Third-party dependencies: none (R-3).
 
 Left to the building blocks (no ADR):
 
-- parsing internals in `dates.py`, helper names, test layout, output formatting details.
+- Internal helpers, sort order, test layout.
 
 ## Consequences
 
-Work that depends on a decision on the list waits until its ADR is accepted. Accepting this ADR
-also unblocks recovering the as-is architecture from the code. Changes to the write path of the
-storage format fall under the storage and durability items above.
+Work that depends on a decision on the list waits until its ADR is accepted. A change to the storage format or the CLI's command, flag or exit-code contract needs a new ADR that supersedes this one's entry.

@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "The skeleton links both (section 5 to the README, section 9 to `docs/decisions/`).",
+   "quote": "README › How it works → section 5 (README stays as it is).",
    "source": "transcript.md",
-   "reason": "In turn 1 the agent maps the README section to arc42 section 5 and the ADR directory to section 9, and elsewhere in that turn states the existing README and ADRs are unchanged, without proposing a move."
+   "reason": "In turn 1 the agent maps the README section to arc42 section 5 and the ADRs in docs/decisions/ to section 9, says the README stays as it is, and leaves the ADRs in place."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "## Legacy ADRs (offered as one batch; their decisions stay as they are)",
+   "quote": "Upgrade to `accepted (legacy)` and add the fields; the Decision text stays.",
    "source": "transcript.md",
-   "reason": "Both ADR 0001 and 0002 are offered together for a status/context upgrade, with the agent explicitly not reopening their decisions."
+   "reason": "Both ADR 0001 and 0002 are offered together under 'Legacy ADRs (offered as one batch)', keeping their decisions unchanged."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "ADR 0003 needs your approval before the decisions on its list can be built",
+   "quote": "It is `proposed`; you have not yet approved its wording. Recorded decisions wait on that approval",
    "source": "transcript.md",
-   "reason": "The final message states that the new Record-architecture-decisions ADR 0003 awaits the architect's approval."
+   "reason": "The final message states ADR 0003 stays proposed pending the architect's approval."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "Status `accepted (legacy)` added, Context citing the R- and QG-IDs. The Decision text is unchanged.",
+   "quote": "upgraded to `accepted (legacy)`. Their Decision text is unchanged.",
    "source": "transcript.md",
-   "reason": "The final message presents 0001 and 0002 as accepted legacy decisions whose decisions were left unchanged, not as items to approve again."
+   "reason": "The final message presents ADR-0001 and ADR-0002 as accepted (legacy) with unchanged decisions, not as items to re-approve."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.1860698
+ "cost_usd": 0.1746338
 }

@@ -24,7 +24,7 @@ Launching skill: sa:domain-modeling
 ```json
 {
  "command": "git status --short && find . -path ./.git -prune -o -type f -print | grep -v node_modules | head -200",
- "description": "Check git status and list project files"
+ "description": "Show repo status and list project files"
 }
 ```
 
@@ -52,8 +52,8 @@ Launching skill: sa:domain-modeling
 
 ```json
 {
- "command": "for f in docs/adr/*.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo \"=== arc42\"; cat docs/architecture/arc42.md; echo \"=== GLOSSARY\"; cat GLOSSARY.md; echo \"=== README\"; cat README.md; echo \"=== skill ADR-FORMAT\"; cat /tmp/sa-arm-769_lgg4/sa/skills/domain-modeling/ADR-FORMAT.md",
- "description": "Read ADRs, architecture doc, glossary, README, ADR format"
+ "command": "for f in docs/adr/*.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo \"=== GLOSSARY\"; cat GLOSSARY.md; echo \"=== arc42\"; cat docs/architecture/arc42.md; echo \"=== skill formats\"; ls /tmp/sa-arm-eqo8hj0p/sa/skills/domain-modeling/",
+ "description": "Read ADRs, glossary, arc42, and skill format files"
 }
 ```
 
@@ -173,6 +173,12 @@ Offer PostgreSQL as a second storage engine, chosen with `NOTES_BACKEND=postgres
 
 Needs the `psycopg` package and a running database server.
 
+=== GLOSSARY
+# Glossary
+
+**Note**: a short piece of text a user keeps, with an id and the time it was created.
+
+**Store**: the place notes are kept between runs.
 === arc42
 # notes: architecture
 
@@ -200,12 +206,128 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 
 ### Stakeholders
 
-| role | expectation |
-|---|---|
-| Architect (project owner) | decides the architecture; accepts ADRs |
-| Users | keep notes for years without losing any |
-| Contributors | c
-[... 3889 chars cut]
+| role | exp
+[... 1713 chars cut]
+```
+
+### tool_use Bash
+
+```json
+{
+ "command": "cat /tmp/sa-arm-eqo8hj0p/sa/skills/domain-modeling/ADR-FORMAT.md; echo ===; cat /tmp/sa-arm-eqo8hj0p/sa/skills/domain-modeling/GLOSSARY-FORMAT.md; echo ===; cd /tmp/sa-eval-m8k9jp34/project && grep -n -i \"sqlite\\|store\\|ADR\" README.md notes/*.py | head -60",
+ "description": "Read ADR and glossary format guides and grep for storage references"
+}
+```
+
+### tool_result
+
+```
+# ADR Format
+
+ADRs live in the project's ADR directory as `NNNN-slug.md`, numbered one above the highest
+existing number. That directory is the one where the project already keeps its ADRs (such as
+`docs/decisions/`), or `docs/adr/`, created when the first ADR is needed. ADRs stay where they
+are; a new ADR goes beside them. When and with which status to write one:
+[SKILL.md](./SKILL.md#architectural-decisions).
+
+## Template
+
+Nygard's five fields, all required:
+
+```md
+# {N}. {Short title of the decision}
+
+## Status
+
+{proposed | accepted YYYY-MM-DD | rejected YYYY-MM-DD: reason | superseded by ADR-NNNN}
+
+## Context
+
+{The forces at play: the requirements and quality goals the decision serves, cited by ID
+(R-n, QG-n, QS-n) where the project has them, otherwise named in words; constraints; the ADR
+this one replaces, if any.}
+
+## Decision
+
+{What we will do, in active voice: "We will …".}
+
+## Consequences
+
+{What becomes easier and harder, including effects on other ADRs and the work that follows.}
+```
+
+The Status field's first line is the status. Keep every ADR short: a few sentences per field.
+
+## What qualifies
+
+Examples of decisions that meet the rule in SKILL.md:
+
+- **Architectural shape.** "The write model is event-sourced, the read model is projected into Postgres."
+- **Integration between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
+- **Technology with lock-in.** Database, message bus, auth provider, deployment target; not every library.
+- **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
+- **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
+- **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
+===
+# GLOSSARY.md Format
+
+## Structure
+
+```md
+# {Context Name}
+
+{One or two sentence description of what this context is and why it exists.}
+
+## Language
+
+**Order**:
+{A one or two sentence description of the term}
+_Avoid_: Purchase, transaction
+
+**Invoice**:
+A request for payment sent to a customer after delivery.
+_Avoid_: Bill, payment request
+
+**Customer**:
+A person or organization that places orders.
+_Avoid_: Client, buyer, account
+```
+
+## Rules
+
+- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
+- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
+- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
+- **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
+
+## Single vs multi-context repos
+
+**Single context (most repos):** One `GLOSSARY.md` at the repo root.
+
+**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
+
+```md
+# Glossary Map
+
+## Contexts
+
+- `src/ordering/GLOSSARY.md` (a module-level glossary): receives and tracks customer orders
+- `src/billing/GLOSSARY.md`: generates invoices and processes payments
+- `src/fulfillment/GLOSSARY.md`: manages warehouse picking and shipping
+
+## Relationships
+
+- **Ordering → Fulfillment**: Ordering emits `OrderPlaced` events; Fulfillment consumes them to start picking
+- **Fulfillment → Billing**: Fulfillment emits `ShipmentDispatched` events; Billing consumes them to generate invoices
+- **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
+```
+
+The skill infers which structure applies:
+
+- If `GLOSSARY-MAP.md` exists, read it to find contexts
+- If only a root `GLOSSARY.md` exists, single context
+- If neither ex
+[... 799 chars cut]
 ```
 
 ### tool_use Edit
@@ -213,16 +335,16 @@ Structured after the arc42 template (https://arc42.org). Empty sections are fill
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-wl1_dgwq/project/docs/adr/0004-write-notes-atomically.md",
- "old_string": "## Status\n\nproposed\n",
- "new_string": "## Status\n\naccepted 2026-11-21\n"
+ "file_path": "/tmp/sa-eval-m8k9jp34/project/docs/adr/0004-write-notes-atomically.md",
+ "old_string": "## Status\n\nproposed",
+ "new_string": "## Status\n\naccepted 2026-11-22"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-wl1_dgwq/project/docs/adr/0004-write-notes-atomically.md has been updated successfully.
+The file /tmp/sa-eval-m8k9jp34/project/docs/adr/0004-write-notes-atomically.md has been updated successfully.
 ```
 
 ### tool_use Edit
@@ -230,52 +352,47 @@ The file /tmp/sa-eval-wl1_dgwq/project/docs/adr/0004-write-notes-atomically.md h
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-wl1_dgwq/project/docs/adr/0005-add-postgresql-backend.md",
- "old_string": "## Status\n\nproposed\n",
- "new_string": "## Status\n\nrejected 2026-11-21: a server database contradicts R-3\n"
+ "file_path": "/tmp/sa-eval-m8k9jp34/project/docs/adr/0005-add-postgresql-backend.md",
+ "old_string": "## Status\n\nproposed",
+ "new_string": "## Status\n\nrejected 2026-11-22: a server database contradicts R-3 (standard library only); we will not run a second storage engine."
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-wl1_dgwq/project/docs/adr/0005-add-postgresql-backend.md has been updated successfully.
+The file /tmp/sa-eval-m8k9jp34/project/docs/adr/0005-add-postgresql-backend.md has been updated successfully.
 ```
 
 ### tool_use Write
 
 ```json
 {
- "file_path": "/tmp/sa-eval-wl1_dgwq/project/docs/adr/0006-store-one-json-file-per-note.md",
- "content": "# 6. Store one JSON file per note\n\n## Status\n\nproposed\n\n## Context\n\nThis replaces ADR-0001 (SQLite). SQLite files are binary: they are hard to diff and cannot be\nrepaired by hand. Notes must survive crashes (R-2, QG-1, QS-1), and the program may use only\nthe Python standard library (R-3, QG-2). ADR-0004 requires every file the store writes to be\nwritten to a temporary file, flushed, and moved into place with `os.replace`. Only the store\ntouches the storage (ADR-0003, QG-3, QS-3).\n\n## Decision\n\nWe will store each note as one JSON file in one notes directory, one file per note. Each file\nis written atomically as ADR-0004 requires.\n\n## Consequences\n\nNotes can be read, diffed, and repaired with a text editor. A crash leaves each note either\nfully written or absent (QS-1), through the rule in ADR-0004. Each `add` writes one new file.\nListing and searching read every file, which may be slower than SQLite for large collections\n(R-1). Because the store is the only block that knows the storage (ADR-0003), changing the\nformat stays inside `notes/store.py`. ADR-0001 stays `accepted` until this ADR is accepted;\nthen it becomes `superseded by ADR-0006`. The default location of the directory, and any change\nto the README and arc42 that the new format needs, are left to the work that follows this ADR.\n"
+ "file_path": "/tmp/sa-eval-m8k9jp34/project/docs/adr/0006-store-notes-as-json-files.md",
+ "content": "# 6. Store each note as one JSON file\n\n## Status\n\nproposed\n\n## Context\n\nADR-0001 stores all notes in one SQLite file. The architect wants to move off SQLite, because\nSQLite files are hard to diff and repair by hand. The program may use only the standard library\n(R-3, QG-2), which includes the `json` module. Notes must still survive crashes (R-2, QG-1,\nQS-1), which ADR-0004 provides per file. The storage engine and on-disk format are decided\ncentrally (ADR-0002). This ADR replaces ADR-0001.\n\n## Decision\n\nWe will store each note as its own JSON file, `<id>.json`, in one notes directory, by default\n`~/.notes/`. Every note file is written as ADR-0004 requires. Only `notes/store.py` reads or\nwrites these files (ADR-0003).\n\n## Consequences\n\n- A note file can be read, diffed, and repaired with a text editor.\n- A crash during `add` leaves the old or new note file, never a partial one. No multi-note\n  transaction is needed, because each add changes one note.\n- `list` and `search` read every note file, so search gets slower as the number of notes grows\n  (R-1). This trade-off is accepted here; it does not reopen ADR-0005.\n- ADR-0003 and QS-3 are unchanged: the change stays inside `notes/store.py` and its tests.\n- ADR-0001 becomes `superseded by ADR-0006` when this ADR is accepted.\n- Work on the storage module waits until this ADR is accepted (ADR-0002).\n- The code, tests, and README (which names `~/.notes.db`) still describe SQLite. They change\n  when this ADR is implemented; this ADR does not change them.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-wl1_dgwq/project/docs/adr/0006-store-one-json-file-per-note.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-m8k9jp34/project/docs/adr/0006-store-notes-as-json-files.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-The decision records are updated. Nothing is committed.
+I updated the decision records. Nothing is committed, and the code and README are unchanged.
 
-**What changed**
+- **ADR-0004** (atomic writes via temp file and rename) is now `accepted 2026-11-22`.
+- **ADR-0005** (PostgreSQL backend) is now `rejected 2026-11-22: a server database contradicts R-3 (standard library only); we will not run a second storage engine.`
+- **ADR-0006** is new: "Store each note as one JSON file". It is `proposed`, and its Context names ADR-0001 as the decision it replaces. It cites R-2, QG-1/QS-1, R-3, and QG-3/QS-3. Its Consequences cover:
+  - search and list read every file, so search slows as notes grow (R-1);
+  - ADR-0004 applies to each note file;
+  - the code, tests, and README still describe SQLite until implementation.
+- **ADR-0001** stays `accepted`. It becomes `superseded by ADR-0006` only when ADR-0006 is accepted.
 
-- **ADR-0004** (atomic writes via temp file and rename): `accepted 2026-11-21`.
-- **ADR-0005** (PostgreSQL backend): `rejected 2026-11-21: a server database contradicts R-3`. The file stays.
-- **ADR-0006** (new, `docs/adr/0006-store-one-json-file-per-note.md`): one JSON file per note, written atomically per ADR-0004. Its Context names ADR-0001 as the decision it replaces. Its Consequences cover diffability and hand repair, crash safety, the slower list and search on large collections, and that the change stays inside `notes/store.py` per ADR-0003.
-- **ADR-0001** (SQLite): unchanged, still `accepted`. Per the record rules it becomes `superseded by ADR-0006` only when ADR-0006 is accepted.
+Two choices in ADR-0006 are mine, since you didn't specify them: the default directory `~/.notes/` and the file name `<id>.json`. Change them if you want something else.
 
-**Waiting for your approval**
-
-- **ADR-0006**, "Store one JSON file per note". Answer: do you accept the move off SQLite? I left it `proposed` even though you dictated it, because the rules only make an ADR `accepted` on your explicit approval of that ADR.
-
-**Choices I made that you may want to change**
-
-- I did not pick a default location for the notes directory. ADR-0006 leaves it to the follow-up work.
-- I did not touch the code, README (which still says `~/.notes.db`), or arc42. Those will be out of step with the decision until the follow-up work lands.
-- ADR-0002 lists "the storage engine and the on-disk format" as decided centrally. ADR-0006 is the record for that, and it still needs your approval.
+**Waiting for your approval:** ADR-0006, "Store each note as one JSON file". The question it answers: do you approve per-note JSON files in `~/.notes/` replacing SQLite (ADR-0001)? Its approval also settles the storage work that ADR-0002 holds until accepted.
 
 ### result (success)

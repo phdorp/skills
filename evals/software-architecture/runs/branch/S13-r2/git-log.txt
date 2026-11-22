@@ -1,2 +1,2 @@
-de32b808bf8327f0fbd831e768a4fbe4b8846370 docs(spec): add --min-count option spec
-3d007ba43bbf82ef00491d0e38aa4bad18291268 fixture
+3255a3e9f3289c8669fc225ada676cfd671e9998 docs: add spec for --min-count option
+1dd54cd01396aaf20785c2b40f9966bf158c80b8 fixture

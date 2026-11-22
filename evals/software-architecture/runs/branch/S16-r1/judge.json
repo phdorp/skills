@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "- **Question for you:** accept ADR-0004 as option A, or choose option B? Accepting it unblocks Task 2. Option B would need the plan's Task 2 rewritten.",
+   "quote": "The question is whether to accept the recommended column design or choose the separate-table alternative. Accepting it unblocks Task 2.",
    "source": "transcript.md",
-   "reason": "The final report presents ADR-0004 as proposed, names Task 2 as the task that waits for it, and states that accepting it unblocks Task 2."
+   "reason": "The report names ADR-0004 as proposed and says Task 2 waits for it and is unblocked by its acceptance."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- ADR-0004 is drafted as `proposed` and Task 2 is not started. *Cost if wrong:* none until the ADR is accepted; nothing was built on the unaccepted schema.",
+   "quote": "ADR-0002 decides both centrally, and no accepted ADR covers tags, so I did not write Task 2's code.",
    "source": "transcript.md",
-   "reason": "The agent finished the run without waiting and left the tags format and CLI options to the architect's acceptance, without implementing either."
+   "reason": "The agent finished Task 1 without waiting and left the tags design to the architect as a proposed ADR, writing no Task 2 code."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "- **New requirement:** tagging notes and filtering `list` by tag is a need no R-n in arc42 section 1 names. Suggest running `add-requirements`.",
+   "quote": "**Suggested requirement:** tagging is not named in arc42 section 1. Consider running `add-requirements` to add it.",
    "source": "transcript.md",
-   "reason": "The final report flags the new tagging requirement as a suggestion to run add-requirements."
+   "reason": "The agent reported the missing tagging requirement as a suggestion to run add-requirements."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2956658
+ "cost_usd": 0.2033378
 }

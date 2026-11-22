@@ -6,34 +6,22 @@ proposed
 
 ## Context
 
-Users want to label notes and list them by label. The change alters the on-disk format
-defined by ADR-0001 (one SQLite file, one `notes` table), and it adds `--tag` options to the
-`add` and `list` commands, which ADR-0002 lists among the centrally decided CLI surface.
-Existing stores must keep opening and must not lose notes when migrated (QG-1, QS-1, ADR-0001).
-The change must stay inside `notes/store.py` for the database and be exposed through the
-`Store` class (ADR-0003, QG-3, QS-3). No requirement in arc42 section 1 names tags yet; this
-ADR serves a need that is named in words here (see the report). This ADR does not replace
-any accepted ADR.
+Users need to tag notes and filter `list` by tag (a need no R-n in arc42 section 1 names yet). This changes the on-disk format of the SQLite file decided in ADR-0001 and listed in ADR-0002 as decided centrally. Existing stores must keep opening and keep all their notes (R-2, QS-1), and only `notes/store.py` may touch the schema (ADR-0003, QS-3).
 
 Options:
 
-- **A. Column (proposed by the plan).** A `tags` text column on `notes`, comma-separated,
-  default empty, added to existing tables with `ALTER TABLE`.
-- **B. Join table.** A `tags(note_id, name)` table with one row per tag.
+- **A. A `tags` column on `notes`:** comma-separated text, default empty, added with `ALTER TABLE` on existing stores. One column, no new table. Filtering matches whole tags; tags may not contain commas.
+- **B. A `note_tags` table:** rows of `(note_id, tag)`, joined on list. Exact tag matching without string tricks; more schema, and a second migration path.
+
+Recommended, awaiting the architect: **A**, because it is the smallest change to the file and the tag filter can match whole tags in SQL.
 
 ## Decision
 
-We will add a `tags` text column to the `notes` table, holding the note's tags comma-separated,
-default empty, and migrate existing stores with `ALTER TABLE`. `add` accepts `--tag` repeatable,
-and `list` accepts `--tag` to filter.
+Recommended, awaiting the architect. We will add a `tags` column to the `notes` table (option A), migrate existing stores with `ALTER TABLE`, and keep all schema access inside `notes/store.py`.
 
 ## Consequences
 
-- Easier: one table and one migration step; the `Note` value gains a single field.
-- Harder: a tag may not contain a comma (the store must reject or escape it, a rule to decide
-  when implementing); filtering by tag needs matching on whole tags, not substrings.
-- The on-disk format changes; a store written by the new version may not be readable by the
-  old one. This is the first change to the format under ADR-0001.
-- Option B would avoid the comma rule and make tag filtering exact, at the cost of a second
-  table and a join; choosing B later means a second migration.
-- Blocks the plan's Task 2 until accepted; Task 1 (search ordering) is unaffected.
+- The file gains one column; stores written before the change still open, with empty tags.
+- Tags are limited: no commas inside a tag. Filtering matches whole tags, not substrings.
+- Option B would replace this with a table and a join; it can be chosen later with a migration, at the cost of a second schema change.
+- No other accepted ADR changes. ADR-0001 (SQLite) and ADR-0003 (store-only access) hold under either option.

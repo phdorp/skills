@@ -6,8 +6,8 @@ accepted (legacy)
 
 ## Context
 
-The catalog must survive a crash mid-write (R-2, QG-1) and the program must run with only the
-standard library (R-3, QG-3).
+Serves R-2 (a crash during `add` or save leaves the catalog readable) and R-3 (standard library
+only), that is QG-1 and QG-5. A personal catalog is small.
 
 ## Decision
 
@@ -16,6 +16,6 @@ because a personal catalog is small and the standard library reads and writes JS
 
 ## Consequences
 
-Every save rewrites the whole file, so the cost grows with the catalog. The rename protects
-against a crashed process; it does not call `fsync`, so a power cut is not covered (open
-question for the architect, see the report).
+Each save rewrites the whole file. The rename covers a process crash mid-write. Nothing is
+fsynced, so a power loss during a write is not covered; this is an open question for the
+architect (QG-1).

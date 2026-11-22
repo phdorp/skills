@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Repeats **R-4** (deferred, \"needs a server; revisit next year\").",
+   "quote": "**Repeats R-4** (deferred: \"needs a server; revisit next year\")",
    "source": "transcript.md",
-   "reason": "The agent explicitly identifies the sync requirement as a repeat of the deferred R-4."
+   "reason": "The agent explicitly identifies the sync requirement as a duplicate of the deferred R-4."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Conflicts with **R-3** (standard library only) and the section 2 constraint.",
+   "quote": "**Rejected**: `rich` is a third-party dependency, which conflicts with R-3 and constraint 2.",
    "source": "transcript.md",
-   "reason": "For requirement 2 the agent names R-3 and the stdlib-only constraint as the conflict."
+   "reason": "The agent names R-3 and the standard-library-only constraint as conflicting with the rich/pip requirement."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "Conflicts with **ADR-0001**, which decides one binary SQLite file that \"cannot be read or repaired with a text editor\".",
+   "quote": "ADR-0001 (accepted): SQLite file, \"cannot be read with a text editor\"",
    "source": "transcript.md",
-   "reason": "For requirement 3 the agent names ADR-0001 as the conflict."
+   "reason": "The agent names ADR-0001's SQLite storage as blocking the text-editor requirement and proposes a superseding ADR."
   },
   {
    "criterion": "J4",
    "pass": true,
-   "quote": "Nothing has been changed yet: the procedure stops at this table so you can confirm or change each outcome.",
+   "quote": "Please confirm or change the outcomes for items 1–5 (for example, \"3 system-level, 4 feature-level, 2 and 5 rejected\"). I'll apply them once you've answered.",
    "source": "transcript.md",
-   "reason": "The table gives one outcome per requirement (duplicate of the deferred R-4, rejected, system-level, feature-level, rejected), and the agent asks for confirmation without modifying any workspace files."
+   "reason": "The agent proposes one outcome per requirement (1 stays deferred as R-4, 2 and 5 rejected, 3 system-level, 4 feature-level) and asks for confirmation without changing any files."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.09746579999999999
+ "cost_usd": 0.1155098
 }

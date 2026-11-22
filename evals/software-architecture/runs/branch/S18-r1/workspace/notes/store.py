@@ -29,7 +29,7 @@ class Store:
         return [Note(*row) for row in rows]
 
     def search(self, term):
-        rows = self._db.execute("SELECT id, text, created FROM notes WHERE text LIKE ? ORDER BY id DESC",
+        rows = self._db.execute("SELECT id, text, created FROM notes WHERE text LIKE ? ORDER BY id",
                                 (f"%{term}%",))
         return [Note(*row) for row in rows]
 

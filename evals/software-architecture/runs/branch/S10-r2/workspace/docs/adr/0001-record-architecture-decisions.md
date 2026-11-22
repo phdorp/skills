@@ -2,14 +2,14 @@
 
 ## Status
 
-accepted 2026-11-21
+accepted 2026-11-22
 
 ## Context
 
-The architect decides the architecture; contributors and agents build it. HeatingLib must
-simulate a heated room over a day and show its temperature (R-1), let a room or controller
-variant be swapped without touching the rest (R-2, QG-2), and have every model check in
-OpenModelica without errors (R-3, QG-3). The line below decides what those depend on.
+The architect decides the architecture; contributors and agents build it. Block boundaries and
+shared constants are expensive to change once blocks depend on them, and the library must stay
+checkable for every model (R-2, QG-2; R-3, QG-3). `Thermostat` already reads a package constant
+that `Room` also uses, which breaks the rule below (R-2).
 
 ## Decision
 
@@ -17,23 +17,20 @@ We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
 
 Decided centrally (needs an ADR the architect accepts):
 
-- Dependency rule and interfaces: blocks connect only through the connectors in `Interfaces`;
-  no block reads another block's parameters or constants. Today `Thermostat` reads
-  `HeatingLib.roomHeatCapacity`.
-- Ownership of the shared constant `HeatingLib.roomHeatCapacity`: who may read it.
-- Units: SI; temperatures in K, power in W, heat capacity in J/K.
-- Format of the simulated temperature output.
-- Tooling dependency: OpenModelica for simulation and checks. Any added Modelica library is
-  decided through this list.
+- Interfaces between blocks and the dependency rule: blocks connect only through the connectors
+  in `Interfaces`; no block reads another block's parameters or package constants.
+- Shared package constants, such as `roomHeatCapacity`: whether blocks may read them, and where
+  the value lives.
+- Units: SI, temperatures in K with `displayUnit` degC, as `Interfaces.Temperature` does.
+- Simulation output format: OpenModelica's default result file, or another.
+- Names of public packages, components and connectors, since variants depend on them.
+- Third-party dependencies: OpenModelica as the tool; no Modelica Standard Library today.
 
 Left to the building blocks (no ADR):
 
-- Equations inside `Room` and `Thermostat`, parameter defaults, the internal structure of each
-  block, and the layout of the check script.
+- Equations inside a block, parameter default values, and the test layout beyond the check script.
 
 ## Consequences
 
-Work that depends on a decision on the list waits until its ADR is accepted. None of the
-central items has its own ADR yet; each is written when work needs it. Among others, changing
-how `Thermostat` gets the room's heat capacity, typed component declarations in `System` for
-R-2, and the output format wait for those ADRs.
+Work that depends on a decision on the list waits until its ADR is accepted. Fixing the
+`Thermostat` read of `roomHeatCapacity` is such work.

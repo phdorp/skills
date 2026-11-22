@@ -1,0 +1,1 @@
+?? docs/adr/0002-thermostat-gain-through-seam.md

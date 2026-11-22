@@ -1,0 +1,9 @@
+ M docs/decisions/0001-store-books-in-one-json-file.md
+ M docs/decisions/0002-validate-isbn-locally.md
+?? docs/architecture/arc42.md
+?? docs/decisions/0003-record-architecture-decisions.md
+?? shelf/__pycache__/__init__.cpython-313.pyc
+?? shelf/__pycache__/catalog.cpython-313.pyc
+?? shelf/__pycache__/isbn.cpython-313.pyc
+?? tests/__pycache__/__init__.cpython-313.pyc
+?? tests/__pycache__/test_shelf.cpython-313.pyc

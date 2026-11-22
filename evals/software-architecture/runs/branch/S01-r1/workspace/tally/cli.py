@@ -9,29 +9,28 @@ def count_words(text):
     return Counter(WORD.findall(text.lower()))
 
 
-def format_counts(counts):
+def format_counts(counts, top=None):
     ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    if top is not None:
+        ranked = ranked[:top]
     return [f"{word} {n}" for word, n in ranked]
 
 
-def non_negative_int(value):
-    n = int(value)
-    if n < 0:
-        raise argparse.ArgumentTypeError(f"must be 0 or greater, got {n}")
-    return n
+def positive_int(text):
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return value
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="tally", description="Count word frequencies.")
     parser.add_argument("file", help="text file to count")
-    parser.add_argument("--top", type=non_negative_int, metavar="N",
-                        help="print only the N most frequent words (default: all)")
+    parser.add_argument("--top", type=positive_int, metavar="N",
+                        help="print only the N most frequent words")
     args = parser.parse_args(argv)
     with open(args.file, encoding="utf-8") as f:
         counts = count_words(f.read())
-    lines = format_counts(counts)
-    if args.top is not None:
-        lines = lines[:args.top]
-    for line in lines:
+    for line in format_counts(counts, top=args.top):
         print(line)
     return 0

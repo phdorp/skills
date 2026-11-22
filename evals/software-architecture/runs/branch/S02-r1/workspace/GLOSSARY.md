@@ -4,4 +4,4 @@
 
 **Store**: the place notes are kept between runs.
 
-**Export**: a copy of all notes in a format other tools can read, so the notes can be backed up or moved.
+**Export**: a copy of all notes written to a file in a documented format, for backup or for use in other tools.

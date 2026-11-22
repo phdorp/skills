@@ -17,9 +17,12 @@ def format_counts(counts, top=None):
 
 
 def positive_int(value):
-    n = int(value)
+    try:
+        n = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected an integer, got {value!r}") from None
     if n < 1:
-        raise argparse.ArgumentTypeError("must be a positive integer")
+        raise argparse.ArgumentTypeError(f"must be at least 1, got {n}")
     return n
 
 
@@ -27,7 +30,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="tally", description="Count word frequencies.")
     parser.add_argument("file", help="text file to count")
     parser.add_argument("--top", type=positive_int, metavar="N",
-                        help="print only the N most frequent words")
+                        help="print only the N most frequent words (default: all)")
     args = parser.parse_args(argv)
     with open(args.file, encoding="utf-8") as f:
         counts = count_words(f.read())

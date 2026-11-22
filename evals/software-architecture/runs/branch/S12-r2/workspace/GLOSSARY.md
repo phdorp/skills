@@ -4,4 +4,4 @@
 
 **Store**: the place notes are kept between runs.
 
-**Backup**: a copy of the store that a user keeps somewhere else, such as on another disk, at a path the user chooses.
+**Backup**: a copy of the store, written to a file the user names so they can keep it on another disk.

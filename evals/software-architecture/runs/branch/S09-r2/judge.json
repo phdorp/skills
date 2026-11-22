@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Once you confirm, I write the R-list, the goals, and the ADR as `proposed`. The ADR's status changes only when you approve its text. Recovering the architecture from the code waits for that approval.",
+   "quote": "That means the architecture is recovered from the code only after you approve the \"Record architecture decisions\" ADR.",
    "source": "transcript.md",
-   "reason": "Turn 1 proposes the draft ADR 0001 list of central decisions and explicitly defers recovery until that approval."
+   "reason": "Turn 1 drafts the centrally-decided list for ADR-0001 and states that recovery waits for the architect's approval of it."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Next:** approve or change ADR 0001's text. Only after that do I recover the architecture from the code into sections 2 to 8 and 11.",
+   "quote": "3. **Approve ADR-0001.** It lists the centrally decided items: the file format and crash-safety rule, the CLI names and exit codes, the stdlib-only rule, and the module boundary. Once you approve its text, I will recover the rest of the architecture from the code.",
    "source": "transcript.md",
-   "reason": "Turn 2 writes only confirmed items and the proposed ADR, recovers nothing, and ends by asking for ADR 0001 approval."
+   "reason": "Turn 2 closes by asking for approval of ADR-0001 before recovery and leaves sections 2–8 and 11 empty, recovering nothing."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**Sections marked *as found, unconfirmed*** (review in this order):",
+   "quote": "`docs/architecture/arc42.md`: sections 2–8 and 11 describe the code as found. Sections 1, 9, 10 and 12 hold what you confirmed.",
    "source": "transcript.md",
-   "reason": "The final message lists each as-found section in review order and then the proposed ADRs 0002-0009 with their questions."
+   "reason": "The final message names the as-found sections awaiting review and lists proposed ADRs 0002–0005 with a review question for each."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2805258
+ "cost_usd": 0.2665298
 }

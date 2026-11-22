@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Architecture is recovered from the code only after you approve the \"Record architecture decisions\" ADR below.",
+   "quote": "It goes into section 11 once the architecture is recovered from the code, after you approve ADR 0001.",
    "source": "transcript.md",
-   "reason": "Turn 1 proposes the decisions-made-centrally list for ADR-0001 and explicitly defers recovery until the architect approves it."
+   "reason": "Turn 1 proposes the decisions-made-centrally list as draft ADR 0001 and states that recovery from the code waits for the architect's approval of it."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Do you approve ADR-0001's text as written? If you do, I'll mark it `accepted` and start the recovery.",
+   "quote": "**Next step:** please approve the text of ADR 0001. Once you accept it, recovery of the architecture from the code starts. Until then, sections 2–8 and 11 stay empty.",
    "source": "transcript.md",
-   "reason": "Turn 2 writes only the confirmed R-list, goals, scenarios and the proposed ADR-0001, recovers nothing, and ends by asking for approval of ADR-0001."
+   "reason": "Turn 2 writes only confirmed sections 1, 9 and 10 plus the proposed ADR, and ends by asking for approval of ADR 0001 before any recovery."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "sections 2–8 and 11 are filled and each starts with *As found, unconfirmed.*",
+   "quote": "**arc42 sections 2–8 and 11** are filled, each starting with *As found, unconfirmed.*",
    "source": "transcript.md",
-   "reason": "The final message names the recovered sections marked as found, unconfirmed and awaiting review, and lists proposed ADRs 0002–0007 each waiting for the architect's approval."
+   "reason": "The final message names the as-found sections for the architect to confirm or correct, and separately lists proposed ADRs 0002–0006 awaiting acceptance."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.28988179999999997
+ "cost_usd": 0.3633658
 }
