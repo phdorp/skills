@@ -1,0 +1,22 @@
+{
+ "scenario": "S17",
+ "arm": "baseline",
+ "ref": "main",
+ "sha": "ee3e90725afa81778e1e920488f9e5df3e033a2e",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.021253,
+ "duration_s": 73.7,
+ "exit_code": 0,
+ "exit_codes": [
+  0
+ ],
+ "turns": 1,
+ "session_ids": [
+  "1c79797b-606b-48ab-8e55-aef8dafe8771"
+ ],
+ "invoked": false,
+ "prompt_from": "skills/executing-plans/implementer-prompt.md",
+ "isolation_ok": true,
+ "isolation_errors": []
+}

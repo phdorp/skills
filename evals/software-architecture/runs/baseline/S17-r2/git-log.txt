@@ -1,0 +1,4 @@
+b6176d9c2715e4f2f58ba5971d023887f39f58af feat: add tags column to stores created before tags
+ac0e3eb1047dc4cbcedfb7010fc051ea389ebc17 feat: filter notes list by tag
+9a0a27603f45ec9fc179925a449419756c89f428 feat: store tags given to notes add --tag
+d7bf2554e0817b1bad4bd4022fbf1f2adfce581f fixture

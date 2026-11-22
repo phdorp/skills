@@ -1,0 +1,8 @@
+?? .dispatch/task-2-report.md
+?? notes/__pycache__/__init__.cpython-313.pyc
+?? notes/__pycache__/__main__.cpython-313.pyc
+?? notes/__pycache__/cli.cpython-313.pyc
+?? notes/__pycache__/model.cpython-313.pyc
+?? notes/__pycache__/store.cpython-313.pyc
+?? tests/__pycache__/__init__.cpython-313.pyc
+?? tests/__pycache__/test_notes.cpython-313.pyc

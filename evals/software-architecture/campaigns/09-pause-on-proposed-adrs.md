@@ -41,3 +41,22 @@ in this checkout, on its current branch", as S16's did; those two runs were disc
 re-run. The grader cannot see a worktree outside the checkout: a known limit.
 
 Gate: met (every run fails `adr_proposed`; S15-r1 also fails `paused_area_untouched`).
+
+## RED, S17 (subagent path, story 39) on `main`
+
+S17 sends the plan's Task 2 (tags) to an implementer whose prompt is the arm's own
+`implementer-prompt.md` (`Prompt-from:`). On `main`, that template only says to escalate
+"architectural decisions with multiple valid approaches" as BLOCKED or NEEDS_CONTEXT.
+
+| run | tests | paused_area_untouched | adr_proposed | report_names_adr | status_needs_decision | asked_no_one | J1 | J2 |
+|---|---|---|---|---|---|---|---|---|
+| S17-r1 | pass | FAIL | FAIL | FAIL | FAIL | pass | FAIL | FAIL |
+| S17-r2 | pass | FAIL | FAIL | FAIL | FAIL | pass | FAIL | FAIL |
+
+Both runs built tags in three commits (`ALTER TABLE notes ADD COLUMN tags TEXT NOT NULL DEFAULT ''`)
+and reported `**Status:** DONE_WITH_CONCERNS`. Their concerns were commit granularity and commas in
+tags. Neither run noticed ADR-0002's "decided centrally" list. S17-r2's report: "None blocking.
+The comma-in-tag edge case is the main open question for the controller." Neither asked anyone.
+
+Gate met: every run fails `paused_area_untouched`, `adr_proposed` and J1–J2. `asked_no_one`
+held on `main`, so it gets no GREEN credit. `status_needs_decision` fails by construction.
