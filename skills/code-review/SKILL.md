@@ -12,7 +12,7 @@ One loop with three phases: **request** a review, **perform** it on separate axe
 - **Standards**: does the diff follow this repo's documented coding standards?
 - **Spec**: does the diff faithfully implement the originating issue or spec?
 
-If `docs/architecture/arc42.md` exists, read [references/architecture-axis.md](references/architecture-axis.md) before step 4: it adds a third axis with its own reviewer. Otherwise the review has these two axes, and its report has exactly two sections, `## Standards` and `## Spec`.
+If `docs/architecture/arc42.md` exists, read [references/architecture-axis.md](references/architecture-axis.md) before step 4: it adds a third axis with its own reviewer. Without it, the ordinary case, the review has these two axes, its report has exactly two sections, `## Standards` and `## Spec`, and the report opens with the change it reviewed.
 
 Keep them separate. Code can pass one and fail the other: an implementation that ignores every convention can implement the right thing, and a beautifully conventional diff can implement the wrong thing. Reporting the axes separately stops one from masking the other.
 
