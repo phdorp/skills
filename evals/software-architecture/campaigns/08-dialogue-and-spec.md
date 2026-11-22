@@ -1,0 +1,50 @@
+# Campaign: design dialogue and spec in a set-up project (ticket 08)
+
+Method: `writing-for-agents` › testing-skills (RED on the `main` skills, smallest change, GREEN
+on the branch, one loophole round). Plan: `docs/plans/2026-11-21-sa-design-dialogue-and-spec.md`.
+
+## RED: skills at `main` (2026-11-22, Haiku 5.5 medium, 2 runs each, clean isolation)
+
+`main` has both `design-dialogue` and `spec-and-plan`, so every run started with the
+`/sa:<skill>` prefix. No run loaded another skill through the Skill tool. S11 kept one session
+over both turns.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S11-r1 | goals_cited, add_requirements_suggested | J1, J2, J3 |
+| S11-r2 | goals_cited, add_requirements_suggested | J1, J2, J3 |
+| S12-r1 | qr_section, qr_cites, (code_unchanged, see below) | J2 |
+| S12-r2 | qr_section, qr_cites | J2 |
+| S13-r1, S13-r2 | - | - |
+| S14-r1, S14-r2 | - | - |
+
+Observed failures, in the agents' words (`runs/baseline/S1[12]-r*`):
+
+1. **Trade-offs tied to requirements and ADRs, not quality goals** (S11, both, J1, J2,
+   `goals_cited`): both runs read arc42 and the ADRs and argued from R-3, ADR-0002 and QS-2, but
+   neither named a `QG-n` in turn 2: "Trade-off: it needs a third-party dependency, so R-3 and
+   ADR-0002 both need accepted changes." (S11-r1).
+2. **Encryption handled as an ADR, not as a new requirement** (S11, both, J3,
+   `add_requirements_suggested`): "1. ADR for the `cryptography` dependency (R-3 change)."
+   (S11-r1); "Needs an accepted ADR, since it changes R-3 (standard library only) and adds a
+   dependency." (S11-r2). Neither names `add-requirements`.
+3. **No Quality Requirements section** (S12, both, J2, `qr_section`): S12-r1 put the links in a
+   header line, "Related: … arc42 QG-1 / QS-1 (no note lost)."; S12-r2 went from Implementation
+   Decisions straight to Testing Decisions and cited no `QS-n`.
+
+What held on `main`:
+
+- Both S11 runs read arc42 in turn 1 (`arc42_read`), built nothing (`nothing_built`) and treated
+  ADR-0004 as proposed (J4): "ADR-0004 (atomic writes, still proposed) would apply to each
+  exported file." (S11-r1). These get no GREEN credit.
+- Both S12 runs marked the spec blocked on ADR-0004 (J1): "Status: ready-for-agent (blocked on
+  ADR-0004 acceptance; see Further Notes)" (S12-r1). Neither copied QS-1's measure
+  (`not_copied`). No GREEN credit for J1 or `not_copied`.
+- Controls: S13 and S14 raised no quality goals, arc42 or ADRs; neither suggested
+  `setup-architecture`.
+
+Grader correction: S12-r1 added a glossary term ("**Backup**: a copy of the store, …") and so
+failed `code_unchanged`. A glossary entry is documentation, as S09/S10's `DOC_FILES` already
+say; the check now allows `GLOSSARY.md` (self-test case `S12-glossary`), and S12-r1 passes it.
+
+Gate: met (both S11 runs fail `goals_cited` and J1–J3; both S12 runs fail `qr_section` and J2).

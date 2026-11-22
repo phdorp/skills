@@ -60,6 +60,30 @@
    "score": 0.0,
    "judge": 0.0,
    "cost_usd": 0.112
+  },
+  "S11": {
+   "runs": 2,
+   "score": 0.5,
+   "judge": 0.25,
+   "cost_usd": 0.029
+  },
+  "S12": {
+   "runs": 2,
+   "score": 0.6,
+   "judge": 0.5,
+   "cost_usd": 0.031
+  },
+  "S13": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.02
+  },
+  "S14": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.008
   }
  },
  "runs": [
@@ -1655,6 +1679,462 @@
     "cost_usd": 0.2271178
    },
    "cost_usd": 0.064953,
+   "needs_review": false
+  },
+  {
+   "run": "S11-r1",
+   "scenario": "S11",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": "turn 1: ; end: "
+    },
+    {
+     "name": "arc42_read",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_cited",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "add_requirements_suggested",
+     "pass": false,
+     "detail": "named False; loaded False"
+    }
+   ],
+   "passed": 2,
+   "total": 4,
+   "score": 0.5,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "**Encryption conflicts with the stdlib rule.** R-3 and the architecture constraint say standard library only.",
+      "source": "transcript.md",
+      "reason": "Before laying out approaches the agent names requirements and ADRs but never asks or states which quality goals (QG-n) the export touches."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "- Trade-off: it needs a third-party dependency, so R-3 and ADR-0002 both need accepted changes.",
+      "source": "transcript.md",
+      "reason": "Three approaches and a recommendation are given, but they are tied to requirements, ADRs or a QS scenario rather than to the quality goals each serves or hurts."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "1. ADR for the `cryptography` dependency (R-3 change).",
+      "source": "transcript.md",
+      "reason": "Encryption is framed as an ADR/dependency issue; the agent never names it as a new system-level requirement or suggests running `add-requirements`."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "3. ADR-0004 accepted (it is still \"proposed\").",
+      "source": "transcript.md",
+      "reason": "The agent explicitly lists ADR-0004's acceptance as a pending decision before any build, treating it as open."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1116818
+   },
+   "cost_usd": 0.013349,
+   "needs_review": false
+  },
+  {
+   "run": "S11-r2",
+   "scenario": "S11",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": "turn 1: ; end: "
+    },
+    {
+     "name": "arc42_read",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_cited",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "add_requirements_suggested",
+     "pass": false,
+     "detail": "named False; loaded False"
+    }
+   ],
+   "passed": 2,
+   "total": 4,
+   "score": 0.5,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "1. **Encryption conflicts with a stated constraint.** Requirement R-3 says standard library only.",
+      "source": "transcript.md",
+      "reason": "The agent frames the request around requirements and ADRs and never asks or states which quality goals are touched by QG-n ID."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "Import the package only inside `export`, so `list`, `add`, and `search` still need no install (QS-2).",
+      "source": "transcript.md",
+      "reason": "Three approaches and a recommendation are given, but they cite R-3 and QS-2 rather than tying each approach to the QG-n goals it serves or hurts, and QG-1 is never weighed."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "1. Option 1, 2, or 3. If 1 or 2, do you accept changing R-3 and writing the ADR?",
+      "source": "transcript.md",
+      "reason": "The agent treats encryption as a change to R-3 plus an ADR and never names it a new system-level requirement or suggests running add-requirements."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "Any file the store writes must use a temp file, fsync, and rename (ADR-0004, still \"proposed\").",
+      "source": "transcript.md",
+      "reason": "The agent explicitly flags ADR-0004 as still proposed and none of its approaches depends on it as a settled rule."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1337978
+   },
+   "cost_usd": 0.01572,
+   "needs_review": false
+  },
+  {
+   "run": "S12-r1",
+   "scenario": "S12",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-backup-command-spec.md"
+    },
+    {
+     "name": "qr_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "qr_cites",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "not_copied",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 5,
+   "score": 0.6,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Status: ready-for-agent (blocked on ADR-0004 acceptance; see Further Notes)",
+      "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+      "reason": "The spec marks the atomic-write dependency as waiting for ADR-0004's acceptance, and the final message also reports the blocker."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "Related: ADR-0002 (decisions reserved for the architect), ADR-0003 (CLI reaches storage only through `Store`), ADR-0004 (atomic writes), arc42 QG-1 / QS-1 (no note lost).",
+      "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+      "reason": "The spec has no Quality Requirements section naming the parent requirement R-n and the QS-n scenarios; it only lists QG-1/QS-1 in a header line."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1984338
+   },
+   "cost_usd": 0.016594,
+   "needs_review": false
+  },
+  {
+   "run": "S12-r2",
+   "scenario": "S12",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-notes-backup-spec.md"
+    },
+    {
+     "name": "qr_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "qr_cites",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "not_copied",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 5,
+   "score": 0.6,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Status: ready-for-agent. Implementation is blocked until ADR-0004 is accepted (see Further Notes, item 1).",
+      "source": "workspace/docs/specs/2026-11-22-notes-backup-spec.md",
+      "reason": "The spec marks the atomic-write dependency as waiting for ADR-0004's acceptance, and the final message says implementation is blocked because ADR-0004 is still proposed."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "### Testing Decisions",
+      "source": "workspace/docs/specs/2026-11-22-notes-backup-spec.md",
+      "reason": "The spec goes straight from Implementation Decisions to Testing Decisions with no Quality Requirements section, and it never names a QS-n scenario."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1656058
+   },
+   "cost_usd": 0.013962,
+   "needs_review": false
+  },
+  {
+   "run": "S13-r1",
+   "scenario": "S13",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-min-count-spec.md"
+    },
+    {
+     "name": "no_qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_docs",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 4,
+   "total": 4,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "No tracker is configured for this repo** (no `docs/agents/issue-tracker.md`, no `GLOSSARY.md`, no ADRs were found). The spec is published as a local file.",
+      "source": "workspace/docs/specs/2026-11-22-min-count-spec.md",
+      "reason": "ADRs appear only as a note that none exist during repository inspection, and the agent never proposes quality goals, arc42 or new ADRs in its messages or the spec."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1330058
+   },
+   "cost_usd": 0.009648,
+   "needs_review": false
+  },
+  {
+   "run": "S13-r2",
+   "scenario": "S13",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-min-count-spec.md"
+    },
+    {
+     "name": "no_qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_docs",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 4,
+   "total": 4,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The repo has no tracker config, glossary, or ADRs, so the local-file form applied.",
+      "source": "transcript.md",
+      "reason": "The agent mentions ADRs only to report that none exist in the repo, and neither its messages nor the spec propose quality goals, arc42 or ADRs."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1177738
+   },
+   "cost_usd": 0.010375,
+   "needs_review": false
+  },
+  {
+   "run": "S14-r1",
+   "scenario": "S14",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_quality_goals",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Word pairs could mean a lot of different things, and the answer decides how the counting works.",
+      "source": "transcript.md",
+      "reason": "The agent's messages discuss only the code and what the user wants from word pairs, with no mention of quality goals, arc42 or ADRs."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.047281800000000006
+   },
+   "cost_usd": 0.004119,
+   "needs_review": false
+  },
+  {
+   "run": "S14-r2",
+   "scenario": "S14",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_quality_goals",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "What would you use the pair counts to find out?",
+      "source": "transcript.md",
+      "reason": "The agent's message talks only about the tokenizer, how pairs are defined and the user's purpose, and never brings up quality goals, arc42 or ADRs."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0455818
+   },
+   "cost_usd": 0.004292,
    "needs_review": false
   }
  ]
