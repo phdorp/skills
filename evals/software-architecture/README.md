@@ -146,8 +146,9 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   of always-read text after the S13 and S14 controls each regressed once; the review fix pass
   made the dialogue pointer say what the reference changes and added `status_blocked` (a spec
   waiting for a proposed ADR is not `ready-for-agent`; both `main` runs failed it). Open: both
-  final S11 runs build options on proposed ADR-0004 (J4, which `main` passed); S13-r2 mentions
-  that the repo has no arc42 (J1). No S01–S10 run loads either skill, so none was re-run.
+  final S11 runs build options on proposed ADR-0004 (J4, which `main` passed); an extra round
+  approved by the architect brought that to 1 of 2 and cost one J3 hedge; S13-r2 mentions that
+  the repo has no arc42 (J1). No S01–S10 run loads either skill, so none was re-run.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 

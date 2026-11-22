@@ -6,21 +6,22 @@ so a lost USB stick exposes nothing. Help me think this through before anything 
 
 ### assistant
 
-I'll read the project first so the questions are about your intent, not things the code already answers.
+I'll read the project first so I know how notes work today before asking anything.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -20 && find . -path ./.git -prune -o -type f -print | head -200 && ls -la docs/architecture 2>/dev/null",
- "description": "Inspect repo layout, history, and architecture docs"
+ "command": "git log --oneline | head -20 && echo --- && find . -path ./.git -prune -o -type f -print | head -200 && echo --- && ls docs/architecture 2>/dev/null; cat README* 2>/dev/null | head -100",
+ "description": "Survey repo files, history, and docs"
 }
 ```
 
 ### tool_result
 
 ```
-5ee4fe7 fixture
+eac25ff fixture
+---
 ./README.md
 ./GLOSSARY.md
 ./notes/__main__.py
@@ -36,21 +37,31 @@ I'll read the project first so the questions are about your intent, not things t
 ./docs/adr/0003-cli-reaches-storage-only-through-store.md
 ./docs/adr/0001-use-sqlite-for-storage.md
 ./docs/architecture/arc42.md
-total 12
-drwxr-xr-x 2 root root 4096 Nov 21 11:55 .
-drwxr-xr-x 4 root root 4096 Nov 21 11:55 ..
--rw-r--r-- 1 root root 2674 Nov 21 11:55 arc42.md
+---
+arc42.md
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
 ```
 
 ### assistant
 
-The architecture doc exists, so I'll read the reference it calls for, then the code and ADRs.
+The architecture doc exists, so I'll read the skill's architecture reference, the architecture doc, the code, and the ADRs.
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-arm-yzx4d8q3/sa/skills/design-dialogue/references/architecture.md"
+ "file_path": "/tmp/sa-arm-xg565q_j/sa/skills/design-dialogue/references/architecture.md"
 }
 ```
 
@@ -82,50 +93,54 @@ The architecture doc exists, so I'll read the reference it calls for, then the c
 23	**Quality goals this touches:** QG-1 <name> (<how the change bears on it>), QG-2 <name> (...)
 24	```
 25	
-26	Cite only IDs arc42 defines.
-27	
-28	## 3. Structural choices
-29	
-30	When an approach turns on a paradigm, an architectural or design pattern, or a decision on the
-31	"Record architecture decisions" list, lay out 2–3 options, each in this form:
-32	
-33	```markdown
-34	**Option N: <name>.** <what it is>. Serves QG-x (<how>). Hurts QG-y (<how>).
-35	```
-36	
-37	Every option names at least one `QG-n` it serves or hurts. An option you cannot tie to a goal
-38	is dropped before you write the message; if it matters to the architect, mention it after the
-39	options as set aside, with the reason. Recommend one option and name the goal that decides it.
-40	Once the architect picks one, record the choice as a proposed ADR through
-41	[domain-modeling](../../domain-modeling/SKILL.md).
-42	
-43	## 4. New requirements
-44	
-45	A need the R-list does not cover, at system level (it constrains the whole system, like
-46	an audit trail or a new kind of user), is a new requirement. Name it as one and suggest that
-47	the architect run `/add-requirements` with it. The R-list changes only through that skill, and
-48	the architect starts it.
-49	
-50	## 5. Proposed ADRs
-51	
-52	A `proposed` ADR is an open decision. Name it as open wherever the design touches it, and build
-53	the approaches so each one still stands if the architect rejects it.
-54	
-55	## Red flags
-56	
-57	| Thought | Reality |
-58	|---|---|
-59	| "The requirements and scenarios I cited cover the goals" | Name the `QG-n` they belong to. Requirements and scenarios support goals; they are not goals. |
-60	| "This option has no goal, but it is worth listing too" | Tie it to a goal or set it aside after the options. |
-61	| "The change needs a new capability, I'll add it to the requirements" | Suggest `/add-requirements`. The R-list changes only through it. |
-62	
+26	Cite only IDs arc42 defines. When you say how the change bears on a goal, rely only on code
+27	and accepted ADRs.
+28	
+29	## 3. Structural choices
+30	
+31	When an approach turns on a paradigm, an architectural or design pattern, or a decision on the
+32	"Record architecture decisions" list, lay out 2–3 options, each in this form:
+33	
+34	```markdown
+35	**Option N: <name>.** <what it is>. Serves QG-x (<how>). Hurts QG-y (<how>).
+36	```
+37	
+38	Every option names at least one `QG-n` it serves or hurts. An option you cannot tie to a goal
+39	is dropped before you write the message; if it matters to the architect, mention it after the
+40	options as set aside, with the reason. Recommend one option and name the goal that decides it.
+41	Once the architect picks one, record the choice as a proposed ADR through
+42	[domain-modeling](../../domain-modeling/SKILL.md).
+43	
+44	## 4. New requirements
+45	
+46	A need the R-list does not cover, at system level (it constrains the whole system, like
+47	an audit trail or a new kind of user), is a new requirement. Name it as one and suggest that
+48	the architect run `/add-requirements` with it. The R-list changes only through that skill, and
+49	the architect starts it.
+50	
+51	## 5. Proposed ADRs
+52	
+53	A `proposed` ADR is an open decision. An option, a goal line or a recommendation rests on code
+54	and accepted ADRs only. Where a proposed ADR bears on the design, name it once, after the
+55	options, as an open decision: what changes in the options if the architect accepts it, and what
+56	if they reject it.
+57	
+58	## Red flags
+59	
+60	| Thought | Reality |
+61	|---|---|
+62	| "The requirements and scenarios I cited cover the goals" | Name the `QG-n` they belong to. Requirements and scenarios support goals; they are not goals. |
+63	| "This option has no goal, but it is worth listing too" | Tie it to a goal or set it aside after the options. |
+64	| "This option gets QG-n from the proposed ADR's mechanism" | The ADR is open. Tie the option to what the code and accepted ADRs give; name the proposed ADR after the options. |
+65	| "The change needs a new capability, I'll add it to the requirements" | Suggest `/add-requirements`. The R-list changes only through it. |
+66	
 ```
 
 ### tool_use Read
 
 ```json
 {
- "file_path": "/tmp/sa-eval-_qkdp_pt/project/docs/architecture/arc42.md"
+ "file_path": "/tmp/sa-eval-yx9uogwp/project/docs/architecture/arc42.md"
 }
 ```
 
@@ -213,50 +228,7 @@ The architecture doc exists, so I'll read the reference it calls for, then the c
 
 ```json
 {
- "file_path": "/tmp/sa-eval-_qkdp_pt/project/notes/cli.py"
-}
-```
-
-### tool_result
-
-```
-1	import argparse
-2	import sys
-3	
-4	from notes.store import Store, default_path
-5	
-6	
-7	def main(argv=None):
-8	    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
-9	    sub = parser.add_subparsers(dest="command", required=True)
-10	    sub.add_parser("add", help="add a note").add_argument("text")
-11	    sub.add_parser("list", help="list all notes")
-12	    sub.add_parser("search", help="find notes containing a term").add_argument("term")
-13	    args = parser.parse_args(argv)
-14	    try:
-15	        store = Store(default_path())
-16	    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
-17	        print(f"notes: {e}", file=sys.stderr)
-18	        return 1
-19	    try:
-20	        if args.command == "add":
-21	            note = store.add(args.text)
-22	            print(note.id)
-23	        else:
-24	            found = store.all() if args.command == "list" else store.search(args.term)
-25	            for note in found:
-26	                print(f"{note.id}\t{note.created}\t{note.text}")
-27	    finally:
-28	        store.close()
-29	    return 0
-30	
-```
-
-### tool_use Read
-
-```json
-{
- "file_path": "/tmp/sa-eval-_qkdp_pt/project/notes/store.py"
+ "file_path": "/tmp/sa-eval-yx9uogwp/project/notes/store.py"
 }
 ```
 
@@ -307,7 +279,50 @@ The architecture doc exists, so I'll read the reference it calls for, then the c
 
 ```json
 {
- "file_path": "/tmp/sa-eval-_qkdp_pt/project/notes/model.py"
+ "file_path": "/tmp/sa-eval-yx9uogwp/project/notes/cli.py"
+}
+```
+
+### tool_result
+
+```
+1	import argparse
+2	import sys
+3	
+4	from notes.store import Store, default_path
+5	
+6	
+7	def main(argv=None):
+8	    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
+9	    sub = parser.add_subparsers(dest="command", required=True)
+10	    sub.add_parser("add", help="add a note").add_argument("text")
+11	    sub.add_parser("list", help="list all notes")
+12	    sub.add_parser("search", help="find notes containing a term").add_argument("term")
+13	    args = parser.parse_args(argv)
+14	    try:
+15	        store = Store(default_path())
+16	    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
+17	        print(f"notes: {e}", file=sys.stderr)
+18	        return 1
+19	    try:
+20	        if args.command == "add":
+21	            note = store.add(args.text)
+22	            print(note.id)
+23	        else:
+24	            found = store.all() if args.command == "list" else store.search(args.term)
+25	            for note in found:
+26	                print(f"{note.id}\t{note.created}\t{note.text}")
+27	    finally:
+28	        store.close()
+29	    return 0
+30	
+```
+
+### tool_use Read
+
+```json
+{
+ "file_path": "/tmp/sa-eval-yx9uogwp/project/notes/model.py"
 }
 ```
 
@@ -325,42 +340,12 @@ The architecture doc exists, so I'll read the reference it calls for, then the c
 9	
 ```
 
-### tool_use Read
-
-```json
-{
- "file_path": "/tmp/sa-eval-_qkdp_pt/project/README.md"
-}
-```
-
-### tool_result
-
-```
-1	# notes
-2	
-3	Keep short notes from the command line.
-4	
-5	```sh
-6	python3 -m notes add "Buy milk"
-7	python3 -m notes list
-8	python3 -m notes search milk
-9	```
-10	
-11	Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
-12	`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
-13	
-```
-
-### assistant
-
-The stdlib-only constraint (R-3) matters a lot here. I'll check the ADRs, glossary, and tests before asking anything.
-
 ### tool_use Bash
 
 ```json
 {
- "command": "for f in docs/adr/*.md GLOSSARY.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo \"=== tests\"; cat tests/test_notes.py | head -80",
- "description": "Read ADRs, glossary, and tests"
+ "command": "for f in docs/adr/*.md GLOSSARY.md; do echo \"=== $f\"; cat \"$f\"; echo; done; echo \"=== tests\"; head -60 tests/test_notes.py; echo \"=== init\"; cat notes/__init__.py notes/__main__.py",
+ "description": "Read ADRs, glossary, tests, and package entry points"
 }
 ```
 
@@ -524,19 +509,19 @@ class CliTest(unittest.TestCase):
             with redirect_stdout(io.StringIO()):
                 self.assertEqual(main(["add", "Buy milk"]), 0)
            
-[... 220 chars cut]
+[... 332 chars cut]
 ```
 
 ### assistant
 
-The arc42 constraints shape the whole design, so I'll check one fact before I rely on it: whether the stdlib can do symmetric encryption at all.
+The architecture is set up, so the change has to fit its quality goals and ADRs. I'll check two facts before I write: whether the standard library can encrypt at all here, and what external tools exist.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cd /tmp && python3 -I -c \"\nimport sys, hashlib, pkgutil\nprint(sys.version.split()[0])\nprint('scrypt:', hasattr(hashlib,'scrypt'), '| pbkdf2:', hasattr(hashlib,'pbkdf2_hmac'))\nnames=[m.name for m in pkgutil.iter_modules() ]\nprint('stdlib cipher-ish modules:', [n for n in names if n in ('ssl','hmac','secrets','zipfile','_hashlib','crypt')])\nimport zipfile; print('zipfile can write encrypted zip:', hasattr(zipfile.ZipFile,'setpassword') and 'write-side encryption not supported' )\n\"; which gpg openssl 2>/dev/null",
- "description": "Check stdlib crypto capabilities on this machine"
+ "command": "cd /tmp && python3 -c \"\nimport sys, hashlib, importlib.util\nprint(sys.version.split()[0])\nprint('scrypt in hashlib:', hasattr(hashlib,'scrypt'))\nprint('pbkdf2 in hashlib:', hasattr(hashlib,'pbkdf2_hmac'))\nimport pkgutil\nmods=[m.name for m in pkgutil.iter_modules() if any(k in m.name for k in ('crypt','aes','nacl'))]\nprint('crypto-ish modules importable from stdlib list:', mods)\n\"; which openssl gpg age 2>/dev/null; echo \"exit=$?\"",
+ "description": "Check stdlib crypto support and available tools"
 }
 ```
 
@@ -544,27 +529,34 @@ The arc42 constraints shape the whole design, so I'll check one fact before I re
 
 ```
 3.13.5
-scrypt: True | pbkdf2: True
-stdlib cipher-ish modules: ['hmac', 'secrets', 'ssl', 'zipfile', '_hashlib']
-zipfile can write encrypted zip: write-side encryption not supported
-/usr/bin/gpg
+scrypt in hashlib: True
+pbkdf2 in hashlib: True
+crypto-ish modules importable from stdlib list: []
 /usr/bin/openssl
-Shell cwd was reset to /tmp/sa-eval-_qkdp_pt/project
+/usr/bin/gpg
+exit=1
+Shell cwd was reset to /tmp/sa-eval-yx9uogwp/project
 ```
 
 ### assistant
 
-You want `notes export DIR` to write each note as an encrypted Markdown file, so a lost stick exposes nothing, and you want people to be able to open the notes in other editors.
+Here is what I found, then the question I need answered first.
 
-I read the code and `docs/architecture/arc42.md`. Three things bear on this:
+Your request: `notes export DIR` writes each note as a Markdown file, encrypted with a passphrase, so a lost USB stick exposes nothing.
 
-- **R-3 says standard library only, and QS-2 says installing takes zero steps.** Python's stdlib has `scrypt` and `pbkdf2_hmac` for turning a passphrase into a key, but no symmetric cipher, and `zipfile` cannot write encrypted archives. That leaves a third-party package (breaks R-3), an external `gpg` or `openssl` call (not on every machine), or a cipher built from `hmac`, which I would not recommend. ADR-0002 makes export formats and third-party dependencies architect decisions that need an accepted ADR. Confidentiality also has no requirement or quality goal yet, so it would be a new requirement for `/add-requirements`.
-- **Plaintext must never touch the stick.** ADR-0004 writes through a temp file in the same directory, so encryption has to happen before anything reaches disk.
-- **Encrypted files cannot be opened in an editor directly.** That gap is the main open question.
+The project has an arc42 architecture doc, so the design has to fit its goals and ADRs:
 
-So, once someone has an exported file, how do they read it? Do they run a decrypt command that writes a plain copy somewhere off the stick, or do you want a format an editor can open directly with a passphrase?
+- **QG-1 (reliability):** ADR-0004 is proposed, not accepted. It requires every file the store writes, exports included, to be written atomically. If the export encrypts after writing plaintext, the plaintext briefly lands on the stick.
+- **QG-2 (portability):** R-3 says standard library only, and QS-2 says zero install steps.
+- **QG-3 (modifiability):** ADR-0003 says the export goes through `Store`.
 
-Tell me where I have this wrong.
+The hard constraint: the standard library can derive keys (`hashlib.scrypt` is present here) but has no cipher. Encryption needs a third-party package, which breaks R-3 and needs an architect-accepted ADR under ADR-0002. Or it needs the `openssl` or `gpg` binaries, which exist here but are not part of Python. Hand-rolling a cipher is the option I would reject.
+
+There is also a tension in the request. Encrypted files cannot be opened directly in another editor.
+
+So my question: when you say people should open their notes in other editors, do you mean after decrypting them with a tool first, or do you need to open the exported files directly with no decrypt step?
+
+Or if you would rather I just dive in, say so.
 
 ### result (success)
 
@@ -574,34 +566,53 @@ One Markdown file per note, the title as the heading, the date in a small header
 names the folder. I'm offline after this: lay out the ways to build it and recommend one. I'll
 pick tomorrow.
 
+### tool_use Bash
+
+```json
+{
+ "command": "cd /tmp && openssl version && printf 'hello' > /tmp/x.txt && openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -pass pass:test -in /tmp/x.txt -out /tmp/x.enc && openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -pass pass:test -in /tmp/x.enc && echo && gpg --version | head -1; rm -f /tmp/x.txt /tmp/x.enc",
+ "description": "Verify openssl enc round trip with PBKDF2"
+}
+```
+
+### tool_result
+
+```
+OpenSSL 3.5.7 9 Jun 2026 (Library: OpenSSL 3.5.7 9 Jun 2026)
+hello
+gpg (GnuPG) 2.4.7
+Shell cwd was reset to /tmp/sa-eval-yx9uogwp/project
+```
+
 ### assistant
 
-**Quality goals this touches:** QG-1 Reliability (each export file is written atomically per ADR-0004, so a crash leaves whole files or none), QG-2 Portability/installability (the encryption route decides whether `notes` still installs with nothing), QG-3 Maintainability (export goes through `Store` per ADR-0003, and the encryption route decides how much code changes if it is swapped).
+Nothing is built, and I'm not writing a design doc yet, since you want to pick tomorrow. Here is the picture.
 
-Please confirm those three. One fact changed: `Note` has no title field, only `id`, `text`, and `created`. My proposal: the heading is the first line of the text, cut to about 60 characters. A real title column would change the store schema, which is a central decision.
+**Quality goals this touches:** QG-1 Reliability (an export must not leave a partial or plaintext file on the stick), QG-2 Portability (no new install step or dependency, R-3 and QS-2), QG-3 Maintainability (the export goes through `Store`, ADR-0003).
 
-**Option 1: Stdlib-only cipher.** Derive the key with `hashlib.scrypt`, encrypt with an HMAC-SHA256 keystream, and authenticate with HMAC, all in `notes/export.py`. Serves QG-2 (nothing new to install). Hurts QG-3 (we own a custom format and its crypto, and every change to it is ours to review). The biggest risk is hand-rolled crypto, which is hard to get right and hard to verify.
+**Facts that shape the options**
+- A `Note` has no title. It is only `id`, `text`, `created`. "Title as heading" needs a rule. My suggestion is the first line of `text`, truncated, with the full text as the body.
+- File names are not encrypted. A name like `buy-milk.md` tells anyone holding the stick what the note says. I'd name files by id, such as `0007.md`.
+- Export format and CLI command names are on ADR-0002's central list, so an accepted ADR is needed before building.
+- ADR-0004 (atomic writes, which covers exports) is still proposed, so I can't rely on it.
+- I checked here: `openssl` 3.5.7 encrypts and decrypts with `-pbkdf2`. `gpg` 2.4.7 is also present.
 
-**Option 2: `openssl enc` subprocess.** Python writes plaintext into openssl's stdin, and openssl writes ciphertext straight into the ADR-0004 temp file, so plaintext never lands on the stick. The passphrase goes through an environment variable, not argv. Serves QG-1 (audited code, with the same atomic rename) and QG-3 (encryption lives in one function). Hurts QG-2: it needs an `openssl` binary. This stays contained because QS-2 measures `list`, which remains stdlib-only, so `export` can fail with a clear message when openssl is missing. It is also a grey area under R-3's "standard library only" wording, which is your call to make.
+**Option A: shell out to `openssl enc`.** Each file is encrypted with AES-256-CBC and PBKDF2 by the `openssl` binary. Serves QG-3, since it is one function in `store.py`. Hurts QG-2: it adds a host binary, which strains the literal "only the standard library" in R-3. Also, `openssl enc` gives no integrity check, so tampering is undetected. That is acceptable for a lost-stick threat.
 
-**Option 3: `cryptography` package.** AES-GCM with a scrypt key, behind an optional extra so `list` stays dependency-free. Serves QG-1 (maintained, audited) and QG-3 (a well-known API). Hurts QG-2 and contradicts R-3 outright. Only the architect can change R-3, and only through `/add-requirements`.
+**Option B: add the `cryptography` package.** AES-GCM with scrypt or Argon2 for the key. Serves QG-1 with authenticated encryption. Hurts QG-2: it needs `pip install`, which fails QS-2's zero-install measure. It also breaks R-3 and needs an ADR under ADR-0002's third-party rule.
 
-**Set aside:**
-- Encrypted zip via `zipfile`: the stdlib cannot write encrypted archives, which I checked on this machine.
-- `gpg`: the same trade-offs as Option 2 with more key setup for the user, so it adds nothing.
-- Plain unencrypted files: they do not meet the request.
+**Set aside: hand-built cipher on `hashlib`.** The standard library has no cipher, so this means writing our own encryption. It would meet R-3, but I won't recommend custom cryptography.
 
-**Recommendation: Option 2.** It is the only route that gets audited crypto without breaking R-3's wording outright, and it keeps QS-2 intact by making export optional. Two things to check before building: `openssl enc -pbkdf2` must work on macOS's LibreSSL, which I could not test from this Linux machine, and the decrypt step must be documented. Readers would run something like `openssl enc -d -aes-256-cbc -pbkdf2 -in 0001.md.enc`.
+**My recommendation: Option A.** It keeps the install story intact, since `openssl` ships on macOS and most Linux systems, and it has the smallest footprint. The architect must explicitly accept that R-3's wording is stretched to cover a system binary. If they won't accept that, choose B and amend R-3 first.
 
-**My calls, to check:** filenames are the note id only (for example `0001.md.enc`). Titles in filenames would leak to anyone holding a lost stick.
+**For tomorrow, these are yours to decide:**
+1. Option A or B.
+2. Heading source: first line of the text, or a new title field.
+3. File names: by id, as I suggest.
+4. Editors: my assumption is decrypt first, with a documented decrypt command. Say so if you need direct opening, since that conflicts with encryption.
+5. Whether "encrypted export" is a new requirement for `/add-requirements` or just part of the export ADR.
+6. Passphrase input: a prompt with no echo, not a command-line argument, which would leak into shell history.
 
-**Open for tomorrow, most important first:**
-1. Which option.
-2. Decrypt path: a documented openssl command, or a `notes decrypt` subcommand (a new command is a central decision).
-3. Title: first line of text, or a real title column.
-4. Export format and filename scheme need an accepted ADR, since ADR-0002 lists them as central.
-5. Confidentiality is a new requirement. Run `/add-requirements` for it.
-
-Nothing is built. When you pick, I will size the work and write the design doc.
+Once you pick, I'll draft the proposed ADR for the export format.
 
 ### result (success)

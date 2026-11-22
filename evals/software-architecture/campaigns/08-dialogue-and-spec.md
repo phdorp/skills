@@ -161,3 +161,23 @@ Open after the one fix pass (no second pass):
    glossary, or arc42 docs, so this was the local-file path." The gated pointer names the file in
    every project; S13-r1 said the same in mid-run text and passed. A judge-strict borderline,
    recorded as a cost of the gated pointer.
+
+## Extra round, approved by the architect: skills at `17222a1` (2026-11-22)
+
+Change: options, goal lines and recommendations rest on code and accepted ADRs; a proposed ADR
+is named once, after the options, with what accepting or rejecting it changes; one red-flag
+row for "this option gets QG-n from the proposed ADR's mechanism". S11 and S14 re-run.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S11-r1 | - | J3 |
+| S11-r2 | - | J4 |
+| S14-r1, S14-r2 | - | - |
+
+Both S11 runs read the reference. J4 held in S11-r1 and failed again in S11-r2: "Serves QG-1:
+the atomic write rule from ADR-0004 applies." S11-r1 hedged on J3: "5. Whether \"encrypted
+export\" is a new requirement for `/add-requirements` or just part of the export ADR." (it names
+the skill, so `add_requirements_suggested` passes, but leaves the classification open).
+
+Open after this round: J4 (1 of 2) and J3 (1 of 2). Two runs per arm cannot separate a fix
+that halves the rate from noise; ticket 11 can add runs if the architect wants a firmer number.

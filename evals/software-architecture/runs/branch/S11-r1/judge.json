@@ -9,33 +9,33 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Quality goals this touches:** QG-1 Reliability (each export file is written atomically per ADR-0004, so a crash leaves whole files or none), QG-2 Portability/installability",
+   "quote": "**Quality goals this touches:** QG-1 Reliability (an export must not leave a partial or plaintext file on the stick), QG-2 Portability (no new install step or dependency, R-3 and QS-2), QG-3 Maintainability (the export goes through `Store`, ADR-0003).",
    "source": "transcript.md",
-   "reason": "Before laying out the options, the agent names the touched quality goals by QG ID and asks the architect to confirm them."
+   "reason": "Before the options, the agent states every touched quality goal by its QG-n ID with how the change bears on it."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "**Recommendation: Option 2.** It is the only route that gets audited crypto without breaking R-3's wording outright, and it keeps QS-2 intact by making export optional.",
+   "quote": "**My recommendation: Option A.**",
    "source": "transcript.md",
-   "reason": "Turn 2 gives three options, each tied to the QG-n goals it serves or hurts, and recommends one."
+   "reason": "Two options are offered, each tied to the QG-n goals it serves and hurts, and one is recommended."
   },
   {
    "criterion": "J3",
-   "pass": true,
-   "quote": "5. Confidentiality is a new requirement. Run `/add-requirements` for it.",
+   "pass": false,
+   "quote": "5. Whether \"encrypted export\" is a new requirement for `/add-requirements` or just part of the export ADR.",
    "source": "transcript.md",
-   "reason": "The agent names encryption/confidentiality as a new requirement and sends it to /add-requirements without editing the R-list itself."
+   "reason": "The agent leaves open whether encryption is a new requirement instead of naming it as a new system-level requirement and suggesting `/add-requirements`."
   },
   {
    "criterion": "J4",
-   "pass": false,
-   "quote": "Python writes plaintext into openssl's stdin, and openssl writes ciphertext straight into the ADR-0004 temp file, so plaintext never lands on the stick.",
+   "pass": true,
+   "quote": "ADR-0004 (atomic writes, which covers exports) is still proposed, so I can't rely on it.",
    "source": "transcript.md",
-   "reason": "The agent builds its options on proposed ADR-0004 as if it were settled and never names it as an open decision."
+   "reason": "The agent explicitly treats ADR-0004 as an open, proposed decision and does not build the options on it."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.14516579999999998
+ "cost_usd": 0.15535380000000001
 }

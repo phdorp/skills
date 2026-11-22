@@ -2,16 +2,12 @@
 
 /sa:design-dialogue I want tally to also count word pairs. Help me think this through before anything gets built.
 
-### assistant
-
-I'll read the project first so I know how `tally` counts today before asking anything.
-
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100 && ls docs/architecture 2>/dev/null",
- "description": "Inspect repo layout and recent history"
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200 && ls docs/architecture/arc42.md 2>/dev/null",
+ "description": "List project files and check for architecture doc"
 }
 ```
 
@@ -19,7 +15,7 @@ I'll read the project first so I know how `tally` counts today before asking any
 
 ```
 Exit code 2
-4500178 fixture
+90d53e7 fixture
 ./README.md
 ./tally/__main__.py
 ./tally/cli.py
@@ -32,8 +28,8 @@ Exit code 2
 
 ```json
 {
- "command": "cat README.md && echo ---- && cat tally/cli.py && echo ---- && cat tally/__init__.py tally/__main__.py && echo ---- && cat tests/test_cli.py",
- "description": "Read README, source, and tests"
+ "command": "cat README.md && echo ---- && cat tally/__init__.py tally/__main__.py && echo ---- && cat tally/cli.py && echo ---- && cat tests/test_cli.py",
+ "description": "Read README, package, and tests"
 }
 ```
 
@@ -50,6 +46,13 @@ python3 -m tally notes.txt
 
 Prints one `word count` line per word, most frequent first, ties in alphabetical order.
 Run the tests with `python3 -m unittest`.
+----
+"""Word frequency counter."""
+import sys
+
+from tally.cli import main
+
+sys.exit(main())
 ----
 import argparse
 import re
@@ -76,13 +79,6 @@ def main(argv=None):
     for line in format_counts(counts):
         print(line)
     return 0
-----
-"""Word frequency counter."""
-import sys
-
-from tally.cli import main
-
-sys.exit(main())
 ----
 import io
 import tempfile
@@ -118,14 +114,10 @@ if __name__ == "__main__":
 
 ### assistant
 
-I read the whole project. `tally` is one small module. `tally/cli.py` lowercases the text, pulls out words with `[a-z']+`, counts them, and prints `word count` lines, most frequent first. The tests cover counting, ranking, and the printed output, and the README states that output format. Adding pairs will change that output, so it's part of this design.
+I read the project. `tally` is one small module. `count_words` lowercases the text, takes tokens matching `[a-z']+`, and returns a `Counter`. `format_counts` sorts those and prints `word count` lines. The README and the tests describe that same output, so pair counting would touch all three.
 
-So far I understand you want `tally` to report word pairs as well as single words. I haven't assumed how a pair is formed. That choice matters more than anything else here.
+The biggest open question is what a "pair" means. Do you mean two words that sit next to each other in the text, like "New York" or "of the", or any two words that appear in the same sentence, whether or not they are adjacent?
 
-❓ **Q1** - **What are the pair counts for?** What are you hoping they will show you that single-word counts can't?
-
-If you want common phrases like "new york" or "in order", I would count neighbouring words and stop pairs at punctuation or line breaks. If you want words that tend to appear together, I would count any two words in the same sentence, and the output would get large fast.
-
-Or if you would rather I just dive in, say so.
+Adjacent pairs can reuse the existing tokenizer with a sliding window, which is a small change. Same-sentence pairs need sentence splitting, unordered pairing, and a much larger ranked output, so the design would be bigger.
 
 ### result (success)
