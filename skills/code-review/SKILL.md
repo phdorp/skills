@@ -12,7 +12,7 @@ One loop with three phases: **request** a review, **perform** it on two axes, **
 - **Standards**: does the diff follow this repo's documented coding standards?
 - **Spec**: does the diff faithfully implement the originating issue or spec?
 
-If `docs/architecture/arc42.md` exists, read [references/architecture-axis.md](references/architecture-axis.md) before step 4: it adds a third axis with its own reviewer.
+If `docs/architecture/arc42.md` exists, read [references/architecture-axis.md](references/architecture-axis.md) before step 4: it adds a third axis with its own reviewer. Otherwise the review has these two axes, and its report has exactly two sections, `## Standards` and `## Spec`.
 
 Keep them separate. Code can pass one and fail the other: an implementation that ignores every convention can implement the right thing, and a beautifully conventional diff can implement the wrong thing. Reporting the axes separately stops one from masking the other.
 
@@ -74,7 +74,7 @@ Each reviewer gets one axis. A reviewer that sees the other axis's findings star
 
 ### 5. Aggregate
 
-Present each axis's report under its own heading, `## Standards` and `## Spec` (and `## Architecture` when that axis ran), verbatim or lightly cleaned. Do not merge, deduplicate across axes, or rerank.
+Present each axis's report under its own heading (`## Standards`, `## Spec`), verbatim or lightly cleaned. Do not merge, deduplicate across axes, or rerank.
 
 Close with one line: findings per axis, and the worst issue **within each axis**. Do not pick a single winner across axes.
 
