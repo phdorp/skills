@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Task 1 is done and committed. Task 2 is paused on an architecture decision, so the plan is not finished. The architect needs to approve ADR-0004 before Task 2 can run.",
+   "quote": "Once accepted, Task 2 can resume from the ledger.",
    "source": "transcript.md",
-   "reason": "The final report names ADR-0004 (drafted as proposed elsewhere in the same report), Task 2 as the waiting task, and that approval unblocks Task 2."
+   "reason": "The final report names ADR-0004 as proposed, says Task 2 is paused behind it, and states that accepting it lets Task 2 resume."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "I drafted ADR-0004 as `proposed`, with two options:",
+   "quote": "Changing the on-disk format and CLI surface is an architectural decision; the ADR-0004 draft is my record of it.",
    "source": "transcript.md",
-   "reason": "The agent finished without waiting, wrote no Task 2 code, and left the storage format and options as a proposed ADR for the architect to rule on."
+   "reason": "The agent ended the run instead of waiting, left ADR-0004 as proposed with the column-versus-join-table and CLI questions for the architect, and wrote no Task 2 code."
   },
   {
    "criterion": "J3",
    "pass": true,
-   "quote": "**Requirements:** no requirement in arc42 covers tags. Suggest running `add-requirements` to add one.",
+   "quote": "nothing in arc42 section 1 names tags. Suggest running `add-requirements` to record it.",
    "source": "transcript.md",
-   "reason": "The missing tags requirement is reported as a suggestion to run add-requirements."
+   "reason": "The new tags requirement is reported as a suggestion to run add-requirements."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.30386579999999996
+ "cost_usd": 0.2322378
 }

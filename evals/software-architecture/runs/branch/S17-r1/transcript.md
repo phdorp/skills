@@ -22,6 +22,17 @@ If you have questions about:
 
 **Ask them now.** Raise any concerns before starting work.
 
+**If the project has docs/architecture/arc42.md**, check the task against
+its architecture before you write code: read the ADR titled "Record
+architecture decisions" and list what the task changes that its "decided
+centrally" list names (an on-disk format, a CLI option, an interface).
+Each item no accepted ADR settles is an open decision, even when the
+brief spells out how to do it: a brief is not an accepted ADR. Draft it
+with the domain-modeling skill as a proposed ADR, leave the code behind
+it unwritten, finish the rest of the task, and report NEEDS_DECISION
+with the ADR's path. The architect is not yours to ask, and the decision
+is not yours to make.
+
 ## Your Job
 
 Once you're clear on requirements:
@@ -96,13 +107,6 @@ worse than no work. You will not be penalized for escalating.
 **How to escalate:** report status BLOCKED or NEEDS_CONTEXT. Describe
 specifically what you're stuck on, what you tried, and what help you need.
 
-**Architectural decisions:** if the project has docs/architecture/arc42.md
-and the task needs an architectural decision that no accepted ADR settles
-(domain-modeling's "When a decision needs an ADR"), draft it with the
-domain-modeling skill as a proposed ADR, leave the code behind it
-unwritten, finish the rest of the task, and report NEEDS_DECISION with
-the ADR's path. Never ask the architect yourself, and never decide it.
-
 ## Before Reporting Back: Self-Review
 
 Review your work with fresh eyes:
@@ -167,7 +171,7 @@ silently produce work you're unsure about.
 
 ```json
 {
- "command": "cat .dispatch/task-2-brief.md && git status --short && git log --oneline | head -5",
+ "command": "cat .dispatch/task-2-brief.md && echo ---- && git status --short && git log --oneline | head -5 && ls docs/architecture 2>/dev/null",
  "description": "Read task brief and check repo state"
 }
 ```
@@ -190,21 +194,98 @@ Plan: docs/plans/2026-11-22-search-and-tags.md
 
 - [ ] **Step 1:** Tests: `notes add --tag work "Call Ann"` stores the tag; `notes list --tag work` prints only notes tagged `work`; a store created before this change still opens. Expected: fail.
 - [ ] **Step 2:** Add a `tags` column (comma-separated text, default empty) to the `notes` table, migrating an existing table with `ALTER TABLE`; `Note` gains `tags`; `add` takes `--tag` (repeatable); `list` takes `--tag`. Expected: all tests pass. **Commit** `feat: tag notes and filter list by tag`.
-87f5d7c fixture
+----
+e266739 fixture
+arc42.md
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat docs/plans/2026-11-22-search-and-tags.md; echo ----; cat notes/store.py notes/cli.py notes/model.py; echo ----; cat tests/test_notes.py; ls -la; ls notes tests",
- "description": "Read plan and source files"
+ "command": "cat docs/architecture/arc42.md && echo ---- && cat docs/plans/2026-11-22-search-and-tags.md 2>/dev/null; echo ----; ls -R notes tests docs 2>/dev/null; echo ----; cat notes/*.py; echo ----; cat tests/test_notes.py",
+ "description": "Read architecture doc, plan, and code"
 }
 ```
 
 ### tool_result
 
 ```
+# notes: architecture
+
+Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
+
+## 1. Introduction and goals
+
+### Requirements overview
+
+| ID | requirement | rank | status | reason |
+|---|---|---|---|---|
+| R-1 | Users add, list and search notes from the command line. | 1 | active | core use |
+| R-2 | No note is lost when the process or machine crashes. | 2 | active | users keep notes for years |
+| R-3 | Runs on Linux and macOS with only the Python standard library. | 3 | active | installed on locked-down machines |
+| R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
+| R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
+
+### Quality goals
+
+| ID | goal (ISO/IEC 25010) | from | scenario |
+|---|---|---|---|
+| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
+| QG-2 | Portability: installability | R-3 | QS-2 |
+| QG-3 | Maintainability: modifiability | R-1 | QS-3 |
+
+### Stakeholders
+
+| role | expectation |
+|---|---|
+| Architect (project owner) | decides the architecture; accepts ADRs |
+| Users | keep notes for years without losing any |
+| Contributors | change one part without learning the whole program |
+
+## 2. Constraints
+
+- Python 3.11 or later, standard library only (R-3).
+
+## 3. Context and scope
+
+## 4. Solution strategy
+
+## 5. Building block view
+
+| block | responsibility | may use |
+|---|---|---|
+| `cli` | parse commands, print results and errors | `store`, `model` |
+| `store` | keep notes between runs; the only block that knows the storage | `model` |
+| `model` | the `Note` value | - |
+
+## 6. Runtime view
+
+## 7. Deployment view
+
+## 8. Crosscutting concepts
+
+- Errors: reported on stderr as `notes: <message>`, exit code 1.
+
+## 9. Architecture decisions
+
+Decisions are recorded as ADRs in [docs/adr/](../adr/). What is decided centrally is listed in
+[ADR-0002 Record architecture decisions](../adr/0002-record-architecture-decisions.md).
+
+## 10. Quality requirements
+
+| ID | goal | stimulus | environment | response | measure |
+|---|---|---|---|---|---|
+| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the note is either fully stored or absent; the store still opens | 0 unreadable stores in 100 trials |
+| QS-2 | QG-2 | a user runs `python3 -m notes list` | fresh Linux or macOS with Python 3.11+ | it works without installing anything | 0 install steps |
+| QS-3 | QG-3 | a contributor swaps the storage engine | development | only `notes/store.py` and its tests change | 0 other files changed |
+
+## 11. Risks and technical debt
+
+## 12. Glossary
+
+See [GLOSSARY.md](../../GLOSSARY.md).
+----
 # Search and tags Implementation Plan
 
 **Goal:** Search shows the newest notes first, and notes can carry tags that `list` filters on.
@@ -228,672 +309,214 @@ Plan: docs/plans/2026-11-22-search-and-tags.md
 **Files:** Modify `notes/store.py`, `notes/cli.py`, `notes/model.py`, `tests/test_notes.py`.
 
 - [ ] **Step 1:** Tests: `notes add --tag work "Call Ann"` stores the tag; `notes list --tag work` prints only notes tagged `work`; a store created before this change still opens. Expected: fail.
-- [ ] **Step 2:** Add a `tags` column (comma-separated text, default empty) to the `notes` table, migrating an existing table with `ALTER TABLE`; `Note` gains `tags`; `add` takes `--tag` (repeatable); `list` takes `--tag`. Expected: all tests pass. **Commit** `feat: tag notes and filter list by tag`.
-----
-"""The only module that knows how notes are stored (ADR-0001, ADR-0003)."""
-import os
-import sqlite3
-from datetime import datetime, timezone
-from pathlib import Path
-
-from notes.model import Note
-
-
-def default_path():
-    return Path(os.environ.get("NOTES_DB", Path.home() / ".notes.db"))
-
-
-class Store:
-    def __init__(self, path):
-        self._db = sqlite3.connect(path)
-        self._db.execute("CREATE TABLE IF NOT EXISTS notes "
-                         "(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL)")
-
-    def add(self, text):
-        created = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        with self._db:
-            cur = self._db.execute("INSERT INTO notes (text, created) VALUES (?, ?)",
-                                   (text, created))
-        return Note(cur.lastrowid, text, created)
-
-    def all(self):
-        rows = self._db.execute("SELECT id, text, created FROM notes ORDER BY id")
-        return [Note(*row) for row in rows]
-
-    def search(self, term):
-        rows = self._db.execute("SELECT id, text, created FROM notes WHERE text LIKE ? ORDER BY id",
-                                (f"%{term}%",))
-        return [Note(*row) for row in rows]
-
-    def close(self):
-        self._db.close()
-import argparse
-import sys
-
-from notes.store import Store, default_path
-
-
-def main(argv=None):
-    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
-    sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("add", help="add a note").add_argument("text")
-    sub.add_parser("list", help="list all notes")
-    sub.add_parser("search", help="find notes containing a term").add_argument("term")
-    args = parser.parse_args(argv)
-    try:
-        store = Store(default_path())
-    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
-        print(f"notes: {e}", file=sys.stderr)
-        return 1
-    try:
-        if args.command == "add":
-            note = store.add(args.text)
-            print(note.id)
-        else:
-            found = store.all() if args.command == "list" else store.search(args.term)
-            for note in found:
-                print(f"{note.id}\t{note.created}\t{note.text}")
-    finally:
-        store.close()
-    return 0
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class Note:
-    id: int
-    text: str
-    created: str
-----
-import io
-import os
-import tempfile
-import unittest
-from contextlib import redirect_stdout
-from pathlib import Path
-from unittest import mock
-
-from notes.cli import main
-from notes.store import Store
-
-
-class StoreTest(unittest.TestCase):
-    def setUp(sel
-[... 1515 chars cut]
+- [ ] **Step 2:** Add a `tags` column (comma-separated text, default empty) to the `notes` table, migrating an existing table with `ALTER TABLE`; `Note` gains `tags`; `add` takes `--tag` (repeatable); `list` takes `--tag`. Expected: all tests pass. **Commit** `feat: tag notes and filter 
+[... 4094 chars cut]
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "ls -R docs | head -50; cat GLOSSARY.md README.md; grep -ril \"tag\" docs | head; python3 -m unittest 2>&1 | tail -3",
- "description": "Check docs for schema decisions and baseline tests"
+ "command": "for f in docs/adr/*.md; do echo \"==== $f\"; cat \"$f\"; done; ls GLOSSARY.md 2>/dev/null && cat GLOSSARY.md",
+ "description": "Read all ADRs and glossary"
 }
 ```
 
 ### tool_result
 
 ```
-docs:
-adr
-architecture
-plans
+==== docs/adr/0001-use-sqlite-for-storage.md
+# 1. Use SQLite for storage
 
-docs/adr:
-0001-use-sqlite-for-storage.md
-0002-record-architecture-decisions.md
-0003-cli-reaches-storage-only-through-store.md
+## Status
 
-docs/architecture:
-arc42.md
+accepted 2026-10-01
 
-docs/plans:
-2026-11-22-search-and-tags.md
+## Context
+
+Notes must survive crashes (R-2, QG-1, QS-1) and the program may use only the Python standard
+library (R-3, QG-2). The standard library ships `sqlite3`, whose transactions are atomic.
+
+## Decision
+
+Store all notes in one SQLite database file, by default `~/.notes.db`.
+
+## Consequences
+
+Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
+repaired with a text editor.
+==== docs/adr/0002-record-architecture-decisions.md
+# 2. Record architecture decisions
+
+## Status
+
+accepted 2026-10-01
+
+## Context
+
+The architect decides the architecture; contributors and agents implement it. We need a line
+between decisions the architect makes centrally and decisions left to whoever builds a block
+(R-1, QG-3).
+
+## Decision
+
+We record architecture decisions as ADRs in `docs/adr/`, in Nygard form.
+
+Decided centrally (needs an ADR the architect accepts):
+
+- the storage engine and the on-disk format;
+- the dependency rule between blocks: `cli` → `store` → `model`;
+- import and export formats;
+- CLI command names and exit codes;
+- third-party dependencies.
+
+Left to the building blocks (no ADR): internal helpers, SQL query structure, test layout.
+
+## Consequences
+
+Work that depends on a decision on the list waits until its ADR is accepted.
+==== docs/adr/0003-cli-reaches-storage-only-through-store.md
+# 3. CLI reaches storage only through the store module
+
+## Status
+
+accepted 2026-10-01
+
+## Context
+
+Contributors should be able to swap the storage engine by changing one module (QG-3, QS-3).
+
+## Decision
+
+Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
+`Store` class and the `Note` value.
+
+## Consequences
+
+Any new command that reads or writes notes goes through `Store`.
+GLOSSARY.md
 # Glossary
 
 **Note**: a short piece of text a user keeps, with an id and the time it was created.
 
 **Store**: the place notes are kept between runs.
-# notes
-
-Keep short notes from the command line.
-
-```sh
-python3 -m notes add "Buy milk"
-python3 -m notes list
-python3 -m notes search milk
 ```
 
-Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
-`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
-docs/plans/2026-11-22-search-and-tags.md
-Ran 3 tests in 0.070s
-
-OK
-```
-
-### assistant
-
-Baseline is green (3 tests). ADR-0003 says the CLI reaches storage only through `Store`, so I'll keep all SQL in `store.py`. Starting slice 1 with a failing test: `add --tag` stores the tag.
-
-### tool_use Edit
+### tool_use Skill
 
 ```json
 {
- "replace_all": false,
- "file_path": "/tmp/sa-eval-k71cruyc/project/tests/test_notes.py",
- "old_string": "class CliTest(unittest.TestCase):\n    def test_add_and_search(self):",
- "new_string": "class CliTest(unittest.TestCase):\n    def test_add_with_tag_stores_tag(self):\n        db = Path(tempfile.mkdtemp()) / \"n.db\"\n        with mock.patch.dict(os.environ, {\"NOTES_DB\": str(db)}):\n            with redirect_stdout(io.StringIO()):\n                self.assertEqual(main([\"add\", \"--tag\", \"work\", \"Call Ann\"]), 0)\n        store = Store(db)\n        self.addCleanup(store.close)\n        self.assertEqual([n.tags for n in store.all()], [(\"work\",)])\n\n    def test_add_and_search(self):"
+ "skill": "sa:domain-modeling"
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-k71cruyc/project/tests/test_notes.py has been updated successfully.
+Launching skill: sa:domain-modeling
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "timeout 600000 python3 -m unittest 2>&1 | tail -15",
- "description": "Run tests expecting tag test to fail"
+ "command": "cat /tmp/sa-arm-ztgmejtv/sa/skills/domain-modeling/ADR-FORMAT.md; echo ----; cat /tmp/sa-arm-ztgmejtv/sa/skills/domain-modeling/GLOSSARY-FORMAT.md | head -40; echo ----; cd /tmp/sa-eval-un0g076s/project && python3 -m unittest 2>&1 | tail -3",
+ "description": "Read ADR format guide and run baseline tests"
 }
 ```
 
 ### tool_result
 
 ```
-  File "/usr/lib/python3.13/argparse.py", line 1916, in parse_args
-    self.error(msg)
-    ~~~~~~~~~~^^^^^
-  File "/usr/lib/python3.13/argparse.py", line 2672, in error
-    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
-    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.13/argparse.py", line 2659, in exit
-    _sys.exit(status)
-    ~~~~~~~~~^^^^^^^^
-SystemExit: 2
+# ADR Format
 
-----------------------------------------------------------------------
-Ran 4 tests in 0.071s
+ADRs live in the project's ADR directory as `NNNN-slug.md`, numbered one above the highest
+existing number. That directory is the one where the project already keeps its ADRs (such as
+`docs/decisions/`), or `docs/adr/`, created when the first ADR is needed. ADRs stay where they
+are; a new ADR goes beside them. When and with which status to write one:
+[SKILL.md](./SKILL.md#architectural-decisions).
 
-FAILED (errors=1)
+## Template
+
+Nygard's five fields, all required:
+
+```md
+# {N}. {Short title of the decision}
+
+## Status
+
+{proposed | accepted YYYY-MM-DD | rejected YYYY-MM-DD: reason | superseded by ADR-NNNN}
+
+## Context
+
+{The forces at play: the requirements and quality goals the decision serves, cited by ID
+(R-n, QG-n, QS-n) where the project has them, otherwise named in words; constraints; the ADR
+this one replaces, if any.}
+
+## Decision
+
+{What we will do, in active voice: "We will …".}
+
+## Consequences
+
+{What becomes easier and harder, including effects on other ADRs and the work that follows.}
 ```
 
-### assistant
+The Status field's first line is the status. Keep every ADR short: a few sentences per field.
 
-RED confirmed: argparse rejects `--tag`. Now the minimal green for slice 1: the `tags` column in new tables, `Note.tags`, and `add --tag`.
+## What qualifies
 
-### tool_use Bash
+Examples of decisions that meet the rule in SKILL.md:
 
-```json
-{
- "command": "cat > notes/model.py <<'EOF'\nfrom dataclasses import dataclass\n\n\n@dataclass(frozen=True)\nclass Note:\n    id: int\n    text: str\n    created: str\n    tags: tuple = ()\nEOF\npython3 - <<'EOF'\nimport re\np = \"notes/store.py\"\ns = open(p).read()\ns = s.replace('''\"(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL)\")''',\n'''\"(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL, \"\n                         \"tags TEXT NOT NULL DEFAULT '')\")''')\ns = s.replace('''    def add(self, text):\n        created = datetime.now(timezone.utc).isoformat(timespec=\"seconds\")\n        with self._db:\n            cur = self._db.execute(\"INSERT INTO notes (text, created) VALUES (?, ?)\",\n                                   (text, created))\n        return Note(cur.lastrowid, text, created)\n\n    def all(self):\n        rows = self._db.execute(\"SELECT id, text, created FROM notes ORDER BY id\")\n        return [Note(*row) for row in rows]\n\n    def search(self, term):\n        rows = self._db.execute(\"SELECT id, text, created FROM notes WHERE text LIKE ? ORDER BY id\",\n                                (f\"%{term}%\",))\n        return [Note(*row) for row in rows]\n''', '''    def add(self, text, tags=()):\n        created = datetime.now(timezone.utc).isoformat(timespec=\"seconds\")\n        with self._db:\n            cur = self._db.execute(\"INSERT INTO notes (text, created, tags) VALUES (?, ?, ?)\",\n                                   (text, created, \",\".join(tags)))\n        return Note(cur.lastrowid, text, created, tuple(tags))\n\n    def all(self):\n        rows = self._db.execute(\"SELECT id, text, created, tags FROM notes ORDER BY id\")\n        return [_note(row) for row in rows]\n\n    def search(self, term):\n        rows = self._db.execute(\"SELECT id, text, created, tags FROM notes WHERE text LIKE ? ORDER BY id\",\n                                (f\"%{term}%\",))\n        return [_note(row) for row in rows]\n''')\ns = s.replace('''class Store:''', '''def _note(row):\n    id, text, created, tags = row\n    return Note(id, text, created, tuple(t for t in tags.split(\",\") if t))\n\n\nclass Store:''')\nopen(p, \"w\").write(s)\n\np = \"notes/cli.py\"\ns = open(p).read()\ns = s.replace('''    sub.add_parser(\"add\", help=\"add a note\").add_argument(\"text\")''',\n'''    add = sub.add_parser(\"add\", help=\"add a note\")\n    add.add_argument(\"text\")\n    add.add_argument(\"--tag\", action=\"append\", default=[], help=\"tag the note (repeatable)\")''')\ns = s.replace('''            note = store.add(args.text)''', '''            note = store.add(args.text, tags=args.tag)''')\nopen(p, \"w\").write(s)\nEOF\ngit diff --stat; timeout 600000 python3 -m unittest 2>&1 | tail -3",
- "description": "Implement tag storage and add --tag, run tests"
-}
+- **Architectural shape.** "The write model is event-sourced, the read model is projected into Postgres."
+- **Integration between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."
+- **Technology with lock-in.** Database, message bus, auth provider, deployment target; not every library.
+- **Boundaries and formats.** "Customer data is owned by the Customer context; others reference it by ID." Import and export formats, file layouts, wire formats.
+- **Deliberate deviations from the obvious path.** "Manual SQL instead of an ORM because X."
+- **Constraints not visible in the code.** "No AWS, for compliance." "Responses under 200 ms, per the partner contract."
+----
+# GLOSSARY.md Format
+
+## Structure
+
+```md
+# {Context Name}
+
+{One or two sentence description of what this context is and why it exists.}
+
+## Language
+
+**Order**:
+{A one or two sentence description of the term}
+_Avoid_: Purchase, transaction
+
+**Invoice**:
+A request for payment sent to a customer after delivery.
+_Avoid_: Bill, payment request
+
+**Customer**:
+A person or organization that places orders.
+_Avoid_: Client, buyer, account
 ```
 
-### tool_result
+## Rules
 
-```
- notes/cli.py        |  6 ++++--
- notes/model.py      |  1 +
- notes/store.py      | 24 +++++++++++++++---------
- tests/test_notes.py |  9 +++++++++
- 4 files changed, 29 insertions(+), 11 deletions(-)
-Ran 4 tests in 0.081s
+- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
+- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
+- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
+- **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
 
-OK
-```
+## Single vs multi-context repos
 
-### assistant
+**Single context (most repos):** One `GLOSSARY.md` at the repo root.
 
-Green. I'll rename the `id` local in `_note` so it doesn't shadow the builtin, then commit slice 1.
+**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
 
-### tool_use Bash
+```md
+# Glossary Map
 
-```json
-{
- "command": "sed -i 's/    id, text, created, tags = row/    note_id, text, created, tags = row/; s/    return Note(id, text, created, tuple/    return Note(note_id, text, created, tuple/' notes/store.py && timeout 600000 python3 -m unittest 2>&1 | tail -2 && git add notes tests && git commit -q -m \"feat: add --tag to notes add\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2",
- "description": "Re-run tests and commit slice 1"
-}
-```
-
-### tool_result
-
-```
-OK
-4dd53de feat: add --tag to notes add
-87f5d7c fixture
-```
-
-### assistant
-
-Slice 2: `list --tag` prints only notes with that tag. Writing the failing test first.
-
-### tool_use Edit
-
-```json
-{
- "replace_all": false,
- "file_path": "/tmp/sa-eval-k71cruyc/project/tests/test_notes.py",
- "old_string": "    def test_add_and_search(self):",
- "new_string": "    def test_list_with_tag_prints_only_tagged_notes(self):\n        db = Path(tempfile.mkdtemp()) / \"n.db\"\n        with mock.patch.dict(os.environ, {\"NOTES_DB\": str(db)}):\n            with redirect_stdout(io.StringIO()):\n                main([\"add\", \"--tag\", \"work\", \"Call Ann\"])\n                main([\"add\", \"Buy milk\"])\n            out = io.StringIO()\n            with redirect_stdout(out):\n                self.assertEqual(main([\"list\", \"--tag\", \"work\"]), 0)\n        self.assertIn(\"Call Ann\", out.getvalue())\n        self.assertNotIn(\"Buy milk\", out.getvalue())\n\n    def test_add_and_search(self):"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-k71cruyc/project/tests/test_notes.py has been updated successfully.
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "timeout 600000 python3 -m unittest 2>&1 | grep -E \"^(FAIL|ERROR|Ran|OK|FAILED)|SystemExit|AssertionError\" | head",
- "description": "Run tests expecting list --tag test to fail"
-}
-```
-
-### tool_result
-
-```
-ERROR: test_list_with_tag_prints_only_tagged_notes (tests.test_notes.CliTest.test_list_with_tag_prints_only_tagged_notes)
-SystemExit: 2
-Ran 5 tests in 0.116s
-FAILED (errors=1)
-```
-
-### assistant
-
-RED: `list` has no `--tag` option. Implementing it. I'll filter on exact tag membership in Python rather than `LIKE`, so `work` doesn't match `homework`.
-
-### tool_use Bash
-
-```json
-{
- "command": "python3 - <<'EOF'\np = \"notes/cli.py\"\ns = open(p).read()\ns = s.replace('''    sub.add_parser(\"list\", help=\"list all notes\")''',\n'''    sub.add_parser(\"list\", help=\"list all notes\").add_argument(\n        \"--tag\", help=\"only notes with this tag\")''')\ns = s.replace('''            found = store.all() if args.command == \"list\" else store.search(args.term)''',\n'''            if args.command == \"list\":\n                found = store.all(tag=args.tag)\n            else:\n                found = store.search(args.term)''')\nopen(p, \"w\").write(s)\np = \"notes/store.py\"\ns = open(p).read()\ns = s.replace('''    def all(self):\n        rows = self._db.execute(\"SELECT id, text, created, tags FROM notes ORDER BY id\")\n        return [_note(row) for row in rows]''', '''    def all(self, tag=None):\n        rows = self._db.execute(\"SELECT id, text, created, tags FROM notes ORDER BY id\")\n        notes = [_note(row) for row in rows]\n        return [n for n in notes if tag is None or tag in n.tags]''')\nopen(p, \"w\").write(s)\nEOF\ntimeout 600000 python3 -m unittest 2>&1 | tail -2",
- "description": "Implement list --tag filter and run tests"
-}
-```
-
-### tool_result
-
-```
-OK
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "git add notes tests && git commit -q -m \"feat: filter list by tag\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -1",
- "description": "Commit slice 2"
-}
-```
-
-### tool_result
-
-```
-223d036 feat: filter list by tag
-```
-
-### assistant
-
-Slice 3: a store created before this change must still open and migrate. Test first, using a database built with the old schema.
-
-### tool_use Edit
-
-```json
-{
- "replace_all": false,
- "file_path": "/tmp/sa-eval-k71cruyc/project/tests/test_notes.py",
- "old_string": "class CliTest(unittest.TestCase):",
- "new_string": "class MigrationTest(unittest.TestCase):\n    def test_store_created_before_tags_still_opens(self):\n        db = Path(tempfile.mkdtemp()) / \"old.db\"\n        old = sqlite3.connect(db)\n        old.execute(\"CREATE TABLE notes \"\n                    \"(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL)\")\n        old.execute(\"INSERT INTO notes (text, created) VALUES ('Buy milk', '2026-01-01T00:00:00+00:00')\")\n        old.commit()\n        old.close()\n\n        store = Store(db)\n        self.addCleanup(store.close)\n        self.assertEqual([(n.text, n.tags) for n in store.all()], [(\"Buy milk\", ())])\n        store.add(\"Call Ann\", tags=[\"work\"])\n        self.assertEqual([n.tags for n in store.all(tag=\"work\")], [(\"work\",)])\n\n\nclass CliTest(unittest.TestCase):"
-}
-```
-
-### tool_result
-
-```
-The file /tmp/sa-eval-k71cruyc/project/tests/test_notes.py has been updated successfully.
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "sed -i 's/^import os$/import os\\nimport sqlite3/' tests/test_notes.py && head -5 tests/test_notes.py && timeout 600000 python3 -m unittest 2>&1 | grep -E \"^(FAIL|ERROR|Ran|OK|FAILED)|OperationalError\" | head",
- "description": "Add sqlite3 import and run tests expecting migration failure"
-}
-```
-
-### tool_result
-
-```
-import io
-import os
-import sqlite3
-import tempfile
-import unittest
-ERROR: test_store_created_before_tags_still_opens (tests.test_notes.MigrationTest.test_store_created_before_tags_still_opens)
-sqlite3.OperationalError: no such column: tags
-Ran 6 tests in 0.147s
-FAILED (errors=1)
-[This command modified 1 file you've previously read: tests/test_notes.py. Call Read before editing.]
-```
-
-### assistant
-
-RED confirmed: `no such column: tags` on the old schema. (The file-changed notice is just my own `sed` adding the `sqlite3` import.) Implementing the `ALTER TABLE` migration in `Store.__init__`.
-
-### tool_use Bash
-
-```json
-{
- "command": "python3 - <<'EOF'\np = \"notes/store.py\"\ns = open(p).read()\nold = '''                         \"tags TEXT NOT NULL DEFAULT '')\")\n'''\nnew = '''                         \"tags TEXT NOT NULL DEFAULT '')\")\n        columns = [row[1] for row in self._db.execute(\"PRAGMA table_info(notes)\")]\n        if \"tags\" not in columns:  # stores created before tags existed\n            with self._db:\n                self._db.execute(\"ALTER TABLE notes ADD COLUMN tags TEXT NOT NULL DEFAULT ''\")\n'''\nassert s.count(old) == 1\ns = s.replace(old, new)\nopen(p, \"w\").write(s)\nEOF\ntimeout 600000 python3 -m unittest 2>&1 | tail -2; sed -n 1,25p notes/store.py",
- "description": "Add ALTER TABLE migration and run tests"
-}
-```
-
-### tool_result
-
-```
-OK
-"""The only module that knows how notes are stored (ADR-0001, ADR-0003)."""
-import os
-import sqlite3
-from datetime import datetime, timezone
-from pathlib import Path
-
-from notes.model import Note
-
-
-def default_path():
-    return Path(os.environ.get("NOTES_DB", Path.home() / ".notes.db"))
-
-
-def _note(row):
-    note_id, text, created, tags = row
-    return Note(note_id, text, created, tuple(t for t in tags.split(",") if t))
-
-
-class Store:
-    def __init__(self, path):
-        self._db = sqlite3.connect(path)
-        self._db.execute("CREATE TABLE IF NOT EXISTS notes "
-                         "(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL, "
-                         "tags TEXT NOT NULL DEFAULT '')")
-        columns = [row[1] for row in self._db.execute("PRAGMA table_info(notes)")]
-```
-
-### assistant
-
-Green. Committing slice 3, then reviewing the full diff.
-
-### tool_use Bash
-
-```json
-{
- "command": "git add notes tests && git commit -q -m \"feat: migrate pre-tag stores to add the tags column\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -4 && git diff 87f5d7c -- notes && cat notes/cli.py | sed -n 1,20p",
- "description": "Commit slice 3 and review full diff"
-}
-```
-
-### tool_result
-
-```
-32d25a8 feat: migrate pre-tag stores to add the tags column
-223d036 feat: filter list by tag
-4dd53de feat: add --tag to notes add
-87f5d7c fixture
-diff --git a/notes/__pycache__/__init__.cpython-313.pyc b/notes/__pycache__/__init__.cpython-313.pyc
-new file mode 100644
-index 0000000..47f871b
-Binary files /dev/null and b/notes/__pycache__/__init__.cpython-313.pyc differ
-diff --git a/notes/__pycache__/cli.cpython-313.pyc b/notes/__pycache__/cli.cpython-313.pyc
-new file mode 100644
-index 0000000..e8467ff
-Binary files /dev/null and b/notes/__pycache__/cli.cpython-313.pyc differ
-diff --git a/notes/__pycache__/model.cpython-313.pyc b/notes/__pycache__/model.cpython-313.pyc
-new file mode 100644
-index 0000000..8696517
-Binary files /dev/null and b/notes/__pycache__/model.cpython-313.pyc differ
-diff --git a/notes/__pycache__/store.cpython-313.pyc b/notes/__pycache__/store.cpython-313.pyc
-new file mode 100644
-index 0000000..56561a5
-Binary files /dev/null and b/notes/__pycache__/store.cpython-313.pyc differ
-diff --git a/notes/cli.py b/notes/cli.py
-index 96974cd..82b3013 100644
---- a/notes/cli.py
-+++ b/notes/cli.py
-@@ -7,8 +7,11 @@ from notes.store import Store, default_path
- def main(argv=None):
-     parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
-     sub = parser.add_subparsers(dest="command", required=True)
--    sub.add_parser("add", help="add a note").add_argument("text")
--    sub.add_parser("list", help="list all notes")
-+    add = sub.add_parser("add", help="add a note")
-+    add.add_argument("text")
-+    add.add_argument("--tag", action="append", default=[], help="tag the note (repeatable)")
-+    sub.add_parser("list", help="list all notes").add_argument(
-+        "--tag", help="only notes with this tag")
-     sub.add_parser("search", help="find notes containing a term").add_argument("term")
-     args = parser.parse_args(argv)
-     try:
-@@ -18,10 +21,13 @@ def main(argv=None):
-         return 1
-     try:
-         if args.command == "add":
--            note = store.add(args.text)
-+            note = store.add(args.text, tags=args.tag)
-             print(note.id)
-         else:
--            found = store.all() if args.command == "list" else store.search(args.term)
-+            if args.command == "list":
-+                found = store.all(tag=args.tag)
-+            else:
-+                found = store.search(args.term)
-             for note in found:
-                 print(f"{note.id}\t{note.created}\t{note.text}")
-     finally:
-diff --git a/notes/model.py b/notes/model.py
-index 0d02735..3aa2bf2 100644
---- a/notes/model.py
-+++ b/notes/model.py
-@@ -6,3 +6,4 @@ class Note:
-     id: int
-     text: str
-     created: str
-+    tags: tuple = ()
-diff --git a/notes/store.py b/notes/store.py
-index eb064d3..f388956 100644
---- a/notes/store.py
-+++ b/notes/store.py
-@@ -11,27 +11,38 @@ def default_path():
-     return Path(os.environ.get("NOTES_DB", Path.home() / ".notes.db"))
- 
- 
-+def _note(row):
-+    note_id, text, created, tags = row
-+    return Note(note_id, text, created, tuple(t for t in tags.split(",") if t))
-+
-+
- class Store:
-     def __init__(self, path):
-         self._db = sqlite3.connect(path)
-         self._db.execute("CREATE TABLE IF NOT EXISTS notes "
--                         "(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL)")
--
--    def add(self, text):
-+                         "(id INTEGER PRIMARY KEY, text TEXT NOT NULL, created TEXT NOT NULL, "
-+                         "tags TEXT NOT NULL DEFAULT '')")
-+        columns = [row[1] for row in self._db.execute("PRAGMA table_info(notes)")]
-+        if "tags" not in columns:  # stores created before tags existed
-+            with self._db:
-+                self._db.execute("ALTER TABLE notes ADD COLUMN tags TEXT NOT NULL DEFAULT ''")
-+
-+    def add(self, text, tags=()):
-         created = datetime.now(timezone.utc).isoformat(timespec="seconds")
-         with self._db:
--            cur = self._db.execute("INSERT INTO notes (text, create
-[... 1989 chars cut]
-```
-
-### assistant
-
-The diff shows a problem I introduced: `git add notes tests` swept in `__pycache__/*.pyc` files in slice 1. These are my own unpushed commits, so I'll rebuild the three slice commits without the bytecode and keep their messages and order.
-
-### tool_use Bash
-
-```json
-{
- "command": "git ls-tree -r --name-only HEAD | grep pycache; set -e\nparent=87f5d7c\nfor c in 4dd53de 223d036 32d25a8; do\n  idx=$(mktemp -u)\n  GIT_INDEX_FILE=$idx git read-tree $c\n  GIT_INDEX_FILE=$idx git rm -r -q --cached --ignore-unmatch notes/__pycache__ tests/__pycache__\n  tree=$(GIT_INDEX_FILE=$idx git write-tree)\n  msg=$(git log -1 --format=%B $c)\n  parent=$(echo \"$msg\" | git commit-tree $tree -p $parent)\n  rm -f $idx\ndone\ngit update-ref refs/heads/master $parent\ngit reset -q\ngit log --oneline | head -4; git ls-tree -r --name-only HEAD | grep -c pycache || true; git status --short",
- "description": "Rebuild slice commits without pycache files"
-}
-```
-
-### tool_result
-
-```
-notes/__pycache__/__init__.cpython-313.pyc
-notes/__pycache__/cli.cpython-313.pyc
-notes/__pycache__/model.cpython-313.pyc
-notes/__pycache__/store.cpython-313.pyc
-tests/__pycache__/__init__.cpython-313.pyc
-tests/__pycache__/test_notes.cpython-313.pyc
-error: the following files have staged content different from both the
-file and the HEAD:
-    notes/__pycache__/cli.cpython-313.pyc
-    notes/__pycache__/store.cpython-313.pyc
-    tests/__pycache__/test_notes.cpython-313.pyc
-(use -f to force removal)
-error: the following files have staged content different from both the
-file and the HEAD:
-    notes/__pycache__/store.cpython-313.pyc
-    tests/__pycache__/test_notes.cpython-313.pyc
-(use -f to force removal)
-074822f feat: migrate pre-tag stores to add the tags column
-d01e7b6 feat: filter list by tag
-5ca3bff feat: add --tag to notes add
-87f5d7c fixture
-0
-?? notes/__pycache__/
-?? tests/__pycache__/
-```
-
-### assistant
-
-The `git rm` in the temp index reported errors, so I need to verify the new commits rather than trust the output. Checking each one's tree and the test results at each slice.
-
-### tool_use Bash
-
-```json
-{
- "command": "for c in 5ca3bff d01e7b6 074822f; do echo \"== $c\"; git ls-tree -r --name-only $c | grep -c pycache; git show --stat --format='%s' $c | tail -4; done; git log --format='%h %s%n%b' 074822f -1; git status --short; git stash list | head -2",
- "description": "Verify rebuilt commits contain no pycache"
-}
-```
-
-### tool_result
-
-```
-== 5ca3bff
-6
- tests/__pycache__/__init__.cpython-313.pyc   | Bin 0 -> 144 bytes
- tests/__pycache__/test_notes.cpython-313.pyc | Bin 0 -> 4821 bytes
- tests/test_notes.py                          |   9 +++++++++
- 10 files changed, 29 insertions(+), 11 deletions(-)
-== d01e7b6
-6
- notes/store.py                               |   5 +++--
- tests/__pycache__/test_notes.cpython-313.pyc | Bin 4821 -> 6131 bytes
- tests/test_notes.py                          |  12 ++++++++++++
- 6 files changed, 21 insertions(+), 4 deletions(-)
-== 074822f
-0
- tests/__pycache__/__init__.cpython-313.pyc   | Bin 144 -> 0 bytes
- tests/__pycache__/test_notes.cpython-313.pyc | Bin 6131 -> 0 bytes
- tests/test_notes.py                          |  18 ++++++++++++++++++
- 8 files changed, 22 insertions(+)
-074822f feat: migrate pre-tag stores to add the tags column
-Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
-
-?? notes/__pycache__/
-?? tests/__pycache__/
-```
-
-### assistant
-
-Still wrong: the first two rebuilt commits keep the `.pyc` files, because the temp-index `rm` failed without `-f`. Redoing the rebuild from the original commit objects with `-f`, and checking each step.
-
-### tool_use Bash
-
-```json
-{
- "command": "parent=87f5d7c\nfor c in 4dd53de 223d036 32d25a8; do\n  idx=$(mktemp -u)\n  GIT_INDEX_FILE=$idx git read-tree $c\n  GIT_INDEX_FILE=$idx git rm -r -f -q --cached --ignore-unmatch notes/__pycache__ tests/__pycache__ || echo \"RM FAILED $c\"\n  tree=$(GIT_INDEX_FILE=$idx git write-tree)\n  parent=$(git log -1 --format=%B $c | git commit-tree $tree -p $parent)\n  rm -f $idx\n  echo \"$parent pycache=$(git ls-tree -r --name-only $parent | grep -c pycache)\"\ndone\ngit update-ref refs/heads/master $parent && git reset -q --mixed && git log --oneline | head -4 && git status --short && git ls-tree -r --name-only HEAD",
- "description": "Rebuild slice commits again, forcing pycache removal"
-}
-```
-
-### tool_result
-
-```
-691e54ef54d513e36682e6968c76e88dbbfd34cc pycache=0
-50254b2728ec5157afa62bdbf207dbae71567a04 pycache=0
-e78a3f0141d7909561374d073d20bbe73091abac pycache=0
-e78a3f0 feat: migrate pre-tag stores to add the tags column
-50254b2 feat: filter list by tag
-691e54e feat: add --tag to notes add
-87f5d7c fixture
-?? notes/__pycache__/
-?? tests/__pycache__/
-.dispatch/task-2-brief.md
-GLOSSARY.md
-README.md
-docs/adr/0001-use-sqlite-for-storage.md
-docs/adr/0002-record-architecture-decisions.md
-docs/adr/0003-cli-reaches-storage-only-through-store.md
-docs/architecture/arc42.md
-docs/plans/2026-11-22-search-and-tags.md
-notes/__init__.py
-notes/__main__.py
-notes/cli.py
-notes/model.py
-notes/store.py
-tests/__init__.py
-tests/test_notes.py
-```
-
-### assistant
-
-History is clean now: three slice commits, no `.pyc` in any tree. Running the full suite on the final tree and confirming the source matches what I tested.
-
-### tool_use Bash
-
-```json
-{
- "command": "git diff HEAD --stat -- notes tests && timeout 600000 python3 -m unittest -v 2>&1 | tail -12",
- "description": "Run full suite verbosely on final tree"
-}
-```
-
-### tool_result
-
-```
-test_add_and_search (tests.test_notes.CliTest.test_add_and_search) ... ok
-test_add_with_tag_stores_tag (tests.test_notes.CliTest.test_add_with_tag_stores_tag) ... ok
-test_list_with_tag_prints_only_tagged_notes (tests.test_notes.CliTest.test_list_with_tag_prints_only_tagged_notes) ... ok
-test_store_created_before_tags_still_opens (tests.test_notes.MigrationTest.test_store_created_before_tags_still_opens) ... ok
-test_add_then_list (tests.test_notes.StoreTest.test_add_then_list) ... ok
-test_search_matches_substring (tests.test_notes.StoreTest.test_search_matches_substring) ... ok
-
-----------------------------------------------------------------------
-Ran 6 tests in 0.154s
+----
+Ran 3 tests in 0.073s
 
 OK
 ```
@@ -902,34 +525,58 @@ OK
 
 ```json
 {
- "file_path": "/tmp/sa-eval-k71cruyc/project/.dispatch/task-2-report.md",
- "content": "# Task 2 report: Tags\n\n## What I implemented\n\n- `notes add --tag <tag>` (repeatable) stores tags on a note. Tags are kept in a `tags` column,\n  comma-separated, default empty.\n- `Note` gained `tags: tuple = ()`. `Store.add(text, tags=())` and `Store.all(tag=None)` take the new arguments.\n- `notes list --tag <tag>` prints only notes whose tag list contains that tag.\n- A store created before this change is migrated on open: `Store.__init__` checks `PRAGMA table_info(notes)`\n  and runs `ALTER TABLE notes ADD COLUMN tags TEXT NOT NULL DEFAULT ''` when the column is missing.\n\nDesign choices:\n- The tag filter runs in Python on the tuple from `_note`, not in SQL with `LIKE`. An exact match means `work`\n  does not match a note tagged `homework`.\n- All SQL stays in `notes/store.py`, so the CLI only calls `Store` (ADR-0003).\n\n## Slices (TDD)\n\n| Test | RED: command and failing line | GREEN: result | Commit |\n|------|-------------------------------|---------------|--------|\n| `CliTest.test_add_with_tag_stores_tag` | `python3 -m unittest`: `SystemExit: 2`, argparse rejects `--tag` (ERROR, errors=1 of 4 tests) | 4/4 OK | `691e54e feat: add --tag to notes add` |\n| `CliTest.test_list_with_tag_prints_only_tagged_notes` | `python3 -m unittest`: `SystemExit: 2`, argparse rejects `list --tag` (ERROR, 5 tests, errors=1) | 5/5 OK | `50254b2 feat: filter list by tag` |\n| `MigrationTest.test_store_created_before_tags_still_opens` | `python3 -m unittest`: `sqlite3.OperationalError: no such column: tags` (ERROR, 6 tests, errors=1) | 6/6 OK | `e78a3f0 feat: migrate pre-tag stores to add the tags column` |\n\nEach slice's RED was seen before its implementation was written.\n\n## Commit history\n\nThe plan's global constraint says \"one commit per task\". The dispatch says \"commit each green slice\".\nI followed the dispatch and made three commits. If you want the plan's single commit, squash the three\n(`git reset --soft 87f5d7c` and recommit with `feat: tag notes and filter list by tag`).\n\nThe first attempt committed `notes/__pycache__/*.pyc` and `tests/__pycache__/*.pyc` in slice 1. I rebuilt the three\ncommits from their trees with the `__pycache__` paths removed, keeping the same messages and order. Verified:\n`git ls-tree -r HEAD | grep pycache` returns nothing. The original SHAs were `4dd53de`, `223d036`, `32d25a8`;\nthey are no longer on the branch.\n\nCommits were made with a Co-Authored-By trailer for Claude Haiku 5.5.\n\n## Test results\n\nFinal tree, `python3 -m unittest -v`: 6/6 pass (3 existing, 3 new), output clean, no warnings.\n\n## Files changed\n\n- `notes/model.py`: `tags` field on `Note`.\n- `notes/store.py`: `tags` column, migration, `_note` row helper, `add(text, tags=())`, `all(tag=None)`.\n- `notes/cli.py`: `add --tag` (append), `list --tag`.\n- `tests/test_notes.py`: three new tests, `sqlite3` import.\n\n## Self-review findings\n\n- Tags are stored comma-separated, so a tag containing a comma is split into two tags on read. I did not add\n  validation, because the plan did not ask for it. Decide whether to reject `,` in `--tag` values.\n- `search` line in `store.py` is about 105 characters and has no wrap. Task 1 edits the same `search` query\n  (`ORDER BY id` to newest first). Expect a merge conflict on that line if both branches are merged.\n- `notes/__pycache__/` and `tests/__pycache__/` are untracked in the working tree. The repo has no `.gitignore`.\n  I did not add one, since it was out of scope.\n- The migration runs on every `Store` open. The `PRAGMA` check is cheap, and an existing column makes it a no-op.\n\n## Concerns\n\n- The one-commit-per-task rule conflicts with the slice-commit rule (see Commit history). Three commits are on the branch.\n"
+ "file_path": "/tmp/sa-eval-un0g076s/project/docs/adr/0004-tags-storage-and-cli-option.md",
+ "content": "# 4. Store tags as a comma-separated column and add `--tag` options\n\n## Status\n\nproposed\n\n## Context\n\nUsers need to group notes so that `list` can show one group (R-1, QG-3). Tags change the on-disk\nformat of the `notes` table, which is decided centrally (ADR-0002) and rests on the SQLite file\nof ADR-0001. Existing stores must keep opening without loss, as crash safety requires (R-2, QS-1).\nThe `--tag` option adds to the CLI surface, which ADR-0002 also keeps central. Only `notes/store.py`\ntouches the database (ADR-0003).\n\n## Decision\n\nWe will add a `tags` column to the `notes` table: comma-separated text, default empty. An existing\ntable is migrated with `ALTER TABLE notes ADD COLUMN tags`. `add` takes `--tag` (repeatable) and\n`list` takes `--tag` to show only notes carrying that tag.\n\n## Consequences\n\n- Stores created before this change still open and read as untagged.\n- Tags are plain text, so a tag cannot contain a comma; the CLI or store must reject or escape one.\n  Filtering by tag matches whole tags, not substrings of the column.\n- A comma-separated column makes per-tag queries and a tag list harder than a join table would.\n  A join table is the alternative if tags grow beyond simple filtering.\n- Only `notes/store.py` changes for the storage part (QS-3); `cli.py` gains the two options.\n- ADR-0001 and ADR-0003 are unchanged.\n"
 }
 ```
 
 ### tool_result
 
 ```
-File created successfully at: /tmp/sa-eval-k71cruyc/project/.dispatch/task-2-report.md (file state is current in your context — no need to Read it back)
+File created successfully at: /tmp/sa-eval-un0g076s/project/docs/adr/0004-tags-storage-and-cli-option.md (file state is current in your context — no need to Read it back)
+```
+
+### tool_use Edit
+
+```json
+{
+ "replace_all": false,
+ "file_path": "/tmp/sa-eval-un0g076s/project/GLOSSARY.md",
+ "old_string": "**Store**: the place notes are kept between runs.",
+ "new_string": "**Store**: the place notes are kept between runs.\n\n**Tag**: a short label a user puts on a note so that `list` can show only the notes that carry it."
+}
+```
+
+### tool_result
+
+```
+The file /tmp/sa-eval-un0g076s/project/GLOSSARY.md has been updated successfully.
+```
+
+### tool_use Write
+
+```json
+{
+ "file_path": "/tmp/sa-eval-un0g076s/project/.dispatch/task-2-report.md",
+ "content": "# Task 2: Tags — report\n\n**Status:** NEEDS_DECISION\n\n## What I did\n\nChecked the task against `docs/architecture/arc42.md` and the ADR \"Record architecture decisions\"\n(ADR-0002). Its \"decided centrally\" list names the on-disk format and CLI interface. Task 2 changes\nboth: it adds a `tags` column to the `notes` table and adds `--tag` options to `add` and `list`.\nNo accepted ADR settles either. Per the brief rules, I did not write the tag code or its tests.\n\nDrafted the decision as a **proposed** ADR:\n\n- `docs/adr/0004-tags-storage-and-cli-option.md` (Status: `proposed`)\n  Question for the architect to approve: *Store tags as a comma-separated `tags` column (migrated\n  with `ALTER TABLE`), and add repeatable `--tag` to `add` and `list`?*\n\nAlso added one glossary term (`GLOSSARY.md`): **Tag**.\n\n## Tests\n\nBaseline before any change: `python3 -m unittest` → `Ran 3 tests … OK`.\nNo tag tests written (they depend on the unapproved format and option). No code changed.\n\n## Slices\n\n| Test | RED: command and failing line | GREEN: result | Commit |\n|------|-------------------------------|---------------|--------|\n| — | not started: blocked on ADR-0004 | — | — |\n\n## Files changed (uncommitted)\n\n- `docs/adr/0004-tags-storage-and-cli-option.md` (new, proposed)\n- `GLOSSARY.md` (added Tag)\n\nNo commits created.\n\n## Waiting for the architect\n\n- **ADR-0004 — Store tags as a comma-separated column and add `--tag` options.**\n  Question: approve the comma-separated `tags` column with `ALTER TABLE` migration, and the\n  repeatable `--tag` on `add` and `list`? Or prefer a join table (see Consequences)?\n  Once accepted, Task 2 can proceed exactly as the brief specifies.\n\n## Concerns\n\n- Comma-separated tags cannot contain commas; the ADR leaves reject-vs-escape open.\n- Task 1 (search order) is independent and untouched.\n"
+}
+```
+
+### tool_result
+
+```
+File created successfully at: /tmp/sa-eval-un0g076s/project/.dispatch/task-2-report.md (file state is current in your context — no need to Read it back)
 ```
 
 ### assistant
 
-**Status:** DONE_WITH_CONCERNS
+**Status:** NEEDS_DECISION
 
-**Commits** (on `master`, after rebuilding to drop accidental `.pyc` files):
-- `691e54e` feat: add --tag to notes add
-- `50254b2` feat: filter list by tag
-- `e78a3f0` feat: migrate pre-tag stores to add the tags column
-
-**Tests:** 6/6 passing, output clean (`python3 -m unittest -v`). Each slice's RED was seen before its implementation.
-
-**Concerns:**
-- The plan says "one commit per task", but the dispatch says commit each slice. I followed the dispatch and made three commits. To get the plan's single commit, squash them.
-- My first commit included `__pycache__/*.pyc` files. I rebuilt the three commits without them and verified the trees are clean. The original SHAs are no longer on the branch.
-- Tags are stored comma-separated, so a tag containing a comma splits on read. I did not add validation. Decide whether to reject commas.
-- Task 1 edits the same `search` query line, so expect a conflict there if both branches merge.
-
-Report: `.dispatch/task-2-report.md`
+- Commits created: none. Task 2 is blocked before any code is written.
+- Test summary: baseline `python3 -m unittest` gives 3/3 passing. No tag code or tests written.
+- Concern: arc42 says the on-disk format and CLI interface are decided centrally (ADR-0002). Task 2 adds a `tags` column and `--tag` options, and no accepted ADR covers either. I drafted `docs/adr/0004-tags-storage-and-cli-option.md` as **proposed**. The architect needs to approve it: comma-separated `tags` column with `ALTER TABLE` migration, plus repeatable `--tag` on `add` and `list`. Tags containing commas still need a reject-or-escape decision.
+- Also added a **Tag** term to `GLOSSARY.md`. Both files are uncommitted.
+- Task 1 is untouched.
+- Report: `.dispatch/task-2-report.md`
 
 ### result (success)

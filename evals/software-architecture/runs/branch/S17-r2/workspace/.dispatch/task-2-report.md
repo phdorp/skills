@@ -1,62 +1,56 @@
-# Task 2 report: Tags
+# Task 2: Tags — report
 
-## What was implemented
+**Status:** NEEDS_DECISION
 
-- `notes add --tag <name>` (repeatable) stores the tags on the note.
-- `notes list --tag <name>` prints only notes carrying that tag.
-- The `notes` table has a `tags` column (comma-separated text, default `''`). Stores created before
-  this change are migrated on open with `ALTER TABLE notes ADD COLUMN tags ...`.
-- `Note` gains `tags: tuple = ()`. `Store.add(text, tags=())` and `Store.all(tag=None)` take the new
-  arguments. `Store.search` returns tags too.
+## Why no code was written
 
-## Testing
+docs/architecture/arc42.md section 9 points to ADR-0002 "Record architecture decisions", which
+says the following are decided centrally and need an accepted ADR:
+- the on-disk format (Task 2 adds a `tags` column to the `notes` table);
+- CLI options and command names (Task 2 adds `--tag` to `add` and `list`).
 
-Command: `python3 -m unittest` (run in the foreground after each slice and at the end).
-Final output:
+No accepted ADR covers tags. The brief is not an ADR. Per the controller's instructions, I drafted
+the decision as a proposed ADR and left the code behind it unwritten. Tests and code for the
+slices (`add --tag`, `list --tag`, the `tags` column and its `ALTER TABLE` migration) depend on
+that decision, so nothing else in Task 2 can proceed independently.
 
-```
-Ran 6 tests in 0.156s
-OK
-```
+## ADR drafted
 
-Baseline before the task: 3 tests, OK. Smoke check with `python3 -m notes` against a scratch DB:
-`add --tag work --tag urgent "Call Ann"`, `add "Buy milk"`, `list --tag work` printed only "Call Ann",
-and `list` printed both.
+- Path: `docs/adr/0004-tags-as-comma-separated-column.md`
+- Status: `proposed 2026-11-22`
+- Title: "Store tags as a comma-separated column and add a repeatable --tag option"
+- Cites: ADR-0001, ADR-0002, ADR-0003, QS-1, QG-1, QS-3, QG-3, R-3.
+
+## Waiting for the architect
+
+1. **ADR-0004, "Store tags as a comma-separated column and add a repeatable --tag option".**
+   Question: do you approve a `tags` TEXT column (comma-separated, default empty), migrated in place
+   with `ALTER TABLE`, plus `--tag` (repeatable) on `add` and `list`?
+2. **Open points inside the ADR** (decide when approving or amending):
+   - Tags containing a comma: reject, or escape?
+   - Tag filter must match whole tags (so `work` does not match `homework`); confirm.
+   - Whether `search` gets `--tag` (not in the brief; left out).
+3. **Requirement not in arc42 section 1:** tagging is not among R-1 to R-5. Confirm whether to add it
+   as a requirement; I have not added it, since requirements are the architect's.
+
+## Tests and verification
+
+- Baseline before any change: `python3 -m unittest` → `Ran 3 tests in 0.073s — OK`.
+- No tests were written for Task 2 and no RED/GREEN slices exist, since the behaviour depends on the
+  unaccepted decision.
 
 ## Slices
 
-| Test | RED: command and failing line | GREEN: result | Commit |
-|------|-------------------------------|---------------|--------|
-| `CliTest.test_add_with_tag_stores_tag` (`add --tag work "Call Ann"` stores the tag) | `python3 -m unittest tests.test_notes.CliTest.test_add_with_tag_stores_tag` → `main(["add", "--tag", "work", "Call Ann"])`: argparse `SystemExit: 2` (unrecognized `--tag`) | OK, 4/4 | fd69147 `feat: add --tag to notes add` |
-| `CliTest.test_list_with_tag_prints_only_tagged_notes` (`list --tag work` prints only tagged) | `python3 -m unittest tests.test_notes.CliTest.test_list_with_tag_prints_only_tagged_notes` → errors (argparse rejects `list --tag`) | OK, 5/5 | b23ed66 `feat: filter notes list by tag` |
-| `LegacyStoreTest.test_store_created_before_tags_still_opens` | `python3 -m unittest tests.test_notes.LegacyStoreTest` → `sqlite3.OperationalError: no such column: tags` | OK, 6/6 | da5a515 `feat: migrate pre-tag stores to add the tags column` |
+| Test | RED | GREEN | Commit |
+|------|-----|-------|--------|
+| (none: blocked on ADR-0004) | — | — | — |
 
 ## Files changed
 
-- `notes/model.py`: `Note.tags`.
-- `notes/store.py`: schema, migration, `add`/`all`/`search`, `_note` row helper.
-- `notes/cli.py`: `add --tag`, `list --tag`.
-- `tests/test_notes.py`: three new tests (one class `LegacyStoreTest`).
+- `docs/adr/0004-tags-as-comma-separated-column.md` (new, uncommitted)
+- `.dispatch/task-2-report.md` (new, uncommitted)
 
-## Self-review findings
+## Concerns
 
-- Tags are stored comma-joined. A tag containing a comma (`--tag "a,b"`) is silently read back as two
-  tags. I did not add validation because the plan does not mention it. It is a concern, see below.
-- The legacy test creates the old-schema file with the `sqlite3` module directly. ADR-0003 says only
-  `notes/store.py` imports `sqlite3`. The test is the only other place that does, and it is needed to
-  build a pre-change store. Flagging it for the architect.
-- Adding `--tag` to `add` and `list` extends the CLI surface. ADR-0002 lists "CLI command names and
-  exit codes" as centrally decided. No command was added or renamed, only options. Flagging in case
-  the architect wants that covered by an ADR.
-
-## Issues and concerns
-
-1. **Commit count vs. plan.** The plan's global constraint says "one commit per task", and its Step 2
-   names the commit `feat: tag notes and filter list by tag`. The dispatch asks for a commit per green
-   slice. I followed the dispatch: three commits, listed above. If one commit is required, the three
-   can be squashed into one with that message.
-2. **Comma in tag names** (see self-review). Unvalidated.
-3. Task 1 (search order) was not touched. Task 2 changed the `search` SELECT and row mapping, so the
-   two tasks will touch the same `search` method and may conflict when merged.
-
-Status: DONE_WITH_CONCERNS.
+- Task 1 (search order) is unaffected and independent; I did not touch it.
+- The ADR is uncommitted; I did not commit it, since it is a proposal awaiting approval.

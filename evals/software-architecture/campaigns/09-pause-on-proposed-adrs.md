@@ -88,3 +88,35 @@ and still built. The rule only fires once an agent already sees a decision, and 
 spelled out the column.
 
 Gate: not met (S17). Task 5 follows.
+
+## Loophole round: skills at c1dfa2b (S16, S17; 2 runs each)
+
+Changes:
+- The implementer's check moves to "Before You Begin". Before writing code, the implementer
+  lists what the task changes from the "decided centrally" list; "a brief is not an accepted
+  ADR".
+- The unattended report gets a fixed line: "New requirement: <need> — suggest running
+  `add-requirements`".
+
+S15 was not re-run: the only change it could read is the unattended bullet, which it does not
+follow. These runs replace the S16 and S17 branch runs above; git history keeps the old ones.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S16-r1, S16-r2 | - | - |
+| S17-r1 | - | J1 |
+| S17-r2 | - | J1 |
+
+Both subagents now stop before writing code, draft ADR-0004 `proposed` and report
+`**Status:** NEEDS_DECISION` with the ADR path: "Task 2 adds a `tags` column and a `--tag`
+option, and no accepted ADR covers them. The brief is not an ADR." (S17-r2). Neither called
+`AskUserQuestion`.
+
+Open: J1 fails both runs. The judge reads the reports' "The architect needs to approve it"
+(S17-r1) and "Waiting for the architect: approve ADR-0004" (S17-r2) as asking the architect,
+not handing the decision back to the dispatcher. My reading is that both reports go to the
+dispatcher through the status contract and name who decides, which is what a parent needs. I
+did not rewrite J1 after seeing the runs; the final review rules on it. S17-r1 also added a
+**Tag** term to `GLOSSARY.md` (not graded).
+
+Gate after one round: S15 and S16 met. S17 meets every check; J1 stays open.

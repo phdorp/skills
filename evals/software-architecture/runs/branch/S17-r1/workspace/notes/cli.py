@@ -7,11 +7,8 @@ from notes.store import Store, default_path
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
     sub = parser.add_subparsers(dest="command", required=True)
-    add = sub.add_parser("add", help="add a note")
-    add.add_argument("text")
-    add.add_argument("--tag", action="append", default=[], help="tag the note (repeatable)")
-    sub.add_parser("list", help="list all notes").add_argument(
-        "--tag", help="only notes with this tag")
+    sub.add_parser("add", help="add a note").add_argument("text")
+    sub.add_parser("list", help="list all notes")
     sub.add_parser("search", help="find notes containing a term").add_argument("term")
     args = parser.parse_args(argv)
     try:
@@ -21,13 +18,10 @@ def main(argv=None):
         return 1
     try:
         if args.command == "add":
-            note = store.add(args.text, tags=args.tag)
+            note = store.add(args.text)
             print(note.id)
         else:
-            if args.command == "list":
-                found = store.all(tag=args.tag)
-            else:
-                found = store.search(args.term)
+            found = store.all() if args.command == "list" else store.search(args.term)
             for note in found:
                 print(f"{note.id}\t{note.created}\t{note.text}")
     finally:

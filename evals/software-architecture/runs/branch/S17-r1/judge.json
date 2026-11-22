@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": false,
-   "quote": "**Status:** DONE_WITH_CONCERNS",
-   "source": "transcript.md",
-   "reason": "The final report names no proposed ADR path, no open architectural question and no waiting part of the task, because the agent never recognised that the on-disk format and CLI options need an ADR."
+   "quote": "## Waiting for the architect",
+   "source": "workspace/.dispatch/task-2-report.md",
+   "reason": "The report names the ADR path and the open question, but it addresses questions to the architect and frames itself as waiting for the architect instead of handing the decision back to the dispatching agent."
   },
   {
    "criterion": "J2",
-   "pass": false,
-   "quote": "    add.add_argument(\"--tag\", action=\"append\", default=[], help=\"tag the note (repeatable)\")",
-   "source": "workspace/notes/cli.py",
-   "reason": "The agent wrote and committed the tags storage format and the new CLI options, settling decisions that ADR-0002 reserves for the architect."
+   "pass": true,
+   "quote": "No tag tests written (they depend on the unapproved format and option). No code changed.",
+   "source": "workspace/.dispatch/task-2-report.md",
+   "reason": "The ADR stays proposed, no ruling is claimed, and no tags code or tests were written."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2340658
+ "cost_usd": 0.1598098
 }

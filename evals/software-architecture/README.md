@@ -91,6 +91,9 @@ with the agents' wording: [campaigns/](campaigns/).
 | S12 spec-setup | 0.500 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
 | S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 0.500 | 2 of 2 (slash) |
 | S14 dialogue-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S15 pause-attended | 0.584 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S16 pause-unattended | 0.625 | 0.667 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S17 pause-subagent | 0.429 | 0.000 | 1.000 | 0.500 | - (dispatch template) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
 
@@ -152,6 +155,27 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   final S11 runs build options on proposed ADR-0004 (J4, which `main` passed); an extra round
   approved by the architect brought that to 1 of 2 and cost one J3 hedge; S13-r2 mentions that
   the repo has no arc42 (J1). No S01–S10 run loads either skill, so none was re-run.
+- S15–S17 (ticket 09, [campaign](campaigns/09-pause-on-proposed-adrs.md)): fixture `setup`
+  with overlay `s15` (a plan whose Task 2, tags, needs a "decided centrally" format), and `s17`
+  (the same plan plus a Task 2 brief). S17's prompt is the arm's own `implementer-prompt.md`
+  (`Prompt-from:`). On `main`:
+  - No run drafted an ADR.
+  - S15-r1 ruled on tags and built them.
+  - The other S15 and S16 runs paused from ADR-0002's own text but asked the architect to
+    write the ADR, so S16 committed nothing to accept.
+  - Both S17 subagents built tags and reported DONE_WITH_CONCERNS.
+
+  On the branch, `executing-plans` points (gated on arc42) to
+  `references/architecture-decisions.md`:
+  - Every run drafts ADR-0004 `proposed`, leaves tags unwritten and finishes the independent
+    task.
+  - S16 commits the ADR and files no issue.
+  - S17 reports `NEEDS_DECISION`.
+
+  One loophole round moved the implementer's check into "Before You Begin" (S17 had built tags
+  with the rule in its prompt). Open: S17 J1. The judge reads "the architect needs to approve
+  it" in the subagent's report as asking the architect. No S01–S14 run loads
+  `executing-plans`, so none was re-run.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 
@@ -169,6 +193,10 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   loaded `codebase-design` and `domain-modeling` that way).
 - The account's usage limit can cut a run off mid-turn; the run then fails isolation on its
   exit code and must be re-run.
+- S17 imitates a subagent: its prompt is the filled template, but no parent receives its
+  `NEEDS_DECISION` report, so the parent's side (`handling-reports.md`) is not exercised. The
+  grader also cannot see work done in a git worktree outside the checkout (ticket 09's first S15
+  runs).
 - Spec story 16 (a multi-context repo with `GLOSSARY-MAP.md`) has no fixture.
 - Haiku 5.5 often works without loading a skill (S01: 0 of 4 runs; S02 on the branch: 1 of 4 in early runs, 2 of 2 in the ticket 04 re-run). A scenario
   whose point is a skill's behaviour must make that skill likely to load, or it measures the

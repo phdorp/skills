@@ -1,4 +1,6 @@
+ M GLOSSARY.md
 ?? .dispatch/task-2-report.md
+?? docs/adr/0004-tags-storage-and-cli-option.md
 ?? notes/__pycache__/__init__.cpython-313.pyc
 ?? notes/__pycache__/cli.cpython-313.pyc
 ?? notes/__pycache__/model.cpython-313.pyc

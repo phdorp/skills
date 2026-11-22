@@ -8,26 +8,26 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "Approving or rejecting ADR-0004 unblocks Task 2.",
+   "quote": "- **Question for you:** accept ADR-0004 as option A, or choose option B? Accepting it unblocks Task 2. Option B would need the plan's Task 2 rewritten.",
    "source": "transcript.md",
-   "reason": "The final report names ADR-0004 as proposed, Task 2 as the paused task, and states that the architect's answer unblocks it."
+   "reason": "The final report presents ADR-0004 as proposed, names Task 2 as the task that waits for it, and states that accepting it unblocks Task 2."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "Task 2 is paused, not built, because the tags column changes the on-disk format that ADR-0002 reserves for the architect.",
+   "quote": "- ADR-0004 is drafted as `proposed` and Task 2 is not started. *Cost if wrong:* none until the ADR is accepted; nothing was built on the unaccepted schema.",
    "source": "transcript.md",
-   "reason": "The agent did not wait, finishing Task 1 and reporting, while leaving the storage format as options A/B in a proposed ADR and implementing no CLI options."
+   "reason": "The agent finished the run without waiting and left the tags format and CLI options to the architect's acceptance, without implementing either."
   },
   {
    "criterion": "J3",
-   "pass": false,
-   "quote": "it is named in words here and needs the architect's confirmation.",
-   "source": "workspace/docs/adr/0004-how-notes-store-tags.md",
-   "reason": "The agent saw that tagging is not a numbered requirement, but the final report never suggests running `add-requirements`."
+   "pass": true,
+   "quote": "- **New requirement:** tagging notes and filtering `list` by tag is a need no R-n in arc42 section 1 names. Suggest running `add-requirements`.",
+   "source": "transcript.md",
+   "reason": "The final report flags the new tagging requirement as a suggestion to run add-requirements."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.2915818
+ "cost_usd": 0.2956658
 }

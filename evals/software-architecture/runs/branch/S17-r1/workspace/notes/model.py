@@ -6,4 +6,3 @@ class Note:
     id: int
     text: str
     created: str
-    tags: tuple = ()
