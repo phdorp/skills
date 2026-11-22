@@ -106,6 +106,13 @@ Subagent (general-purpose):
     **How to escalate:** report status BLOCKED or NEEDS_CONTEXT. Describe
     specifically what you're stuck on, what you tried, and what help you need.
 
+    **Architectural decisions:** if the project has docs/architecture/arc42.md
+    and the task needs an architectural decision that no accepted ADR settles
+    (domain-modeling's "When a decision needs an ADR"), draft it with the
+    domain-modeling skill as a proposed ADR, leave the code behind it
+    unwritten, finish the rest of the task, and report NEEDS_DECISION with
+    the ADR's path. Never ask the architect yourself, and never decide it.
+
     ## Before Reporting Back: Self-Review
 
     Review your work with fresh eyes:
@@ -152,7 +159,7 @@ Subagent (general-purpose):
 
     Then report back with ONLY (under 15 lines — the detail lives in the
     report file):
-    - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
+    - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT | NEEDS_DECISION
     - Commits created (short SHA + subject)
     - One-line test summary (e.g. "14/14 passing, output pristine")
     - Your concerns, if any

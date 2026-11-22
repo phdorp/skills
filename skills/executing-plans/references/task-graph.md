@@ -25,7 +25,7 @@ Repeat until no tickets remain:
 4. **Recompute the frontier.** A merge unblocks tickets. Dispatch them immediately — do not wait for the rest of the frontier to drain. Record the new frontier in the ledger in the same message as the merge confirmation.
 5. **Close the ticket** the way the tracker closes work — a closing commit message, a state change, or the PR's closing reference. A merged ticket that is still open is work nobody can account for.
 
-A ticket that blocks on a decision rather than a merge gets a ruling, not a stall: decide, ledger `Ruling: <decision> — <why> — <cost if wrong>`, and unblock it. The four stops in SKILL.md are the only reasons to interrupt the human.
+A ticket that blocks on a decision rather than a merge gets a ruling, not a stall: decide, ledger `Ruling: <decision> — <why> — <cost if wrong>`, and unblock it. An architectural decision in a project with `docs/architecture/arc42.md` is the exception: [architecture-decisions.md](architecture-decisions.md). The four stops in SKILL.md are the only reasons to interrupt the human.
 
 ## Review and Finish
 

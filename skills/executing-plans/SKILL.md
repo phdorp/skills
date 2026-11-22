@@ -46,7 +46,7 @@ All three modes share the setup, the ledger, the task loop, the stops, and the r
 1. **Isolated workspace.** Use `using-git-worktrees` to create a worktree or verify the existing one. Never implement on a main/master branch without explicit consent.
 2. **Workspace.** Run `bash scripts/sdd-workspace PLAN_FILE`. It prints the plan's git-ignored directory, `<repo-root>/.skills/sdd/<plan-basename>/`, home to every artifact for this plan: ledger, briefs, reports, review packages, test logs. Another plan's directory is never yours to read or write.
 3. **Ledger.** It lives at `<workspace>/progress.md` and its first line is `# SDD ledger — plan: <plan file path>`. Harness todos are a live view; the ledger is the record. If a ledger already exists, read [references/resuming.md](references/resuming.md) before anything else.
-4. **Plan and spec.** Read the plan once: its context, its Global Constraints, one todo per task. Read the spec it names. The spec is the binding authority; the plan is its argument. A plan with no reachable spec gets a ledger note saying so — rulings made without one are provisional.
+4. **Plan and spec.** Read the plan once: its context, its Global Constraints, one todo per task. Read the spec it names. The spec is the binding authority; the plan is its argument. A plan with no reachable spec gets a ledger note saying so — rulings made without one are provisional. If `docs/architecture/arc42.md` exists, read [references/architecture-decisions.md](references/architecture-decisions.md) before Task 1: it adds a stop that pauses only the tasks behind it.
 5. **Preflight.** Run the interface-conflict scan in [references/preflight.md](references/preflight.md) before Task 1: one ledger row per pair of tasks that share a file or interface, and a ruling for every conflict the rows surface.
 6. **Discipline.** Load `test-driven-development` now, before Task 1. It governs every step of every task; a plan whose steps already say "write the failing test first" does not exempt you.
 
@@ -76,7 +76,7 @@ Do not pause between tasks. Do not ask "should I continue?", do not post progres
 3. A side effect outside this worktree that norms say you ask about first — a merge, a push to a shared branch, a publish.
 4. A plan so broken that every path forward is a guess.
 
-For those, stop and ask. Everything else, decide and keep going.
+For those, stop and ask. In a project with `docs/architecture/arc42.md`, an open architectural decision also stops the tasks behind it, and only those ([references/architecture-decisions.md](references/architecture-decisions.md)). Everything else, decide and keep going.
 
 ## Rulings, Not Stalls
 
