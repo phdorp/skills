@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Task 1 is done and committed. Task 2 is paused on an architecture decision, so the plan is not finished. The architect needs to approve ADR-0004 before Task 2 can run.",
+   "source": "transcript.md",
+   "reason": "The final report names ADR-0004 (drafted as proposed elsewhere in the same report), Task 2 as the waiting task, and that approval unblocks Task 2."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "I drafted ADR-0004 as `proposed`, with two options:",
+   "source": "transcript.md",
+   "reason": "The agent finished without waiting, wrote no Task 2 code, and left the storage format and options as a proposed ADR for the architect to rule on."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "**Requirements:** no requirement in arc42 covers tags. Suggest running `add-requirements` to add one.",
+   "source": "transcript.md",
+   "reason": "The missing tags requirement is reported as a suggestion to run add-requirements."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.30386579999999996
+}

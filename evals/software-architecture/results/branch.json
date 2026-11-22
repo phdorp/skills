@@ -84,6 +84,24 @@
    "score": 1.0,
    "judge": 1.0,
    "cost_usd": 0.009
+  },
+  "S15": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.046
+  },
+  "S16": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 0.834,
+   "cost_usd": 0.408
+  },
+  "S17": {
+   "runs": 2,
+   "score": 0.429,
+   "judge": 0.0,
+   "cost_usd": 0.046
   }
  },
  "runs": [
@@ -99,7 +117,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -174,7 +192,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.058s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -2155,6 +2173,470 @@
     "cost_usd": 0.0471058
    },
    "cost_usd": 0.004289,
+   "needs_review": false
+  },
+  {
+   "run": "S15-r1",
+   "scenario": "S15",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-store-tags-as-text-column.md; status proposed; cites ['QG-3', 'QS-1', 'QS-3', 'R-1']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "If you accept, I'll implement Task 2 as planned, run the suite, commit, and then do the final review and finish.",
+      "source": "transcript.md",
+      "reason": "The final report contains '**Decision for you:** accept or reject ADR-0004' and names Task 2 ('Tags') as the paused task that waits for the ADR."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ledger: Task 1: complete (commits f40bb0b..03e2fc2, tests: python3 -m unittest \u2192 OK)",
+      "source": "transcript.md",
+      "reason": "Task 1 was test-driven, made green and committed before the agent paused for the Task 2 decision."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "the plan is not an accepted ADR, so I stopped before writing Task 2 code.",
+      "source": "transcript.md",
+      "reason": "The agent drafted ADR-0004 as proposed and left accepting or rejecting the tags storage and CLI options to the architect, without deciding them itself."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.22409779999999999
+   },
+   "cost_usd": 0.022013,
+   "needs_review": false
+  },
+  {
+   "run": "S15-r2",
+   "scenario": "S15",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.086s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-tags-storage-and-cli-option.md; status proposed; cites ['QG-3', 'QS-1', 'QS-3', 'R-1', 'R-2']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Question for you:** accept, reject, or change ADR-0004? Once it's accepted, Task 2 runs as written.",
+      "source": "transcript.md",
+      "reason": "The message reporting ADR-0004 asks the architect to accept or reject it and names Task 2 as the work that waits for it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ledger: Task 1: complete (commits f40bb0b..1b8c605, tests: python3 -m unittest \u2192 OK)",
+      "source": "transcript.md",
+      "reason": "Task 1 was implemented, tested and committed before the agent paused on Task 2."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The storage shape (column versus table, separator, migration) and\nthe CLI surface (which commands take `--tag`) are for the architect to decide.",
+      "source": "workspace/docs/adr/0004-tags-storage-and-cli-option.md",
+      "reason": "The ADR is left proposed and gives the storage format and CLI options to the architect without any ruling."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2237258
+   },
+   "cost_usd": 0.024183,
+   "needs_review": false
+  },
+  {
+   "run": "S16-r1",
+   "scenario": "S16",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.088s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-how-notes-store-tags.md; status proposed; cites ['QG-1', 'QG-3', 'QS-1', 'QS-3', 'R-1', 'R-2']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_committed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_issue",
+     "pass": true,
+     "detail": "files: ; gh calls: 0"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Approving or rejecting ADR-0004 unblocks Task 2.",
+      "source": "transcript.md",
+      "reason": "The final report names ADR-0004 as proposed, Task 2 as the paused task, and states that the architect's answer unblocks it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Task 2 is paused, not built, because the tags column changes the on-disk format that ADR-0002 reserves for the architect.",
+      "source": "transcript.md",
+      "reason": "The agent did not wait, finishing Task 1 and reporting, while leaving the storage format as options A/B in a proposed ADR and implementing no CLI options."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "it is named in words here and needs the architect's confirmation.",
+      "source": "workspace/docs/adr/0004-how-notes-store-tags.md",
+      "reason": "The agent saw that tagging is not a numbered requirement, but the final report never suggests running `add-requirements`."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2915818
+   },
+   "cost_usd": 0.179685,
+   "needs_review": true
+  },
+  {
+   "run": "S16-r2",
+   "scenario": "S16",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.086s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.038s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-tag-storage-in-notes-table.md; status proposed; cites ['QG-1', 'QG-3', 'QS-1', 'QS-3', 'R-2']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_committed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_issue",
+     "pass": true,
+     "detail": "files: ; gh calls: 0"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Task 1 is done and committed. Task 2 is paused on an architecture decision, so the plan is not finished. The architect needs to approve ADR-0004 before Task 2 can run.",
+      "source": "transcript.md",
+      "reason": "The final report names ADR-0004 (drafted as proposed elsewhere in the same report), Task 2 as the waiting task, and that approval unblocks Task 2."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "I drafted ADR-0004 as `proposed`, with two options:",
+      "source": "transcript.md",
+      "reason": "The agent finished without waiting, wrote no Task 2 code, and left the storage format and options as a proposed ADR for the architect to rule on."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**Requirements:** no requirement in arc42 covers tags. Suggest running `add-requirements` to add one.",
+      "source": "transcript.md",
+      "reason": "The missing tags requirement is reported as a suggestion to run add-requirements."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.30386579999999996
+   },
+   "cost_usd": 0.228418,
+   "needs_review": false
+  },
+  {
+   "run": "S17-r1",
+   "scenario": "S17",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.145s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": false,
+     "detail": "tag in: cli.py, model.py, store.py; table unchanged: False"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": false,
+     "detail": "; status -; cites []"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "status_needs_decision",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "asked_no_one",
+     "pass": true,
+     "detail": "0 AskUserQuestion calls"
+    }
+   ],
+   "passed": 3,
+   "total": 7,
+   "score": 0.429,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "**Status:** DONE_WITH_CONCERNS",
+      "source": "transcript.md",
+      "reason": "The final report names no proposed ADR path, no open architectural question and no waiting part of the task, because the agent never recognised that the on-disk format and CLI options need an ADR."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "    add.add_argument(\"--tag\", action=\"append\", default=[], help=\"tag the note (repeatable)\")",
+      "source": "workspace/notes/cli.py",
+      "reason": "The agent wrote and committed the tags storage format and the new CLI options, settling decisions that ADR-0002 reserves for the architect."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2340658
+   },
+   "cost_usd": 0.019969,
+   "needs_review": false
+  },
+  {
+   "run": "S17-r2",
+   "scenario": "S17",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.146s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": false,
+     "detail": "tag in: cli.py, model.py, store.py; table unchanged: False"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": false,
+     "detail": "; status -; cites []"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "status_needs_decision",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "asked_no_one",
+     "pass": true,
+     "detail": "0 AskUserQuestion calls"
+    }
+   ],
+   "passed": 3,
+   "total": 7,
+   "score": 0.429,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "- **ADR-0002:** `add --tag` and `list --tag` extend the CLI surface. No command was added or renamed, but the architect may want to cover options in an ADR.",
+      "source": "transcript.md",
+      "reason": "The final report gives DONE_WITH_CONCERNS with no new ADR path, no open question and no waiting part of the task; it only mentions that the architect might want an ADR."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "add.add_argument(\"--tag\", action=\"append\", default=[], help=\"tag the note (repeatable)\")",
+      "source": "workspace/notes/cli.py",
+      "reason": "The agent wrote and committed the tags code, which settles the storage format (comma-joined tags column) and the new CLI options itself."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.24735379999999998
+   },
+   "cost_usd": 0.025975,
    "needs_review": false
   }
  ]

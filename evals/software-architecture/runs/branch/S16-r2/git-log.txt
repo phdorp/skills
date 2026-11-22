@@ -1,0 +1,4 @@
+a525c924db21e651de49f00c7919c51fdf686603 docs(adr): state the scope of tag storage in ADR-0004
+19d48e35ffb4d5fd2f3281158455b7bd223efb56 docs(adr): propose tag storage in notes table
+eb7295b043f401e1ec734091936c2ca3d313c1b1 feat: list search results newest first
+f40bb0b91e687cb98deee68bc32501671abf414d fixture

@@ -1,0 +1,4 @@
+da5a515b29143a05cedf1e5ff592486871c6151a feat: migrate pre-tag stores to add the tags column
+b23ed66cdf34bead6e5902153ee121517bdb456b feat: filter notes list by tag
+fd69147c71d053ae79b0d823a56f379431d58bd2 feat: add --tag to notes add
+87f5d7ce93a1a26c95147c4056bbb21d20be7fa9 fixture

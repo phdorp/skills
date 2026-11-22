@@ -1,0 +1,3 @@
+3ede3f943d7bdbc1ca139951f9e5b85908246c13 docs(adr): propose how notes store tags
+844b3fdc31c4c1807e2deb754948051063d0ebe2 feat: list search results newest first
+f40bb0b91e687cb98deee68bc32501671abf414d fixture

@@ -1,0 +1,22 @@
+{
+ "scenario": "S17",
+ "arm": "branch",
+ "ref": "design/software-architecture-skill-set",
+ "sha": "c9e53099b2a5afe9fa2478e20aad3ca31d294c63",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.019969,
+ "duration_s": 69.7,
+ "exit_code": 0,
+ "exit_codes": [
+  0
+ ],
+ "turns": 1,
+ "session_ids": [
+  "45cf00a7-7f9b-47e7-8a42-e912e4778d3e"
+ ],
+ "invoked": false,
+ "prompt_from": "skills/executing-plans/implementer-prompt.md",
+ "isolation_ok": true,
+ "isolation_errors": []
+}

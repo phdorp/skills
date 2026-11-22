@@ -60,3 +60,31 @@ The comma-in-tag edge case is the main open question for the controller." Neithe
 
 Gate met: every run fails `paused_area_untouched`, `adr_proposed` and J1–J2. `asked_no_one`
 held on `main`, so it gets no GREEN credit. `status_needs_decision` fails by construction.
+
+## GREEN: skills at c9e5309 (2026-11-22, 2 runs each)
+
+`executing-plans` gains a pointer, gated on `docs/architecture/arc42.md`, to
+`references/architecture-decisions.md` (detect, draft, pause and continue, who decides), plus
+`NEEDS_DECISION` in `implementer-prompt.md` and `handling-reports.md`. No S01–S14 branch
+transcript loads or reads `executing-plans`, so none was re-run.
+
+| run | failed checks | failed criteria |
+|---|---|---|
+| S15-r1, S15-r2 | - | - |
+| S16-r1 | - | J3 |
+| S16-r2 | - | - |
+| S17-r1, S17-r2 | paused_area_untouched, adr_proposed, report_names_adr, status_needs_decision | J1, J2 |
+
+S15 and S16 meet the gate's checks. Every run drafted ADR-0004 `proposed`, left the tags code
+unwritten and finished Task 1. "Task 2 adds a `tags` column to the `notes` table. ADR-0002
+lists "the on-disk format" as a decision made centrally, and the plan is not an accepted ADR,
+so I stopped before writing Task 2 code." (S15-r1). S16-r2 committed `docs(adr): propose tag
+storage in notes table` beside Task 1. S16-r1 (J3) saw that tagging is no numbered
+requirement but did not suggest `add-requirements`.
+
+S17 did not move. Both subagents had the new rule in their prompt, under "When You're in Over
+Your Head", and built tags as on `main`. S17-r2 read ADR-0002's "decided centrally" list first
+and still built. The rule only fires once an agent already sees a decision, and the brief
+spelled out the column.
+
+Gate: not met (S17). Task 5 follows.
