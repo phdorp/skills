@@ -75,15 +75,6 @@ Exception: if a prototype produced a snippet that encodes a decision more precis
 - Which modules will be tested, and at which seam.
 - Prior art: similar tests already in the codebase, by path or name.
 
-### Quality Requirements (set-up projects only)
-
-Only when `docs/architecture/arc42.md` exists. Cite by ID; arc42 and the ADRs hold the text.
-
-- **Serves:** the parent requirements (`R-n`).
-- **Keeps:** the quality scenarios (`QS-n`) the work must still meet.
-- **Builds on:** the accepted ADRs it relies on.
-- **Blocked by:** each decision the work needs that only a proposed ADR settles, with the ADR number. The spec does not build on it until the architect accepts it.
-
 ### Out of Scope
 
 What this spec deliberately does not cover, and where that work goes instead if it is planned.

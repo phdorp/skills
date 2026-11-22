@@ -15,7 +15,7 @@ Before your first message, read what the user pointed at and the code or materia
 
 Never ask what the repo, the spec, or the conversation already answers. Facts are your job.
 
-In a set-up project (`docs/architecture/arc42.md` exists), read [references/architecture.md](references/architecture.md) before your first message: it says how quality goals, requirements and ADRs shape the dialogue.
+If `docs/architecture/arc42.md` exists, read [references/architecture.md](references/architecture.md) before your first message.
 
 When looking further would help, offer recon: deeper into the codebase, the user's files and data, or the web. Say what you would look for and why it changes the design. Use [research](../research/SKILL.md) for a cited investigation; dispatch a focused explorer subagent when you only need facts from this repo.
 
@@ -140,4 +140,3 @@ When the document is approved, hand off to [spec-and-plan](../spec-and-plan/SKIL
 | "The spike works, I'll keep building on it" | Keeping it is a new request. Back through the gate. |
 | "I know enough to start coding" | Then the frontier is empty. Confirm it, write it down, and get approval. |
 | "I'll ask them for the config value" | Look it up. Facts are your job; decisions are theirs. |
-| "The change needs encryption, I'll add it to the requirements" | Suggest `/add-requirements`. In a set-up project the R-list changes only through it. |

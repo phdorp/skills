@@ -25,7 +25,7 @@ Synthesize; do not interview. Use what is already in the conversation and the co
 
 Read the code the feature touches, the project's `GLOSSARY.md`, and any ADRs in the area. Use the project's vocabulary. If the conversation produced new terms, update the glossary through [domain-modeling](../domain-modeling/SKILL.md) rather than inventing synonyms in the spec.
 
-In a set-up project (`docs/architecture/arc42.md` exists), also read the R-list and quality goals in arc42 section 1, the quality scenarios in section 10, and every ADR with its status, then fill the template's Quality Requirements section.
+If `docs/architecture/arc42.md` exists, read [references/quality-requirements.md](references/quality-requirements.md) before you write the spec.
 
 ### Sketch the seams, then confirm
 
@@ -47,7 +47,6 @@ Use [references/spec-template.md](references/spec-template.md). The shape:
 - **User Stories**: a long numbered list, `As an <actor>, I want <feature>, so that <benefit>`. Cover every aspect, including failure, permission, and empty states.
 - **Implementation Decisions**: modules, interfaces, contracts, schema, interactions. No file paths or code snippets; they go stale. Exception: a prototype snippet that encodes a decision (state machine, reducer, schema, type shape), trimmed to the decision-rich parts.
 - **Testing Decisions**: what makes a good test here (external behaviour, not internals), which modules, and prior art in the repo.
-- **Quality Requirements** (set-up projects only): the R-, QS- and ADR IDs the work serves, keeps and builds on, cited, and any proposed ADR it waits for.
 - **Out of Scope** and **Further Notes**.
 
 ### Close the open decisions
@@ -169,7 +168,6 @@ Wait for approval, then invoke [executing-plans](../executing-plans/SKILL.md). I
 |---|---|
 | "I'll interview the user for the spec" | No. Synthesize the conversation. Interview is design-dialogue. |
 | "I'll pick the seams while writing" | Confirm seams first. They decide the testing decisions. |
-| "The design says ADR-0004, so the spec follows it" | A proposed ADR is open. List it as blocking until the architect accepts it. |
 | "I'll skip tickets, the plan covers it" | Then say so. Tickets exist to expose order and blocking risk. |
 | "Plans can leave the file names open" | The implementer cannot know them. Name every file. |
 | "I'll describe the algorithm line by line" | Only when the signature and tests do not determine it. |
