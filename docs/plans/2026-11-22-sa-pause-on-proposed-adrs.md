@@ -53,7 +53,7 @@ Projects without arc42 see no change (D15).
 Overlay `s15` adds `docs/plans/2026-11-22-search-and-tags.md` to fixture `setup`: a two-task plan
 whose text never mentions ADRs.
 
-- Task 1, independent: `notes search` matches case-insensitively (`Store.search`; SQL query
+- Task 1, independent: `notes search` lists the newest notes first (`Store.search`; SQL query
   structure is "left to the building blocks" in ADR-0002), with a test.
 - Task 2, the hidden decision: notes get tags (`notes add --tag work "…"`, `notes list --tag
   work`), stored in a new `tags` column. The on-disk format and CLI options are on ADR-0002's
