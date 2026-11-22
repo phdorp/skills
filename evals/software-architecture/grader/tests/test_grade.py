@@ -91,5 +91,43 @@ class BaseWorkspace(unittest.TestCase):
         self.assertNotIn("__pycache__", names)
 
 
+def _tool_block(name, data):
+    return f"### tool_use {name}\n\n```json\n{json.dumps(data, indent=1)}\n```\n\n### tool_result\n\n```\nok\n```\n\n"
+
+
+class Turns(unittest.TestCase):
+    def _run_dir(self, transcript):
+        d = Path(tempfile.mkdtemp(prefix="sa-test-"))
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        (d / "transcript.md").write_text(transcript)
+        return d
+
+    def test_turn_texts_splits_at_user_headings(self):
+        d = self._run_dir("### user\n\nfirst\n\n### assistant\n\nlooking\n\n"
+                          + _tool_block("Read", {"file_path": "/p/docs/architecture/arc42.md"})
+                          + "### assistant\n\nWhich goals?\n\n### result (success)\n\n"
+                          "### user\n\nsecond\n\n### assistant\n\nOption A serves QG-1.\n\n"
+                          "### result (success)\n")
+        texts = grade.turn_texts(d)
+        self.assertEqual(len(texts), 2)
+        self.assertIn("looking", texts[0])
+        self.assertIn("Which goals?", texts[0])
+        self.assertNotIn("arc42.md", texts[0])
+        self.assertNotIn("first", texts[0])
+        self.assertEqual(texts[1].strip(), "Option A serves QG-1.")
+
+    def test_skill_called_matches_prefixed_and_plain(self):
+        d = self._run_dir("### user\n\nx\n\n" + _tool_block("Skill", {"skill": "sa:add-requirements"}))
+        self.assertTrue(grade.skill_called(d, "add-requirements"))
+        plain = self._run_dir("### user\n\nx\n\n" + _tool_block("Skill", {"skill": "add-requirements"}))
+        self.assertTrue(grade.skill_called(plain, "add-requirements"))
+        read = self._run_dir("### user\n\nx\n\n"
+                             + _tool_block("Read", {"file_path": "/s/add-requirements/SKILL.md"})
+                             + "### assistant\n\nRun `/add-requirements`.\n")
+        self.assertFalse(grade.skill_called(read, "add-requirements"))
+        other = self._run_dir("### user\n\nx\n\n" + _tool_block("Skill", {"skill": "sa:domain-modeling"}))
+        self.assertFalse(grade.skill_called(other, "add-requirements"))
+
+
 if __name__ == "__main__":
     unittest.main()

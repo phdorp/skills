@@ -59,6 +59,43 @@ def assistant_text(run_dir):
                      for i, m in enumerate(heads) if m.group(1) == "assistant")
 
 
+def _blocks(run_dir):
+    """(heading, body) of every transcript section, in order."""
+    p = Path(run_dir) / "transcript.md"
+    text = p.read_text(encoding="utf-8", errors="replace") if p.is_file() else ""
+    heads = list(HEADING.finditer(text))
+    return [(m.group(1), text[m.end():heads[i + 1].start() if i + 1 < len(heads) else len(text)])
+            for i, m in enumerate(heads)]
+
+
+def turn_texts(run_dir):
+    """The assistant text of each turn; a turn starts at a `### user` heading."""
+    turns = []
+    for head, body in _blocks(run_dir):
+        if head == "user":
+            turns.append([])
+        elif head == "assistant" and turns:
+            turns[-1].append(body)
+    return ["\n".join(t) for t in turns]
+
+
+def _tool_input(body):
+    body = body.strip()
+    if not (body.startswith("```json") and body.endswith("```")):
+        return {}
+    try:
+        data = json.loads(body[len("```json"):-3])
+    except ValueError:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def skill_called(run_dir, name):
+    """True when a Skill tool call loaded `name` or `sa:name`."""
+    return any(head == "tool_use Skill" and _tool_input(body).get("skill") in (name, f"sa:{name}")
+               for head, body in _blocks(run_dir))
+
+
 def commits(run_dir):
     p = run_dir / "git-log.txt"
     return [line for line in p.read_text().splitlines() if line.strip()] if p.exists() else []
@@ -646,8 +683,130 @@ def s10(run_dir):
     return _recovery(run_dir, "S10", OFF_LIST["S10"])
 
 
+SPEC_DIR = Path("docs") / "specs"
+QR_HEAD = re.compile(r"^(#+)\s.*quality requirements", re.M | re.I)
+MD_HEAD = re.compile(r"^(#+)\s", re.M)
+# QS-1's measure in the setup fixture; a spec cites QS-1 instead of copying it.
+QS1_MEASURE = "0 unreadable stores in 100 trials"
+NO_GOALS = re.compile(r"\bQG-\d|quality goal|25010", re.I)
+
+
+def _unchanged(ws, base):
+    """(ok, detail): `ws` holds exactly the files of `base`, byte for byte."""
+    if not ws.is_dir():
+        return False, "missing"
+    before, after = _files(base), _files(ws)
+    diff = sorted(k for k in set(before) | set(after) if before.get(k) != after.get(k))
+    return not diff, ", ".join(diff)
+
+
+def _new_specs(ws, base):
+    d = ws / SPEC_DIR
+    return [p for p in sorted(d.glob("*.md")) if not (base / p.relative_to(ws)).exists()] if d.is_dir() else []
+
+
+def qr_section(text):
+    """The text under the first heading that names Quality Requirements, or None."""
+    m = QR_HEAD.search(text)
+    if not m:
+        return None
+    level = len(m.group(1))
+    nxt = [h for h in MD_HEAD.finditer(text, m.end()) if len(h.group(1)) <= level]
+    return text[m.end():nxt[0].start() if nxt else len(text)]
+
+
+def _turn_tool_bodies(run_dir, turn):
+    """Bodies of the tool calls in turn `turn` (1-based)."""
+    out, k = [], 0
+    for head, body in _blocks(run_dir):
+        if head == "user":
+            k += 1
+        elif head.startswith("tool_use") and k == turn:
+            out.append(body)
+    return out
+
+
+def s11(run_dir):
+    ws, t1, base = run_dir / "workspace", run_dir / "workspace-t1", base_workspace("S11")
+    try:
+        t1_ok, t1_detail = _unchanged(t1, base)
+        ws_ok, ws_detail = _unchanged(ws, base)
+        known = {g["id"] for g in _rows(_read(base / ARC42), "from")}
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    turns = turn_texts(run_dir)
+    cited = set(QG_ID.findall(turns[1])) if len(turns) > 1 else set()
+    named = "add-requirements" in assistant_text(run_dir)
+    ran = skill_called(run_dir, "add-requirements")
+    return [
+        check("nothing_built", t1_ok and ws_ok, f"turn 1: {t1_detail}; end: {ws_detail}"),
+        check("arc42_read", any("arc42.md" in b for b in _turn_tool_bodies(run_dir, 1))),
+        check("goals_cited", bool(cited) and cited <= known, ", ".join(sorted(cited))),
+        check("add_requirements_suggested", named and not ran, f"named {named}; loaded {ran}"),
+    ]
+
+
+def s12(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S12")
+    try:
+        specs = _new_specs(ws, base)
+        known = adr.ids(_read(base / ARC42))
+        before, after = _files(base), _files(ws)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    text = _read(specs[0]) if specs else ""  # one_spec judges the count
+    sec = qr_section(text)
+    qs, rs = set(QS_ID.findall(sec or "")), set(R_ANY.findall(sec or ""))
+    code = sorted(k for k in set(before) | set(after)
+                  if not re.match(r"^(docs/|\.scratch/)", k) and before.get(k) != after.get(k))
+    return [
+        check("one_spec", len(specs) == 1, ", ".join(p.name for p in specs)),
+        check("qr_section", sec is not None),
+        check("qr_cites", bool(qs) and bool(rs) and (qs | rs) <= known, ", ".join(sorted(qs | rs))),
+        check("not_copied", bool(text) and QS1_MEASURE not in _norm(text)),
+        check("code_unchanged", not code, ", ".join(code)),
+    ]
+
+
+def _setup_mentions(run_dir):
+    return assistant_text(run_dir).count("setup-architecture")
+
+
+def s13(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S13")
+    try:
+        specs = _new_specs(ws, base)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    text = _read(specs[0]) if specs else ""  # one_spec judges the count
+    arch = [str(p.relative_to(ws)) for p in adr_files(ws)]
+    arch += ["docs/architecture"] if (ws / "docs" / "architecture").exists() else []
+    n = _setup_mentions(run_dir)
+    return [
+        check("one_spec", len(specs) == 1, ", ".join(p.name for p in specs)),
+        check("no_qr_section", bool(text) and qr_section(text) is None),
+        check("no_architecture_docs", ws.is_dir() and not arch, ", ".join(arch)),
+        check("setup_suggested_at_most_once", n <= 1, f"{n} mentions"),
+    ]
+
+
+def s14(run_dir):
+    ws, base = run_dir / "workspace", base_workspace("S14")
+    try:
+        ok, detail = _unchanged(ws, base)
+    finally:
+        shutil.rmtree(base.parent, ignore_errors=True)
+    found = sorted({m.group(0) for m in NO_GOALS.finditer(assistant_text(run_dir))})
+    n = _setup_mentions(run_dir)
+    return [
+        check("nothing_built", ok, detail),
+        check("no_quality_goals", ws.is_dir() and not found, ", ".join(found)),
+        check("setup_suggested_at_most_once", n <= 1, f"{n} mentions"),
+    ]
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
-          "S08": s08, "S09": s09, "S10": s10}
+          "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14}
 
 
 def grade(scenario_id, run_dir):

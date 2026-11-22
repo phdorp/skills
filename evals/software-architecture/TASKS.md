@@ -235,3 +235,82 @@ out" questions: no, nothing is missing. Write it down.
 I approve the "Record architecture decisions" ADR as written. Now recover the rest of the
 architecture from the code. I'm offline after this, so finish without asking me again.
 ```
+
+## S11 dialogue-setup: design dialogue in a set-up project
+
+Fixture: setup
+Overlay: s03
+Invoke: design-dialogue
+
+Tests D7, D15, D18 (stories 31, 32): before laying out approaches the agent reads arc42 and
+names the quality goals the export touches by ID; in turn 2 it offers 2–3 ways to build it,
+each tied to the quality goals it serves or hurts, and recommends one; encryption is a new
+system-level requirement, so it suggests `add-requirements` without running it; proposed
+ADR-0004 is treated as open. Nothing is built or written. `workspace-t1/` is the workspace
+after turn 1.
+
+```text
+I want a `notes export DIR` command that writes every note as a Markdown file, so people can
+open their notes in other editors. The exported files should be encrypted with a passphrase,
+so a lost USB stick exposes nothing. Help me think this through before anything gets built.
+```
+
+```reply
+One Markdown file per note, the title as the heading, the date in a small header. The user
+names the folder. I'm offline after this: lay out the ways to build it and recommend one. I'll
+pick tomorrow.
+```
+
+## S12 spec-setup: a spec in a set-up project
+
+Fixture: setup
+Overlay: s03
+Invoke: spec-and-plan
+
+Tests story 41: the spec carries a Quality Requirements section that cites the parent R-ID and
+the quality scenarios by ID instead of copying them, and it does not build on proposed
+ADR-0004: the atomic-write dependency waits for its acceptance. No code changes.
+
+```text
+Here is the approved design for a backup command. Write the spec.
+
+`notes backup PATH` copies the note store to PATH so a user can keep a copy on another disk.
+- PATH is a file path; an existing file at PATH is replaced.
+- The command prints the number of notes backed up and exits 0.
+- If the store cannot be read, it reports the error on stderr and exits 1, as every command does.
+- No restore command yet; a user restores by copying the file back.
+- The backup file is written atomically, as ADR-0004 says.
+
+Write the spec. I'm not available: where you would ask me, state the assumption in the spec.
+```
+
+## S13 spec-plain: a spec in a project without architecture setup
+
+Fixture: plain
+Invoke: spec-and-plan
+
+Control for D15: without `docs/architecture/arc42.md` the spec has no Quality Requirements
+section and no architecture documents appear. Both arms should pass; it earns no GREEN credit.
+
+```text
+Here is the approved design for a new tally option. Write the spec.
+
+`tally --min-count N FILE` prints only the words counted at least N times.
+- N is a positive integer; without the option every word is printed, as today.
+- The order stays as today: most frequent first, ties in alphabetical order.
+- N below 1 is an error: the usage message on stderr, exit code 2.
+
+Write the spec. I'm not available: where you would ask me, state the assumption in the spec.
+```
+
+## S14 dialogue-plain: design dialogue in a project without architecture setup
+
+Fixture: plain
+Invoke: design-dialogue
+
+Control for D15: without `docs/architecture/arc42.md` the dialogue raises no quality goals,
+arc42 or ADRs, and nothing is built. Both arms should pass; it earns no GREEN credit.
+
+```text
+I want tally to also count word pairs. Help me think this through before anything gets built.
+```

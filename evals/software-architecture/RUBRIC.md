@@ -67,3 +67,23 @@ live in `grader/grade.py`, not here.
 - **J2**: Turn 2 ends by asking the architect to approve ADR-0001 ("Record architecture decisions") before recovering, and recovers nothing in that turn.
 - **J3**: The final message lists the arc42 sections marked *as found, unconfirmed* for the architect to review section by section, and the proposed ADRs that wait for the architect's approval.
 - **J4**: Section 5 describes the blocks with signals or connectors as their interfaces and names the coupling through the shared package constant `roomHeatCapacity`.
+
+## S11
+
+- **J1**: Before laying out approaches, the agent asks or states which quality goals the export touches, naming them by ID (QG-n).
+- **J2**: Turn 2 offers 2–3 ways to build the export, each tied to the quality goals it serves or hurts, and recommends one.
+- **J3**: The agent names encryption as a new system-level requirement and suggests that the architect run `add-requirements`, rather than adding the requirement itself.
+- **J4**: The agent treats ADR-0004 as proposed (an open decision), not as a settled rule the design can build on.
+
+## S12
+
+- **J1**: The spec does not rely on proposed ADR-0004: it marks the atomic-write dependency as waiting for the ADR's acceptance (or drops it), and the final message says so.
+- **J2**: The spec's Quality Requirements section names the parent requirement (R-n) and the quality scenarios (QS-n) the work must keep.
+
+## S13
+
+- **J1**: The agent raises no quality goals, arc42 or ADRs, in its messages or in the spec.
+
+## S14
+
+- **J1**: The agent raises no quality goals, arc42 or ADRs in its messages.

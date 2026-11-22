@@ -109,8 +109,25 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S09-italicmarker": set(),                          # "_as found, unconfirmed_" still counts
     "S10-offlist": {"recovery_adrs"},                   # ADR for default parameter values
     "S10-code": {"code_unchanged"},                     # changed Thermostat.mo
+    "S11-built": {"nothing_built"},                     # wrote notes/export.py
+    "S11-noread": {"arc42_read"},                       # turn 1 never opened arc42.md
+    "S11-inventedgoal": {"goals_cited"},                # turn 2 cites QG-7, not in arc42
+    "S11-ranaddreq": {"add_requirements_suggested"},    # loaded add-requirements itself
+    "S11-nosuggest": {"add_requirements_suggested"},    # never names add-requirements
+    "S11-bashread": set(),                              # arc42 read with cat in Bash
+    "S12-noqr": {"qr_section", "qr_cites"},             # spec has no Quality Requirements
+    "S12-inventedqs": {"qr_cites"},                     # cites QS-9, not in arc42
+    "S12-copied": {"not_copied"},                       # QS-1's measure copied into the spec
+    "S12-code": {"code_unchanged"},                     # wrote notes/backup.py
+    "S12-twospecs": {"one_spec"},                       # two new specs
+    "S12-h3": set(),                                    # "### Quality requirements" heading
+    "S13-qr": {"no_qr_section"},                        # Quality Requirements in a plain project
+    "S13-arc42": {"no_architecture_docs"},              # created docs/architecture/arc42.md
+    "S14-goals": {"no_quality_goals"},                  # asks about quality goals
+    "S14-built": {"nothing_built"},                     # wrote tally/pairs.py
 }
-SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10")
+SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
+             "S13", "S14")
 
 
 def build_tree(root):
