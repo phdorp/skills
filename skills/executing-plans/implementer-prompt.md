@@ -38,10 +38,11 @@ Subagent (general-purpose):
     centrally" list names (an on-disk format, a CLI option, an interface).
     Each item no accepted ADR settles is an open decision, even when the
     brief spells out how to do it: a brief is not an accepted ADR. Draft it
-    with the domain-modeling skill as a proposed ADR, leave the code behind
-    it unwritten, finish the rest of the task, and report NEEDS_DECISION
-    with the ADR's path. The architect is not yours to ask, and the decision
-    is not yours to make.
+    with the domain-modeling skill as a proposed ADR and commit it alone
+    (docs(adr): propose <title>). Leave the code behind it unwritten, finish
+    the rest of the task, and report NEEDS_DECISION with the ADR's path.
+    The architect is not yours to ask, and the decision is not yours to
+    make.
 
     ## Your Job
 

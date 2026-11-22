@@ -48,9 +48,10 @@ line.
   with a final report that lists the ADR as proposed, the paused tasks, and what accepting it
   unblocks. When the change serves a need no `R-n` in arc42 section 1 names, add a line
   "New requirement: <need> — suggest running `add-requirements`".
-- **You are a subagent:** the architect is not yours to contact. Report `NEEDS_DECISION` to the
-  agent that dispatched you, with the ADR's path, the question, and the part of the task that
-  waits.
+- **You are a subagent:** the architect is not yours to contact. Commit the ADR alone
+  (`docs(adr): propose <title>`) so it reaches your parent's branch, then report
+  `NEEDS_DECISION` to the agent that dispatched you, with the ADR's path, the question, and the
+  part of the task that waits.
 
 When a subagent reports `NEEDS_DECISION`, apply sections 3 and 4 as the parent: ledger the
 `Paused:` line and take it to the architect, or commit and report it.
