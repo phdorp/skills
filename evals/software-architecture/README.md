@@ -11,7 +11,9 @@ against the skills at `main`. Re-run it when the model or the skills change.
   that user-invoked skill; `meta.json` records `invoked`. A `Prompt-from: <path>` line makes the
   prompt the arm's own copy of that dispatch template (its `prompt: |` text), filled from the
   ` ```text ` block's `key: value` lines, so each arm gets its own template; `meta.json` records
-  `prompt_from`. Each ` ```reply ` block after the
+  `prompt_from`. A `Change: <overlay> <subject>` line copies `fixtures/overlays/<overlay>/` in
+  after the fixture commit and commits it with that subject, so `HEAD~1..HEAD` is a change to
+  review; the grader's base workspace includes it. Each ` ```reply ` block after the
   prompt is a scripted architect reply, sent with `claude -p --resume` in the same session;
   the workspace before reply k is saved as `workspace-t<k-1>/`, and a run whose turns do not
   share one session fails isolation.

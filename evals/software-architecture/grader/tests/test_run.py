@@ -65,6 +65,13 @@ class LoadScenarios(unittest.TestCase):
         self.assertEqual((scenarios["S91"].prompt_from, scenarios["S90"].prompt_from),
                          ("skills/a/b.md", None))
 
+    def test_load_scenarios_reads_change(self):
+        p = self._write("## S89 x\n\nFixture: setup\nChange: s89 feat: export notes as JSON\n\n"
+                        "```text\nGo.\n```\n\n## S88 y\n\nFixture: setup\n\n```text\nGo.\n```\n")
+        scenarios = run.load_scenarios(p)
+        self.assertEqual(scenarios["S89"].change, ("s89", "feat: export notes as JSON"))
+        self.assertIsNone(scenarios["S88"].change)
+
     def test_load_scenarios_rejects_section_without_fixture(self):
         p = self._write("## S99 thing\n\n```text\nDo it.\n```\n")
         with self.assertRaises(ValueError):
@@ -270,6 +277,27 @@ class Workspace(unittest.TestCase):
         self.assertEqual((ws / "docs" / "a.md").read_text(), "overlay\n")
         self.assertTrue((ws / "docs" / "b.md").exists())
         self.assertEqual(_git_subjects(ws), ["fixture"])
+        status = subprocess.run(["git", "status", "--porcelain"], cwd=ws, capture_output=True,
+                                text=True).stdout
+        self.assertEqual(status, "")
+
+    def test_prepare_workspace_commits_change(self):
+        root = Path(tempfile.mkdtemp())
+        (root / "fx" / "app").mkdir(parents=True)
+        (root / "fx" / "app" / "a.py").write_text("old\n")
+        (root / "fx" / "keep.md").write_text("kept\n")
+        (root / "ch" / "app").mkdir(parents=True)
+        (root / "ch" / "app" / "a.py").write_text("new\n")
+        (root / "ch" / "docs").mkdir()
+        (root / "ch" / "docs" / "spec.md").write_text("spec\n")
+        ws = run.prepare_workspace(root / "fx", change=(root / "ch", "feat: export notes as JSON"))
+        log = subprocess.run(["git", "log", "--format=%s"], cwd=ws, capture_output=True,
+                             text=True, check=True).stdout.splitlines()
+        self.assertEqual(log, ["feat: export notes as JSON", "fixture"])
+        touched = subprocess.run(["git", "diff", "--name-only", "HEAD~1..HEAD"], cwd=ws,
+                                 capture_output=True, text=True, check=True).stdout.split()
+        self.assertEqual(sorted(touched), ["app/a.py", "docs/spec.md"])
+        self.assertEqual((ws / "app" / "a.py").read_text(), "new\n")
         status = subprocess.run(["git", "status", "--porcelain"], cwd=ws, capture_output=True,
                                 text=True).stdout
         self.assertEqual(status, "")

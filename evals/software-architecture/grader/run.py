@@ -43,6 +43,7 @@ USER_SKILLS = Path.home() / ".claude" / "skills"
 SECTION = re.compile(r"^## (S\d+)\b.*$", re.M)
 FIXTURE = re.compile(r"^Fixture:\s*(\S+)\s*$", re.M)
 OVERLAY = re.compile(r"^Overlay:\s*(\S+)\s*$", re.M)
+CHANGE = re.compile(r"^Change:\s*(\S+)\s+(.+?)\s*$", re.M)
 INVOKE = re.compile(r"^Invoke:\s*(\S+)\s*$", re.M)
 PROMPT_FROM = re.compile(r"^Prompt-from:\s*(\S+)\s*$", re.M)
 TEMPLATE_PROMPT = re.compile(r"^```\n.*?^(\s*)prompt: \|\n(.*?)^```", re.M | re.S)
@@ -61,6 +62,7 @@ class Scenario:
     invoke: str | None = None
     prompt_from: str | None = None
     replies: list[str] = field(default_factory=list)
+    change: tuple[str, str] | None = None  # (overlay committed after the fixture, its subject)
 
 
 def load_scenarios(tasks_md):
@@ -77,11 +79,13 @@ def load_scenarios(tasks_md):
             raise ValueError(f"{m.group(1)}: expected one ```text block, found {len(prompts)}")
         overlay, invoke = OVERLAY.search(body), INVOKE.search(body)
         prompt_from = PROMPT_FROM.search(body)
+        change = CHANGE.search(body)
         scenarios[m.group(1)] = Scenario(m.group(1), fixture.group(1), prompts[0],
                                          overlay.group(1) if overlay else None,
                                          invoke.group(1) if invoke else None,
                                          prompt_from.group(1) if prompt_from else None,
-                                         REPLY.findall(body))
+                                         REPLY.findall(body),
+                                         change.groups() if change else None)
     return scenarios
 
 
@@ -133,7 +137,15 @@ def export_arm(ref, dest):
     return out
 
 
-def prepare_workspace(fixture_dir, overlay_dir=None):
+def _commit(ws, subject):
+    _git("add", "-A", cwd=ws)
+    _git("-c", "user.name=eval", "-c", "user.email=eval@example.invalid", "commit", "-q",
+         "--allow-empty", "-m", subject, cwd=ws)
+
+
+def prepare_workspace(fixture_dir, overlay_dir=None, change=None):
+    """A git workspace: the fixture plus overlay committed as `fixture`; then, when change is
+    (dir, subject), that dir copied in and committed with that subject, so HEAD~1..HEAD is it."""
     ws = Path(tempfile.mkdtemp(prefix="sa-eval-")) / "project"
     if fixture_dir is None:
         ws.mkdir()
@@ -142,9 +154,11 @@ def prepare_workspace(fixture_dir, overlay_dir=None):
     if overlay_dir is not None:
         shutil.copytree(overlay_dir, ws, dirs_exist_ok=True, ignore=BYTECODE)
     _git("init", "-q", cwd=ws)
-    _git("add", "-A", cwd=ws)
-    _git("-c", "user.name=eval", "-c", "user.email=eval@example.invalid", "commit", "-q",
-         "--allow-empty", "-m", "fixture", cwd=ws)
+    _commit(ws, "fixture")
+    if change is not None:
+        change_dir, subject = change
+        shutil.copytree(change_dir, ws, dirs_exist_ok=True, ignore=BYTECODE)
+        _commit(ws, subject)
     return ws
 
 
@@ -250,6 +264,14 @@ def fixture_dirs(scenario, suite=SUITE):
     return fixtures / scenario.fixture, overlay
 
 
+def change_of(scenario, suite=SUITE):
+    """(change_dir, subject) of a scenario's `Change:` line, or None."""
+    if not scenario.change:
+        return None
+    name, subject = scenario.change
+    return Path(suite) / "fixtures" / "overlays" / name, subject
+
+
 def new_run_dir(suite, arm, scenario_id, k):
     run_dir = Path(suite) / "runs" / arm / f"{scenario_id}-r{k}"
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -309,7 +331,7 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
     tmp = Path(tempfile.mkdtemp(prefix="sa-arm-"))
     try:
         plugin_dir = export_arm(ref, tmp)
-        ws = prepare_workspace(*fixture_dirs(scenario, suite))
+        ws = prepare_workspace(*fixture_dirs(scenario, suite), change=change_of(scenario, suite))
         prompt = build_prompt(scenario, plugin_dir)
         turns, inits, costs, codes, duration = [], [], [], [], 0.0
         for turn, text in enumerate([prompt] + scenario.replies, 1):

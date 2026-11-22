@@ -133,13 +133,16 @@ CITES_0001 = re.compile(r"\bADR[- ]?0*1\b|\b0001\b", re.I)
 
 
 def base_workspace(scenario_id):
-    """Temp copy of the scenario's fixture with its overlay, as the agent first saw it."""
+    """Temp copy of the scenario's fixture with its overlay and change, as the agent first saw it."""
     scenario = run.load_scenarios(run.SUITE / "TASKS.md")[scenario_id]
     fixture, overlay = run.fixture_dirs(scenario)
     base = Path(tempfile.mkdtemp(prefix="sa-base-")) / "ws"
     shutil.copytree(fixture, base, ignore=run.BYTECODE)
     if overlay is not None:
         shutil.copytree(overlay, base, dirs_exist_ok=True, ignore=run.BYTECODE)
+    change = run.change_of(scenario)
+    if change is not None:
+        shutil.copytree(change[0], base, dirs_exist_ok=True, ignore=run.BYTECODE)
     return base
 
 
