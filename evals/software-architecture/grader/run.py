@@ -12,7 +12,7 @@ workspace outside this repository (so the repo's AGENTS.md and git root stay inv
 is not treated as a child session of whoever starts it). The stream-json init event proves
 isolation; a run that fails it is still saved, with isolation_ok false, and is not scored.
 
-Writes runs/<arm>/<scenario>-r<k>/: workspace/ (without .git), git-log.txt, transcript.jsonl,
+Writes runs/<arm>/<scenario>-r<k>/: workspace/ (without .git), git-log.txt, git-status.txt, transcript.jsonl,
 transcript.md, meta.json.
 """
 import argparse
@@ -263,6 +263,14 @@ def _user_skill_names():
     return {p.name for p in USER_SKILLS.iterdir()} if USER_SKILLS.is_dir() else set()
 
 
+def record_git(ws, run_dir):
+    """git-log.txt (one `<sha> <subject>` line per commit) and git-status.txt (uncommitted files,
+    porcelain) for a run directory, since the copied workspace has no .git."""
+    (Path(run_dir) / "git-log.txt").write_text(_git("log", "--format=%H %s", cwd=ws))
+    (Path(run_dir) / "git-status.txt").write_text(
+        _git("status", "--porcelain", "--untracked-files=all", cwd=ws))
+
+
 def run_scenario(scenario, arm, ref, k, suite=SUITE):
     run_dir = new_run_dir(suite, arm, scenario.id, k)
     tmp = Path(tempfile.mkdtemp(prefix="sa-arm-"))
@@ -289,7 +297,7 @@ def run_scenario(scenario, arm, ref, k, suite=SUITE):
         summary = turn_summary(codes, costs, 1 + len(scenario.replies))
         errors = turn_errors(inits, plugin_dir, _user_skill_names()) + summary["errors"]
         (run_dir / "transcript.md").write_text(render_turns(turns))
-        (run_dir / "git-log.txt").write_text(_git("log", "--format=%H %s", cwd=ws))
+        record_git(ws, run_dir)
         shutil.copytree(ws, run_dir / "workspace",
                         ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
         meta = {"scenario": scenario.id, "arm": arm, "ref": ref,

@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -225,6 +226,22 @@ class Workspace(unittest.TestCase):
         (suite / "runs" / "baseline" / "S01-r1").mkdir(parents=True)
         with self.assertRaises(FileExistsError):
             run.new_run_dir(suite, "baseline", "S01", 1)
+
+
+class RecordGit(unittest.TestCase):
+    def test_record_writes_git_status(self):
+        fixture = Path(tempfile.mkdtemp(prefix="sa-test-"))
+        out = Path(tempfile.mkdtemp(prefix="sa-test-"))
+        self.addCleanup(shutil.rmtree, fixture, ignore_errors=True)
+        self.addCleanup(shutil.rmtree, out, ignore_errors=True)
+        (fixture / "kept.txt").write_text("committed\n")
+        ws = run.prepare_workspace(fixture)
+        self.addCleanup(shutil.rmtree, ws.parent, ignore_errors=True)
+        (ws / "docs").mkdir()
+        (ws / "docs" / "new.md").write_text("untracked\n")
+        run.record_git(ws, out)
+        self.assertEqual((out / "git-status.txt").read_text(), "?? docs/new.md\n")
+        self.assertIn(" fixture", (out / "git-log.txt").read_text())
 
 
 if __name__ == "__main__":
