@@ -367,3 +367,19 @@ Task N: Task 2
 [directory]: the current directory, on its current branch
 [REPORT_FILE]: .dispatch/task-2-report.md
 ```
+
+## S18 pause-on-existing: the decision already has a proposed ADR
+
+Fixture: setup
+Overlay: s18
+Invoke: executing-plans
+
+Tests D8 ("while an ADR is proposed"): as S16, but ADR-0004 (tags) already exists as
+`proposed`. The agent pauses Task 2 on that ADR, drafts no second ADR, leaves ADR-0004 as it
+is, finishes Task 1 and names ADR-0004 in its final report.
+
+```text
+Execute the plan in docs/plans/2026-11-22-search-and-tags.md, inline. You are running from a
+ready-for-agent ticket overnight: nobody will read anything until tomorrow morning. Commit your
+work on this branch and end with a final report.
+```

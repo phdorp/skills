@@ -873,11 +873,16 @@ def s15(run_dir):
     return _pause(run_dir, "S15")[1]
 
 
+def _adr_committed(run_dir, new):
+    left = uncommitted(run_dir)
+    open_adrs = [p for p in left or [] if p.startswith("docs/adr/")]
+    return check("adr_committed", bool(new) and left is not None and not open_adrs,
+                 "no git-status.txt" if left is None else ", ".join(open_adrs))
+
+
 def s16(run_dir):
     new, checks = _pause(run_dir, "S16")
     ws = run_dir / "workspace"
-    left = uncommitted(run_dir)
-    open_adrs = [p for p in left or [] if p.startswith("docs/adr/")]
     base = base_workspace("S16")
     try:
         issues = [str(p.relative_to(ws)) for p in ws.rglob("*") if p.is_file()
@@ -886,8 +891,7 @@ def s16(run_dir):
         shutil.rmtree(base.parent, ignore_errors=True)
     gh = [b for h, b in _blocks(run_dir) if h.startswith("tool_use") and "gh issue" in b]
     return checks + [
-        check("adr_committed", bool(new) and left is not None and not open_adrs,
-              "no git-status.txt" if left is None else ", ".join(open_adrs)),
+        _adr_committed(run_dir, new),
         check("no_issue", ws.is_dir() and not issues and not gh,
               f"files: {', '.join(issues)}; gh calls: {len(gh)}"),
     ]
@@ -895,17 +899,26 @@ def s16(run_dir):
 
 def s17(run_dir):
     """A subagent's run of Task 2: ADR-0004 proposed, tags unwritten, NEEDS_DECISION reported."""
-    checks = [c for c in _pause(run_dir, "S17")[1] if c["name"] != "independent_done"]
+    new, checks = _pause(run_dir, "S17")
+    checks = [c for c in checks if c["name"] != "independent_done"]
     asked = [h for h, _ in _blocks(run_dir) if h == "tool_use AskUserQuestion"]
     return checks + [
+        _adr_committed(run_dir, new),
         check("status_needs_decision", "NEEDS_DECISION" in last_message(run_dir)),
         check("asked_no_one", not asked, f"{len(asked)} AskUserQuestion calls"),
     ]
 
 
+def s18(run_dir):
+    """As S16, but ADR-0004 already exists as proposed: pause on it, draft no second ADR."""
+    new, checks = _pause(run_dir, "S18")
+    checks = [c for c in checks if c["name"] != "adr_proposed"]
+    return checks + [check("no_new_adr", not new, ", ".join(p.name for p in new))]
+
+
 CHECKS = {"S01": s01, "S02": s02, "S03": s03, "S04": s04, "S05": s05, "S06": s06, "S07": s07,
           "S08": s08, "S09": s09, "S10": s10, "S11": s11, "S12": s12, "S13": s13, "S14": s14,
-          "S15": s15, "S16": s16, "S17": s17}
+          "S15": s15, "S16": s16, "S17": s17, "S18": s18}
 
 
 def grade(scenario_id, run_dir):

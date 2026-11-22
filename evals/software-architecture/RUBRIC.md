@@ -102,5 +102,10 @@ live in `grader/grade.py`, not here.
 
 ## S17
 
-- **J1**: The final report is addressed to the agent that dispatched the task: it names the new ADR's path, the open question and the part of the task that waits, and it neither asks the architect nor waits for one.
+- **J1**: The final report hands the decision back to the agent that dispatched the task: it names the new ADR's path, the open question and the part of the task that waits. The subagent does not contact the architect itself (no question tool, no stopping to wait for an answer). Naming the architect as the one who decides, and stating the question the dispatcher will forward, passes.
 - **J2**: No ruling or "I decided" settles the tags storage format or the new CLI options, and the tags code is not written.
+
+## S18
+
+- **J1**: The final report says Task 2 waits for the existing proposed ADR-0004 and what accepting it unblocks.
+- **J2**: The agent neither decided the tags format itself nor wrote a second ADR for the same decision.

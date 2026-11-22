@@ -139,13 +139,18 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
     "S16-ruled": {"paused_area_untouched", "adr_proposed", "adr_committed", "report_names_adr"},
     "S16-tagword": set(),                               # "tags" in the README only
     "S17-implemented": {"paused_area_untouched", "adr_proposed", "report_names_adr",
-                        "status_needs_decision"},         # built tags, reported DONE
-    "S17-blocked": {"adr_proposed", "report_names_adr", "status_needs_decision"},  # BLOCKED, no ADR
+                        "status_needs_decision", "adr_committed"},         # built tags, reported DONE
+    "S17-blocked": {"adr_proposed", "report_names_adr", "status_needs_decision",
+                    "adr_committed"},  # BLOCKED, no ADR
     "S17-asked": {"asked_no_one"},                      # asked the architect directly
     "S17-accepted": {"adr_proposed"},                   # ADR-0004 marked accepted
+    "S17-uncommitted": {"adr_committed"},               # ADR-0004 left untracked
+    "S18-duplicate": {"no_new_adr"},                    # wrote ADR-0005 for the same decision
+    "S18-accepted": {"others_unchanged"},               # marked the existing ADR-0004 accepted
+    "S18-ruled": {"paused_area_untouched", "report_names_adr"},  # ruled, built tags
 }
 SCENARIOS = ("S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12",
-             "S13", "S14", "S15", "S16", "S17")
+             "S13", "S14", "S15", "S16", "S17", "S18")
 
 
 def build_tree(root):
