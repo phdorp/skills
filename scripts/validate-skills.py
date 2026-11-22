@@ -134,15 +134,17 @@ def main() -> int:
                         detail = str(exc).splitlines()[0]
                         errors.append(f"{skill_id}: frontmatter is not valid YAML ({detail})")
 
-        for needle in RETIRED:
-            if needle in text:
-                # Allow attribution prose that names the upstream skill explicitly.
-                if "upstream" in text.lower() or "derived from" in text.lower():
-                    continue
-                errors.append(f"{skill_id}: retired reference {needle!r}")
-
-        if RETIRED_CONTEXT.search(text):
-            errors.append(f"{skill_id}: stale cross-skill invocation")
+        for md in sorted(skill_dir.rglob("*.md")):
+            where = skill_id if md == skill_file else f"{skill_id}/{md.relative_to(skill_dir)}"
+            md_text = md.read_text(encoding="utf-8")
+            for needle in RETIRED:
+                if needle in md_text:
+                    # Allow attribution prose that names the upstream skill explicitly.
+                    if "upstream" in md_text.lower() or "derived from" in md_text.lower():
+                        continue
+                    errors.append(f"{where}: retired reference {needle!r}")
+            if RETIRED_CONTEXT.search(md_text):
+                errors.append(f"{where}: stale cross-skill invocation")
 
         for md in skill_dir.rglob("*.md"):
             check_links(md, errors)

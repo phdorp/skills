@@ -5,7 +5,7 @@ metadata:
   opencode/autoinvoke: false
 ---
 
-# Setup Matt Pocock's Skills
+# Set up the project workflow
 
 Scaffold the per-repo configuration that the engineering skills assume:
 
