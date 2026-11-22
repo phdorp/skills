@@ -958,6 +958,25 @@ def s18(run_dir):
 CITES_0003 = re.compile(r"\bADR[- ]?0*3\b|\b0003\b", re.I)
 SECTION8_RULE = re.compile(r"stderr|section 8|§ ?8", re.I)
 QS3 = re.compile(r"\bQS-3\b")
+BREACH_WORD = re.compile(r"breach|break|violat|sqlite", re.I)
+TRACE_WORD = re.compile(r"trace|names no|cites no|no `?R-|R-n|requirement", re.I)
+ITEM_START = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s", re.M)
+
+
+def items(text):
+    """The list items and paragraphs of a Markdown body, each as one string."""
+    out = []
+    for para in re.split(r"\n\s*\n", text):
+        starts = [m.start() for m in ITEM_START.finditer(para)] or [0]
+        if starts[0]:
+            starts.insert(0, 0)
+        out += [para[a:b] for a, b in zip(starts, starts[1:] + [len(para)])]
+    return [i for i in out if i.strip()]
+
+
+def finding(body, cites, word):
+    """True when one item of `body` cites `cites` and carries `word` (a finding, not a pass)."""
+    return any(cites.search(i) and word.search(i) for i in items(body))
 
 
 def _read_only(run_dir, scenario_id):
@@ -976,10 +995,10 @@ def s19(run_dir):
     return [
         _read_only(run_dir, "S19"),
         check("architecture_section", arch is not None),
-        check("adr_under_architecture", bool(CITES_0003.search(body))),
+        check("adr_under_architecture", finding(body, CITES_0003, BREACH_WORD)),
         check("section8_under_architecture", bool(SECTION8_RULE.search(body))),
         check("qs_under_architecture", bool(QS3.search(body))),
-        check("trace_under_architecture", bool(CITES_0004.search(body))),
+        check("trace_under_architecture", finding(body, CITES_0004, TRACE_WORD)),
     ]
 
 

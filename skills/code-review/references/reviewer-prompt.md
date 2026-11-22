@@ -143,5 +143,5 @@ The baseline is pasted in because the reviewer has no other access to it. The st
 
 - Issue the reviewer calls together, one per axis, in the foreground, and wait for all of them. Sequential dispatch lets the first report bias your reading of the second.
 - Give each reviewer its own working copy of the diff. Do not paste another axis's report into a prompt.
-- If the spec is missing, dispatch only the Standards axis and note the gap in the final report.
+- If the spec is missing, skip only the Spec axis: dispatch the other axes and note the gap in the final report.
 - If a reviewer returns nothing usable, re-dispatch once with a narrower range or a sharper brief. Do not silently do its pass yourself and label it a review.

@@ -113,3 +113,31 @@ Gate: met for S19 (every check and criterion `main` failed now passes). S20 has 
 (it passed on `main`); it regressed in round 1 and, after the loophole round, keeps one open
 loophole: the gate narrated in one sentence (1 of 2 runs). Stays open; the one loophole round
 is spent.
+
+## Review fix pass
+
+A fresh Opus review found two Important findings; both were confirmed by a check that failed
+first:
+
+1. `reviewer-prompt.md`'s dispatch note "If the spec is missing, dispatch only the Standards
+   axis" dropped the Architecture axis in a set-up project without a spec. It now skips only
+   the Spec axis. (Check: `grep "dispatch only the Standards axis"` matched before, not after.)
+   No branch run read that file's content (S19-r1 and r2 saw only its name in a listing and a
+   link), so none was re-run.
+2. `adr_under_architecture` and `trace_under_architecture` passed any mention of 0003 or 0004
+   under `## Architecture`, including "ADR-0004 is accepted and compliant", the RED wording.
+   They now need one list item that cites the ADR and reads as a finding (breach, violation or
+   `sqlite` for ADR-0003; trace, "names no" or a missing requirement for ADR-0004). New broken
+   variant `S19-compliant` failed the self-test before the change and passes after; every
+   recorded S19 run keeps its verdicts.
+
+## Deferred Minor findings (ticket 11)
+
+- `reviewer-prompt.md`'s title ("Two-axis reviewer prompt") and the `{GLOBAL_CONSTRAINTS}` row
+  ("cut across both axes") still say two axes.
+- `SKILL.md` says "two axes" ("perform it on two axes", "Performing the two-axis review"),
+  which reads oddly in set-up projects; it keeps plain projects quiet.
+- The reviewer-subagent path is not exercised: no S19 or S20 run dispatched a reviewer, so the
+  Architecture block, `{ARCHITECTURE_SOURCES}` and "give the Standards reviewer no ADR" never
+  ran. Add it to the README's known gaps.
+- Review Focus 2's "cites a proposed ADR as a rule" has no fixture (already a known gap).

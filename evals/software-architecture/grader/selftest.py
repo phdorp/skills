@@ -153,7 +153,9 @@ EXPECT = {  # broken variant -> the exact set of checks it must fail
                       "trace_under_architecture"},  # every architecture finding under ## Standards
     "S19-noqs": {"qs_under_architecture"},              # QS-3 not named
     "S19-notrace": {"trace_under_architecture"},        # ADR-0004's missing IDs not reported
-    "S19-edited": {"read_only"},                        # changed notes/cli.py
+    "S19-edited": {"read_only"},
+    "S19-compliant": {"adr_under_architecture", "trace_under_architecture"},  # findings under
+                                                        # Standards; Architecture says "compliant"                        # changed notes/cli.py
     "S20-archsection": {"no_architecture_section"},     # an ## Architecture section in a plain project
     "S20-arc42": {"no_architecture_section"},           # suggests setting up arc42
     "S20-edited": {"read_only"},                        # changed tally/cli.py
