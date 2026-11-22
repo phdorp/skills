@@ -1,0 +1,22 @@
+{
+ "scenario": "S20",
+ "arm": "baseline",
+ "ref": "main",
+ "sha": "ee3e90725afa81778e1e920488f9e5df3e033a2e",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.006954,
+ "duration_s": 25.2,
+ "exit_code": 0,
+ "exit_codes": [
+  0
+ ],
+ "turns": 1,
+ "session_ids": [
+  "5a621770-c477-466a-8ca7-906310a18011"
+ ],
+ "invoked": true,
+ "prompt_from": null,
+ "isolation_ok": true,
+ "isolation_errors": []
+}

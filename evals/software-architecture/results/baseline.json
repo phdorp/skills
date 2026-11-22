@@ -108,6 +108,18 @@
    "score": 0.916,
    "judge": 0.75,
    "cost_usd": 0.179
+  },
+  "S19": {
+   "runs": 2,
+   "score": 0.167,
+   "judge": 0.25,
+   "cost_usd": 0.016
+  },
+  "S20": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.015
   }
  },
  "runs": [
@@ -123,7 +135,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.065s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -193,7 +205,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.059s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -2178,12 +2190,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.280s\n\nOK\n"
+     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.270s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.046s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.041s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2253,7 +2265,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.093s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
     },
     {
      "name": "independent_done",
@@ -2328,12 +2340,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.093s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.090s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.035s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2413,12 +2425,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.092s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.089s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.035s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2498,7 +2510,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.172s\n\nOK\n"
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.171s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2575,7 +2587,7 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.171s\n\nOK\n"
+     "detail": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.164s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2652,12 +2664,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.091s\n\nOK\n"
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.088s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.036s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.035s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2719,12 +2731,12 @@
     {
      "name": "tests_pass",
      "pass": true,
-     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.223s\n\nOK\n"
+     "detail": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.218s\n\nOK\n"
     },
     {
      "name": "independent_done",
      "pass": true,
-     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.034s\n\nOK\n"
     },
     {
      "name": "paused_area_untouched",
@@ -2777,6 +2789,266 @@
     "cost_usd": 0.2394018
    },
    "cost_usd": 0.025064,
+   "needs_review": false
+  },
+  {
+   "run": "S19-r1",
+   "scenario": "S19",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "adr_under_architecture",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "section8_under_architecture",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "qs_under_architecture",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "trace_under_architecture",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 1,
+   "total": 6,
+   "score": 0.167,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "1. **Important: breaks ADR-0003 (the CLI must reach storage only through `Store`).**",
+      "source": "transcript.md",
+      "reason": "The ADR-0003 breach is listed as item 1 under the Standards section; the review has no Architecture section."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "Compliant: ADR-0004 is accepted and matches the output format.",
+      "source": "transcript.md",
+      "reason": "The agent calls ADR-0004 compliant and never reports that its Context cites no R-, QG- or QS-ID."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "It also undercuts QS-3, the stated reason for that ADR: swapping the storage engine would now mean changing `cli.py` too.",
+      "source": "transcript.md",
+      "reason": "The review names QS-3 and explains that a storage swap would now also require changing cli.py."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "**Standards:** worst issue is Important: the `cli.py` direct-SQLite access breaks ADR-0003.",
+      "source": "transcript.md",
+      "reason": "The closing names a worst issue only for Standards and Spec; architecture is folded into Standards, so it has no section or closing line of its own."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1383538
+   },
+   "cost_usd": 0.007937,
+   "needs_review": false
+  },
+  {
+   "run": "S19-r2",
+   "scenario": "S19",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "adr_under_architecture",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "section8_under_architecture",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "qs_under_architecture",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "trace_under_architecture",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 1,
+   "total": 6,
+   "score": 0.167,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "## Standards",
+      "source": "transcript.md",
+      "reason": "The ADR-0003 breach is reported under the Standards section; the review has no Architecture section."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "**Summary:** Standards: 2 Important, 1 Minor (worst: the ADR-0003 violation, `notes/cli.py:3, 17\u201323`). Spec: 0 findings.",
+      "source": "transcript.md",
+      "reason": "No finding notes that ADR-0004's Context cites no R-, QG- or QS-ID."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "a contributor who swaps the storage engine (QS-3) must now also change `cli.py`",
+      "source": "transcript.md",
+      "reason": "The review names QS-3 and says a storage swap now also requires changing cli.py."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "**Summary:** Standards: 2 Important, 1 Minor (worst: the ADR-0003 violation, `notes/cli.py:3, 17\u201323`). Spec: 0 findings.",
+      "source": "transcript.md",
+      "reason": "Only the Standards and Spec axes have sections and a worst issue; the Architecture axis is missing entirely."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1373898
+   },
+   "cost_usd": 0.008122,
+   "needs_review": false
+  },
+  {
+   "run": "S20-r1",
+   "scenario": "S20",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_section",
+     "pass": true,
+     "detail": "section: False; arc42: False"
+    }
+   ],
+   "passed": 2,
+   "total": 2,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Standards: 1 important, 3 minor findings. Spec: 0 violations, 3 open gaps.",
+      "source": "transcript.md",
+      "reason": "The review contains only Standards, Spec and Summary sections, with no Architecture section and no arc42/ADR suggestion."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Minor: long `main()`.** It now reads files, parses stopwords, counts, ranks, and prints. Extracting `load_stopwords(path) -> set[str]` would shorten it and make the parsing directly testable.",
+      "source": "transcript.md",
+      "reason": "The Standards findings name the long main function and suggest extracting the stopword loading, labelled as a minor judgement-level smell."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0870778
+   },
+   "cost_usd": 0.006954,
+   "needs_review": false
+  },
+  {
+   "run": "S20-r2",
+   "scenario": "S20",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_section",
+     "pass": true,
+     "detail": "section: False; arc42: False"
+    }
+   ],
+   "passed": 2,
+   "total": 2,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Findings: Standards 3 (worst: duplicated counting and ranking). Spec 2 (worst: untested inline-comment path, low).",
+      "source": "transcript.md",
+      "reason": "The report contains only Standards and Spec sections, with no Architecture section and no suggestion of arc42, ADRs or an architecture."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "possible Divergent Change.** `main()` now parses arguments, reads the text, parses the stopword file, counts, ranks, and prints. Fix: extract `load_stopwords(path) -> set[str]`.",
+      "source": "transcript.md",
+      "reason": "The Standards findings describe main as doing too much and recommend extracting the stopword loading, labelled as a 'possible' smell, which makes it a judgement call."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.10147779999999999
+   },
+   "cost_usd": 0.008336,
    "needs_review": false
   }
  ]
