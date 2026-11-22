@@ -121,3 +121,43 @@ Gate: not met for S11 (1 of 2 runs); one round spent, so S11-r2 stands as an ope
 GREEN credit: S11 `goals_cited`, `add_requirements_suggested`, J1–J3 (1 of 2 runs after the
 round, 2 of 2 in the first attempt for `add_requirements_suggested`); S12 `qr_section`,
 `qr_cites`, J2 (2 of 2 in both rounds).
+
+## Review fix pass: skills at `dcac0c7` (2026-11-22, 2 runs each, clean isolation)
+
+The whole-ticket review (fresh Opus reviewer) found two Important issues and two Minors that
+were re-graded Important because they inflate this campaign's results:
+
+- A spec blocked on a proposed ADR could still be published as `ready-for-agent`. New check
+  `status_blocked` (self-test `S12-ready`): both `main` runs fail it ("Status: ready-for-agent
+  (blocked on ADR-0004 acceptance; …)", S12-r1); `quality-requirements.md` now requires
+  `Status: blocked (ADR-nnnn)` and no `ready-for-agent` label while **Blocked by** is non-empty.
+- The bare pointer did not fire (S11-r2 above): it now adds "it changes how this dialogue
+  runs", with a red-flag row for reading arc42 alone.
+- Red flags and examples quoted the scenario ("ADR-0004", "encryption at rest"); now general.
+
+All eight runs were replaced.
+
+| run | failed checks | failed criteria | read the reference |
+|---|---|---|---|
+| S11-r1, S11-r2 | - | J4 | yes |
+| S12-r1, S12-r2 | - | - | yes |
+| S13-r1 | - | - | - |
+| S13-r2 | - | J1 | - |
+| S14-r1, S14-r2 | - | - | - |
+
+Closed: the pointer fired in both S11 runs, which now name the touched goals, tie every option
+to a `QG-n` and suggest `/add-requirements`; both S12 specs read "Status: blocked …".
+
+Open after the one fix pass (no second pass):
+
+1. **Options build on proposed ADR-0004** (S11-r1, S11-r2 J4, regression: both `main` runs
+   passed J4). The goals slot asks how the change bears on each goal, and both runs answered
+   with ADR-0004's mechanism: "QG-1 Reliability (each export file is written atomically per
+   ADR-0004, …)" (S11-r1); "Serves … QG-1, since … each write goes through ADR-0004's
+   temp-file-and-rename." (S11-r2). Candidate fix: in the goals line and the options, cite only
+   accepted ADRs; a proposed ADR appears only as an open decision with what changes if it is
+   rejected.
+2. **The plain-project spec run mentions arc42** (S13-r2 J1): "The repo has no tracker config,
+   glossary, or arc42 docs, so this was the local-file path." The gated pointer names the file in
+   every project; S13-r1 said the same in mid-run text and passed. A judge-strict borderline,
+   recorded as a cost of the gated pointer.

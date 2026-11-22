@@ -63,9 +63,9 @@
   },
   "S11": {
    "runs": 2,
-   "score": 0.75,
+   "score": 1.0,
    "judge": 0.75,
-   "cost_usd": 0.034
+   "cost_usd": 0.042
   },
   "S12": {
    "runs": 2,
@@ -76,8 +76,8 @@
   "S13": {
    "runs": 2,
    "score": 1.0,
-   "judge": 1.0,
-   "cost_usd": 0.021
+   "judge": 0.5,
+   "cost_usd": 0.02
   },
   "S14": {
    "runs": 2,
@@ -99,7 +99,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -174,7 +174,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.053s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1708,7 +1708,7 @@
     {
      "name": "goals_cited",
      "pass": true,
-     "detail": "QG-2, QG-3"
+     "detail": "QG-1, QG-2, QG-3"
     },
     {
      "name": "add_requirements_suggested",
@@ -1731,38 +1731,38 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "**Quality goals this touches:** QG-1 Reliability: fault tolerance (export writes must be atomic, per proposed ADR-0004), QG-2 Portability: installability (encryption pulls against stdlib-only), QG-3 Maintainability: modifiability (export reads notes only through `Store`). Please confirm these are the right goals.",
+      "quote": "**Quality goals this touches:** QG-1 Reliability (each export file is written atomically per ADR-0004, so a crash leaves whole files or none), QG-2 Portability/installability",
       "source": "transcript.md",
-      "reason": "Before laying out any approaches, the agent states the touched goals by QG-n ID and asks the architect to confirm them."
+      "reason": "Before laying out the options, the agent names the touched quality goals by QG ID and asks the architect to confirm them."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**I recommend B.** QG-2 decides it.",
+      "quote": "**Recommendation: Option 2.** It is the only route that gets audited crypto without breaking R-3's wording outright, and it keeps QS-2 intact by making export optional.",
       "source": "transcript.md",
-      "reason": "Turn 2 offers three options (A, B, C), each tied to the QG-n it serves or hurts, and recommends B with its deciding goal named."
+      "reason": "Turn 2 gives three options, each tied to the QG-n goals it serves or hurts, and recommends one."
      },
      {
       "criterion": "J3",
       "pass": true,
-      "quote": "The passphrase requirement isn't in the R-list, and no quality goal covers security. Run `/add-requirements` for it, and decide whether it needs a quality goal of its own.",
+      "quote": "5. Confidentiality is a new requirement. Run `/add-requirements` for it.",
       "source": "transcript.md",
-      "reason": "The agent names encryption as an uncovered requirement and suggests the architect run add-requirements, leaving the R-list untouched."
+      "reason": "The agent names encryption/confidentiality as a new requirement and sends it to /add-requirements without editing the R-list itself."
      },
      {
       "criterion": "J4",
-      "pass": true,
-      "quote": "ADR-0004 is still proposed. This export depends on it, so accept or reject it.",
+      "pass": false,
+      "quote": "Python writes plaintext into openssl's stdin, and openssl writes ciphertext straight into the ADR-0004 temp file, so plaintext never lands on the stick.",
       "source": "transcript.md",
-      "reason": "The agent consistently labels ADR-0004 as proposed and leaves the decision to the architect rather than treating it as settled."
+      "reason": "The agent builds its options on proposed ADR-0004 as if it were settled and never names it as an open decision."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1530498
+    "cost_usd": 0.14516579999999998
    },
-   "cost_usd": 0.019529,
-   "needs_review": false
+   "cost_usd": 0.021882,
+   "needs_review": true
   },
   {
    "run": "S11-r2",
@@ -1780,18 +1780,18 @@
     },
     {
      "name": "goals_cited",
-     "pass": false,
-     "detail": ""
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3"
     },
     {
      "name": "add_requirements_suggested",
-     "pass": false,
-     "detail": "named False; loaded False"
+     "pass": true,
+     "detail": "named True; loaded False"
     }
    ],
-   "passed": 2,
+   "passed": 4,
    "total": 4,
-   "score": 0.5,
+   "score": 1.0,
    "valid": true,
    "judge": {
     "criteria": [
@@ -1803,39 +1803,39 @@
     "verdicts": [
      {
       "criterion": "J1",
-      "pass": false,
-      "quote": "**Encryption is not in the Python standard library.** Requirement R-3 and the section 2 constraint allow only the standard library.",
+      "pass": true,
+      "quote": "**Quality goals this touches:** QG-1 Reliability (atomic export), QG-2 Portability (any cipher dependency), QG-3 Maintainability (export goes through `Store`, per ADR-0003).",
       "source": "transcript.md",
-      "reason": "Before the approaches the agent cites requirements and ADRs but never names any quality goal by its QG-n ID."
+      "reason": "Before laying out approaches, the agent names every touched quality goal by QG-n ID and asks the architect to flag any misreading."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "**Recommendation: A.** It keeps R-3 intact, uses a format people can decrypt without this tool, and fails loudly on tampering.",
+      "quote": "**Recommendation: A.** It is the only option that keeps R-3's stdlib-only rule and fails closed, and it doesn't ask you to write crypto code.",
       "source": "transcript.md",
-      "reason": "Three approaches are given with installability and integrity tradeoffs (R-3/QS-2), and one is recommended."
+      "reason": "Turn 2 presents three options, each tied to QG-1/QG-2/QG-3 it serves or hurts, and recommends one."
      },
      {
       "criterion": "J3",
-      "pass": false,
-      "quote": "Tell me tomorrow which one you pick, plus that answer, and I'll write the design doc.",
+      "pass": true,
+      "quote": "**Confidentiality isn't a requirement yet.** Nothing in the R-list or quality goals covers it. That is a new requirement, so it should go through `/add-requirements`.",
       "source": "transcript.md",
-      "reason": "The agent never frames encryption as a new system-level requirement or suggests running add-requirements."
+      "reason": "The agent names encryption/confidentiality as a new requirement and points the architect to /add-requirements without editing the R-list itself."
      },
      {
       "criterion": "J4",
-      "pass": true,
-      "quote": "ADR-0004 (atomic writes) is still *proposed*, and export depends on it. Accept it first.",
+      "pass": false,
+      "quote": "Serves QG-2 for the Python code and QG-1, since gpg is a proven tool and each write goes through ADR-0004's temp-file-and-rename.",
       "source": "transcript.md",
-      "reason": "The agent explicitly treats ADR-0004 as an open, proposed decision that must be accepted first."
+      "reason": "Although it notes ADR-0004 is proposed, the recommended option relies on ADR-0004 for its QG-1 benefit and the agent frames atomic exports as a must, so the design builds on the open decision instead of standing without it."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1239258
+    "cost_usd": 0.1545378
    },
-   "cost_usd": 0.014309,
-   "needs_review": false
+   "cost_usd": 0.020427,
+   "needs_review": true
   },
   {
    "run": "S12-r1",
@@ -1844,7 +1844,7 @@
     {
      "name": "one_spec",
      "pass": true,
-     "detail": "2026-11-22-notes-backup-spec.md"
+     "detail": "2026-11-22-backup-command-spec.md"
     },
     {
      "name": "qr_section",
@@ -1862,13 +1862,18 @@
      "detail": ""
     },
     {
+     "name": "status_blocked",
+     "pass": true,
+     "detail": "blocked (ADR-0004)"
+    },
+    {
      "name": "code_unchanged",
      "pass": true,
      "detail": ""
     }
    ],
-   "passed": 5,
-   "total": 5,
+   "passed": 6,
+   "total": 6,
    "score": 1.0,
    "valid": true,
    "judge": {
@@ -1880,23 +1885,23 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "**Blocker:** ADR-0004 (atomic writes), which your design relies on, is still `proposed` in `docs/adr/`. The spec's Quality Requirements section lists it under Blocked by, as the quality-requirements reference requires. Implementation should wait until you accept it.",
+      "quote": "The spec is marked **blocked (ADR-0004)**: ADR-0004 is still `proposed`, and the atomic-write rule depends on it.",
       "source": "transcript.md",
-      "reason": "The spec marks the atomic-write dependency as blocked until ADR-0004 is accepted, and the final message says so."
+      "reason": "The spec's status line and Blocked by entry mark the atomic-write dependency as waiting for ADR-0004's acceptance, and the final message tells the user so."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "- **Serves:** R-2 (no note is lost). A copy on another disk protects against losing the machine or its disk.\n- **Keeps:** QS-1 (the store still opens after a failure), QS-2 (no install steps, standard library only), QS-3 (only the store block touches the database; the CLI only calls the store).",
-      "source": "workspace/docs/specs/2026-11-22-notes-backup-spec.md",
-      "reason": "The Quality Requirements section names parent requirement R-2 and quality scenarios QS-1, QS-2 and QS-3."
+      "quote": "**Serves:** R-2 (no note is lost; a backup is a second copy that survives loss of the main disk)",
+      "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+      "reason": "The Quality Requirements section names R-2 as the parent requirement and lists QS-1, QS-2 and QS-3 under Keeps."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.18856179999999997
+    "cost_usd": 0.20876979999999998
    },
-   "cost_usd": 0.016799,
+   "cost_usd": 0.018968,
    "needs_review": false
   },
   {
@@ -1906,7 +1911,7 @@
     {
      "name": "one_spec",
      "pass": true,
-     "detail": "2026-11-22-backup-command-spec.md"
+     "detail": "2026-11-22-backup-spec.md"
     },
     {
      "name": "qr_section",
@@ -1916,7 +1921,7 @@
     {
      "name": "qr_cites",
      "pass": true,
-     "detail": "QS-1, R-2, R-3"
+     "detail": "QS-1, QS-3, R-2, R-3"
     },
     {
      "name": "not_copied",
@@ -1924,13 +1929,18 @@
      "detail": ""
     },
     {
+     "name": "status_blocked",
+     "pass": true,
+     "detail": "blocked (ADR-0004)"
+    },
+    {
      "name": "code_unchanged",
      "pass": true,
      "detail": ""
     }
    ],
-   "passed": 5,
-   "total": 5,
+   "passed": 6,
+   "total": 6,
    "score": 1.0,
    "valid": true,
    "judge": {
@@ -1942,23 +1952,23 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "The spec is written and committed as `1db0e2c` on `master`, but implementation is blocked. ADR-0004 is still `proposed`, and ADR-0002 says work that depends on an unaccepted decision waits.",
+      "quote": "**Blocker:** ADR-0004 (atomic write via temp file and rename) is still `proposed`. The backup's atomic write depends on it, and ADR-0002 says work that depends on an unaccepted decision waits.",
       "source": "transcript.md",
-      "reason": "The spec's status and Blocked by entry mark the atomic-write dependency as waiting on ADR-0004's acceptance, and the final message says so."
+      "reason": "The spec is marked blocked on the proposed ADR-0004 (status line and Blocked by entry), and the final message tells the user so."
      },
      {
       "criterion": "J2",
       "pass": true,
-      "quote": "- **Serves:** R-2 (no note is lost; a copy protects against loss of the main store), R-3 (standard library only).",
-      "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
-      "reason": "The Quality Requirements section names the parent requirements (R-2, R-3) and, under Keeps, the quality scenario QS-1."
+      "quote": "- **Keeps:** QS-1 (a crash leaves the store and the backup readable), QS-3 (only the store block and",
+      "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
+      "reason": "The Quality Requirements section names the parent requirements (Serves: R-2, R-3) and the quality scenarios to keep (Keeps: QS-1, QS-3)."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.20188979999999998
+    "cost_usd": 0.1894138
    },
-   "cost_usd": 0.017657,
+   "cost_usd": 0.015282,
    "needs_review": false
   },
   {
@@ -1998,16 +2008,16 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "The main testing decision is to test through the existing `main(argv)` seam in `tests/test_cli.py`, with no new seam.",
+      "quote": "The spec also covers the README example and the test cases, and it leaves no decisions open.",
       "source": "transcript.md",
-      "reason": "The agent's messages and spec cover only functional assumptions, scope and testing, with no mention of quality goals, arc42 or ADRs."
+      "reason": "The spec and final report contain no quality goals, arc42 sections or ADRs; the only arc42 mention is a progress message noting its absence, which does not propose it."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1161698
+    "cost_usd": 0.12341379999999999
    },
-   "cost_usd": 0.010317,
+   "cost_usd": 0.010767,
    "needs_review": false
   },
   {
@@ -2046,18 +2056,18 @@
     "verdicts": [
      {
       "criterion": "J1",
-      "pass": true,
-      "quote": "I skipped tickets and a plan. This is one slice that one agent can build in one sitting, so the spec can go straight to implementation.",
+      "pass": false,
+      "quote": "The repo has no tracker config, glossary, or arc42 docs, so this was the local-file path.",
       "source": "transcript.md",
-      "reason": "Neither the spec nor the final report raises quality goals, arc42 or ADRs; the only mention of ADRs is a passing note that the repo has none, used to pick the local spec form."
+      "reason": "The agent brings up arc42 in its final report to the user, which the criterion forbids even though the spec itself has no quality goals, arc42 or ADRs."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.1238778
+    "cost_usd": 0.1290338
    },
-   "cost_usd": 0.010262,
-   "needs_review": false
+   "cost_usd": 0.009688,
+   "needs_review": true
   },
   {
    "run": "S14-r1",
@@ -2091,16 +2101,16 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "What do you want to learn from pairs that single-word counts can't show you? The answer decides whether I count only adjacent words or pairs across the whole text, and whether pairs appear next to the word counts or behind a flag.",
+      "quote": "\u2753 **Q1** - **What are the pair counts for?** What are you hoping they will show you that single-word counts can't?",
       "source": "transcript.md",
-      "reason": "The agent asked one concrete question about what the user wants from pairs and never raised quality goals, arc42 or ADRs."
+      "reason": "The agent's messages ask only about the purpose of pair counts and never raise quality goals, arc42 or ADRs."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0479018
+    "cost_usd": 0.046097799999999994
    },
-   "cost_usd": 0.004637,
+   "cost_usd": 0.00438,
    "needs_review": false
   },
   {
@@ -2135,16 +2145,16 @@
      {
       "criterion": "J1",
       "pass": true,
-      "quote": "What are you hoping to learn from the pair counts? For example, spotting phrases you repeat in your notes, or comparing writing style.",
+      "quote": "\u2753 **Q1** - **What counts as a pair?** When you say word pairs, do you mean two words that sit next to each other in the text, like \"cup of\" or \"of tea\", or any two words that appear in the same sentence?",
       "source": "transcript.md",
-      "reason": "The agent's only message asks about the user's purpose and concrete design choices, with no mention of quality goals, arc42, or ADRs."
+      "reason": "The agent's messages only cover reading the code and one question about what a pair means, with no mention of quality goals, arc42 or ADRs."
      }
     ],
     "quote_errors": [],
     "needs_review": false,
-    "cost_usd": 0.0442298
+    "cost_usd": 0.0450898
    },
-   "cost_usd": 0.003779,
+   "cost_usd": 0.004107,
    "needs_review": false
   }
  ]

@@ -84,9 +84,9 @@ with the agents' wording: [campaigns/](campaigns/).
 | S08 architecture-scan-dataflow (two turns) | 0.500 | 0.375 | 0.916 | 0.875 | 2 of 2 (slash) |
 | S09 recovery-python (three turns) | 0.000 | 0.000 | 0.928 | 1.000 | 2 of 2 (slash) |
 | S10 recovery-dataflow (three turns) | 0.000 | 0.000 | 1.000 | 0.875 | 2 of 2 (slash) |
-| S11 dialogue-setup (two turns) | 0.500 | 0.250 | 0.750 | 0.750 | 2 of 2 (slash); 1 of 2 read the reference |
-| S12 spec-setup | 0.600 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
-| S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S11 dialogue-setup (two turns) | 0.500 | 0.250 | 1.000 | 0.750 | 2 of 2 (slash) |
+| S12 spec-setup | 0.500 | 0.500 | 1.000 | 1.000 | 2 of 2 (slash) |
+| S13 spec-plain (control) | 1.000 | 1.000 | 1.000 | 0.500 | 2 of 2 (slash) |
 | S14 dialogue-plain (control) | 1.000 | 1.000 | 1.000 | 1.000 | 2 of 2 (slash) |
 
 Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90–2.20). A turn takes 20–60 s.
@@ -143,8 +143,11 @@ Cost so far: about $2.10–2.50 per arm (runs ≈ $0.20–0.25, judge ≈ $1.90�
   the branch, both pointers are gated on `docs/architecture/arc42.md` and name nothing else; the
   set-up guidance lives in `design-dialogue/references/architecture.md` and
   `spec-and-plan/references/quality-requirements.md`. One loophole round moved that guidance out
-  of always-read text after the S13 and S14 controls each regressed once. Open loophole: S11-r2
-  did not follow the bare pointer. No S01–S10 run loads either skill, so none was re-run.
+  of always-read text after the S13 and S14 controls each regressed once; the review fix pass
+  made the dialogue pointer say what the reference changes and added `status_blocked` (a spec
+  waiting for a proposed ADR is not `ready-for-agent`; both `main` runs failed it). Open: both
+  final S11 runs build options on proposed ADR-0004 (J4, which `main` passed); S13-r2 mentions
+  that the repo has no arc42 (J1). No S01–S10 run loads either skill, so none was re-run.
 - Reviewed runs (flagged by `summarize.py`): `baseline/S02-r2`, where the grader's `cites_ids`
   failure stands because R-6 does not exist.
 

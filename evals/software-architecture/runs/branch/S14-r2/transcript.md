@@ -2,12 +2,16 @@
 
 /sa:design-dialogue I want tally to also count word pairs. Help me think this through before anything gets built.
 
+### assistant
+
+I'll read the project first so I can see how tally counts today before asking anything.
+
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100 && ls docs 2>/dev/null",
- "description": "List repo files and status"
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -100 && ls docs/architecture 2>/dev/null",
+ "description": "List project files and git state"
 }
 ```
 
@@ -15,7 +19,7 @@
 
 ```
 Exit code 2
-ed3b588 fixture
+4500178 fixture
 ./README.md
 ./tally/__main__.py
 ./tally/cli.py
@@ -28,15 +32,14 @@ ed3b588 fixture
 
 ```json
 {
- "command": "for f in $(git ls-files | grep -v -E '\\.(png|jpg|gif|lock)$' | head -20); do echo \"=== $f\"; head -c 4000 \"$f\"; echo; done",
- "description": "Show contents of tracked files"
+ "command": "cat README.md && echo ---- && cat tally/cli.py && echo ---- && cat tally/__init__.py tally/__main__.py && echo ---- && cat tests/test_cli.py",
+ "description": "Read README, CLI source, and tests"
 }
 ```
 
 ### tool_result
 
 ```
-=== README.md
 # tally
 
 Counts word frequencies in a text file.
@@ -47,18 +50,7 @@ python3 -m tally notes.txt
 
 Prints one `word count` line per word, most frequent first, ties in alphabetical order.
 Run the tests with `python3 -m unittest`.
-
-=== tally/__init__.py
-"""Word frequency counter."""
-
-=== tally/__main__.py
-import sys
-
-from tally.cli import main
-
-sys.exit(main())
-
-=== tally/cli.py
+----
 import argparse
 import re
 from collections import Counter
@@ -84,10 +76,14 @@ def main(argv=None):
     for line in format_counts(counts):
         print(line)
     return 0
+----
+"""Word frequency counter."""
+import sys
 
-=== tests/__init__.py
+from tally.cli import main
 
-=== tests/test_cli.py
+sys.exit(main())
+----
 import io
 import tempfile
 import unittest
@@ -122,10 +118,14 @@ if __name__ == "__main__":
 
 ### assistant
 
-I read the project: a README, `tally/cli.py`, and the tests. Today `count_words` lowercases the text and runs `[a-z']+` over it, so punctuation and line breaks disappear before counting. A pair would therefore be two adjacent words in that stream, and "end. Start" would count as a pair even though the sentence ends between them.
+I read the whole tool: `tally/cli.py` is one regex, `[a-z']+`, run over lowercased text, then a `Counter` printed as `word count` lines. Punctuation disappears, so today "end. Start" gives two adjacent tokens, and the tests only cover single words.
 
-What are you hoping to learn from the pair counts? For example, spotting phrases you repeat in your notes, or comparing writing style. The answer decides whether pairs should stop at sentence boundaries and whether they belong in the same output as single words or behind a flag.
+Word pairs could mean two different things, and they lead to different designs:
 
-Or if you would rather I just dive in, say so.
+❓ **Q1** - **What counts as a pair?** When you say word pairs, do you mean two words that sit next to each other in the text, like "cup of" or "of tea", or any two words that appear in the same sentence? Adjacent pairs are a small change to the existing token stream, but they would also join words across full stops unless we decide otherwise. Sentence pairs would need a sentence splitter and would count far more combinations.
+
+➡️ I'd start with adjacent pairs, not crossing sentence ends, because that is the smallest change and matches what most people mean by "word pairs." Say so if you meant something else.
+
+Once you answer, I'll ask about output: whether pairs get their own section or mix into the existing list.
 
 ### result (success)

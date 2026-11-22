@@ -13,21 +13,21 @@ Write the spec. I'm not available: where you would ask me, state the assumption 
 
 ### assistant
 
-I'll start by reading the repo's tracker config, glossary, ADRs, and the store code the backup touches.
+I'll start by reading the repo: the tracker config, glossary, ADRs, and the existing store and command code.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200",
- "description": "List repo files and status"
+ "command": "git status --short && git log --oneline | head -5 && find . -path ./.git -prune -o -type f -print | head -200 && echo --- && cat docs/agents/issue-tracker.md 2>/dev/null; echo \"--- glossary\"; cat GLOSSARY.md 2>/dev/null; echo \"--- adr\"; ls docs/adr 2>/dev/null",
+ "description": "Survey repo files, tracker doc, glossary, ADRs"
 }
 ```
 
 ### tool_result
 
 ```
-fb92ab7 fixture
+5ee4fe7 fixture
 ./README.md
 ./GLOSSARY.md
 ./notes/__main__.py
@@ -43,99 +43,34 @@ fb92ab7 fixture
 ./docs/adr/0003-cli-reaches-storage-only-through-store.md
 ./docs/adr/0001-use-sqlite-for-storage.md
 ./docs/architecture/arc42.md
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "ls docs docs/* 2>/dev/null; cat docs/agents/issue-tracker.md 2>/dev/null; echo ---; cat GLOSSARY.md 2>/dev/null; echo ---; find . -iname '*adr*' -not -path './.git/*'",
- "description": "Read tracker config, glossary, and locate ADRs"
-}
-```
-
-### tool_result
-
-```
-docs:
-adr
-architecture
-
-docs/adr:
-0001-use-sqlite-for-storage.md
-0002-record-architecture-decisions.md
-0003-cli-reaches-storage-only-through-store.md
-0004-write-notes-atomically.md
-0005-add-postgresql-backend.md
-
-docs/architecture:
-arc42.md
 ---
+--- glossary
 # Glossary
 
 **Note**: a short piece of text a user keeps, with an id and the time it was created.
 
 **Store**: the place notes are kept between runs.
----
-./docs/adr
+--- adr
+0001-use-sqlite-for-storage.md
+0002-record-architecture-decisions.md
+0003-cli-reaches-storage-only-through-store.md
+0004-write-notes-atomically.md
+0005-add-postgresql-backend.md
 ```
-
-### assistant
-
-No tracker config exists, so the spec goes to the local form. Next I'll read the ADRs, the store, and the CLI.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat docs/adr/0004-write-notes-atomically.md; echo ----; cat docs/adr/0003-cli-reaches-storage-only-through-store.md; echo ----; cat docs/adr/0001-use-sqlite-for-storage.md; echo ----; cat docs/adr/0005-add-postgresql-backend.md; echo ----; cat docs/adr/0002-record-architecture-decisions.md",
- "description": "Read all ADRs"
+ "command": "for f in docs/adr/*.md; do echo \"=== $f\"; cat \"$f\"; done; echo \"=== arc42\"; cat docs/architecture/arc42.md",
+ "description": "Read all ADRs and architecture doc"
 }
 ```
 
 ### tool_result
 
 ```
-# 4. Write notes atomically via a temporary file and rename
-
-## Status
-
-proposed
-
-## Context
-
-QS-1 requires that a crash during `add` leaves the store readable (R-2, QG-1). Any file the
-store writes besides the database (for example an export) must meet the same rule.
-
-## Decision
-
-Every file the store writes is written to a temporary file in the same directory, flushed with
-`os.fsync`, and moved into place with `os.replace`.
-
-## Consequences
-
-A crash leaves either the old file or the new one, never a partial file. Writes cost one extra
-`fsync`.
-----
-# 3. CLI reaches storage only through the store module
-
-## Status
-
-accepted 2026-10-01
-
-## Context
-
-Contributors should be able to swap the storage engine by changing one module (QG-3, QS-3).
-
-## Decision
-
-Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
-`Store` class and the `Note` value.
-
-## Consequences
-
-Any new command that reads or writes notes goes through `Store`.
-----
+=== docs/adr/0001-use-sqlite-for-storage.md
 # 1. Use SQLite for storage
 
 ## Status
@@ -155,25 +90,7 @@ Store all notes in one SQLite database file, by default `~/.notes.db`.
 
 Crash safety comes from SQLite transactions. The file is binary, so it cannot be read or
 repaired with a text editor.
-----
-# 5. Add a PostgreSQL backend
-
-## Status
-
-proposed
-
-## Context
-
-Users with many notes asked for faster search (R-1).
-
-## Decision
-
-Offer PostgreSQL as a second storage engine, chosen with `NOTES_BACKEND=postgres`.
-
-## Consequences
-
-Needs the `psycopg` package and a running database server.
-----
+=== docs/adr/0002-record-architecture-decisions.md
 # 2. Record architecture decisions
 
 ## Status
@@ -203,20 +120,172 @@ Left to the building blocks (no ADR): internal helpers, SQL query structure, tes
 ## Consequences
 
 Work that depends on a decision on the list waits until its ADR is accepted.
+=== docs/adr/0003-cli-reaches-storage-only-through-store.md
+# 3. CLI reaches storage only through the store module
+
+## Status
+
+accepted 2026-10-01
+
+## Context
+
+Contributors should be able to swap the storage engine by changing one module (QG-3, QS-3).
+
+## Decision
+
+Only `notes/store.py` imports `sqlite3` or touches the database file. `notes/cli.py` uses the
+`Store` class and the `Note` value.
+
+## Consequences
+
+Any new command that reads or writes notes goes through `Store`.
+=== docs/adr/0004-write-notes-atomically.md
+# 4. Write notes atomically via a temporary file and rename
+
+## Status
+
+proposed
+
+## Context
+
+QS-1 requires that a crash during `add` leaves the store readable (R-2, QG-1). Any file the
+store writes besides the database (for example an export) must meet the same rule.
+
+## Decision
+
+Every file the store writes is written to a temporary file in the same directory, flushed with
+`os.fsync`, and moved into place with `os.replace`.
+
+## Consequences
+
+A crash leaves either the old file or the new one, never a partial file. Writes cost one extra
+`fsync`.
+=== docs/adr/0005-add-postgresql-backend.md
+# 5. Add a PostgreSQL backend
+
+## Status
+
+proposed
+
+## Context
+
+Users with many notes asked for faster search (R-1).
+
+## Decision
+
+Offer PostgreSQL as a second storage engine, chosen with `NOTES_BACKEND=postgres`.
+
+## Consequences
+
+Needs the `psycopg` package and a running database server.
+=== arc42
+# notes: architecture
+
+Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
+
+## 1. Introduction and goals
+
+### Requirements overview
+
+| ID | requirement | rank | status | reason |
+|---|---|---|---|---|
+| R-1 | Users add, list and search notes from the command line. | 1 | active | core use |
+| R-2 | No note is lost when the process or machine crashes. | 2 | active | users keep notes for years |
+| R-3 | Runs on Linux and macOS with only the Python standard library. | 3 | active | installed on locked-down machines |
+| R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
+| R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
+
+### Quality goals
+
+| ID | goal (ISO/IEC 25010) | from | scenario |
+|---|---|---|---|
+| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
+| QG-2 | Portability: installability | R-3 | QS-2 |
+| QG-3 | Maintainability: modifiability | R-1 | QS-3 |
+
+### Stakeholders
+
+| role | expectation |
+|---|---|
+| Architect (project owner) | decides the architecture; accepts ADRs |
+| Users | keep notes for years without losing any |
+| Contributors | change
+[... 1479 chars cut]
 ```
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cat notes/store.py; echo ----; cat notes/cli.py; echo ----; cat notes/model.py notes/__main__.py notes/__init__.py",
- "description": "Read store, CLI, and model source"
+ "command": "for f in README.md notes/*.py; do echo \"=== $f\"; cat \"$f\"; done; echo \"=== tests\"; cat tests/test_notes.py",
+ "description": "Read source, README and tests"
 }
 ```
 
 ### tool_result
 
 ```
+=== README.md
+# notes
+
+Keep short notes from the command line.
+
+```sh
+python3 -m notes add "Buy milk"
+python3 -m notes list
+python3 -m notes search milk
+```
+
+Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
+`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
+=== notes/__init__.py
+"""Keep short notes from the command line."""
+=== notes/__main__.py
+import sys
+
+from notes.cli import main
+
+sys.exit(main())
+=== notes/cli.py
+import argparse
+import sys
+
+from notes.store import Store, default_path
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("add", help="add a note").add_argument("text")
+    sub.add_parser("list", help="list all notes")
+    sub.add_parser("search", help="find notes containing a term").add_argument("term")
+    args = parser.parse_args(argv)
+    try:
+        store = Store(default_path())
+    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
+        print(f"notes: {e}", file=sys.stderr)
+        return 1
+    try:
+        if args.command == "add":
+            note = store.add(args.text)
+            print(note.id)
+        else:
+            found = store.all() if args.command == "list" else store.search(args.term)
+            for note in found:
+                print(f"{note.id}\t{note.created}\t{note.text}")
+    finally:
+        store.close()
+    return 0
+=== notes/model.py
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class Note:
+    id: int
+    text: str
+    created: str
+=== notes/store.py
 """The only module that knows how notes are stored (ADR-0001, ADR-0003)."""
 import os
 import sqlite3
@@ -254,153 +323,7 @@ class Store:
 
     def close(self):
         self._db.close()
-----
-import argparse
-import sys
-
-from notes.store import Store, default_path
-
-
-def main(argv=None):
-    parser = argparse.ArgumentParser(prog="notes", description="Keep short notes.")
-    sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("add", help="add a note").add_argument("text")
-    sub.add_parser("list", help="list all notes")
-    sub.add_parser("search", help="find notes containing a term").add_argument("term")
-    args = parser.parse_args(argv)
-    try:
-        store = Store(default_path())
-    except Exception as e:  # arc42 section 8: errors go to stderr, exit code 1
-        print(f"notes: {e}", file=sys.stderr)
-        return 1
-    try:
-        if args.command == "add":
-            note = store.add(args.text)
-            print(note.id)
-        else:
-            found = store.all() if args.command == "list" else store.search(args.term)
-            for note in found:
-                print(f"{note.id}\t{note.created}\t{note.text}")
-    finally:
-        store.close()
-    return 0
-----
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class Note:
-    id: int
-    text: str
-    created: str
-import sys
-
-from notes.cli import main
-
-sys.exit(main())
-"""Keep short notes from the command line."""
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "cat README.md; echo ----; cat docs/architecture/arc42.md; echo ----; cat tests/test_notes.py",
- "description": "Read README, arc42, and existing tests"
-}
-```
-
-### tool_result
-
-```
-# notes
-
-Keep short notes from the command line.
-
-```sh
-python3 -m notes add "Buy milk"
-python3 -m notes list
-python3 -m notes search milk
-```
-
-Notes are stored in `~/.notes.db` (set `NOTES_DB` to use another file). Run the tests with
-`python3 -m unittest`. Architecture: [docs/architecture/arc42.md](docs/architecture/arc42.md).
-----
-# notes: architecture
-
-Structured after the arc42 template (https://arc42.org). Empty sections are filled when needed.
-
-## 1. Introduction and goals
-
-### Requirements overview
-
-| ID | requirement | rank | status | reason |
-|---|---|---|---|---|
-| R-1 | Users add, list and search notes from the command line. | 1 | active | core use |
-| R-2 | No note is lost when the process or machine crashes. | 2 | active | users keep notes for years |
-| R-3 | Runs on Linux and macOS with only the Python standard library. | 3 | active | installed on locked-down machines |
-| R-4 | Notes sync between a user's devices. | - | deferred | needs a server; revisit next year |
-| R-5 | A graphical user interface. | - | rejected | the CLI audience does not want one |
-
-### Quality goals
-
-| ID | goal (ISO/IEC 25010) | from | scenario |
-|---|---|---|---|
-| QG-1 | Reliability: fault tolerance | R-2 | QS-1 |
-| QG-2 | Portability: installability | R-3 | QS-2 |
-| QG-3 | Maintainability: modifiability | R-1 | QS-3 |
-
-### Stakeholders
-
-| role | expectation |
-|---|---|
-| Architect (project owner) | decides the architecture; accepts ADRs |
-| Users | keep notes for years without losing any |
-| Contributors | change one part without learning the whole program |
-
-## 2. Constraints
-
-- Python 3.11 or later, standard library only (R-3).
-
-## 3. Context and scope
-
-## 4. Solution strategy
-
-## 5. Building block view
-
-| block | responsibility | may use |
-|---|---|---|
-| `cli` | parse commands, print results and errors | `store`, `model` |
-| `store` | keep notes between runs; the only block that knows the storage | `model` |
-| `model` | the `Note` value | - |
-
-## 6. Runtime view
-
-## 7. Deployment view
-
-## 8. Crosscutting concepts
-
-- Errors: reported on stderr as `notes: <message>`, exit code 1.
-
-## 9. Architecture decisions
-
-Decisions are recorded as ADRs in [docs/adr/](../adr/). What is decided centrally is listed in
-[ADR-0002 Record architecture decisions](../adr/0002-record-architecture-decisions.md).
-
-## 10. Quality requirements
-
-| ID | goal | stimulus | environment | response | measure |
-|---|---|---|---|---|---|
-| QS-1 | QG-1 | the process is killed with SIGKILL during `add` | normal operation | the note is either fully stored or absent; the store still opens | 0 unreadable stores in 100 trials |
-| QS-2 | QG-2 | a user runs `python3 -m notes list` | fresh Linux or macOS with Python 3.11+ | it works without installing anything | 0 install steps |
-| QS-3 | QG-3 | a contributor swaps the storage engine | development | only `notes/store.py` and its tests change | 0 other files changed |
-
-## 11. Risks and technical debt
-
-## 12. Glossary
-
-See [GLOSSARY.md](../../GLOSSARY.md).
-----
+=== tests
 import io
 import os
 import tempfile
@@ -435,35 +358,28 @@ class CliTest(unittest.TestCase):
         db = Path(tempfile.mkdtemp()) / "n.db"
         with mock.patch.dict(os.environ, {"NOTES_DB": str(db)}):
             with redirect_stdout(io.StringIO()):
-                self.assertEqual(main
-[... 257 chars cut]
+                self.assertEqual(main(["add", "Buy milk"]), 0)
+            out = io.StringIO()
+
+[... 199 chars cut]
 ```
 
 ### assistant
 
-The ADRs raise two gating issues I need to handle in the spec: ADR-0004 is still `proposed`, and ADR-0002 says work depending on an unaccepted decision waits. Next I'll read the skill's templates and quality reference.
+The spec depends on two things I need to check before writing: ADR-0004 is still `proposed`, and ADR-0002 says work that depends on an unaccepted decision waits. I'll read the spec template and quality-requirements reference the skill points to, and check the branch.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "cd /tmp/sa-arm-ybchhrsr/sa/skills/spec-and-plan && ls -R . && cat references/spec-template.md && echo ----- && cat references/quality-requirements.md && echo ---- && ls /tmp/sa-arm-ybchhrsr/sa/skills/domain-modeling/ && sed -n 1,200p /tmp/sa-arm-ybchhrsr/sa/skills/domain-modeling/SKILL.md",
- "description": "Read spec template and quality reference"
+ "command": "cd /tmp/sa-arm-izrs660r/sa/skills/spec-and-plan && cat references/spec-template.md; echo \"=== QR\"; cat references/quality-requirements.md; echo \"=== branches\"; cd /tmp/sa-eval-o__w81c6/project && git branch -a && ls docs",
+ "description": "Read spec template, quality reference, and branches"
 }
 ```
 
 ### tool_result
 
 ```
-.:
-SKILL.md
-references
-
-./references:
-plan-template.md
-quality-requirements.md
-spec-template.md
-ticket-template.md
 # Spec Template
 
 The body is identical for both publication forms; only the wrapper changes.
@@ -548,7 +464,7 @@ What this spec deliberately does not cover, and where that work goes instead if 
 ### Further Notes
 
 Anything else the planner or builder needs: open assumptions, links to ADRs or research, rollout notes.
------
+=== QR
 # Quality Requirements in a set-up project
 
 Part of [spec-and-plan](../SKILL.md). A set-up project has `docs/architecture/arc42.md`; the
@@ -573,239 +489,102 @@ text, so a scenario's measure stays there.
 - **Blocked by:** <ADR-nnnn, each proposed ADR that settles a decision the work needs>
 ```
 
-A proposed ADR is an open decision: list it under **Blocked by**, mark the spec's status as
-blocked on it, and say so in your final message. The spec builds on it once the architect
-accepts it.
+A proposed ADR is an open decision: list it under **Blocked by**, and say so in your final
+message. While **Blocked by** lists an ADR, the spec's status line reads
+`Status: blocked (ADR-nnnn)`, and a tracker issue gets the blocked marking instead of
+`ready-for-agent`. The spec builds on the decision once the architect accepts the ADR.
 
 ## Red flags
 
 | Thought | Reality |
 |---|---|
-| "The design says ADR-0004, so the spec follows it" | A proposed ADR is open. List it under Blocked by until the archi
-[... 6275 chars cut]
+| "The design relies on a proposed ADR, so the spec follows it" | A proposed ADR is open. 
+[... 261 chars cut]
 ```
 
 ### assistant
 
-Two findings change how I write this. ADR-0004 is still `proposed`, so the spec must list it under Blocked by and not treat it as accepted. The command name `backup` also falls under ADR-0002's centrally decided list. I'll check the glossary format before adding the new term.
+Two findings change how I write the spec. ADR-0004 is only `proposed`, so the spec's status has to be `blocked (ADR-0004)`. The repo has no tracker config, so the spec goes to `docs/specs/` and gets committed. The spec also introduces a new term, "backup", so the glossary update goes through domain-modeling. I'll load that skill first.
 
-### tool_use Bash
+### tool_use Skill
 
 ```json
 {
- "command": "cat /tmp/sa-arm-ybchhrsr/sa/skills/domain-modeling/GLOSSARY-FORMAT.md; echo ----; cat /tmp/sa-arm-ybchhrsr/sa/skills/spec-and-plan/../design-dialogue/SKILL.md | head -80",
- "description": "Read glossary format and design-dialogue format"
+ "skill": "sa:domain-modeling",
+ "args": "Add the term \"Backup\" to GLOSSARY.md: a copy of the store written to a path the user chooses, made with `notes backup PATH`. Only glossary work for this spec; no ADR changes."
 }
 ```
 
 ### tool_result
 
 ```
-# GLOSSARY.md Format
-
-## Structure
-
-```md
-# {Context Name}
-
-{One or two sentence description of what this context is and why it exists.}
-
-## Language
-
-**Order**:
-{A one or two sentence description of the term}
-_Avoid_: Purchase, transaction
-
-**Invoice**:
-A request for payment sent to a customer after delivery.
-_Avoid_: Bill, payment request
-
-**Customer**:
-A person or organization that places orders.
-_Avoid_: Client, buyer, account
-```
-
-## Rules
-
-- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
-- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
-- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
-- **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
-
-## Single vs multi-context repos
-
-**Single context (most repos):** One `GLOSSARY.md` at the repo root.
-
-**Multiple contexts:** A `GLOSSARY-MAP.md` at the repo root lists the contexts, where they live, and how they relate to each other:
-
-```md
-# Glossary Map
-
-## Contexts
-
-- `src/ordering/GLOSSARY.md` (a module-level glossary): receives and tracks customer orders
-- `src/billing/GLOSSARY.md`: generates invoices and processes payments
-- `src/fulfillment/GLOSSARY.md`: manages warehouse picking and shipping
-
-## Relationships
-
-- **Ordering → Fulfillment**: Ordering emits `OrderPlaced` events; Fulfillment consumes them to start picking
-- **Fulfillment → Billing**: Fulfillment emits `ShipmentDispatched` events; Billing consumes them to generate invoices
-- **Ordering ↔ Billing**: Shared types for `CustomerId` and `Money`
-```
-
-The skill infers which structure applies:
-
-- If `GLOSSARY-MAP.md` exists, read it to find contexts
-- If only a root `GLOSSARY.md` exists, single context
-- If neither exists, create a root `GLOSSARY.md` lazily when the first term is resolved
-
-When multiple contexts exist, infer which one the current topic relates to. If unclear, ask.
-----
----
-name: design-dialogue
-description: Use when the user wants to brainstorm a feature or product, grill a plan or decision, or settle what to build before code exists. Triggers include "brainstorm", "grill me", "help me think this through", "what should we build", and any vague request whose intent is still unsettled.
----
-
-# Design Dialogue
-
-You are good at building. The failure mode is building what you assume the user wants. This skill finds out what they actually want and why, then stress-tests every decision until nothing important is silently assumed.
-
-Two movements: **elicit** intent with open questions, then **grill** the design tree in rounds. Both happen before anything is built.
-
-## Look before you ask
-
-Before your first message, read what the user pointed at and the code or material it touches: the project, the spec, earlier conversation, relevant files. Keep reading until you can explain how the relevant parts work today and what this change would touch.
-
-Never ask what the repo, the spec, or the conversation already answers. Facts are your job.
-
-If `docs/architecture/arc42.md` exists, read [references/architecture.md](references/architecture.md) before your first message.
-
-When looking further would help, offer recon: deeper into the codebase, the user's files and data, or the web. Say what you would look for and why it changes the design. Use [research](../research/SKILL.md) for a cited investigation; dispatch a focused explorer subagent when you only need facts from this repo.
-
-## The first message
-
-Pick the shape that matches what they gave you.
-
-**They already gave detail** (a spec, a plan, a handoff, a long request): keep the whole message to about 200 words. Echo t
-[... 4995 chars cut]
+Launching skill: sa:domain-modeling
 ```
 
 ### assistant
 
-I have what I need. I'll add the new domain term to the glossary and check the branch state before committing.
-
-### tool_use Read
-
-```json
-{
- "file_path": "/tmp/sa-eval-zmldc47q/project/GLOSSARY.md"
-}
-```
-
-### tool_result
-
-```
-1	# Glossary
-2	
-3	**Note**: a short piece of text a user keeps, with an id and the time it was created.
-4	
-5	**Store**: the place notes are kept between runs.
-6	
-```
-
-### tool_use Bash
-
-```json
-{
- "command": "git branch -a && git config user.name; git config user.email; echo \"$(date +%F)\"",
- "description": "Check branches, git identity, and date"
-}
-```
-
-### tool_result
-
-```
-* master
-Philip Dorpmüller
-philip.dorpmueller@web.de
-2026-11-22
-```
+The glossary has a fixed style, and the rules say no implementation details. I'll add the entry in that style, defining the term by what it is for the user.
 
 ### tool_use Edit
 
 ```json
 {
  "replace_all": false,
- "file_path": "/tmp/sa-eval-zmldc47q/project/GLOSSARY.md",
- "old_string": "**Store**: the place notes are kept between runs.\n",
- "new_string": "**Store**: the place notes are kept between runs.\n\n**Backup**: a copy of the store written to a file the user names, so the user can keep it on another disk.\n"
+ "file_path": "/tmp/sa-eval-o__w81c6/project/GLOSSARY.md",
+ "old_string": "**Store**: the place notes are kept between runs.",
+ "new_string": "**Store**: the place notes are kept between runs.\n\n**Backup**: a copy of the store that a user keeps somewhere else, such as on another disk, at a path the user chooses."
 }
 ```
 
 ### tool_result
 
 ```
-The file /tmp/sa-eval-zmldc47q/project/GLOSSARY.md has been updated successfully. (file state is current in your context — no need to Read it back)
+The file /tmp/sa-eval-o__w81c6/project/GLOSSARY.md has been updated successfully.
 ```
 
 ### assistant
 
-Now the spec itself, using the local-file form.
-
-### tool_use Write
-
-```json
-{
- "file_path": "/tmp/sa-eval-zmldc47q/project/docs/specs/2026-11-22-backup-command-spec.md",
- "content": "# Backup Command Spec\n\nStatus: blocked. Do not implement until ADR-0004 is accepted and the `backup` command name is settled (see Quality Requirements).\nSource: approved design in the conversation of 2026-11-22 (`notes backup PATH`). The architect was not available to answer questions; every gap is stated as an assumption under Further Notes.\n\n## Problem Statement\n\nUsers keep notes for years (arc42 stakeholders) and must not lose any (R-2). The store is one SQLite file in `~/.notes.db` on the same disk as everything else. A user who wants a second copy on another disk has to know where the file is and copy it by hand. Copying a database file while the program may be writing to it can produce a copy that does not open or is missing recent notes, and the tool gives no way to check it.\n\n## Solution\n\nThe user runs `notes backup PATH`. The command writes a complete, readable copy of the store to PATH and prints how many notes it holds. If PATH already holds a file, that file is replaced. If the store cannot be read, or the copy cannot be written, the command says why on stderr and exits 1, and PATH is left as it was. To restore, the user copies the backup file back to the store's location (`NOTES_DB` or `~/.notes.db`). There is no restore command.\n\n## User Stories\n\n1. As a user, I want to run `notes backup PATH` with a path on another disk, so that I have a copy of my notes if the main disk fails.\n2. As a user, I want the command to print the number of notes in the copy, so that I can confirm it is complete.\n3. As a user, I want the command to exit 0 when the copy is written, so that a script can rely on it.\n4. As a user who backs up every week, I want a second run to replace the earlier backup at the same PATH, so that I do not have to delete it first.\n5. As a user with a new, empty store, I want the backup to succeed and print `0`, so that an empty store is not reported as an error.\n6. As a user, I want a backup I can restore by copying the file back to the store's location, so that I need no extra tool to restore.\n7. As a user, I want a failed or interrupted backup to leave the previous backup at PATH intact, so that a failure never leaves me with no usable copy.\n8. As a user whose store cannot be read (missing permission, corrupt file, or not a database), I want an error on stderr and exit 1, so that I know the backup was not made.\n9. As a user who gives a PATH in a directory that does not exist or cannot be written, I want an error on stderr and exit 1 with the store untouched, so that I can fix the path and retry.\n10. As a user who gives a directory as PATH, I want an error on stderr and exit 1, so that no directory is replaced or damaged.\n11. As a user who gives the store's own file as PATH, I want an error on stderr and exit 1, so that the live store is never overwritten by its own copy.\n12. As a user who gives a relative PATH, I want it resolved from the directory I ran the command in, so that it behaves like any other file argument.\n13. As a user with many notes, I want the backup to finish without a size limit, so that a large store can be backed up.\n14. As a user who runs `notes backup` with no PATH, I want the usage message from the argument parser and exit 2, as every command already does for usage errors.\n15. As a user backing up while another `notes` command is writing, I want the copy to contain a consistent set of notes (no half-written note), so that the backup is restorable.\n\n## Implementation Decisions\n\n- **Store owns the copy.** `Store` gains one operation that takes a destination path and returns the number of notes written. Only `notes/store.py` imports `sqlite3` (ADR-0003). The CLI calls this operation and does not touch the database.\n- **CLI gains one subcommand.** `backup` takes one required argument, PATH. It calls the store operation and prints the returned count as a bare integer followed by a newline on stdout, then exits 0. Errors go to stderr as `notes: <message>` and exit 1, as in arc42 section 8.\n- **The copy is a SQLite database.** It has the same format as the store (ADR-0001), so restoring is a file copy and needs no conversion.\n- **Consistent copy.** The copy is made with SQLite's online backup, which reads a consistent snapshot of the store, so a concurrent write cannot produce a half-copied file.\n- **Atomic write, per ADR-0004.** The copy is first written to a temporary file in the same directory as PATH, flushed with `os.fsync`, then moved onto PATH with `os.replace`. The temporary file is removed if any step fails. Any failure leaves PATH as it was.\n- **Count from the file.** The printed count is the number of rows in the notes table of the temporary copy, read before the move. The number printed is therefore the number of notes in the file at PATH.\n- **No new dependency.** Only the standard library is used (R-3). No new third-party package (arc42 section 2).\n- **No new storage engine behaviour.** The command reads the store through the existing open path, so it inherits the existing behaviour for missing or unreadable store files (see Further Notes).\n\n## Testing Decisions\n\nWhat makes a good test here: observable behaviour at the command boundary and at the store's public operation: the return value, the output, the exit code, the stderr text, and whether PATH is replaced or left unchanged. Do not assert on the temporary file name or on SQL text.\n\nSeams (no new seam is proposed; both already exist):\n\n- **`notes.cli.main(argv)`**, the command seam. Tests set `NOTES_DB` to a temporary file (as `CliTest` does) and capture stdout and stderr.\n- **`notes.store.Store`**, the storage seam. Tests open a store in a temporary directory (as `StoreTest` does).\n\nModules tested:\n\n- `notes/cli.py`: the `backup` subcommand: success output and exit 0; store unreadable gives stderr and exit 1; PATH is a directory gives exit 1; PATH is the store file gives exit 1 and the store is unchanged; missing usage argument gives exit 2.\n- `notes/store.py`: the store operation returns the number of notes; the copy opens as a `Store` and lists the same notes in the same order; an existing file at PATH is replaced; with an injected failure during the move (for example `os.replace` raising `OSError`), the previous file at PATH is byte-for-byte unchanged and no temporary file remains in the directory.\n\nPrior art: `tests/test_notes.py`, classes `StoreTest` (store behaviour through `Store`) and `CliTest` (commands through `main` with `NOTES_DB` patched via `mock.patch.dict`).\n\nNot tested automatically: that `os.fsync` reaches the disk. This is verified by reading the code.\n\n## Quality Requirements\n\n- **Serves:** R-2 (no note is lost; a copy protects against loss of the main store), R-3 (standard library only).\n- **Keeps:** QS-1 (a crash during backup leaves PATH either as it was or fully replaced, never partial, and the store still opens). QG-1 applies to the store, not only to `add`.\n- **Builds on:** ADR-0001 (SQLite file format), ADR-0003 (only `store.py` touches the database), ADR-0002 (accepted; its list of centrally decided items includes CLI command names and exit codes).\n- **Blocked by:**\n  - **ADR-0004** (`docs/adr/0004-write-notes-atomically.md`, status `proposed`). The atomic write rule in this spec is ADR-0004's rule. The spec is not built on an unaccepted ADR. The architect must accept ADR-0004.\n  - **A decision for the `backup` command name.** ADR-0002 lists CLI command names and exit codes as central decisions. No ADR records the `backup` command yet. The architect must accept a decision (an ADR, or an amendment) before implementation.\n\n## Out of Scope\n\n- A restore command. Restoring is a file copy by the user (stated requirement).\n- Scheduled or automatic backups.\n- Backup to a remote location or any sync between devices (R-4 is deferred).\n- Compression, encryption, or incremental backups.\n- Backing up the PostgreSQL backend (ADR-0005, proposed). If that backend is accepted, its backup is a separate spec.\n- Verifying the backup beyond the count printed (no integrity check command).\n\n## Further Notes\n\nAssumptions made because the architect was not available. Each is a recommendation the architect should confirm or change before implementation:\n\n1. **Output format.** stdout is the bare count and a newline (for example `3`), mirroring `add`, which prints the new note's id.\n2. **Any failure exits 1.** Both a store read error and a write error to PATH (missing directory, no permission, disk full) print `notes: <message>` on stderr and exit 1. The user named the store-read case; the write case is assumed to follow the same rule.\n3. **Missing store file.** The store opens through the same path as every command, which creates an empty store if the file does not exist. So `notes backup PATH` on a machine with no store writes a copy with zero notes, prints `0`, exits 0, and leaves an empty `~/.notes.db` behind. This is the existing side effect of opening the store, not new behaviour. Recommendation: accept it now. If the architect prefers to refuse, the command would need a check before the store is opened.\n4. **PATH equal to the store file** is refused with exit 1 and the store is left unchanged. Overwriting the live store with its own copy is never wanted.\n5. **Symlink at PATH.** The link is replaced, not the file it points to (the behaviour of `os.replace`).\n6. **Relative PATH** is resolved from the current working directory.\n7. **Argument errors** (no PATH, extra arguments) keep argparse's behaviour, which exits 2 before the store is touched.\n8. **Store with a large number of notes** is copied in one operation with no progress output.\n\nNotes for the builder:\n\n- ADR-0003 and QS-3: QS-3 says that swapping the storage engine changes only `store.py` and its tests. The new operation is part of the store's interface, so a future engine must implement it too. This is expected, not a conflict.\n- Restore is a file copy while no `notes` command is running. The spec does not require the command to refuse while the store is open. If that matters, it is a new requirement.\n"
-}
-```
-
-### tool_result
-
-```
-File created successfully at: /tmp/sa-eval-zmldc47q/project/docs/specs/2026-11-22-backup-command-spec.md (file state is current in your context — no need to Read it back)
-```
-
-### assistant
-
-The spec is written. I'll commit it with the glossary change, as the skill's local-file publish step asks.
+The glossary entry is in. Next I'll write the spec to `docs/specs/`. It is blocked on ADR-0004 and records each assumption where you would have been asked.
 
 ### tool_use Bash
 
 ```json
 {
- "command": "git add docs/specs/2026-11-22-backup-command-spec.md GLOSSARY.md && git commit -q -m \"docs: specify notes backup command\n\nBlocked on ADR-0004 (proposed) and a decision for the backup command name.\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2 && git status --short",
- "description": "Commit spec and glossary update"
+ "command": "mkdir -p /tmp/sa-eval-o__w81c6/project/docs/specs && cat > /tmp/sa-eval-o__w81c6/project/docs/specs/2026-11-22-backup-spec.md <<'EOF'\n# Backup Spec\n\nStatus: blocked (ADR-0004)\nSource: the approved design for `notes backup`, given in the conversation of 2026-11-22.\n\n## Problem Statement\n\nUsers keep notes for years (R-2), but the only copy of their notes is the single store file on\nthe machine they use. A disk failure or a lost laptop loses everything. A user who wants a second\ncopy on another disk has no supported way to make one that is guaranteed to be whole.\n\n## Solution\n\nA user runs `notes backup PATH`. The command writes a complete copy of the store to PATH and\nprints how many notes the copy holds. The user keeps that file on another disk. The copy is the\nstore itself, so restoring is copying the file back to the store location. A restore command is\nnot part of this work.\n\n## User Stories\n\n1. As a user, I want to run `notes backup PATH`, so that I get a copy of all my notes at PATH.\n2. As a user, I want the command to print the number of notes in the backup, so that I can check it\n   against the number I expect.\n3. As a user, I want the command to exit 0 when the backup succeeds, so that a script can rely on it.\n4. As a user, I want an existing file at PATH replaced by the backup, so that I can reuse one\n   backup name for each run.\n5. As a user, I want a backup to contain every note the store holds at that moment, so that no note\n   is missing from the copy.\n6. As a user, I want a backup taken while the store is in use by another `notes add` to be a\n   consistent copy, so that it never holds half of a change.\n7. As a user, I want a backup of an empty store to succeed and print `0`, so that a fresh install\n   can be backed up without special cases.\n8. As a user, I want a backup to be a valid store, so that I can copy it back and run `notes list`\n   on it.\n9. As a user, I want the store to be left unchanged by a backup, so that backing up never costs me\n   a note.\n10. As a user, I want a failed backup to report the error on stderr and exit 1, so that I know the\n    copy was not made.\n11. As a user, I want a failed backup to leave any existing file at PATH exactly as it was, so that\n    a bad run does not destroy my previous backup.\n12. As a user, I want a backup killed partway through (for example by a power cut) to leave PATH\n    either as it was or as a complete new backup, never as a partial file, so that a crash cannot\n    corrupt my backup (ADR-0004).\n13. As a user, I want the command to refuse when the store file does not exist, so that a backup\n    does not create an empty store as a side effect.\n14. As a user, I want the command to refuse when PATH is the store file itself, so that a backup\n    cannot overwrite the notes it copies.\n15. As a user, I want the command to refuse when the directory of PATH does not exist or PATH is a\n    directory, so that I get a clear error instead of a partial result.\n16. As a user, I want the command to report an unreadable or corrupt store on stderr and exit 1, so\n    that I know the store, not the backup, is the problem.\n17. As a user, I want the command to work with `NOTES_DB` set, so that a backup copies the store I\n    am actually using.\n18. As a user, I want a missing PATH argument to get the usual usage message, so that the command\n    behaves like the others.\n19. As a user on Linux or macOS, I want the backup to need no installed packages, so that it works\n    on the same locked-down machines as the rest of the program (R-3).\n20. As a user, I want the backup file to be a normal file that I can copy to another disk with\n    ordinary tools, so that I do not need the program to move it.\n\n## Implementation Decisions\n\n- **Store block**: a new method on `Store` writes the backup and returns the number of notes in it.\n  It is the only code that touches the database, so the rule that only the store block uses the\n  storage engine holds (ADR-0003).\n- **Consistent copy**: the copy is made with the SQLite online backup facility, which the standard\n  library provides. It copies one consistent snapshot, so a concurrent writer cannot produce a torn\n  copy. A plain file copy of the store file is rejected because it can copy a half-written store.\n- **Atomic write (ADR-0004)**: the copy is first written to a temporary file in the same directory\n  as PATH, flushed to disk, and then moved over PATH. This applies to the backup file as ADR-0004\n  requires for every file the store writes. The temporary file must be in the same directory so the\n  final move stays on one filesystem.\n- **Store must exist**: the backup does not create the store. If the store file is missing, the\n  command fails with an error and writes nothing. Opening the store for backup must not run the\n  table creation that `Store` runs on a normal open.\n- **Refuse PATH equal to the store**: if PATH names the store file (after resolving the path), the\n  command fails with an error and changes nothing.\n- **CLI**: a new subcommand `backup` takes one positional argument, PATH. It is dispatched in the\n  CLI block alongside `add`, `list` and `search`. The CLI block reaches storage only through `Store`\n  (ADR-0003).\n- **Output**: on success, the command prints the note count alone on one line to stdout, as a\n  decimal integer, and exits 0. Nothing else is printed to stdout.\n- **Errors**: every failure prints `notes: <message>` on stderr and exits 1, as arc42 section 8\n  requires. Usage errors keep argparse's current behaviour (exit 2) and are not changed.\n- **Store path**: the store is located as it is for every other command, through `NOTES_DB` or the\n  default path. PATH is taken as given and is not affected by `NOTES_DB`.\n- **No schema or format change**: the backup is the store's own SQLite file (ADR-0001). No new\n  format is introduced.\n- **Quality requirements**: a backup must keep QS-1's guarantee for the backup file: a crash\n  during the backup leaves PATH readable as the old file or the complete new one.\n\n## Testing Decisions\n\nWhat makes a good test here: external behaviour through the seams below. Check what the user sees\n(stdout, stderr, exit code) and what is on disk afterwards (the store and PATH). Do not check which\nSQLite calls were made.\n\nSeams:\n\n- **Command seam**: `notes.cli.main([\"backup\", PATH])`, with `NOTES_DB` pointing at a temporary\n  store, as the existing CLI test does. This proves output, exit codes, refusal cases, and that the\n  store is unchanged. Most behaviour in the user stories is tested here.\n- **Store seam**: `Store.backup(path)`, called directly. This proves the returned count, the copy's\n  contents, and the atomic-replace behaviour. For the failure cases (the write or the final move\n  fails), inject the failure at the point where the store flushes or moves the temporary file, and\n  assert that PATH still holds its previous content and no temporary file is left behind. The\n  existing store tests are prior art for setup and teardown.\n- No new seam is proposed. Both tests above use seams that already exist (`main` and `Store`).\n\nModules tested: the store block (`Store`) and the CLI block (`main`). The test for a killed process\n(SIGKILL during backup) follows the QS-1 test pattern if one exists; if not, it is out of scope for\nthe first version and the in-process failure test stands in for it.\n\nPrior art: `tests/test_notes.py`, class `StoreTest` for store behaviour and class `CliTest` for\ncommand behaviour, including the `NOTES_DB` setup.\n\n## Quality Requirements\n\n- **Serves:** R-2 (no note is lost), R-3 (standard library only)\n- **Keeps:** QS-1 (a crash leaves the store and the backup readable), QS-3 (only the store block and\n  its tests change for the storage engine)\n- **Builds on:** ADR-0001 (SQLite file, atomic transactions), ADR-0003 (CLI reaches storage only\n  through `Store`)\n- **Blocked by:** ADR-0004 (write notes atomically via a temporary file and rename; currently\n  `proposed`). The atomic write in this spec depends on it. Implementation waits until the architect\n  accepts ADR-0004.\n\n## Out of Scope\n\n- A restore command. A user restores by copying the file back. A restore command is a later spec.\n- Automatic or scheduled backups, and backup rotation or retention.\n- Compression or encryption of the backup file.\n- Verifying the backup beyond the count printed. The command does not reopen the copy to check it.\n- Backups of the PostgreSQL backend (ADR-0005 is `proposed`). This spec covers the SQLite store only.\n- Sync between devices (R-4, deferred).\n\n## Further Notes\n\nOpen assumptions, stated because the author could not ask. Each one is a choice the architect can\nchange before implementation starts:\n\n1. **Missing store**: a missing store file is an error, not an empty backup (story 13).\n2. **Output format**: stdout is the count alone on one line (story 2). The brief said \"prints the\n   number\" and did not give a format.\n3. **Refuse PATH = store** (story 14). The brief did not cover this case.\n4. **Symlink at PATH**: the move replaces the symlink itself, not what it points to.\n5. **Existing PATH**: replaced whatever its content, since the command does not read it.\n6. **Leftover temporary file**: a crash can leave a temporary file beside PATH. Later runs do not\n   clean it up. This matches ADR-0004 (the target is never partial) and is not a bug.\n7. **Count source**: the count comes from the same snapshot that is copied, not from a second read.\n8. **Command name and exit codes**: ADR-0002 lists CLI command names and exit codes as decided\n   centrally. No ADR records `backup` yet. The approved design is taken as the architect's decision.\n   The architect should record it in an ADR, or confirm it in ADR-0004's review.\n\nOpen decisions: none left to the implementer. Items 1 to 8 above are stated assumptions, not\ndeferred decisions. The architect should confirm or change them before implementation.\n\nBlocking: ADR-0004 must be accepted before implementation starts. Writing this spec does not depend\non it.\n\nGlossary: \"Backup\" added to `GLOSSARY.md`.\nEOF\ncd /tmp/sa-eval-o__w81c6/project && git add docs/specs/2026-11-22-backup-spec.md GLOSSARY.md && git commit -q -m \"docs: add backup spec and glossary term\n\nCo-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>\" && git log --oneline | head -2 && git status --short",
+ "description": "Write spec file and commit spec and glossary"
 }
 ```
 
 ### tool_result
 
 ```
-1db0e2c docs: specify notes backup command
-fb92ab7 fixture
+4e04ce7 docs: add backup spec and glossary term
+5ee4fe7 fixture
 ```
 
 ### assistant
 
-The spec is written and committed as `1db0e2c` on `master`, but implementation is blocked. ADR-0004 is still `proposed`, and ADR-0002 says work that depends on an unaccepted decision waits. The spec's own rule is that the atomic-write requirement comes from ADR-0004, so the architect needs to accept it first. The `backup` command name also falls under ADR-0002's centrally decided list, and no ADR records it yet. I did not accept ADR-0004 or draft a new ADR, since accepting ADRs is the architect's call.
+The spec is written and committed at `docs/specs/2026-11-22-backup-spec.md` (commit `4e04ce7`, on `master`). The spec's status is `blocked (ADR-0004)`.
 
-**Files**
-- `docs/specs/2026-11-22-backup-command-spec.md`: the spec, with the template's sections and a Quality Requirements block that lists the two blockers.
-- `GLOSSARY.md`: added the term **Backup**.
+**Blocker:** ADR-0004 (atomic write via temp file and rename) is still `proposed`. The backup's atomic write depends on it, and ADR-0002 says work that depends on an unaccepted decision waits. Writing the spec doesn't need it, but implementation does. The architect needs to accept ADR-0004.
 
-The repo has no tracker configuration, so I used the local-file form. I did not produce tickets or a plan, since you asked only for the spec.
+**Assumptions I stated in the spec** (you were unavailable, so I didn't ask):
+1. A missing store is an error, and the backup doesn't create an empty store.
+2. On success, stdout is the note count alone on one line.
+3. `notes backup` with PATH equal to the store file is refused, changing nothing.
+4. A symlink at PATH is replaced, not followed.
+5. An existing PATH is replaced whatever its content.
+6. A crash can leave a temp file beside PATH, and later runs don't clean it up.
+7. The count comes from the same snapshot that is copied.
+8. The `backup` command name and its exit codes fall under ADR-0002, which lists CLI command names as decided centrally. No ADR records them yet. I took your approved design as the architect's decision. Please confirm that, or record it in an ADR.
 
-**Assumptions I made where you were unavailable** (listed in the spec's Further Notes for you to confirm):
-1. stdout is the bare count and a newline, like `add` printing an id.
-2. Any failure, reading the store or writing PATH, prints `notes: <message>` on stderr and exits 1.
-3. A missing store file is created empty by the existing open path, so `backup` writes a 0-note copy and exits 0. This is the existing side effect, and you may want to change it.
-4. PATH equal to the store file is refused with exit 1.
-5. A symlink at PATH is replaced, not followed.
-6. Usage errors keep argparse's exit 2.
+**Design choices I made in the spec:**
+- The copy uses SQLite's online backup API, not a plain file copy, so a concurrent `notes add` can't produce a torn backup.
+- The method lives on `Store`, which keeps the rule that only the store touches SQLite (ADR-0003).
+- Seams: the existing `main(["backup", PATH])` with `NOTES_DB` for behaviour, and `Store.backup` for the atomic-replace failure cases. No new seams.
 
-The spec adds no new test seams. It uses the existing `notes.cli.main` and `Store` seams.
+I also added "Backup" to `GLOSSARY.md`, through the domain-modeling skill.
+
+Per the skill, I didn't write tickets or a plan, since you asked only for the spec. There's no tracker config, so the spec is a local file. The commit went to `master` because the repo has no local `main` branch. No code changed, so no tests were run.
 
 ### result (success)

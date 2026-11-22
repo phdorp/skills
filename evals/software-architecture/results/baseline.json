@@ -69,7 +69,7 @@
   },
   "S12": {
    "runs": 2,
-   "score": 0.6,
+   "score": 0.5,
    "judge": 0.5,
    "cost_usd": 0.031
   },
@@ -169,7 +169,7 @@
     {
      "name": "feature_works",
      "pass": true,
-     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.051s\n\nOK\n"
     },
     {
      "name": "committed",
@@ -1852,14 +1852,19 @@
      "detail": ""
     },
     {
+     "name": "status_blocked",
+     "pass": false,
+     "detail": "ready-for-agent (blocked on ADR-0004 acceptance; see Further Notes)"
+    },
+    {
      "name": "code_unchanged",
      "pass": true,
      "detail": ""
     }
    ],
    "passed": 3,
-   "total": 5,
-   "score": 0.6,
+   "total": 6,
+   "score": 0.5,
    "valid": true,
    "judge": {
     "criteria": [
@@ -1914,14 +1919,19 @@
      "detail": ""
     },
     {
+     "name": "status_blocked",
+     "pass": false,
+     "detail": "ready-for-agent. Implementation is blocked until ADR-0004 is accepted (see Further Notes, item 1)."
+    },
+    {
      "name": "code_unchanged",
      "pass": true,
      "detail": ""
     }
    ],
    "passed": 3,
-   "total": 5,
-   "score": 0.6,
+   "total": 6,
+   "score": 0.5,
    "valid": true,
    "judge": {
     "criteria": [

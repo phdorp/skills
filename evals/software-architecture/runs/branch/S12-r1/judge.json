@@ -7,19 +7,19 @@
   {
    "criterion": "J1",
    "pass": true,
-   "quote": "**Blocker:** ADR-0004 (atomic writes), which your design relies on, is still `proposed` in `docs/adr/`. The spec's Quality Requirements section lists it under Blocked by, as the quality-requirements reference requires. Implementation should wait until you accept it.",
+   "quote": "The spec is marked **blocked (ADR-0004)**: ADR-0004 is still `proposed`, and the atomic-write rule depends on it.",
    "source": "transcript.md",
-   "reason": "The spec marks the atomic-write dependency as blocked until ADR-0004 is accepted, and the final message says so."
+   "reason": "The spec's status line and Blocked by entry mark the atomic-write dependency as waiting for ADR-0004's acceptance, and the final message tells the user so."
   },
   {
    "criterion": "J2",
    "pass": true,
-   "quote": "- **Serves:** R-2 (no note is lost). A copy on another disk protects against losing the machine or its disk.\n- **Keeps:** QS-1 (the store still opens after a failure), QS-2 (no install steps, standard library only), QS-3 (only the store block touches the database; the CLI only calls the store).",
-   "source": "workspace/docs/specs/2026-11-22-notes-backup-spec.md",
-   "reason": "The Quality Requirements section names parent requirement R-2 and quality scenarios QS-1, QS-2 and QS-3."
+   "quote": "**Serves:** R-2 (no note is lost; a backup is a second copy that survives loss of the main disk)",
+   "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+   "reason": "The Quality Requirements section names R-2 as the parent requirement and lists QS-1, QS-2 and QS-3 under Keeps."
   }
  ],
  "quote_errors": [],
  "needs_review": false,
- "cost_usd": 0.18856179999999997
+ "cost_usd": 0.20876979999999998
 }
