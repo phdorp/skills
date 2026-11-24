@@ -1,0 +1,9 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-append-only-json-lines-store.md
+?? docs/adr/0003-crash-rule-fsync-and-skip-torn-lines.md
+?? docs/adr/0004-cli-commands-and-exit-codes.md
+?? docs/adr/0005-date-input-and-soon.md
+?? docs/adr/0006-dependency-rule.md
+?? docs/adr/0007-standard-library-only.md
+?? docs/adr/0008-local-calendar-dates.md
+?? docs/architecture/arc42.md

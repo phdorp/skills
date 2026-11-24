@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "kittracker/static/queue.js: \"An event leaves the outbox only when the server answers for its client_event_id\"; sw.js caches the app shell; app.js re-syncs on the 'online' event and every 30 s; the server de-duplicates by client_event_id"
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "report.py: without KT_SMTP_HOST the report is \"written to KT_REPORT_DIR on the NAS, so no data leaves club hardware\"; web.py _coach_json(with_phone=...) shows phone numbers only to the manager; leave_coach sets \"phone = NULL\"; no cloud SDKs"
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "Dockerfile \"FROM python:3.13-slim\" with a /data volume; docker-compose.yml; standard library only, no paid services (the image build itself was not verified)"
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "config.py \"report_weekday: int = 0  # Monday\", \"report_hour: int = 7\"; report.py ReportScheduler plus deliver() via smtplib STARTTLS, retried after 30 minutes on failure"
+  },
+  "H5": {
+   "score": 2,
+   "evidence": "QR text is \"KT_PUBLIC_URL/#/item/<CODE>\", which opens the item screen; app.js renderItem shows a single button \"Check out to me\"; BarcodeDetector scan with a typed-code fallback. The 3-tap / 15-second measure was not tested on a real phone"
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "domain.py inventory_csv(), INVENTORY_COLUMNS; web.py filename \"kit-inventory-v1-{year}.csv\"; also available as CLI `export --out`"
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "SQLite plus stdlib ThreadingHTTPServer, no caching layers or queues; IMPLEMENTATION.md 5.7: \"Built for about 300 items and 40 coaches\""
+  },
+  "H8": {
+   "score": 1,
+   "evidence": "Backend is Python standard library only and well documented (IMPLEMENTATION.md). But the phone app is about 600 lines of vanilla JavaScript (static/app.js, queue.js, sw.js) with Node tests, which a Python-only maintainer must also own"
+  },
+  "H9": {
+   "score": 2,
+   "evidence": "Events are append-only and deleted items are soft-deleted; domain.purge_old_events(years_kept=2) \"delete history older than the retention period\". Purging is manual, not scheduled"
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "domain.py EXPIRY_WARNING_DAYS = 30; expiring_items() \"expiry_date <= today + 30\", included in the Monday report; schema CHECK (expiry_date IS NULL OR kit_type = 'first_aid')"
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "No payment, deposit or fine code anywhere; IMPLEMENTATION.md: \"Units: ... No currency.\""
+  },
+  "H12": {
+   "score": 1,
+   "evidence": "A working v0.1 exists, but IMPLEMENTATION.md says \"Docker image not built ... unverified\" and HTTPS, SMTP and iOS are listed as unverified. Readiness for 1 March cannot be confirmed from the code"
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "The test run did not execute any tests: pytest is not installed, and the repository uses unittest and node:test, which the harness did not run, so the 68 Python and 8 JS tests are unverified here. The code is a clean, layered, stdlib-only Python backend with strong docs and decision records; the main maintainability gap is the JavaScript front end for a Python-only volunteer."
+}

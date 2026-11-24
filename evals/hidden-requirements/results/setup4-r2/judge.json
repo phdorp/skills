@@ -1,0 +1,74 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-3 | Check-out and check-in work offline and sync when the phone is back online. ... Many pitches have no mobile signal at all."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "No third-party cloud: data stays on club hardware. / GDPR applies to coach names and phone numbers."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "The tool runs on the club's existing Synology NAS, in Docker. / Running cost: 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "R-7 | The kit manager gets an overdue report by e-mail every Monday morning."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "R-2 | Checking out an item takes at most 3 taps and under 15 seconds, by scanning a QR code on the kit bag. | Many volunteers are not tech-savvy"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "R-8 | A yearly inventory CSV export, for the treasurer and the insurance audit."
+  },
+  "H7": {
+   "score": 2,
+   "quote": "Ruled out: Performance efficiency (time behaviour and capacity). Reason: the scale is small (about 300 items, 40 coaches), and the architect says performance is not a concern."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "One volunteer maintains it, and it must be handed over to the next maintainer. That volunteer knows Python only."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "Lost-item history is kept for 2 years (insurance)."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "warn the kit manager 30 days before a first-aid bag item expires. Only first-aid bag items have expiry dates. (02-expiry-warning.md)"
+  },
+  "H11": {
+   "score": 2,
+   "quote": "Out of scope: Money handling: deposits, fines, payments."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "It must be live by 1 March, the start of the season."
+  }
+ },
+ "questions": 23,
+ "rounds": 3,
+ "unasked_decisions": [
+  "QS-5 measure '0 of 20 test requests by non-manager accounts return a phone number': the architect only said QG-5 follows Q14 and never set the number 20",
+  "QS-4 adds '0 unreadable stores' beyond the confirmed candidate measure",
+  "The treasurer 'passes it to the insurer' / 'The insurer receives the CSV via the treasurer': the architect said who sends it on is up to the treasurer",
+  "Context lists the club's mail provider as an external system 'if the report is sent through it', although the architect asked for sending from the NAS"
+ ],
+ "contradictions": [
+  "ADR 0001 lists the crosscutting convention 'units (dates and currency)'; a currency convention implies money data, which conflicts mildly with the no-money-handling anti-goal (H11)"
+ ],
+ "extras": [
+  "Offline conflict handling: keep both events in time order and flag the item for the kit manager",
+  "Overdue defined as 7 days after check-out",
+  "Only the kit manager sees phone numbers; the phone number is deleted when a coach leaves",
+  "Edit permission model (R-6): any coach adds, only the kit manager corrects or deletes",
+  "Crash survival with no loss of synced check-outs (R-5, QS-4 kill-during-write trials)",
+  "Risks recorded for mail delivery vs no-third-party-cloud, unknown NAS backups, single maintainer and hard date",
+  "Quality scenarios QS-1..QS-5 with measurable responses",
+  "ADR 0001 lists centrally decided items, including the sync protocol versioning"
+ ],
+ "artifact": "arc42.md with sections 1, 2, 3, 9, 10 and 11 filled (R-1..R-9 ranked, QG-1..QG-5, QS-1..QS-5, constraints, scope, risks); ADR 0001 (proposed) listing central decisions; two feature-level issues in .scratch (kit types, expiry warning)"
+}

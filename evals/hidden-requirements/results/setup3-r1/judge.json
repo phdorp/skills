@@ -1,0 +1,72 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-7 | Check-out and check-in work offline and sync when the phone is back online | 3 | active | The pitch often has no mobile signal."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "C-3: Coaches' names and phone numbers stay on the club's own hardware. GDPR applies. / C-2: ... No free hosting and no third-party cloud."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "C-1: Runs on the club's existing Synology NAS, in Docker. / C-2: Budget 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "R-4 | Scheduled e-mails: a Monday-morning overdue report and a warning 30 days before first-aid expiry dates"
+  },
+  "H5": {
+   "score": 2,
+   "quote": "R-3 | A check-out takes at most 3 taps and under 15 seconds, by scanning the QR code on the bag | ... Many volunteers are not tech-savvy"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "R-5 | A yearly CSV inventory export for the treasurer's insurance audit"
+  },
+  "H7": {
+   "score": 1,
+   "quote": "Transcript: \"about 300 items. I have no check-out figures. Performance is not a concern.\" Files only have \"Coaches (about 40)\"; the 300 items and performance as a non-goal are not recorded."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "C-5: Python is the implementation language, because the maintainer and any successor know only Python. / R-8 | A successor can take over the tool"
+  },
+  "H9": {
+   "score": 2,
+   "quote": "R-6 | Check-out and lost-item history kept for 2 years | 5 | active | Required by the insurance"
+  },
+  "H10": {
+   "score": 2,
+   "quote": "a warning 30 days before first-aid expiry dates"
+  },
+  "H11": {
+   "score": 2,
+   "quote": "Money handling: no deposits, fines or payments."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "C-4: Live for the start of the season on 1 March."
+  }
+ },
+ "questions": 24,
+ "rounds": 3,
+ "unasked_decisions": [
+  "QS-2 environment set to 'at the pitch'. The architect gave only '5 volunteers with 3 check-outs each'.",
+  "R-4 is mapped into QG-1 (functional completeness) and R-5 is listed under QG-1 without the architect discussing it. This is minor, because the architect confirmed the goal candidates in general.",
+  "Round 1 presented invented answers (20\u201330 coaches, laptop user, free hosting, history deleted each season) as pre-filled responses. The architect corrected all of them, and none reached the files."
+ ],
+ "contradictions": [],
+ "extras": [
+  "Offline conflict rule: the first sync wins and the second check-out is flagged for the kit manager (in QS-3).",
+  "Phone numbers are visible only to the kit manager, and only for overdue or lost items (in the stakeholders table).",
+  "No-login decision recorded as an accountability risk (QG-4) in section 11.",
+  "Offline view shows the last-synced holder and time, recorded as a risk to R-2.",
+  "Measurable successor scenario QS-5: 2 hours of reading the docs, then one change made and tested.",
+  "Usability test QS-2: 5 non-tech-savvy volunteers \u00d7 3 check-outs, 15 of 15 must pass.",
+  "Extra out-of-scope items: purchasing, membership and player records, integrations in v1.",
+  "ADR 0001 lists the central decisions: storage format, sync protocol, CSV format and versioning, QR payload, dependencies.",
+  "Gaps in the files: the 7-day overdue rule (Q11) and the kit-manager-only lost declaration (Q12) were agreed but not written. ADR 0001 is still 'proposed' and R-2 still has the old wording, because the final approval came after the last write."
+ ],
+ "artifact": "Two files: docs/architecture/arc42.md, with all 12 arc42 sections (R-1..R-8 ranked, QG-1..QG-5, QS-1..QS-5 scenarios with measures, stakeholders, constraints C-1..C-5, out-of-scope list, risks; sections 4\u20138 empty), and docs/adr/0001-record-architecture-decisions.md (Nygard form, status proposed, list of central vs. local decisions)."
+}

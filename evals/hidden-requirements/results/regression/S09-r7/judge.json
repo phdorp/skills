@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "The architecture will be recovered from the code once you approve the decisions list below.",
+   "source": "transcript.md",
+   "reason": "Turn 1 drafts the list of decisions made centrally and states that recovery from the code waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "1. Approve the written text of ADR-0001. Its status becomes `accepted` only when you approve it. Recovering the architecture from the code waits for that approval, and sections 4–8 and 11 stay empty until then.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only confirmed content and the proposed ADR, leaves the recovery sections empty, and ends by asking for approval of ADR-0001 before recovery."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "**Sections filled from the code** (each starts with *As found, unconfirmed.*): 2 Constraints, 3 Context and scope, 4 Solution strategy, 5 Building block view, 6 Runtime view, 7 Deployment view, 8 Crosscutting concepts, 11 Risks.",
+   "source": "transcript.md",
+   "reason": "The final message lists the sections marked as found and unconfirmed and then lists ADRs 0002–0007 as proposed, though it does not explicitly invite a section-by-section review."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.2827778
+}

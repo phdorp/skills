@@ -1,0 +1,4 @@
+?? .scratch/requirements/issues/01-list-latest-first.md
+?? GLOSSARY.md
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/architecture/arc42.md

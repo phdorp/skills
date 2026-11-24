@@ -1,0 +1,26 @@
+{
+ "scenario": "S10",
+ "arm": "branch",
+ "ref": "bb4956200d24ba65f095a3df1890fb77298167b3",
+ "sha": "bb4956200d24ba65f095a3df1890fb77298167b3",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.080945,
+ "duration_s": 147.1,
+ "exit_code": 0,
+ "exit_codes": [
+  0,
+  0,
+  0
+ ],
+ "turns": 3,
+ "session_ids": [
+  "ed37201f-a39e-4232-b498-c44c752a214d",
+  "ed37201f-a39e-4232-b498-c44c752a214d",
+  "ed37201f-a39e-4232-b498-c44c752a214d"
+ ],
+ "invoked": true,
+ "prompt_from": null,
+ "isolation_ok": true,
+ "isolation_errors": []
+}

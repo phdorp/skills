@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Once you approve the ADR text, I recover the rest of the architecture from the code. Until then, sections 2–8 and 11 stay empty.",
+   "source": "transcript.md",
+   "reason": "Turn 1 proposes the decided-centrally list in a draft ADR and states that recovery waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "Approve or change the text of ADR-0001. Once you accept it, I can recover the rest of the architecture from the code.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only the confirmed content and ADR-0001 as proposed, recovers nothing, and ends by asking for ADR-0001's approval."
+  },
+  {
+   "criterion": "J3",
+   "pass": false,
+   "quote": "These are proposed and need your acceptance or rejection:",
+   "source": "transcript.md",
+   "reason": "The final review list covers only ADRs 0002–0005; the as-found sections are mentioned in passing but never presented for section-by-section review."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.27856980000000003
+}

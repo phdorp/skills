@@ -1,0 +1,3 @@
+ M docs/decisions/0001-store-books-in-one-json-file.md
+ M docs/decisions/0002-validate-isbn-locally.md
+?? docs/architecture/arc42.md

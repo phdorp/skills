@@ -1,0 +1,6 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-connect-blocks-through-connectors.md
+?? docs/adr/0003-blocks-read-shared-package-constant.md
+?? docs/adr/0004-si-units-with-kelvin.md
+?? docs/adr/0005-openmodelica-as-only-dependency.md
+?? docs/architecture/arc42.md

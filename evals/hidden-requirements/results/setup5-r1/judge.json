@@ -1,0 +1,72 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-5 | Check-out and check-in work with no mobile signal and sync when the phone is back online."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "No third-party cloud. ... Personal data stays on the club's own hardware; GDPR applies."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "Runs on the club's existing Synology NAS, in Docker. - Budget 0 EUR a month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "R-6 | The equipment manager receives an e-mail of overdue items every Monday morning. An item is overdue 7 days after check-out."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "QS-2 ... a coach with no training scans the QR code on a kit bag to check out one item ... at most 3 taps and under 15 seconds"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "R-7 | The treasurer receives a yearly inventory export as CSV."
+  },
+  "H7": {
+   "score": 2,
+   "quote": "Performance efficiency (time behaviour, resource use, capacity) is not a goal ... Sizing: about 40 coaches and about 300 items now."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "Implemented in Python; the maintainer and any successor know only Python. / R-8 | A Python-only successor can change and deploy the tool in under 2 hours, using written setup steps."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "R-9 | Check-out and loss records older than 2 years are deleted; the item list is kept. | ... Insurance needs 2 years of loss history"
+  },
+  "H10": {
+   "score": 2,
+   "quote": "03-expiry-warning.md: Send an e-mail 30 days before the expiry date of a first-aid item"
+  },
+  "H11": {
+   "score": 2,
+   "quote": "No money of any kind: no deposits, fines or payments."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Live for the start of the season on 1 March 2027."
+  }
+ },
+ "questions": 29,
+ "rounds": 4,
+ "unasked_decisions": [
+  "R-7 reason recorded as 'Treasurer's yearly stock count'; the architect never gave this purpose (the hidden purpose is the insurance audit)",
+  "The year 2027 for the 1 March deadline came from the designer's pre-filled answer. The architect only said '1 March' and confirmed the year implicitly through the 'heard facts' list.",
+  "QS-1 stimulus changed to '200 items' from the confirmed '200 check-out and check-in events' without the architect being asked"
+ ],
+ "contradictions": [],
+ "extras": [
+  "Offline conflict policy: keep both events, first to sync holds the bag, the second is flagged (ADR 0002)",
+  "Overdue defined as 7 days after check-out",
+  "Sync within 5 minutes of signal returning",
+  "Sizing ceiling of 1,000 items and 60 coaches",
+  "Personal login per coach, one step after the first time; confidentiality and accountability scenarios",
+  "No player tracking as a non-goal",
+  "Insurer record format: item, date, coach, note",
+  "ADR 0002: append-only SQLite events with client-generated IDs for idempotent sync",
+  "Open points Q19 (NAS reachable from outside) and SMTP capability recorded as open in section 3"
+ ],
+ "artifact": "arc42.md with R-1..R-9, QG-1..QG-7, stakeholders, constraints, non-goals, context and QS-1..QS-7 (sections 4-8 and 11 empty); ADR 0001 accepted; ADR 0002 (SQLite event store) written as proposed and approved afterwards; three .scratch issues (item catalogue, coach trace, expiry warning) with stale 'ADR not yet written' notes; coaches' phone numbers are not recorded as personal data"
+}

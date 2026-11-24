@@ -1,0 +1,70 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-5 | Check-out and check-in work without a mobile signal and sync once the phone is back online. (arc42.md); QS-4 measure: 100% of records made offline reach the shared record after reconnection"
+  },
+  "H2": {
+   "score": 0,
+   "quote": "GDPR, personal data, and the no-cloud rule were never mentioned in the transcript or files."
+  },
+  "H3": {
+   "score": 0,
+   "quote": "The Synology NAS, Docker, and the 0 EUR budget were never mentioned. Constraints section 2 is empty."
+  },
+  "H4": {
+   "score": 0,
+   "quote": "An overdue report and the Monday e-mail were never mentioned."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "QS-1: a first-time volunteer, with no help and no training, scans the QR code on the kit bag ... at most 3 taps; QS-2: ... under 15 seconds"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "R-4 | The treasurer can export a yearly kit inventory as CSV for the insurance audit."
+  },
+  "H7": {
+   "score": 1,
+   "quote": "Architect: \"Otherwise performance isn't a concern.\" This non-goal is not recorded in the files, and the scale numbers (40 coaches, 300 items) never came up."
+  },
+  "H8": {
+   "score": 0,
+   "quote": "The single Python-only maintainer and successor handover were never mentioned."
+  },
+  "H9": {
+   "score": 0,
+   "quote": "Two-year retention of lost-item history was never mentioned."
+  },
+  "H10": {
+   "score": 0,
+   "quote": "Only the category 'first-aid bags' appears in 01-kit-categories.md. Expiry dates and the 30-day warning were never mentioned."
+  },
+  "H11": {
+   "score": 0,
+   "quote": "Money handling, deposits, fines, and payments were never mentioned."
+  },
+  "H12": {
+   "score": 0,
+   "quote": "The 1 March go-live and any schedule were never mentioned."
+  }
+ },
+ "questions": 22,
+ "rounds": 3,
+ "unasked_decisions": [
+  "QS-5 environment 'end of the year, before the insurance audit': the architect only said 'yearly'; the timing is the designer's.",
+  "Kit-categories issue states 'Check-out and the holder records ... are kept per item within these categories'. Per-item tracking was not explicitly confirmed (bag-level QR scanning was what the architect described).",
+  "QS-2 applies the 15-second measure to 'a coach' and QS-1 the 3-tap measure to 'a first-time volunteer'. The architect gave both measures together; this split is the designer's.",
+  "R-3 row wording kept as 'without a briefing' even though the architect gave a measurable form; the measure lives only in QS-1/QS-2."
+ ],
+ "contradictions": [],
+ "extras": [
+  "Accountability by coach name with no login (QS-3, 100% of records carry a coach name)",
+  "Functional-correctness measure via full kit count with 0 mismatches (QS-6)",
+  "Explicit rank order with the tie-breaker that usability beats record completeness",
+  "ADR 0001 listing the centrally decided items (storage/record format incl. offline data, CSV format, interfaces, versioning, conventions, dependencies)",
+  "Stakeholders: coaches, treasurer, equipment manager",
+  "Kit-categories feature issue (balls, bibs, cones, first-aid bags)"
+ ],
+ "artifact": "Three files: arc42.md (R-list R-1..R-5 ranked, QG-1..QG-6 with ISO 25010 mapping, QS-1..QS-6 scenario table, stakeholders; sections 2-8 and 11 empty), ADR 0001 accepted, and one feature issue for kit categories."
+}

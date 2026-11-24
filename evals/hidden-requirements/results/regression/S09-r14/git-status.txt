@@ -1,0 +1,6 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-store-as-append-only-jsonl.md
+?? docs/adr/0003-dependency-rule.md
+?? docs/adr/0004-standard-library-only.md
+?? docs/adr/0005-cli-interface.md
+?? docs/architecture/arc42.md

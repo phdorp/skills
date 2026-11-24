@@ -1,0 +1,6 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-interfaces-and-dependency-rule.md
+?? docs/adr/0003-units.md
+?? docs/adr/0004-naming-and-package-layout.md
+?? docs/adr/0005-no-third-party-libraries.md
+?? docs/architecture/arc42.md

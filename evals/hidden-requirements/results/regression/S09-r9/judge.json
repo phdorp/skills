@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Recovery of the architecture from the code waits for your approval of this ADR.",
+   "source": "transcript.md",
+   "reason": "Turn 1 proposes the ADR-0001 list of decisions made centrally and explicitly makes recovery wait for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "- **Approve ADR-0001's text.** Recovery of the architecture from the code waits for this. Until then, arc42 sections 4–8 and 11 stay empty.",
+   "source": "transcript.md",
+   "reason": "Turn 2 closes by asking for approval of ADR-0001 before recovery and leaves the recovered sections empty."
+  },
+  {
+   "criterion": "J3",
+   "pass": false,
+   "quote": "**Sections to review, one at a time:**\n1. Section 5, building blocks:",
+   "source": "transcript.md",
+   "reason": "The final message marks sections 2–8 and 11 as found, unconfirmed, but its section-by-section review list covers only 5, 6, 8, 11 and 3, omitting sections 2, 4 and 7."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.2729938
+}

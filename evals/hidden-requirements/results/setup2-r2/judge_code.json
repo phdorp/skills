@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "kit_tracker/static/outbox.js: \"An event stays in the outbox until the server answers \\\"accepted\\\" or \\\"duplicate\\\"\"; sw.js caches the app shell; app.js syncs \"every 30 seconds, on reconnect\" via window 'online' listener; kit.py places late syncs by action time (ORDER BY at DESC, seq DESC)"
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "db.py: SQLite file on NAS volume; mail.py: \"Mail goes through the club's own mail account, never a third-party sender\"; README: \"No CDN\"; api_items strips phone: \"the phone number is never part of the list, so it is never cached on a phone\""
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "Dockerfile: \"# Runs on the club's Synology NAS (Container Manager)... FROM python:3.13-slim ... VOLUME [\\\"/data\\\"]\"; jobs run via Synology Task Scheduler; no paid services (image not built or tried on a NAS, per D-13)"
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "jobs.py send_monday_report: \"if not force and today.weekday() != MONDAY: return 'skipped_not_monday'\", once per ISO week to KIT_MANAGER_EMAIL; README schedule \"every Monday, 07:00\". Mails go to an .eml outbox until SMTP (Q12) is configured; overdue threshold of 7 days is a guess"
+  },
+  "H5": {
+   "score": 1,
+   "evidence": "app.js renderScan uses BarcodeDetector, then one tap on \"Ich nehme es mit\" (book()), roughly 2-3 taps. But IMPLEMENTATION.md D-03: \"on browsers without BarcodeDetector (for example Firefox and older iOS Safari), QS-2 ... is only met by typing the code. Not measured.\" This leaves many iPhone volunteers without a scan path"
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "reports.py inventory_csv: \"Semicolon-separated, UTF-8 with BOM\"; jobs.send_yearly_export emails \"bestand-{year}.csv\" to KIT_TREASURER_EMAIL once per year; download at /verwaltung/export.csv"
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "D-01: \"SQLite ... handles about 40 people and 300 items easily\"; single waitress process, no caching or queue infrastructure"
+  },
+  "H8": {
+   "score": 1,
+   "evidence": "Server, rules, jobs and tests are plain Python with a dependency rule enforced by tests/test_architecture.py, but IMPLEMENTATION.md conflict 1: \"The phone app is about 610 lines of plain JavaScript ... would need to learn some JavaScript\""
+  },
+  "H9": {
+   "score": 1,
+   "evidence": "config.py \"retention_days: int = 730  # two years, insurance requirement\"; jobs.purge_old_records keeps events for 2 years. There is no concept of a 'lost' item and no history report: D-12 \"v1 has no report of it. Open point\""
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "reports.py \"EXPIRY_WARNING_DAYS = 30\"; expiring_items selects \"expiry_date <= today+30\"; jobs.send_expiry_warnings sends one warning per item and expiry date to the kit manager"
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "D-17: \"Money (deposits, fines): out of scope\"; no payment, deposit or fine code anywhere in kit_tracker/"
+  },
+  "H12": {
+   "score": 1,
+   "evidence": "arc42 names \"Live by 1 March 2027\", but nothing in v1 plans or verifies go-live: README \"[Dockerfile] has not been built or run\", the phone app was not run in a browser, and ADR 0001 says dependent work \"waits until its ADR is accepted\" (8 ADR candidates are open)"
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "Clean, layered, well-commented Python with a strong test suite (claimed 103 tests). The tests could not be run here because pytest is not installed, so they are unverified. The main gaps are QR scanning on iOS Safari, a JavaScript dependency that conflicts with the Python-only maintainer, no lost-item history report for the insurer, and no verified deployment on the NAS or with SMTP."
+}

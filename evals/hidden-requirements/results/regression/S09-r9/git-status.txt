@@ -1,0 +1,7 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-append-only-jsonl-pantry-file.md
+?? docs/adr/0003-standard-library-only.md
+?? docs/adr/0004-dependency-rule-between-blocks.md
+?? docs/adr/0005-cli-contract.md
+?? docs/adr/0006-date-input-and-stored-date-format.md
+?? docs/architecture/arc42.md

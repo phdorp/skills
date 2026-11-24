@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "**Recovery:** because the project is undocumented, recovering the architecture from the code waits for your approval of ADR 0001's text.",
+   "source": "transcript.md",
+   "reason": "Turn 1 proposes the list of decisions made centrally for ADR 0001 and says recovery waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "**Waiting for you:** approve or change the text of ADR 0001. Until you do, sections 4–8 and 11 stay empty and the recovered ADRs are not written.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only the confirmed setup content, recovers nothing, and ends by asking for approval of ADR 0001."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "**Proposed ADRs to approve or reject** (all `proposed`; `docs/adr/`):",
+   "source": "transcript.md",
+   "reason": "The final message lists the eight unconfirmed sections to review one at a time and the proposed ADRs 0002–0005 for approval."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.3157218
+}

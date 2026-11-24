@@ -1,0 +1,74 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "Offline use works fully. Each phone caches the full item list, so scanning works without signal."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "All data stays on the club's Synology NAS. No third-party cloud or hosted database."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "One container, run with **Docker Compose** on the Synology NAS ... Cost: 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "Every **Monday at 07:00 Europe/Berlin**, the NAS emails the admin an overdue report."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "Checking an item out or in takes at most **3 taps and under 15 seconds**, starting from scanning the QR code on the bag."
+  },
+  "H6": {
+   "score": 2,
+   "quote": "An on-demand download, with the year chosen by the admin, covering 1 January to 31 December. ... Purpose: the treasurer's yearly inventory for the insurance audit."
+  },
+  "H7": {
+   "score": 2,
+   "quote": "for one volunteer football club with about 40 coaches and 300 items"
+  },
+  "H8": {
+   "score": 2,
+   "quote": "Python with **Flask**. ... The codebase and runbook must be readable by a Python-only successor."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "All events, including lost-item records, are purged after **2 years**."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "Items expiring **within 30 days** appear in the Monday email ... items expiring within 30 days [on dashboard]"
+  },
+  "H11": {
+   "score": 2,
+   "quote": "The app never handles money. No deposits, fines or payments, ever."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Deadline: live for the start of the season on **1 March**."
+  }
+ },
+ "questions": 41,
+ "rounds": 10,
+ "unasked_decisions": [
+  "Large-button, plain-language interface (designer addition, only covered by the blanket 'Confirmed')",
+  "Send-attempt and sync-conflict logs kept for 2 years (designer default, never explicitly answered)",
+  "Monday scheduler and nightly purge run inside the app container (designer default, never explicitly answered)",
+  "CSV shows 'status at end of year' (designer choice, accepted only via the final confirmation)"
+ ],
+ "contradictions": [],
+ "extras": [
+  "Append-only event log with server-sync-time conflict resolution and an admin conflict list",
+  "30-day cached offline session; events from revoked sessions flagged for review",
+  "Router/DNS/port-forwarding checklist including a CGNAT blocker check and not exposing DSM ports",
+  "Nightly Hyper Backup with documented restore steps",
+  "Second admin for succession; admin-set temporary passwords with no emailed reset links",
+  "Coach names kept out of the e-mail report to protect GDPR data from the mail provider",
+  "Items retired rather than deleted; refuse deleting a coach who still holds items",
+  "First-aid bag as the tracked unit, with its contents listed with their own expiry dates",
+  "Pilot plan: working deployment by mid-January, pilot before 1 March",
+  "Performance non-goal (H7) only implied by the scale figures, not stated explicitly"
+ ],
+ "artifact": "Single uncommitted file docs/design.md with 12 numbered sections (purpose, access, usability, items, sync, reporting, CSV, money, privacy/retention, tech/ops, open inputs, plan)."
+}

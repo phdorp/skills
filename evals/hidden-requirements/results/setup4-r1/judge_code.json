@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "kit_tracker/static/sw.js serves the cached shell offline: `fetch(request).catch(function () { return caches.match('/i/_shell'); })`. app.js keeps an IndexedDB outbox and syncs on reconnect: `window.addEventListener('online', function () { sync()...`. The server de-duplicates by UUID in ledger.apply_events. The service worker was never run in a real browser."
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "docker-compose.yml: `- ./data:/data  # the database lives here, on the NAS only`. Storage is local SQLite. The phone cache holds no names: `\"holder_id\": s[\"holder_id\"]` and `assert \"holder_name\" not in script`. No cloud SDKs; mail goes only through the club's own SMTP account (KT_SMTP_*)."
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "Dockerfile `FROM python:3.13-slim ... gunicorn`, and docker-compose.yml says `Synology NAS: Container Manager > Project`. Everything is free open source with no paid services. The image was never built (IMPLEMENTATION.md section 5)."
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "reports.py builds `OVERDUE: items out for {overdue_days} days or more`. cli.py has `send-monday-report`, scheduled at Monday 07:00 per IMPLEMENTATION.md D19. report_runs ensures it is sent at most once per day."
+  },
+  "H5": {
+   "score": 2,
+   "evidence": "The QR code encodes `PUBLIC_BASE_URL + /i/<code>` (web.item_label). item_shell.html has a one-tap `<button id=\"btn-checkout\" class=\"big\">Check out</button>`, so it is scan plus 1 tap when signed in, with no app install. The 15-second target was never timed on a phone."
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "export.py: `writer = csv.writer(buffer, lineterminator=\"\\r\\n\")`, BOM, file name `kit-inventory-v{SCHEMA_VERSION}-{today:%Y%m%d}.csv`. The route `/export/inventory.csv` is restricted to the treasurer and kit manager."
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "A single SQLite file, `--workers 2`, and in-Python filtering (`states = [s for s in states if query in ...]`). There is no caching layer, queue or other performance engineering."
+  },
+  "H8": {
+   "score": 2,
+   "evidence": "Plain Flask and stdlib (`hashlib.scrypt`, `sqlite3`, `smtplib`), with only 4 pinned runtime deps in requirements.txt. Decisions are documented in IMPLEMENTATION.md and there are pytest suites per module. The only non-Python code is a small vanilla app.js with no build step, which offline use requires."
+  },
+  "H9": {
+   "score": 2,
+   "evidence": "`\"LOST_RETENTION_DAYS\": 730` in kit_tracker/__init__.py. retention.py deletes lost events older than the cutoff and anonymises the one still current. Pseudonym via `pseudonym(secret_key, coach_id) if is_lost`."
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "`\"EXPIRY_WARN_DAYS\": 30`. reports.py: `if s[\"category\"] == \"first_aid\" and s[\"expiry_date\"] and date.fromisoformat(s[\"expiry_date\"]) <= horizon`, marking `EXPIRED` items. It is delivered in the weekly Monday e-mail, so the warning lands 24 to 30 days ahead."
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "schema.sql has only coaches, items, events (`CHECK (type IN ('checkout', 'checkin', 'lost'))`) and report_runs. There are no deposit, fine or payment fields or code."
+  },
+  "H12": {
+   "score": 1,
+   "evidence": "The only deadline evidence is in documentation: IMPLEMENTATION.md section 4 says `Before 1 March: test on a real phone in airplane mode`. The Docker image was not built, and the service worker and SMTP were not exercised, so readiness to go live is unverified."
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "This is a clean, well-structured Flask/SQLite app with clear module boundaries, thorough decision docs and a broad test suite. However, pytest was not installed, so none of the 79 claimed tests ran in this grading. Remaining risks: the Docker image, the service worker on a real phone and real SMTP are all unverified, there is no login rate limiting, and all architecture decisions still wait on the unaccepted ADR 0001."
+}

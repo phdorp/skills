@@ -1,0 +1,75 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "The phone stores the session (90 days) and the data it needs, so checkouts and check-ins work without signal."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "All data stays on the club's Synology NAS. No cloud or paid services."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "Python with Flask; SQLite, in one Docker container on the NAS. / No cloud or paid services."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "Monday report: sent at 07:00 Europe/Berlin to one shared admin mailbox"
+  },
+  "H5": {
+   "score": 2,
+   "quote": "scan, then one \"Take out\" tap with everything pre-filled... Two taps usually, three with a quantity change. Target: under 15 seconds."
+  },
+  "H6": {
+   "score": 2,
+   "quote": "Yearly CSV export: one row per bag or box, with bag code, name, contents and quantities..."
+  },
+  "H7": {
+   "score": 0,
+   "quote": "Never surfaced; no mention of scale (40 coaches, 300 items) or performance as a non-goal."
+  },
+  "H8": {
+   "score": 1,
+   "quote": "Transcript: \"the only maintainer knows Python only, and a successor must be able to take it over\". The file records only the stack (\"Python with Flask\", minimal JS), with no maintainer or successor rationale, and wrongly says \"confirmed by the maintainer\"."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "History is kept for 2 years, then deleted automatically by a scheduled job."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "Expiry: the warning starts 30 days before expiry and repeats in each Monday report."
+  },
+  "H11": {
+   "score": 0,
+   "quote": "Never surfaced; no mention of deposits, fines or payments being out of scope."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Live by 1 March 2027 (start of the season)."
+  }
+ },
+ "questions": 26,
+ "rounds": 8,
+ "unasked_decisions": [
+  "Year 2027 for the 1 March deadline was never stated by the architect",
+  "\"Status: confirmed by the maintainer\" attributes sign-off to the maintainer, but the architect said the maintainer is a separate volunteer"
+ ],
+ "contradictions": [
+  "Minor: the file calls the confirming person \"the maintainer\", contrary to H8 (the maintainer is one Python-only volunteer, not the architect)"
+ ],
+ "extras": [
+  "Offline event log with discrepancy flagging for negative balances",
+  "Phone/server clock skew >24h flagged",
+  "Nightly Hyper Backup to own hardware plus test restores",
+  "Opaque QR IDs with reprint/revoke and an 'unknown bag' message",
+  "One-tap transfer when a bag is held by another coach",
+  "Account lockout, 90-day sessions, admin reset",
+  "One-time first-admin setup screen",
+  "Data minimisation (no phone numbers) and a privacy note",
+  "Free Synology DDNS + Let's Encrypt HTTPS",
+  "Europe/Berlin time zone",
+  "Prioritised build order with the CSV export allowed to slip"
+ ],
+ "artifact": "Single file docs/design.md (uncommitted at time of writing) with sections: Purpose, Users, Tracking model, Checkout/check-in, Offline, Alerts/reports, Data/privacy/retention, Security, Tech stack/deployment, Build order/deadline, Open implementation choices"
+}

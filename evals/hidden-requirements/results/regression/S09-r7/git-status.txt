@@ -1,0 +1,8 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-append-only-json-lines-store.md
+?? docs/adr/0003-crash-handling-by-fsync-and-torn-line-skip.md
+?? docs/adr/0004-record-shape-and-date-formats.md
+?? docs/adr/0005-dependency-rule-between-modules.md
+?? docs/adr/0006-exit-codes-and-user-errors.md
+?? docs/adr/0007-standard-library-only.md
+?? docs/architecture/arc42.md

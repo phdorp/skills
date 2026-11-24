@@ -1,0 +1,79 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-3 | Check-out and check-in work offline and sync when the phone is back online."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "Coach personal data (names and phone numbers) is personal data under GDPR and stays on club hardware.\" / \"No third-party cloud service, except the club's existing e-mail account for outgoing mail."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "Runs on the club's existing Synology NAS, in Docker.\" / \"Budget: 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "R-5 | The club gets an e-mail every Monday morning listing overdue kit.\" / \"The e-mail to the kit manager ... lists overdue items"
+  },
+  "H5": {
+   "score": 2,
+   "quote": "R-2 | Check-out or check-in takes at most 3 taps and under 15 seconds, by scanning a QR code on the kit bag."
+  },
+  "H6": {
+   "score": 2,
+   "quote": "R-6 | The treasurer gets a yearly inventory export as CSV for the insurance audit."
+  },
+  "H7": {
+   "score": 2,
+   "quote": "Ruled out: performance efficiency ... about 300 items and 40 coaches; performance is not a concern."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "R-7 | A successor who knows only Python can take the tool over.\" / \"One maintainer, who knows only Python; third-party dependencies must fit that."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "The history of lost items is kept for 2 years, for insurance; it is not deleted after a season."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "R-4 | First-aid items carry an expiry date, and the club is warned 30 days before."
+  },
+  "H11": {
+   "score": 2,
+   "quote": "Out of scope: Payments, deposits and fines."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Must be live by 1 March, the start of the season."
+  }
+ },
+ "questions": 33,
+ "rounds": 3,
+ "unasked_decisions": [
+  "Monday report recorded as going to the kit manager 'with the treasurer in copy' (runtime view, stakeholders). The confirmed Q19 answer put the kit manager in copy on the yearly export, not the treasurer on the Monday report.",
+  "ADR 0001 sets 'Nygard form' for ADRs. This format was never discussed.",
+  "The ADR acceptance date '2026-11-24' was filled in by the designer.",
+  "Section 9 still says ADR 0001 has status 'proposed, until the architect approves it' after it was accepted. This is a stale or inconsistent record.",
+  "The QS-2 environment 'at the pitch' and the QS-6 environment 'normal operation with the nightly copy in place' were filled in without explicit confirmation. Minor."
+ ],
+ "contradictions": [
+  "No direct contradiction of a hidden requirement.",
+  "Minor tension: QS-1's response 'the list shows the holder at once' fits poorly with offline-first R-3, which wins the tie-breaker."
+ ],
+ "extras": [
+  "Offline conflict rule: the first record to sync wins, and the other is flagged for the kit manager.",
+  "One QR code per bag; items in a bag are checked out together.",
+  "Coaches use a web page added to the home screen, not an app-store install.",
+  "Overdue defined as not checked in after 7 days.",
+  "The expiry warning is a section of the Monday e-mail.",
+  "Outgoing mail goes through the club's existing e-mail account.",
+  "Phone numbers are visible only to the kit manager and the treasurer.",
+  "R-8/QG-6: nightly restore point after a NAS disk failure.",
+  "Member database and purchasing are out of scope.",
+  "Measurable scenarios QS-1 to QS-6, including the offline sync measure (within 5 minutes, 0 of 100 lost).",
+  "The ADR 0001 list of central decisions includes the sync protocol and the CSV export format with versioning."
+ ],
+ "artifact": "Two files: docs/architecture/arc42.md (arc42 skeleton with R-1..R-8 ranked, QG-1..QG-6, QS-1..QS-6, stakeholders, constraints, scope, runtime notes; sections 4,5,7,8,11 empty) and docs/adr/0001-record-architecture-decisions.md (accepted, lists the centrally decided topics)."
+}

@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Recovering the architecture from the code waits for your approval of the \"Record architecture decisions\" ADR.",
+   "source": "transcript.md",
+   "reason": "Turn 1 proposes the list of decisions made centrally for ADR 0001 and says recovery waits for the architect's approval of that ADR."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "Your approval of the text of ADR 0001. Recovering the architecture from the code waits for that approval.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only the confirmed parts and a proposed ADR 0001, then ends by asking for its approval before recovering, with no recovery done."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "- ADR-0002 Storage format: keep the append-only JSON-lines file and its two record kinds?",
+   "source": "transcript.md",
+   "reason": "The final report lists all eight unconfirmed sections in review order and ADRs 0002-0008 as proposals for the architect to approve or reject."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.3413618
+}

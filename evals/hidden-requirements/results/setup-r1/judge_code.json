@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "Offline check-out and check-in work. The tap is queued in localStorage before the confirmation shows, the queue syncs every 30 s and on reconnect, and resends are idempotent by event_id. kit_tracker/static/app.js: `app.queue.push(event); save(KEYS.queue, app.queue); ... window.addEventListener(\"online\", flush)`. The app shell is cached by kit_tracker/static/sw.js. Caveat: offline use needs HTTPS on the NAS (IMPLEMENTATION.md D-23), and the service worker was never tested on a real phone."
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "All data is in one SQLite file on the NAS volume and no third-party services are used. Phone numbers are deliberately not stored. kit_tracker/db.py: `CREATE TABLE coaches (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE ...)`. IMPLEMENTATION.md D-13: 'Phone numbers ... are not stored ... Everything stays on the NAS.'"
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "Dockerfile: `FROM python:3.13-slim ... VOLUME [\"/data\"]`, and docker-compose.yml mounts `./data:/data`. It uses only free open-source dependencies (flask, waitress, qrcode, tzdata) and needs no extra database server. The image build was not verified (IMPLEMENTATION.md \u00a73)."
+  },
+  "H4": {
+   "score": 0,
+   "evidence": "The code has no overdue concept, no e-mail/SMTP and no scheduled job. The CLI commands in kit_tracker/cli.py are only `init-db, add-coach, add-site, add-item, export-csv, labels, backup, rebuild-state, serve`."
+  },
+  "H5": {
+   "score": 2,
+   "evidence": "The label QR code encodes `/i/<ITEM-ID>` (kit_tracker/labels.py: `url = f\"{base}/i/{row['item_id']}\"`). The item page shows one big button. kit_tracker/static/app.js: `h(\"button\", { onclick: () => act(itemId, \"out\") }, `Check out to ${me}`)`. That is scan plus 1 tap, or 2 taps the first time when the coach picks a name. The 15-second limit was not measured with real users."
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "kit_tracker/export.py: `csv.DictWriter(buffer, fieldnames=COLUMNS, delimiter=\";\", lineterminator=\"\\r\\n\")`. It writes item rows plus total rows, with an as_of date in Europe/Berlin. It is available as the CLI command `export-csv` and the bearer-protected endpoint `/admin/export.csv`, and tests check that the totals match the item rows."
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "There is no performance engineering: SQLite, a single container, a plain table scan in state_as_of, and N+1 `coach_name` lookups in the catalogue. IMPLEMENTATION.md D-03: 'With about 40 coaches and 300 items, performance is not a concern.'"
+  },
+  "H8": {
+   "score": 2,
+   "evidence": "The server, CLI and tests are plain Python 3.11+ in small layered modules: rules (pure) \u2190 service \u2190 web/cli. kit_tracker/rules.py: 'Pure functions, no I/O.' The phone side needs about 300 lines of framework-free JavaScript with no build step, which offline browser use makes unavoidable. That code is documented and has its own tests, but it is a small burden for a Python-only maintainer."
+  },
+  "H9": {
+   "score": 2,
+   "evidence": "kit_tracker/db.py: `-- Append-only history. Rows are never updated or deleted.` IMPLEMENTATION.md D-05: 'Events are never deleted ... satisfies at least 2 years.' There is also a backup command. There is no explicit 'lost' status, so lost items can only be inferred as items held for a long time or never returned."
+  },
+  "H10": {
+   "score": 0,
+   "evidence": "No expiry dates and no warnings exist. The kit_tracker/db.py items table has only `item_id, item_type, description, active`. `first_aid_bag` exists only as an item type."
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "There is no deposit, fine or payment code anywhere. kit_tracker/rules.py: `ACTIONS = (ACTION_OUT, ACTION_IN)` and results are only applied/conflict/unknown_*."
+  },
+  "H12": {
+   "score": 1,
+   "evidence": "Nothing in the code addresses the deadline. v0.1.0 is close to deployable, but IMPLEMENTATION.md lists open blockers: 'Docker image not built', HTTPS and a certificate on the NAS (D-23), and no real-phone test. H4 and H10 are missing entirely."
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "The code is clean, well layered and well documented. An append-only event log, idempotent offline sync, durability tests and a Berlin-time-aware CSV export make it easy for a Python volunteer to take over. However, it misses the Monday overdue e-mail (H4) and the first-aid expiry warnings (H10), and pytest was not installed in this run, so the 64 passing tests the agent reports could not be confirmed."
+}

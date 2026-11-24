@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "public/lib/outbox.js: records queue in localStorage, 'Records are never dropped silently'; public/sw.js caches the app shell; app.js syncs 'on load, online event, every 30 s'; idempotent ids, 'duplicate' answer"
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "src/store.js: local SQLite via node:sqlite, 'new DatabaseSync(path)'; no cloud SDKs (deps only qrcode); server.js logs no request bodies, 'so coach names stay out of the log'; no phone numbers stored"
+  },
+  "H3": {
+   "score": 1,
+   "evidence": "Self-hosted single Node process plus a SQLite file, so 0 EUR, but no Dockerfile or NAS deployment notes; needs 'node >=22.13' and an external TLS reverse proxy (IMPLEMENTATION.md 'HTTPS is required in production')"
+  },
+  "H4": {
+   "score": 0,
+   "evidence": "No e-mail, scheduler or overdue concept anywhere in src/; IMPLEMENTATION.md lists no report feature"
+  },
+  "H5": {
+   "score": 2,
+   "evidence": "QR encodes '<KIT_PUBLIC_BASE_URL>/items/<item id>' (src/app.js sendLabels); app.js itemView offers a one-tap 'Check out to ${name}'; record() enqueues locally without waiting for the network; e2e test 'check-out in one tap'"
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "src/app.js 'GET /api/export.csv?year=YYYY' admin route; src/csv.js inventoryCsv year-end snapshot, RFC 4180, BOM, formula guard; test/csv.test.js covers it"
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "Single process, one SQLite file, no framework or cache layer; IMPLEMENTATION.md: 'expected volume is a few thousand records a year'"
+  },
+  "H8": {
+   "score": 0,
+   "evidence": "Whole stack is JavaScript/Node: package.json '\"start\": \"node src/server.js\"', ES modules in public/, contradicting the Python-only maintainer constraint"
+  },
+  "H9": {
+   "score": 1,
+   "evidence": "store.js: events are append-only, 'Events are never edited or deleted, so the history is the audit trail', so history is kept indefinitely; but no 'lost' status and no 2-year retention rule"
+  },
+  "H10": {
+   "score": 0,
+   "evidence": "items table has 'id, category, number, name, created_at' only; no expiry dates or warnings for first-aid bags"
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "No deposit, fine or payment fields or code; domain.js ACTIONS = ['out','in'] only"
+  },
+  "H12": {
+   "score": 1,
+   "evidence": "A working v1 exists with tests, but the schedule cannot be verified from the code; deployment to the target NAS (Docker, TLS) is not prepared, so go-live by 1 March is not assured"
+  }
+ },
+ "quality": 6,
+ "tests": "none",
+ "notes": "Clean, well-documented and well-tested Node.js code with a solid offline outbox, idempotent sync and CSV export, but it is written in JavaScript, which a Python-only volunteer cannot maintain, and it was never run here (pytest is missing and the project uses node --test). The Monday overdue e-mail, first-aid expiry warnings, lost-item retention and Synology Docker packaging are missing."
+}

@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Recovering the architecture from the code waits for your approval of ADR 0001's text.",
+   "source": "transcript.md",
+   "reason": "Turn 1 presents the draft list of decisions made centrally and says recovery waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "Recovery of the existing code starts once you approve ADR 0001's text.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only the confirmed R-list, goals and ADR 0001 as proposed, and ends by asking for approval of ADR 0001 before recovery."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "**Sections to review, one at a time.** Each carries the *As found, unconfirmed.* marker until you confirm it.",
+   "source": "transcript.md",
+   "reason": "The final message lists every section marked as found, unconfirmed for review in order, plus the proposed ADRs 0002-0008 to approve or reject."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.3536418
+}

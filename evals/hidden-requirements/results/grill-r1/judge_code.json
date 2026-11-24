@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "kit_tracker/static/js/app.js queues actions in localStorage (`state.queue = Q.addToQueue(...)`, `window.addEventListener('online', sync)`); sw.js caches the scan shell; sync.py applies by server receipt order and keeps conflicts. The phone side was not tested in a real offline browser."
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "schema.sql users table stores only name and email, no phone numbers. All data is in SQLite on `./data:/data` (docker-compose.yml); there is no cloud service. reports.py: 'the Monday email and the CSV never contain coach names'. users.remove_coach clears email and password."
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "docker-compose.yml `image: kit-tracker:1.0.0`, `restart: unless-stopped`; Dockerfile `FROM python:3.13.5-slim-bookworm`; RUNBOOK covers the Synology reverse proxy and Hyper Backup; no paid services. The Docker image build itself was never run (IMPLEMENTATION.md section 5)."
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "scheduler.py `if local.weekday() == 0 and local.hour >= cfg[\"REPORT_HOUR\"]` (REPORT_HOUR 7, Europe/Berlin); every attempt goes into email_log; retries every 30 min; sent even when empty. Real SMTP was not tested."
+  },
+  "H5": {
+   "score": 1,
+   "evidence": "scan.html/app.js: Scan \u2192 'Open camera and scan' \u2192 'Check out to me', which meets the 3-tap intent. But scanning relies on `'BarcodeDetector' in window`, which iPhone Safari lacks, so those phones fall back to typing the code. The QR holds only the ID, not a URL, so the native camera app cannot open the item. The 15-second limit is unverified."
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "reports.export_csv: columns `[\"ID\", \"Name\", \"Category\", \"Home location\", \"Status at 31 December\", \"Expiry date\"]`, status taken at the 31 Dec 23:59:59 Berlin cutoff, bag contents as separate rows, no coach names; admin route /admin/export.csv?year=."
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "Single SQLite file and gunicorn.conf.py `workers = 1; threads = 4`; an in-process scheduler thread with no queue, cache or extra services. Proportionate to 40 coaches and 300 items."
+  },
+  "H8": {
+   "score": 2,
+   "evidence": "Python/Flask with server-rendered templates; JavaScript is limited to queue.js, app.js and sw.js, which offline use requires. Modules are small and documented (domain.py `next_state` is pure); RUNBOOK.md has a successor section; 99 pytest tests. The Node tests add a small non-Python dependency."
+  },
+  "H9": {
+   "score": 2,
+   "evidence": "scheduler.purge: `DELETE FROM events WHERE received_at < ?` with RETENTION_DAYS 730, so events are kept for exactly 2 years. Retire events carry the reason (`RETIRE_REASONS = (\"lost\", \"damaged\", \"retired\")`), and items are never deleted."
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "config.py `\"EXPIRY_WARNING_DAYS\": 30`; reports.expiring_items covers item and bag-content (`item_contents`) expiry dates, including ones already past. They appear on the dashboard and in the Monday email."
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "No payment, deposit or fine fields in schema.sql or any module; design.md section 8: 'The app never handles money.'"
+  },
+  "H12": {
+   "score": 2,
+   "evidence": "v1.0.0 is feature-complete with a runbook (IMPLEMENTATION.md table, all areas 'Built and tested'), well ahead of the 1 March go-live in docs/design.md section 12. Risks before the pilot: the Docker build and iPhone scanning are unverified."
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "Clean, well-documented Flask code with a pure event state machine, idempotent scheduler jobs and a thorough test suite, but pytest was not installed in this run, so none of the 99 claimed tests were verified here. The main gap is phone scanning: it depends on BarcodeDetector, which iPhones lack, and the QR holds only the ID with no URL, so the 3-tap flow can fail for many volunteers."
+}

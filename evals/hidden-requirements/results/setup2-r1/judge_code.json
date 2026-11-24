@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "src/kit_tracker/static/app.js: actions go to a localStorage queue first ('state.queue.push({id: uuid(), ...}); save(KEYS.queue, ...)') and are flushed on 'online'. sync.py applies each action idempotently by id ('SELECT result_json FROM applied_actions WHERE action_id = ?'). sw.js caches the app shell so the page opens offline."
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "Self-hosted Flask with SQLite and SMTP through the club mailbox; no cloud calls. QR labels are made locally with segno. accounts.py coach_record: 'if viewer_is_kit_manager: record[\"phone\"] = coach.phone'. The history table has no phone or coach id column."
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "docker-compose.yml runs the 'web' and 'scheduler' services from one image on a local volume. The Dockerfile is 'FROM python:3.13-slim'. All dependencies are free (flask, gunicorn, segno, tzdata). The image was never actually built (IMPLEMENTATION.md \u00a75)."
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "reports.py: 'MONDAY_HOUR = 7', monday_report_due/send_monday_report_if_due, with one send per ISO week recorded in job_runs. scheduler.py runs it every minute and retries on failure. Tested in test_scheduler.py."
+  },
+  "H5": {
+   "score": 1,
+   "evidence": "app.js: check-out is the default mode, and 'Scan QR code' calls enqueue(state.mode, codes[0].rawValue) on detection, so about one tap on Android. Scanning needs 'BarcodeDetector' (no iPhone Safari), so iPhone users must type 'Item code, e.g. BAL-001'. The QR holds a bare code, not a URL, so the native camera cannot launch the app. The 3-tap / 15 s target was never measured."
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "reports.py inventory_csv: 'CSV_COLUMNS = [\"item_code\",\"item_type\",...]', UTF-8 BOM, CRLF, file name 'kit-inventory-<year>-v1.csv'. Available as a download, by e-mail to the treasurer, and via the CLI. Format documented in docs/formats/inventory-csv-v1.md."
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "Single SQLite file, 'gunicorn --workers 1 --threads 8', no caching or queue infrastructure. arc42 lists 'performance tuning: not a concern'."
+  },
+  "H8": {
+   "score": 2,
+   "evidence": "Python standard library plus Flask, no ORM ('sqlite3 module is used; there is no ORM'). Small modules with documented decisions; tests/test_architecture.py enforces import rules. Weak point: the phone app is about 450 lines of plain JS (app.js), which a Python-only successor must still read."
+  },
+  "H9": {
+   "score": 2,
+   "evidence": "scheduler.py: 'HISTORY_RETENTION = timedelta(days=730)', purged daily. inventory.mark_lost writes a 'lost' history row, and lost items stay in the items table with status 'lost'."
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "reports.py: 'EXPIRY_WARNING_DAYS = 30', expiring_items selects 'expiry_date <= horizon', including already expired items. Expiry dates apply only to the first_aid_bag type ('expires' flag)."
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "No payment, deposit or fine code anywhere; arc42 \u00a73 lists 'money handling: deposits, fines and payments' as out of scope."
+  },
+  "H12": {
+   "score": 2,
+   "evidence": "A complete v1 exists in Nov 2026, well ahead of 1 March. IMPLEMENTATION.md \u00a75 lists the remaining go-live checks: 'Build it on the NAS before go-live', 'Send a test Monday report from the NAS before 1 March'. Docker, real-phone and SMTP verification are still open."
+  }
+ },
+ "quality": 7,
+ "tests": "none",
+ "notes": "The code is clean, small and well documented for a Python volunteer: idempotent sync, enforced module boundaries, and a large test suite, though pytest was not installed so nothing ran here. There is a real UI bug: app.js show('manager') hides view-kit, so a kit manager cannot check out or scan and never sees the item list or the 'Mark lost' buttons. iPhone users get no QR scanning, which threatens H5."
+}

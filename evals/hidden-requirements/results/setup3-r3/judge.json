@@ -1,0 +1,71 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-3 | Check-out and check-in work without a signal and sync when the phone is back online. ... QS-4: 0 check-outs lost after 2 hours offline, synced within 10 minutes of signal returning"
+  },
+  "H2": {
+   "score": 2,
+   "quote": "Data stays on club hardware; no third-party cloud. / Coach names and phone numbers are personal data under the GDPR and are kept on club hardware only."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "Runs on the club's existing Synology NAS, with Docker available. / Budget: 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "Each Monday, e-mail the equipment manager a report of items that were checked out 14 days ago or more with no check-in. (issue 01; 'morning' not stated)"
+  },
+  "H5": {
+   "score": 2,
+   "quote": "R-2 | Checking out an item takes at most 3 taps and under 15 seconds, by scanning a QR code on the kit bag."
+  },
+  "H6": {
+   "score": 2,
+   "quote": "We will export the yearly inventory as a CSV file named `kit-inventory-YYYY.csv` (ADR 0002); issue 03: 'A yearly inventory export, as CSV, for the treasurer.'"
+  },
+  "H7": {
+   "score": 1,
+   "quote": "Transcript: 'About 300 items. Performance is not a concern.' Files record only 'Coaches (about 40)'; the item count and the performance non-goal are missing."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "Written in Python and kept simple, so that a successor can take it over. / R-6 | A successor who knows Python can understand and change the tool without the current maintainer."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "The history of lost items is kept for 2 years for insurance purposes, not deleted at season end."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "Only items in the first-aid bags have expiry dates. Warn the equipment manager (the kit manager) 30 days before an expiry date"
+  },
+  "H11": {
+   "score": 2,
+   "quote": "No money handling: no deposits, fines or payments."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Must be live for the start of the season on 1 March 2027."
+  }
+ },
+ "questions": 34,
+ "rounds": 5,
+ "unasked_decisions": [
+  "QS-5 assumes per-coach accounts or sign-in ('a coach account requests the data of all coaches'). Authentication was never discussed or decided.",
+  "QS-1, QS-2 and QS-3 set the environment to 'normal operation at the pitch' without confirmation (minor).",
+  "Issue 02 fixes the channel for the expiry warning as e-mail ('same channel as the Monday report'). The architect confirmed only the recipient, so this is an inferred detail."
+ ],
+ "contradictions": [],
+ "extras": [
+  "Clash rule: a clash between two phones over the same item is flagged to the kit manager, not blocked (R-3, issue 04, QS-1 measure).",
+  "Explicit rank order with tie-breakers that agree with it (R-2 > R-3 > R-1 > R-4..R-6).",
+  "Overdue is defined as 14 days after check-out with no check-in.",
+  "Confidentiality (R-4/QS-5) and the exclusion of coach names from the treasurer's CSV.",
+  "CSV details: UTF-8 with a byte-order mark, semicolon separator, fixed column list, Python stdlib csv module.",
+  "Recoverability goal (R-5/QS-6) and analysability goal for the successor (QS-7: a small change within one day).",
+  "Further non-goals: no team or membership management, no scheduling, no member-list link.",
+  "Club committee added as a stakeholder; ADR 0001 lists what is decided centrally."
+ ],
+ "artifact": "docs/architecture/arc42.md (sections 1\u20133, 9 and 10 filled with R-1..R-6, QG-1..QG-7 and QS-1..QS-7; sections 4\u20138 and 11 empty), ADR 0001 (accepted), ADR 0002 CSV layout (still 'proposed' with a stale open-decision note although the architect approved it), and 4 issue files in .scratch/requirements/issues/. Nothing is committed."
+}

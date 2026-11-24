@@ -1,0 +1,74 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-7 | Check-out and check-in work offline and sync when the phone is back online. | 4 | active | phones at the pitch often have no mobile signal"
+  },
+  "H2": {
+   "score": 2,
+   "quote": "**Personal data:** coach names and phone numbers are personal data (GDPR). All data stays on the club's own hardware; no third-party cloud service."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "**Platform:** runs on the club's existing Synology NAS, with Docker. **Budget:** 0 EUR per month for software and hosting."
+  },
+  "H4": {
+   "score": 0,
+   "quote": "No mention of an overdue report or a Monday e-mail anywhere in the transcript or files."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "QS-2 | QG-2 | a first-time coach scans the QR code on a kit bag and checks out one item | ... in at most 3 taps and under 15 seconds | 9 of 10 first-time coaches succeed"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "R-6 | The treasurer gets a yearly inventory export as CSV. | 7 | active | the insurance audit"
+  },
+  "H7": {
+   "score": 2,
+   "quote": "**Size:** about 40 coaches and 300 items. Performance is not a concern."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "**Language and handover:** Python only. The maintainer knows only Python, and a successor must be able to take over the code."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "R-5 | The history of check-outs and check-ins, with coach names, is kept for at least 2 years and survives failures. | 6 | active | the insurance needs two years of history of lost items"
+  },
+  "H10": {
+   "score": 0,
+   "quote": "First-aid bags appear only as an item type ('balls, bibs, cones and first-aid bags'). Expiry dates and the 30-day warning were never raised."
+  },
+  "H11": {
+   "score": 0,
+   "quote": "No mention of deposits, fines, payments or a money-handling non-goal."
+  },
+  "H12": {
+   "score": 0,
+   "quote": "No go-live date or 1 March deadline anywhere in the transcript or files."
+  }
+ },
+ "questions": 28,
+ "rounds": 5,
+ "unasked_decisions": [
+  "Item-types feature issue filed in .scratch/requirements/issues/. The architect confirmed 'the three are right' but never explicitly confirmed the feature-level outcome or the .scratch location for this fourth row.",
+  "QG-2 was narrowed to 'learnability' only. The designer proposed 'operability and learnability' and the architect never chose between them.",
+  "QS-4 stimulus fixed as 'power cut during a check-out or a sync' with the response wording. The architect only said 'go ahead' and gave no preference on N; the failure model is the designer's choice.",
+  "ADR 0001 states 'in Nygard form'. The ADR format was not discussed, though the architect approved the ADR text as a whole."
+ ],
+ "contradictions": [
+  "ADR 0001 Context says 'the club must always know who holds each item'. This is stale after R-2 was sharpened to 'as of the last sync', and it sits in tension with H1 (offline operation)."
+ ],
+ "extras": [
+  "Tie-breaker ranking R-3 above R-1, with a full rank order R-1..R-7",
+  "R-2 sharpened to 'as of the last sync' to fit offline operation",
+  "R-4: identification without a per-check-out password, within the 3-tap/15 s limit",
+  "QS-1 measure adjusted to 'after every sync, the recorded holder is correct'",
+  "QG-4/QS-4 recoverability scenario: 0 lost confirmed records in 10 power-cut trials",
+  "QG-5/QS-5 CSV correctness measure: totals match the inventory on the day",
+  "GDPR storage-limitation question raised about keeping coach names for 2 years",
+  "ADR 0001 lists the centrally decided topics (storage, export formats, interfaces, dependencies, conventions)"
+ ],
+ "artifact": "Three files: docs/architecture/arc42.md (12-section skeleton with R-1..R-7, QG-1..QG-5, section 2 constraints, QS-1..QS-5 scenarios; stakeholders and sections 3-8, 11 empty), docs/adr/0001-record-architecture-decisions.md (accepted, Nygard-form meta-ADR listing central decisions), and .scratch/requirements/issues/01-item-types.md (feature issue under R-1)."
+}

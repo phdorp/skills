@@ -1,0 +1,72 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-4 | Checkout and check-in work offline and sync when the phone is back online."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "Personal data stays on the club's own hardware; no third-party cloud."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "Runs on the club's existing Synology NAS with Docker, at 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "R-6 | The kit manager receives an e-mail every Monday morning listing overdue kit."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "QS-2 ... a coach scans the QR code on a kit bag and checks it out ... at most 3 taps and under 15 seconds from the scan"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "The treasurer exports a yearly inventory of kit as CSV for the insurance audit."
+  },
+  "H7": {
+   "score": 2,
+   "quote": "About 40 coaches and about 300 items. / Ruled out by the architect: performance efficiency (\"performance is not a concern\"), so no goal."
+  },
+  "H8": {
+   "score": 2,
+   "quote": "Written in Python: the only maintainer knows only Python, and a successor must be able to take over."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "R-7 | Lost-item history is kept for 2 years, with the coach pseudonymised."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "The kit manager is warned 30 days before the expiry date of a first-aid bag item."
+  },
+  "H11": {
+   "score": 2,
+   "quote": "Money handling: no deposits, fines or payments."
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Must be live for the start of the season on 1 March."
+  }
+ },
+ "questions": 27,
+ "rounds": 3,
+ "unasked_decisions": [
+  "The expiry warning is recorded as 'a notification inside the e-mail channel fixed by R-6'. The architect never said the expiry warning goes by the Monday e-mail. The channel was also still open, not 'fixed'.",
+  "The kit manager is recorded as 'the architect of this document'. This was assumed, never confirmed.",
+  "QG-4 is traced to R-6 and R-7 as well as R-5. This mapping was the designer's own and was never confirmed.",
+  "The club committee is kept as a stakeholder with 'no requirement of its own'. The architect only said they had 'no view' on it."
+ ],
+ "contradictions": [],
+ "extras": [
+  "Measured quality scenarios QS-1..QS-5: 95% spot-check match, 0 coach records readable without sign-in, every offline checkout appears after sync, a tested change in one day",
+  "Pseudonymisation of the coach in the 2-year lost-item history",
+  "No coach phone numbers in the Monday report",
+  "Phones keep as little personal data as possible (R-4 vs R-5 balance)",
+  "ADR 0001 lists the centrally decided topics: storage, sync and conflict rules, CSV format and versioning, report channel, dependencies",
+  "Treasurer, maintainer and successor added as stakeholders",
+  "Out of scope: player data, match results, membership system",
+  "Gaps: the confirmed 7-day overdue threshold, the coach-data retention rule (delete on leaving the club) and the R-4/R-5 risk entry were agreed but not written into the files"
+ ],
+ "artifact": "arc42.md (sections 1-3, 9 and 10 filled: an 8-row ranked R-list, QG-1..5, stakeholders, 4 constraints, scope, QS table), ADR 0001 (proposed), and two feature issues in .scratch/ (expiry warning, CSV export). The architect's final answers (approval, retention, risk) are not yet reflected."
+}

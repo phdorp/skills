@@ -1,0 +1,3 @@
+// Run from the project root: omc tests/check.mos
+loadFile("HeatingLib/package.mo"); getErrorString();
+checkModel(HeatingLib.System); getErrorString();

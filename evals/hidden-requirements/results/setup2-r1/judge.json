@@ -1,0 +1,75 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "arc42.md R-4: \"Check-out and check-in work offline and sync when the phone is back online.\""
+  },
+  "H2": {
+   "score": 2,
+   "quote": "arc42.md section 2: \"Data stays on club hardware; no third-party cloud\" and \"GDPR applies to coach names and phone numbers.\""
+  },
+  "H3": {
+   "score": 2,
+   "quote": "arc42.md section 2: \"the club's Synology NAS, running Docker\" and \"Budget: 0 EUR per month.\""
+  },
+  "H4": {
+   "score": 2,
+   "quote": "arc42.md R-5: \"An overdue report is e-mailed every Monday morning.\""
+  },
+  "H5": {
+   "score": 2,
+   "quote": "arc42.md QS-2: \"a coach with a logged-in phone scans the QR code on a kit bag ... at most 3 taps and under 15 seconds\""
+  },
+  "H6": {
+   "score": 2,
+   "quote": "arc42.md R-6: \"A yearly inventory export as CSV.\" with reason \"The treasurer needs it for the insurance audit.\""
+  },
+  "H7": {
+   "score": 2,
+   "quote": "arc42.md section 3: \"performance tuning: not a concern at about 40 coaches and 300 items.\""
+  },
+  "H8": {
+   "score": 2,
+   "quote": "arc42.md section 2: \"one volunteer who knows only Python maintains it; a successor must be able to take over.\""
+  },
+  "H9": {
+   "score": 2,
+   "quote": "arc42.md R-7: \"Item history, including lost items, is kept for 2 years, with the minimum fields: item, date and coach name.\""
+  },
+  "H10": {
+   "score": 2,
+   "quote": "03-expiry-warning.md: \"The kit manager enters expiry dates for first-aid bag items. The Monday report warns 30 days before each expiry date.\""
+  },
+  "H11": {
+   "score": 2,
+   "quote": "arc42.md section 3 out of scope: \"money handling: deposits, fines and payments\""
+  },
+  "H12": {
+   "score": 2,
+   "quote": "arc42.md section 2: \"Deadline: live by 1 March, the start of the season.\""
+  }
+ },
+ "questions": 27,
+ "rounds": 2,
+ "unasked_decisions": [
+  "SMTP as the mail mechanism: the architect only said the club's existing mailbox is fine and never confirmed SMTP",
+  "ADR-0001 adds versioning of the Monday report and a logging rule for personal data, beyond the confirmed central list",
+  "ADR-0001 adds 'base images' as a central dependency decision and fixes the Nygard ADR format, neither raised with the architect",
+  "QS-1 environment 'at the end of training' and QS-2 environment 'with no mobile signal' were added by the designer, not stated by the architect",
+  "QG-4 is traced to R-7, a link the architect never made"
+ ],
+ "contradictions": [],
+ "extras": [
+  "Overdue threshold of 7 days (R-5 reason)",
+  "Club-issued login code, with the phone staying logged in so QS-2 holds",
+  "Only the kit manager sees phone numbers, with measure 0 shown across 3 test accounts (QS-4)",
+  "QS-3: 0 lost offline check-outs in 100 trials, including power loss during sync",
+  "QS-5: a Python-only successor changes the Monday report in under 4 hours",
+  "Nightly backup to a second club-owned disk, with a restore test each season",
+  "Typed-code fallback for QR scanning",
+  "ADR-0002 records the NAS, Docker and Python lock-in",
+  "Stakeholders listed, including the insurer and treasurer",
+  "Dropped from the files although confirmed: the offline conflict rule (keep both records, flag for the kit manager) and deleting the phone number when a coach leaves"
+ ],
+ "artifact": "arc42.md with sections 1-3, 9 and 10 filled (R-1..R-7 ranked, QG-1..QG-5, QS-1..QS-5 with measures, constraints, scope, non-goals) and sections 4-8 and 11 left empty; ADR-0001 and ADR-0002 written with status proposed; three feature-level issue files in .scratch/requirements/issues."
+}

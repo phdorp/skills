@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "static/app.js queues every action in localStorage ('kt.pending') and syncs via /api/sync when back online; static/sw.js caches '/scan' and the JS shell; kit_tracker/ledger.py accept_events replays 'sorted(events, key=lambda e: e[\"phone_time\"])' and flags rather than rejects. tests/test_browser_offline.py covers going offline and syncing back."
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "kit_tracker/db.py users table has only name/login/passcode_hash, with no phone column; templates/privacy.html: 'does not store phone numbers ... All data stays on the club's own NAS'. No cloud SDKs in requirements.txt (Flask, qrcode, tzdata, gunicorn). SMTP is only used for the outgoing report."
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "Dockerfile 'FROM python:3.13-slim' with a /data volume; docker-compose.yml for 'Synology Container Manager'; SQLite file, free SMTP mailbox, no paid services. The image was never built ('Docker image not built' in IMPLEMENTATION.md), but the code meets the constraint."
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "kit_tracker/jobs.py: 'if only_report or (berlin.weekday() == 0 and berlin.hour >= REPORT_HOUR)' with REPORT_HOUR = 7 in Europe/Berlin; reports.weekly_report lists 'OVERDUE (due date passed, still out)'. Uses SMTP STARTTLS, retries on failure, and is tested with a fake SMTP server."
+  },
+  "H5": {
+   "score": 2,
+   "evidence": "static/app.js: tap 'Scan a QR code', jsQR auto-decodes and opens the bag, then one 'Take out' tap with the quantity pre-filled ('defaulting to everything on the shelf'). That is 2 taps, or 3 with one stepper change. The 15-second target is not measured, and a large partial take needs several stepper taps."
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "kit_tracker/reports.py csv_export writes one row per bag, retired ones included, with contents, expiry dates, status and last checkout, plus a UTF-8 BOM for Excel; served by admin.py '/admin/export.csv' and tested in test_csv_export_has_one_row_per_bag..."
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "kit_tracker/db.py uses plain sqlite3 with no ORM; reports.bag_status_rows filters holdings in Python ('[h for h in holdings if h[\"bag_id\"] == bag[\"id\"]]'). Simple and appropriate for 40 coaches and 300 items, with no caching or queue infrastructure."
+  },
+  "H8": {
+   "score": 2,
+   "evidence": "The backend is Flask + stdlib sqlite3 in small modules (auth.py, ledger.py, jobs.py) with docstrings, and IMPLEMENTATION.md records 56 decisions. Risk: static/core.js mirrors the ledger rules in JavaScript ('Keep the two in step'), which is a burden for a Python-only maintainer, though it is limited to what offline mode needs."
+  },
+  "H9": {
+   "score": 1,
+   "evidence": "kit_tracker/jobs.py RETENTION_DAYS = 730 deletes events and discrepancies older than two years, so retention is correct. However, there is no 'lost' status: admins write off losses by editing a line total (admin.py line_update: 'UPDATE bag_lines SET name = ?, total = ?'), and that edit is not logged in events, so the lost-item history the insurer needs is not captured."
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "kit_tracker/reports.py: EXPIRY_WARNING_DAYS = 30; expiry_status returns 'expiring' when '(expiry - today).days <= EXPIRY_WARNING_DAYS' and 'expired' after the date. The warning appears in the Monday report, the live view and the admin expiry page, and the boundary is tested in test_admin.py."
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "There is no deposit, fine or payment code anywhere. The schema tables are users, bags, bag_lines, first_aid_items, qr_codes, holdings, events, discrepancies and job_runs, with no monetary columns."
+  },
+  "H12": {
+   "score": 2,
+   "evidence": "docs/design.md 'Live by 1 March 2027'; IMPLEMENTATION.md marks all six build steps 'Done', including the export that was allowed to slip. Still open before go-live: the image build on the NAS, the restore test and real phones."
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "The structure is clean and readable for a Python volunteer: a small Flask app with plain SQL, thorough decision notes and a broad test suite (claimed 89 pytest plus 15 Node tests). None of it could be verified here because pytest is not installed, and the Docker image was never built. The main gaps are the ledger logic duplicated between Python and JavaScript, and loss write-offs (line-total edits) leaving no history entry for the insurer."
+}

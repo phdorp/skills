@@ -1,0 +1,55 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "evidence": "kittracker/static/app.js queues events in localStorage ('Every action goes into a local queue first, so it works without signal'); sw.js caches the app shell; sync.py makes the POST /api/sync event log idempotent by client UUID ('A resent event (same UUID) is answered with its stored outcome')."
+  },
+  "H2": {
+   "score": 2,
+   "evidence": "db.py uses a local SQLite file under /data on the NAS, and the only outside service is the club's SMTP (mailer.py). Phone numbers are kept out of the API, export and report: app.py _item_view 'Never contains phone numbers'; export.py 'Phone numbers are never exported.'"
+  },
+  "H3": {
+   "score": 2,
+   "evidence": "Dockerfile 'FROM python:3.13-slim' and docker-compose.yml 'build: .' run on the NAS with no paid services. The in-process scheduler means no cron is needed. Caveat from IMPLEMENTATION.md: 'The Dockerfile is untested.'"
+  },
+  "H4": {
+   "score": 2,
+   "evidence": "jobs.py 'REPORT_TIME = time(7, 0)' with key report:<monday>, sent once per ISO week. report.py send_monday_report: 'Send the report to kit managers, copying treasurers'. A failed send is retried on the next tick."
+  },
+  "H5": {
+   "score": 2,
+   "evidence": "labels.py: 'The QR code holds the item's full link, so a phone camera opens it directly'. app.js renderItem shows one large 'Take out'/'Give back' button. Total: scan plus 1 tap, within the 3-tap limit."
+  },
+  "H6": {
+   "score": 2,
+   "evidence": "export.py inventory_csv: RFC 4180 CSV with a UTF-8 BOM and a format_version column, plus a yearly endpoint 'GET /staff/export?year=YYYY' (app.py staff_export, treasurer allowed)."
+  },
+  "H7": {
+   "score": 2,
+   "evidence": "db.py uses SQLite; cli.py uses the stdlib wsgiref '_ThreadingWSGIServer'. No caching layer, queue broker or DB server. IMPLEMENTATION.md: 'about 40 users, one NAS'."
+  },
+  "H8": {
+   "score": 2,
+   "evidence": "requirements.txt contains only 'segno==1.6.6' (pure Python). Everything else is stdlib (sqlite3, wsgiref, smtplib, unittest). Browser code is plain JS with no build step, which offline support needs. There is a code map in the README and a dependency-rule test in tests/test_architecture.py."
+  },
+  "H9": {
+   "score": 2,
+   "evidence": "jobs.py 'HISTORY_RETENTION = timedelta(days=730)' and purge_old_history deletes only events older than that. There is no explicit 'lost' status: lost-item history is the check-out/overdue event trail."
+  },
+  "H10": {
+   "score": 2,
+   "evidence": "report.py 'EXPIRY_WARNING = timedelta(days=30)' and expiring_first_aid 'expiry_date <= today+30'. Expiries are shown on the dashboard, the Monday report and the coach item page (queue.js EXPIRY_WARNING_DAYS = 30). items.py requires an expiry date for first_aid items."
+  },
+  "H11": {
+   "score": 2,
+   "evidence": "No payment, deposit or fine code anywhere. db.py tables are only coaches, staff, staff_sessions, items, events, job_runs. IMPLEMENTATION.md: 'Not built, by design: payments'."
+  },
+  "H12": {
+   "score": 1,
+   "evidence": "The code cannot show the 1 March date. v0.1.0 is functionally complete, but IMPLEMENTATION.md says 'The architect needs to accept them ... before this goes live' (ADR 0001 blocks dependent work), and the Docker image build was never verified."
+  }
+ },
+ "quality": 8,
+ "tests": "none",
+ "notes": "The harness ran pytest, which is not installed, and the suite uses unittest, so this run executed no tests. The author reports 84 Python and 12 Node tests passing, and the suite looks thorough, but that is not verified here. The code is clean, layered, mostly stdlib and well documented for a Python-only volunteer, with minor loose ends: pages.export_body is unused and the Export nav link downloads the current year's CSV directly, and the Docker build is untested."
+}

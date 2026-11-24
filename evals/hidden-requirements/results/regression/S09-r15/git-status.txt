@@ -1,0 +1,9 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-storage-format.md
+?? docs/adr/0003-durable-append.md
+?? docs/adr/0004-interfaces-and-dependency-rule.md
+?? docs/adr/0005-versioning-of-user-interfaces.md
+?? docs/adr/0006-error-handling-conventions.md
+?? docs/adr/0007-dates-and-date-input.md
+?? docs/adr/0008-no-third-party-dependencies.md
+?? docs/architecture/arc42.md

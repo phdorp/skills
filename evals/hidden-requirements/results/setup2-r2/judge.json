@@ -1,0 +1,75 @@
+{
+ "scores": {
+  "H1": {
+   "score": 2,
+   "quote": "R-3 | Check-outs work without signal and sync when the phone is back online."
+  },
+  "H2": {
+   "score": 2,
+   "quote": "Data stays on club hardware. No third-party cloud. ... GDPR applies to coach data."
+  },
+  "H3": {
+   "score": 2,
+   "quote": "Runs on the club's Synology NAS, with Docker. ... Budget: 0 EUR per month."
+  },
+  "H4": {
+   "score": 2,
+   "quote": "Every Monday morning, an e-mail listing overdue kit goes to the kit manager only."
+  },
+  "H5": {
+   "score": 2,
+   "quote": "a volunteer who has never used the tool scans the QR code on a bag and checks it out | ... | at most 3 taps and under 15 seconds"
+  },
+  "H6": {
+   "score": 2,
+   "quote": "Once a year, the treasurer receives a CSV export of the inventory, for the insurance audit."
+  },
+  "H7": {
+   "score": 2,
+   "quote": "Scale: about 40 coaches and 300 items. (No performance goal is in the files. The explicit 'performance is not a concern' non-goal was stated only in dialogue: 'Performance is not a goal candidate for that reason.')"
+  },
+  "H8": {
+   "score": 2,
+   "quote": "R-6 | A volunteer who knows only Python can maintain and change it. ... Python is required. ... Successor: not yet named."
+  },
+  "H9": {
+   "score": 2,
+   "quote": "Records are kept for 2 years, for insurance. ... Club's insurer: audits the two-year history of lost items."
+  },
+  "H10": {
+   "score": 2,
+   "quote": "The kit manager enters the expiry date of each first-aid bag item and receives a warning 30 days before it expires."
+  },
+  "H11": {
+   "score": 2,
+   "quote": "Out of scope: money handling (deposits, fines, payments)"
+  },
+  "H12": {
+   "score": 2,
+   "quote": "Live by 1 March 2027, the start of the season."
+  }
+ },
+ "questions": 35,
+ "rounds": 4,
+ "unasked_decisions": [
+  "ADR 0001 Context says coach names must not 'be stored on a phone'; the architect only confirmed that phone numbers are never stored on a phone",
+  "Issue 01 adds 'and since when' to the holder view, which was never discussed",
+  "QS-4 response widens to 'no coach name or phone number is returned', while the confirmed measure covered phone numbers only",
+  "QS-3 stimulus 'the NAS fails, or a restore is needed, during a match' was framed by the designer and not confirmed as a scenario"
+ ],
+ "contradictions": [],
+ "extras": [
+  "Rank order with tie-breakers: ease of use > core, security > offline",
+  "R-4 sharpened: phone numbers never stored on a phone",
+  "Phone numbers deleted when a coach leaves; names kept only on history for 2 years",
+  "Coach names go out only via the club's own mail account (no third-party SMTP)",
+  "German interface constraint",
+  "99% availability in match hours and 0 lost records in 100 restore trials (QS-3)",
+  "Maintainability measure: small change in under one day from the docs alone (QS-5)",
+  "Damage reports deferred (R-7); player/parent data and location tracking out of scope",
+  "QR codes on first-aid items as well as bags (issue 05)",
+  "ADR 0001 listing the decisions made centrally",
+  "Q12 mail channel kept explicitly open in issues 02/03"
+ ],
+ "artifact": "arc42.md (sections 1, 2, 3, 9, 10 filled; R-list R-1..R-7, QG-1..QG-5, QS-1..QS-5, stakeholders, constraints), ADR 0001 (accepted), and five feature issues in .scratch/requirements/issues. Issues 02-04 still quote the stale 'Coaches check kit out...' wording of R-1. Confirmed details missing from the files: the offline conflict rule (first record wins), PIN sign-in, the nightly backup on a second machine, and the explicit performance non-goal."
+}

@@ -1,0 +1,8 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-pantry-file-format.md
+?? docs/adr/0003-write-rule-and-torn-lines.md
+?? docs/adr/0004-command-line-interface.md
+?? docs/adr/0005-accepted-date-forms.md
+?? docs/adr/0006-dependency-rule.md
+?? docs/adr/0007-no-third-party-dependencies.md
+?? docs/architecture/arc42.md
