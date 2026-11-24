@@ -1,6 +1,6 @@
 ---
 name: quality-requirements
-description: Load before ranking requirements, deriving or changing quality goals or quality scenarios (ISO/IEC 25010), or checking how a new requirement affects them.
+description: Load before interviewing the architect for requirements, ranking requirements, deriving or changing quality goals or quality scenarios (ISO/IEC 25010), or checking how a new requirement affects them.
 ---
 
 # Quality Requirements
@@ -55,14 +55,53 @@ rank cell holds your proposal as `4 (proposed)`, and your report asks them to se
 Done when every implied characteristic is either a confirmed goal with a measured scenario or
 an open question in your report.
 
-## Gap question
+## Interview
 
-For each 25010 characteristic that no requirement supports and that the product could
-plausibly need, ask: "did you leave out something like <characteristic, with a one-line
-example for this product>?" The answer is the architect's; a new requirement it produces goes
-through `add-requirements`.
+A brief holds the requirements the architect thought of; the architecture also has to serve
+the ones they did not write down. Interview them in rounds until nothing about the
+requirements is silently assumed.
 
-Done when each such characteristic has been asked about once, in one list.
+1. Read what you were given (the brief, the README, existing documents). Ask nothing it
+   already answers.
+2. Ask the **frontier**: every open question whose prerequisites are settled. A question that
+   depends on an answer you have not heard waits for a later round. The first round covers
+   this territory, in the product's own terms:
+   - who uses it, how many of them, where, and on what (devices, connectivity, skills);
+   - how much it holds and handles (records, files, requests), now and in a few years;
+   - what the first version must do, and what can wait;
+   - what it must never do (non-goals);
+   - where it runs and what it may cost (platform, hosting, budget, licences);
+   - who builds and maintains it, and with which skills;
+   - what data it keeps, whose, for how long, and which law or contract applies;
+   - the date it must be live by;
+   - the systems and people it exchanges data with;
+   - each 25010 characteristic no requirement supports that the product could plausibly need:
+     "did you leave out something like <characteristic, with a one-line example>?"
+3. Format each question as below, numbered on across rounds, and word it so "yes" accepts your
+   recommendation. The recommendation is a proposal the architect corrects; it becomes a
+   requirement only when they confirm it. A "did you leave out" question carries no
+   recommendation: whether the product needs that characteristic is the architect's call.
+
+   ```
+   ❓ **Q1** - **<title>**: <question>
+
+   ➡️ <your recommended answer>
+   ```
+
+4. Sort each answer: a need is a new requirement and gets a triage outcome in your next
+   message (`add-requirements` step 1); a constraint (platform, budget, date, mandated
+   technology, law) is proposed for arc42 section 2; a non-goal for section 3 as out of scope;
+   a person or role for the stakeholders in section 1; a figure (users, records, load) for the
+   scenario it measures, or else section 3; a characteristic the architect rules out ("speed is
+   no concern") as a line under the quality goals, with their reason.
+5. Recompute the frontier from the answers and ask the next round.
+
+Choosing technology (storage engine, framework, hosting product) is not part of the interview:
+it is a decision made centrally, taken later in its own ADR. Ask about technology only as a
+constraint the architect already has ("must it run on hardware the club owns?").
+
+Done when the frontier is empty or the architect says nothing is missing: every territory item
+asked about once, every answer sorted.
 
 ## Goal impact
 
@@ -85,3 +124,5 @@ goal or measure as an open question.
 | "No measure yet, I'll write 'fast' and fix it later" | A goal without a measure is an open question, never a row. |
 | "The architect gave no rank, I'll append the row at the bottom as final" | Propose a rank, mark it proposed, and ask them to set the order. |
 | "This requirement's wording is sloppy, I'll tidy it while I'm here" | Show the sharper wording as a proposal; the row stays as the architect wrote it. |
+| "The brief lists the requirements, so I only need to triage them" | The brief lists what the architect thought of. Ask the interview territory once. |
+| "They accepted my recommendations, so I'll recommend Flask and SQLite too" | Technology is decided centrally, later, in its own ADR. The interview asks only for constraints. |

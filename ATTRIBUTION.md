@@ -21,6 +21,10 @@ Skills merged: `tdd`, `diagnosing-bugs`, `code-review`, `pr`, `grilling`, `grill
 `grill-with-docs`, `to-spec`, `to-tickets`, `implement`, `implement-spec`, `handoff`,
 `claude-handoff`, `writing-for-agents`, and `setup-matt-pocock-skills`.
 
+`grilling`'s rounds (the frontier of settled-prerequisite questions, each numbered with a
+recommended answer that "yes" accepts) also shape `quality-requirements` › Interview, which
+`setup-architecture` runs.
+
 ### obra/superpowers
 
 - Author: Jesse Vincent and contributors

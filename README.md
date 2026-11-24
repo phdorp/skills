@@ -68,8 +68,9 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
   glossary and ADRs as decisions crystallise.
 - **[setup-architecture](skills/setup-architecture/SKILL.md)** _(user-invoked)_ - Set up a
   project's arc42 document, requirements, quality goals and "made centrally" ADR with the architect.
-- **[quality-requirements](skills/quality-requirements/SKILL.md)** - Rank requirements and
-  derive ISO/IEC 25010 quality goals and scenarios, each confirmed by the architect.
+- **[quality-requirements](skills/quality-requirements/SKILL.md)** - Interview the architect
+  for requirements in rounds, rank them, and derive ISO/IEC 25010 quality goals and scenarios,
+  each confirmed by the architect.
 - **[add-requirements](skills/add-requirements/SKILL.md)** _(user-invoked)_ - Check new
   requirements against the architecture and apply the outcomes the architect confirms.
 - **[prototype](skills/prototype/SKILL.md)** - Throwaway code that answers one design question.

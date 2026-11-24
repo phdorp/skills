@@ -35,6 +35,9 @@ output connectors or signals, and a shared parameter or constant two blocks read
 *As found, unconfirmed.*
 ```
 
+In sections 2 and 3, the constraints and out-of-scope items the architect confirmed at setup
+stay first, without the marker; what you found follows under it.
+
 The marker stays until the architect confirms that section. A section the code says nothing
 about stays empty. Sections 1, 9, 10 and 12 hold what the architect confirmed and carry no marker.
 
@@ -61,12 +64,22 @@ Done when `git status` shows changes only under `docs/` (and `GLOSSARY.md`).
 
 ## 6. Report
 
-End with:
+End with these three lists, each under its own heading:
 
-- the sections marked *as found, unconfirmed*, in the order the architect should review them,
-  each with one line on what it claims;
-- the proposed ADRs, each with the question it asks the architect ("keep the append-only file?");
-- the risks you put in section 11.
+```markdown
+**Sections to review, one at a time:**
+1. Section 5, building blocks: <one line on what it claims>
+2. ...
+
+**Proposed ADRs to approve or reject:**
+- ADR-0002 <title>: <the question it asks, e.g. "keep the append-only file?">
+
+**Risks in section 11:**
+- <risk>: <what it threatens>
+```
+
+List every section you marked *as found, unconfirmed*, in the order the architect should review
+them.
 
 Done when the architect can confirm or correct each section and approve or reject each ADR from
 your message.

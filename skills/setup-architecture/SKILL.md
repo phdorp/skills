@@ -13,7 +13,7 @@ building blocks. You prepare and propose; the architect decides. Code comes late
 tickets, once the architecture is accepted.
 
 Requirements and goals follow `quality-requirements` (the R-list and goal tables, Rank, Derive
-goals, Gap question). ADRs follow `domain-modeling`. Load both before you write any file.
+goals, Interview). ADRs follow `domain-modeling`. Load both before you write any file.
 
 ## 1. Find the situation
 
@@ -45,7 +45,8 @@ decisions made centrally, because that list decides which findings become ADRs.
      scenarios, and the open questions for any goal without a measure
      (`quality-requirements` › Derive goals). A feature-level requirement gets no R-ID and
      no goal.
-   - **Gap questions** (`quality-requirements` › Gap question).
+   - **Interview:** the first round of questions (`quality-requirements` › Interview), after
+     the parts above.
    - **Where your documents map** (documented project): each existing document, the arc42
      section that links to it, and the statement that the document stays where and as it is.
    - **Legacy ADRs** (documented project): the ADRs without a Status, offered for upgrade in
@@ -56,32 +57,47 @@ decisions made centrally, because that list decides which findings become ADRs.
      this product, and its number: the next free one in the project's ADR directory. In an
      undocumented project, say that recovering the architecture from the code waits for the
      architect's approval of this ADR.
-3. Ask the architect to confirm or change each part.
+3. Ask the architect to confirm or change each part and to answer the round. In an
+   undocumented project, this closing question repeats that recovery waits for their
+   approval of the "Record architecture decisions" ADR.
 
 Done when the skeleton exists and your message ends with that question.
 
-## 3. After the architect confirms
+## 3. Interview until the frontier is empty
+
+While the architect's reply leaves questions open, or opens new ones, your next message is the
+proposal again, updated for their answers: each new need triaged, the rank and goal candidates
+adjusted, the constraints, out-of-scope items and stakeholders you heard, and the next round.
+Write no file in these turns.
+
+Done when the frontier is empty or the architect says nothing is missing, and they have
+confirmed the proposal.
+
+## 4. Write what the architect confirmed
 
 Write what they confirmed, in this order:
 
-1. The R-list rows, `R-1` upwards in the confirmed order, and an issue for each feature-level
+1. The stakeholders (section 1), the constraints (section 2), the out-of-scope items
+   (section 3), and the figures and ruled-out characteristics where the interview sorted them.
+2. The R-list rows, `R-1` upwards in the confirmed order, and an issue for each feature-level
    requirement, as in [add-requirements](../add-requirements/SKILL.md) step 3.
-2. The confirmed goals and scenarios as `QG-n` (section 1) and `QS-n` (section 10). A goal
+3. The confirmed goals and scenarios as `QG-n` (section 1) and `QS-n` (section 10). A goal
    still without a measure stays an open question in your report.
-3. The legacy ADRs, upgraded as `domain-modeling` describes, when the architect confirmed the
+4. The legacy ADRs, upgraded as `domain-modeling` describes, when the architect confirmed the
    batch.
-4. The "Record architecture decisions" ADR from the template, as the next free number in the
+5. The "Record architecture decisions" ADR from the template, as the next free number in the
    project's ADR directory (`0001-record-architecture-decisions.md` in a fresh project), status
    `proposed`, its Context citing the R- and QG-IDs it serves; section 9 links it.
 
 Done when every confirmed item is written and nothing unconfirmed is.
 
 In an undocumented project, end this turn by asking the architect to approve the written text
-of the "Record architecture decisions" ADR, and leave sections 2–8 and 11 empty until they do.
+of the "Record architecture decisions" ADR, and leave sections 4–8 and 11 empty until they do:
+what you have seen in the code, including what it fails to meet, waits for recovery.
 After the approval, recover the architecture as [references/recovery.md](references/recovery.md)
 says; its report replaces section 4.
 
-## 4. Report
+## 5. Report
 
 List the files written, the legacy ADRs upgraded (still `accepted (legacy)`), the open
 questions (unmeasured goals, anything the architect left unanswered), and the "Record
@@ -96,4 +112,5 @@ with what waits for it: work on any decision on its list.
 | "I'll pick the storage engine now so the docs are complete" | Storage is a decision made centrally: it goes on the "Record architecture decisions" list and gets its own ADR later. |
 | "They said 'confirmed', so the new ADR is accepted" | They confirmed your proposals. The ADR is `proposed` until they approve its written text. |
 | "The architect approved ADR-0001, so the recovered ADRs are approved too" | The approval covers ADR-0001's text. Each recovered ADR is `proposed` until the architect approves it. |
+| "The code misses QG-1, I'll note the risk in section 11 now" | Risks from the code are recovery findings. They wait for the approval and carry the *as found, unconfirmed* marker. |
 | "The code clearly decided this, so I'll mark it accepted" | Found is not decided. Recovered content carries *as found, unconfirmed* and recovered ADRs stay `proposed`. |
