@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "**Status is `proposed`, not `accepted`.** ADR-0002 says work depending on a centrally decided format waits until the architect accepts the ADR.",
+   "source": "transcript.md",
+   "reason": "The final message explicitly presents the ADR as proposed and awaiting the architect's acceptance."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "=== docs/adr/0002-record-architecture-decisions.md",
+   "source": "transcript.md",
+   "reason": "The agent catted ADR-0002 in full before writing the new ADR."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "must not lose or truncate notes (R-2, QS-1), must use only the standard library (R-3, QG-2),",
+   "source": "workspace/docs/adr/0004-export-notes-as-csv.md",
+   "reason": "The Context section cites requirement and quality IDs R-2, QS-1, R-3 and QG-2."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1224018
+}

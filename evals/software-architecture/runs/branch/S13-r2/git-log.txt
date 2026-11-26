@@ -1,0 +1,2 @@
+3255a3e9f3289c8669fc225ada676cfd671e9998 docs: add spec for --min-count option
+1dd54cd01396aaf20785c2b40f9966bf158c80b8 fixture

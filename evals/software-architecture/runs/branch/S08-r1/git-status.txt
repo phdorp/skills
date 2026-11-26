@@ -1,0 +1,1 @@
+?? docs/adr/0002-pass-room-heat-capacity-through-controller-port.md

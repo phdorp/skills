@@ -25,6 +25,8 @@ Synthesize; do not interview. Use what is already in the conversation and the co
 
 Read the code the feature touches, the project's `GLOSSARY.md`, and any ADRs in the area. Use the project's vocabulary. If the conversation produced new terms, update the glossary through [domain-modeling](../domain-modeling/SKILL.md) rather than inventing synonyms in the spec.
 
+If `docs/architecture/arc42.md` exists, read [references/quality-requirements.md](references/quality-requirements.md) before you write the spec. Without it, the ordinary case, the template is the whole spec.
+
 ### Sketch the seams, then confirm
 
 Before writing, identify where the feature will be tested. Use [codebase-design](../codebase-design/SKILL.md) language.
@@ -53,7 +55,7 @@ Before publishing, list every decision the draft leaves open or hands to "the pl
 
 ### Publish
 
-- **Configured tracker**: create one issue with the spec body and apply the `ready-for-agent` triage label unless the user says otherwise. If the source was an existing issue, publish as its sub-issue or follow the tracker doc.
+- **Configured tracker**: create one issue with the spec body and apply the `ready-for-agent` triage label unless the user says otherwise or the spec's status says blocked. If the source was an existing issue, publish as its sub-issue or follow the tracker doc.
 - **No tracker**: write `docs/specs/YYYY-MM-DD-<topic>-spec.md` and commit it.
 - Never close or rewrite a parent issue as part of publishing.
 

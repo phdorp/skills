@@ -1,0 +1,6 @@
+?? docs/adr/0001-record-architecture-decisions.md
+?? docs/adr/0002-pantry-file-format.md
+?? docs/adr/0003-cli-commands-and-exit-codes.md
+?? docs/adr/0004-standard-library-only.md
+?? docs/adr/0005-block-dependency-rule.md
+?? docs/architecture/arc42.md

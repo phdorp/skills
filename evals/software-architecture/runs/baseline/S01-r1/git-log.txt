@@ -1,0 +1,2 @@
+da31322378d718694330efe703647f7c7d8f54e2 feat: add --top N option to print only the most frequent words
+7e367d67e839c8edc3c7b7d6ac98c75944bbc7e9 fixture

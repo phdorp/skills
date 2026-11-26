@@ -1,0 +1,41 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3",
+  "J4"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Recovery from the code waits until you approve the \"Record architecture decisions\" ADR.",
+   "source": "transcript.md",
+   "reason": "Turn 1 drafts the decisions-made-centrally list as ADR 0001 and states that recovery waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "Sections 2–8 and 11 stay empty until you approve the ADR; then recovery from the code starts.",
+   "source": "transcript.md",
+   "reason": "Turn 2 ends asking for approval of ADR 0001 and leaves the recovered sections empty."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "- The code's findings in sections 2–8 and 11 are unconfirmed until you confirm them.",
+   "source": "transcript.md",
+   "reason": "The final message names the as-found sections for review and separately lists ADRs 0002–0006 as proposed, awaiting approval."
+  },
+  {
+   "criterion": "J4",
+   "pass": true,
+   "quote": "| `Room` | lumped room air: stores heat and loses it through the walls | `Q_heat` (heating power) | `T` (room temperature) | `Interfaces`; `HeatingLib.roomHeatCapacity` (default of `C`) |",
+   "source": "workspace/docs/architecture/arc42.md",
+   "reason": "Section 5 gives each block's in and out signals as its interface and names the coupling through roomHeatCapacity."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.26013780000000003
+}

@@ -1,0 +1,5 @@
+grader/selftest/
+runs/*/*/transcript*.jsonl
+__pycache__/
+# Agents file feature-level work under .scratch/; runs and grader fixtures keep it.
+!.scratch/

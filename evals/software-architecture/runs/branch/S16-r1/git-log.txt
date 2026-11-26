@@ -1,0 +1,3 @@
+3bcb7a666609370b15df95068f3e3640bcb33744 docs(adr): propose ADR-0004 tags as notes column and --tag options
+946ce4b5c7cc962765dbe42c86d273ef162c32c9 feat: list search results newest first
+3f89b5eac3ec0fdc0250cd4f9dff171dfb680464 fixture

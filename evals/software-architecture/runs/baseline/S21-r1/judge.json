@@ -1,0 +1,25 @@
+{
+ "criteria": [
+  "J1",
+  "J2"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": false,
+   "quote": "ADR-0004 doesn't require cleanup, so this is a hygiene issue, not a violation.",
+   "source": "transcript.md",
+   "reason": "The review has no Architecture section (only Standards and Spec), and although it notes ADR-0004 is proposed, it then judges the code against ADR-0004 as if it were a binding rule."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "The code also cites ADR-0004 as its basis, but ADR-0004 is still `proposed`.",
+   "source": "transcript.md",
+   "reason": "The review only reports that ADR-0004 is still proposed; it does not accept or edit it, and does not tell the author to accept it."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1320258
+}

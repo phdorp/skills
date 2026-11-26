@@ -32,6 +32,20 @@ Subagent (general-purpose):
 
     **Ask them now.** Raise any concerns before starting work.
 
+    **If the project has docs/architecture/arc42.md**, check the task against
+    its architecture before you write code: list each choice the task makes
+    that is architectural by the domain-modeling skill's "When a decision
+    needs an ADR" test: expensive to change later, crossing a module boundary,
+    or named on the "decided centrally" list in the ADR titled "Record
+    architecture decisions" (an on-disk format, a CLI option, an interface).
+    Each item no accepted ADR settles is an open decision, even when the
+    brief spells out how to do it: a brief is not an accepted ADR. Draft it
+    with the domain-modeling skill as a proposed ADR and commit it alone
+    (docs(adr): propose <title>). Leave the code behind it unwritten, finish
+    the rest of the task, and report NEEDS_DECISION with the ADR's path.
+    The architect is not yours to ask, and the decision is not yours to
+    make.
+
     ## Your Job
 
     Once you're clear on requirements:
@@ -152,7 +166,7 @@ Subagent (general-purpose):
 
     Then report back with ONLY (under 15 lines — the detail lives in the
     report file):
-    - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
+    - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT | NEEDS_DECISION
     - Commits created (short SHA + subject)
     - One-line test summary (e.g. "14/14 passing, output pristine")
     - Your concerns, if any

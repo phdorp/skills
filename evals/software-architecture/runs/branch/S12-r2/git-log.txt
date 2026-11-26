@@ -1,0 +1,2 @@
+8eaf61d9a249ff7687cd69acf387a33c1a3e2d0f docs: add spec for notes backup command
+88d3d4e62e369fe88efa90818d72b415bd55addf fixture

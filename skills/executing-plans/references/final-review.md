@@ -12,7 +12,7 @@ If the review returns findings, dispatch ONE fix subagent with the complete find
 
 Then run exactly one scoped re-review of the fix wave: `bash scripts/review-package PLAN_FILE FIX_BASE HEAD` over the fix range, with [../re-review-prompt.md](../re-review-prompt.md).
 
-Adjudicate any residual finding as the fix loop's breaker does ([fix-loop.md](fix-loop.md)): park it with a ruling, or rule on the load-bearing ones and ledger what you decided. Only the four stops at the top of SKILL.md stop you here. There is no second fix wave — residual load-bearing findings surface to your human partner when `finishing-a-development-branch` presents the options.
+Adjudicate any residual finding as the fix loop's breaker does ([fix-loop.md](fix-loop.md)): park it with a ruling, or rule on the load-bearing ones and ledger what you decided. Only the stops in SKILL.md's Continuous Execution stop you here. There is no second fix wave — residual load-bearing findings surface to your human partner when `finishing-a-development-branch` presents the options.
 
 ## Finish
 

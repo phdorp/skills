@@ -1,0 +1,2 @@
+3f9ccbe95b39fc8052d7c8edbc9bacef602602ba feat(cli): add --top N to print only the most frequent words
+7e367d67e839c8edc3c7b7d6ac98c75944bbc7e9 fixture

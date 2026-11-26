@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "It goes into section 11 once the architecture is recovered from the code, after you approve ADR 0001.",
+   "source": "transcript.md",
+   "reason": "Turn 1 proposes the decisions-made-centrally list as draft ADR 0001 and states that recovery from the code waits for the architect's approval of it."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "**Next step:** please approve the text of ADR 0001. Once you accept it, recovery of the architecture from the code starts. Until then, sections 2–8 and 11 stay empty.",
+   "source": "transcript.md",
+   "reason": "Turn 2 writes only confirmed sections 1, 9 and 10 plus the proposed ADR, and ends by asking for approval of ADR 0001 before any recovery."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "**arc42 sections 2–8 and 11** are filled, each starting with *As found, unconfirmed.*",
+   "source": "transcript.md",
+   "reason": "The final message names the as-found sections for the architect to confirm or correct, and separately lists proposed ADRs 0002–0006 awaiting acceptance."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.3633658
+}

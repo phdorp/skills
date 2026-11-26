@@ -5,12 +5,14 @@ description: Use when requesting, performing, or receiving review of a branch, P
 
 # Code Review
 
-One loop with three phases: **request** a review, **perform** it on two axes, **receive** the findings and act on them.
+One loop with three phases: **request** a review, **perform** it on separate axes, **receive** the findings and act on them.
 
-## The two axes
+## The axes
 
 - **Standards**: does the diff follow this repo's documented coding standards?
 - **Spec**: does the diff faithfully implement the originating issue or spec?
+
+If `docs/architecture/arc42.md` exists, read [references/architecture-axis.md](references/architecture-axis.md) before step 4: it adds a third axis with its own reviewer. Without it, the ordinary case, the review has these two axes, its report has exactly two sections, `## Standards` and `## Spec`, and the report opens with the change it reviewed.
 
 Keep them separate. Code can pass one and fail the other: an implementation that ignores every convention can implement the right thing, and a beautifully conventional diff can implement the wrong thing. Reporting the axes separately stops one from masking the other.
 
@@ -29,7 +31,7 @@ Request review when it is mandatory: after each task in subagent-driven executio
 
 Reviewing the diff yourself instead of dispatching a reviewer is a false economy: the diff and its evaluation consume the context you need to keep driving the work. Dispatch, and let only the findings come back.
 
-## Performing the two-axis review
+## Performing the review
 
 ### 1. Pin the fixed point
 
@@ -60,7 +62,7 @@ Search the repo for every file that documents how code should be written. `CODIN
 
 ### 4. Run the axes in parallel
 
-When subagents are available, issue both calls together, in the foreground, and aggregate what they return. When they are not, do two separate passes and keep the notes apart.
+When subagents are available, issue one call per axis together, in the foreground, and aggregate what they return. When they are not, do one separate pass per axis and keep the notes apart.
 
 Give each reviewer the filled prompt from [references/reviewer-prompt.md](references/reviewer-prompt.md) with:
 
@@ -72,7 +74,7 @@ Each reviewer gets one axis. A reviewer that sees the other axis's findings star
 
 ### 5. Aggregate
 
-Present the two reports under `## Standards` and `## Spec`, verbatim or lightly cleaned. Do not merge, deduplicate across axes, or rerank.
+Present each axis's report under its own heading (`## Standards`, `## Spec`), verbatim or lightly cleaned. Do not merge, deduplicate across axes, or rerank.
 
 Close with one line: findings per axis, and the worst issue **within each axis**. Do not pick a single winner across axes.
 

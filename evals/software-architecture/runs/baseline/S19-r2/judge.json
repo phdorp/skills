@@ -1,0 +1,41 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3",
+  "J4"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": false,
+   "quote": "## Standards",
+   "source": "transcript.md",
+   "reason": "The ADR-0003 breach is reported under the Standards section; the review has no Architecture section."
+  },
+  {
+   "criterion": "J2",
+   "pass": false,
+   "quote": "**Summary:** Standards: 2 Important, 1 Minor (worst: the ADR-0003 violation, `notes/cli.py:3, 17–23`). Spec: 0 findings.",
+   "source": "transcript.md",
+   "reason": "No finding notes that ADR-0004's Context cites no R-, QG- or QS-ID."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "a contributor who swaps the storage engine (QS-3) must now also change `cli.py`",
+   "source": "transcript.md",
+   "reason": "The review names QS-3 and says a storage swap now also requires changing cli.py."
+  },
+  {
+   "criterion": "J4",
+   "pass": false,
+   "quote": "**Summary:** Standards: 2 Important, 1 Minor (worst: the ADR-0003 violation, `notes/cli.py:3, 17–23`). Spec: 0 findings.",
+   "source": "transcript.md",
+   "reason": "Only the Standards and Spec axes have sections and a worst issue; the Architecture axis is missing entirely."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1373898
+}

@@ -12,7 +12,8 @@ Surface architectural friction and propose **deepening opportunities**: refactor
 This command is _informed_ by the project's domain model and built on a shared design vocabulary:
 
 - Call the Skill tool with "codebase-design" for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, "the interface is the test surface", "one adapter = hypothetical seam, two = real"). Use these terms exactly in every suggestion, and don't drift into "component," "service," "API," or "boundary."
-- The domain language in `GLOSSARY.md` gives names to good seams; ADRs in `docs/adr/` record decisions this command should not re-litigate.
+- The domain language in `GLOSSARY.md` gives names to good seams; ADRs in the project's ADR directory (see `domain-modeling`) record decisions this command should not re-litigate.
+- **A set-up project** has `docs/architecture/arc42.md`. There, every candidate serves a quality goal: read the quality goals (`QG-n`) in arc42 section 1 and the "Record architecture decisions" ADR before you explore.
 
 ## Process
 
@@ -23,7 +24,7 @@ This command is _informed_ by the project's domain model and built on a shared d
 - If the user named a direction (a module, a subsystem, a pain point), take it, and skip the inference below.
 - Otherwise, walk back a good stretch of the commit history (`git log --oneline`) to find the codebase's hot spots, the files and areas that keep coming up, and let those paths pull your attention first. If the changes are scattered with no clear hot spot, widen the net.
 
-Read the project's domain glossary (`GLOSSARY.md`) and any ADRs in the area you're touching first.
+Read the project's domain glossary (`GLOSSARY.md`) and any ADRs in the area you're touching first. Speak in the code's own paradigm: `codebase-design` maps the vocabulary to object-oriented, imperative and dataflow code.
 
 Then spawn a sub-agent to walk the codebase. Don't follow rigid heuristics; explore organically and note where you experience friction:
 
@@ -49,6 +50,7 @@ For each candidate, render a card with:
 - **Benefits**: explained in terms of locality and leverage, and how tests would improve
 - **Before / After diagram**: side-by-side, custom-drawn, illustrating the shallowness and the deepening
 - **Recommendation strength**: one of `Strong`, `Worth exploring`, `Speculative`, rendered as a badge
+- **Quality goal** (set-up project only): the `QG-n` from arc42 that the candidate serves, with one line on how. Cite only IDs arc42 defines; a candidate that serves no goal stays out of the report.
 
 End the report with a **Top recommendation** section: which candidate you'd tackle first and why.
 
@@ -62,11 +64,13 @@ Do NOT propose interfaces yet. After the file is written, ask the user: "Which o
 
 ### 3. Grilling loop
 
+**In a set-up project, an accepted candidate is a decision first.** When the architect accepts a candidate, call the Skill tool with "domain-modeling" and record it as an ADR whose Context cites the quality goal. The run ends with that ADR: code, models and tests stay as they are until the architect accepts it, including parts the "made centrally" list leaves to the blocks. Accepting a candidate is not accepting its ADR. A safety-net test for the change is part of the change, so it waits for the ADR too.
+
 Once the user picks a candidate, call the Skill tool with "design-dialogue" to walk the decision tree with them: constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
 
 Side effects happen inline as decisions crystallize; call the Skill tool with "domain-modeling" to keep the domain model current as you go:
 
 - **Naming a deepened module after a concept not in `GLOSSARY.md`?** Add the term to `GLOSSARY.md`. Create the file lazily if it doesn't exist.
 - **Sharpening a fuzzy term during the conversation?** Update `GLOSSARY.md` right there.
-- **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons ("not worth it right now") and self-evident ones.
+- **User rejects the candidate with a load-bearing reason?** Offer to record it as an ADR (`domain-modeling` › "When a decision needs an ADR") so future reviews don't re-suggest it. Ephemeral and self-evident reasons get no offer.
 - **Want to explore alternative interfaces for the deepened module?** Call the Skill tool with "codebase-design" and use its design-it-twice parallel sub-agent pattern.

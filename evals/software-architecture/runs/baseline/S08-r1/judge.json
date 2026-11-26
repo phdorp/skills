@@ -1,0 +1,41 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3",
+  "J4"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "The fix is to have System bind `C` and `G` into the Thermostat, so the gain comes from the room it controls.",
+   "source": "transcript.md",
+   "reason": "The coupling is described as parameter binding through System and signals over connectors, not as object-oriented classes, methods or inheritance."
+  },
+  {
+   "criterion": "J2",
+   "pass": false,
+   "quote": "<li>locality: plant values live with the room that owns them</li>",
+   "source": "transcript.md",
+   "reason": "Candidate wins are tagged with design terms (locality, leverage, tests) rather than the project's quality goals; candidate A in particular names no QG it serves."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "Which of these would you like to explore?",
+   "source": "transcript.md",
+   "reason": "Turn 1 ends by asking the architect which candidate to explore."
+  },
+  {
+   "criterion": "J4",
+   "pass": false,
+   "quote": "Candidate A is implemented in the working tree.",
+   "source": "transcript.md",
+   "reason": "The agent edited the models directly instead of recording a proposed ADR that waits for the architect's approval."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.2373338
+}

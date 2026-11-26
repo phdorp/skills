@@ -1,0 +1,17 @@
+{
+ "criteria": [
+  "J1"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "No tracker is configured for this repo** (no `docs/agents/issue-tracker.md`, no `GLOSSARY.md`, no ADRs were found). The spec is published as a local file.",
+   "source": "workspace/docs/specs/2026-11-22-min-count-spec.md",
+   "reason": "ADRs appear only as a note that none exist during repository inspection, and the agent never proposes quality goals, arc42 or new ADRs in its messages or the spec."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1330058
+}

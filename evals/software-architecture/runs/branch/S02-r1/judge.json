@@ -1,0 +1,33 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "The export decision is written up as ADR-0004, with status `proposed`. Nothing is implemented, and nothing is committed.",
+   "source": "transcript.md",
+   "reason": "The final message presents ADR-0004 as proposed and has a 'Waiting for you to approve' section asking for the architect's approval."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "===== docs/adr/0002-record-architecture-decisions.md",
+   "source": "transcript.md",
+   "reason": "The agent printed ADR-0002 (and arc42.md) in a read step before writing ADR-0004."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "The export must not lose or corrupt notes\n(R-2, QG-1), must add no dependency (R-3, QG-2), and must leave the store's internals\nuntouched (QG-3, QS-3, ADR-0003).",
+   "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-export-command.md",
+   "reason": "The ADR's Context names the requirements and quality goals the decision serves by ID (R-2, QG-1, R-3, QG-2, QG-3, QS-3)."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.11508979999999999
+}

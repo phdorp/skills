@@ -1,0 +1,8 @@
+ M GLOSSARY.md
+?? docs/adr/0004-export-notes-as-jsonl-via-export-command.md
+?? notes/__pycache__/__init__.cpython-313.pyc
+?? notes/__pycache__/cli.cpython-313.pyc
+?? notes/__pycache__/model.cpython-313.pyc
+?? notes/__pycache__/store.cpython-313.pyc
+?? tests/__pycache__/__init__.cpython-313.pyc
+?? tests/__pycache__/test_notes.cpython-313.pyc

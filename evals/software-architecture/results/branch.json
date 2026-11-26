@@ -1,0 +1,3187 @@
+{
+ "arm": "branch",
+ "summary": {
+  "S01": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.013
+  },
+  "S02": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.017
+  },
+  "S03": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.014
+  },
+  "S04": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.017
+  },
+  "S05": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.024
+  },
+  "S06": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.066
+  },
+  "S07": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.072
+  },
+  "S08": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.094
+  },
+  "S09": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.143
+  },
+  "S10": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 0.875,
+   "cost_usd": 0.149
+  },
+  "S11": {
+   "runs": 2,
+   "score": 0.75,
+   "judge": 0.5,
+   "cost_usd": 0.038
+  },
+  "S12": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.034
+  },
+  "S13": {
+   "runs": 2,
+   "score": 0.9,
+   "judge": 1.0,
+   "cost_usd": 0.02
+  },
+  "S14": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.009
+  },
+  "S15": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.045
+  },
+  "S16": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.239
+  },
+  "S17": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.018
+  },
+  "S18": {
+   "runs": 2,
+   "score": 0.916,
+   "judge": 1.0,
+   "cost_usd": 0.036
+  },
+  "S19": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.018
+  },
+  "S20": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.016
+  },
+  "S21": {
+   "runs": 2,
+   "score": 1.0,
+   "judge": 1.0,
+   "cost_usd": 0.031
+  }
+ },
+ "runs": [
+  {
+   "run": "S01-r1",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.002s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "One choice I made that you didn't specify: `--top` must be a positive integer.",
+      "source": "transcript.md",
+      "reason": "The agent recorded an ordinary input-validation choice and neither requested nor invented quality goals, scenarios or ISO 25010 characteristics."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "I'll add the tests first, then the option, then update the README and commit.",
+      "source": "transcript.md",
+      "reason": "The agent's plan and actions cover only tests, code, README and commit; no ADR was created or proposed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "All 7 tests pass. The invalid-value test prints argparse's usage text to stderr, so I'll silence that and commit.",
+      "source": "transcript.md",
+      "reason": "The workflow was read, test, implement, verify, commit, with no architecture setup, recovery or documentation steps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0767138
+   },
+   "cost_usd": 0.00497,
+   "needs_review": false
+  },
+  {
+   "run": "S01-r2",
+   "scenario": "S01",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.002s\n\nOK\n"
+    },
+    {
+     "name": "feature_works",
+     "pass": true,
+     "detail": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.052s\n\nOK\n"
+    },
+    {
+     "name": "committed",
+     "pass": true,
+     "detail": "2 commits"
+    },
+    {
+     "name": "no_arc42",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "`--top 0` and negative values are rejected with an argparse error (exit 2), since \"print zero words\" isn't useful. Say if you'd rather allow 0.",
+      "source": "transcript.md",
+      "reason": "The agent's judgment calls concern only feature behavior; no quality goals, scenarios or ISO 25010 characteristics appear anywhere."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Files changed:** `tally/cli.py` (the option, plus a `top` parameter on `format_counts`), `tests/test_cli.py` (unit tests for the slicing and the rejection of non-positive values, and an end-to-end test of `main`), and `README.md` (a usage example).",
+      "source": "transcript.md",
+      "reason": "Only code, tests and README were changed; no ADR was created or proposed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The project is small: one CLI module, one test file, and a README that documents the output format. I'll write the failing tests first, then implement.",
+      "source": "transcript.md",
+      "reason": "The agent read the code, wrote tests, implemented, verified and committed, with no architecture setup, recovery or documentation steps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.09499780000000001
+   },
+   "cost_usd": 0.008053,
+   "needs_review": false
+  },
+  {
+   "run": "S02-r1",
+   "scenario": "S02",
+   "checks": [
+    {
+     "name": "one_new_adr",
+     "pass": true,
+     "detail": "0004-export-notes-as-jsonl-via-export-command.md"
+    },
+    {
+     "name": "next_number",
+     "pass": true,
+     "detail": "0004-export-notes-as-jsonl-via-export-command.md"
+    },
+    {
+     "name": "five_fields",
+     "pass": true,
+     "detail": "['consequences', 'context', 'decision', 'status']"
+    },
+    {
+     "name": "status_proposed",
+     "pass": true,
+     "detail": "proposed"
+    },
+    {
+     "name": "cites_ids",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QS-3, R-2, R-3"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_export_code",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The export decision is written up as ADR-0004, with status `proposed`. Nothing is implemented, and nothing is committed.",
+      "source": "transcript.md",
+      "reason": "The final message presents ADR-0004 as proposed and has a 'Waiting for you to approve' section asking for the architect's approval."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "===== docs/adr/0002-record-architecture-decisions.md",
+      "source": "transcript.md",
+      "reason": "The agent printed ADR-0002 (and arc42.md) in a read step before writing ADR-0004."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The export must not lose or corrupt notes\n(R-2, QG-1), must add no dependency (R-3, QG-2), and must leave the store's internals\nuntouched (QG-3, QS-3, ADR-0003).",
+      "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-export-command.md",
+      "reason": "The ADR's Context names the requirements and quality goals the decision serves by ID (R-2, QG-1, R-3, QG-2, QG-3, QS-3)."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.11508979999999999
+   },
+   "cost_usd": 0.008015,
+   "needs_review": false
+  },
+  {
+   "run": "S02-r2",
+   "scenario": "S02",
+   "checks": [
+    {
+     "name": "one_new_adr",
+     "pass": true,
+     "detail": "0004-export-notes-as-jsonl-via-export-command.md"
+    },
+    {
+     "name": "next_number",
+     "pass": true,
+     "detail": "0004-export-notes-as-jsonl-via-export-command.md"
+    },
+    {
+     "name": "five_fields",
+     "pass": true,
+     "detail": "['consequences', 'context', 'decision', 'status']"
+    },
+    {
+     "name": "status_proposed",
+     "pass": true,
+     "detail": "proposed"
+    },
+    {
+     "name": "cites_ids",
+     "pass": true,
+     "detail": "QG-2, QG-3, R-1, R-2, R-3"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_export_code",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "I wrote the export decision as ADR-0004, but it is `proposed`, not accepted. ADR-0002 reserves export formats and CLI command names for the architect, so the team should not start building until you approve it.",
+      "source": "transcript.md",
+      "reason": "The final message presents the ADR as proposed and waiting for the architect's approval."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "=== docs/adr/0002-record-architecture-decisions.md",
+      "source": "transcript.md",
+      "reason": "The agent printed ADR-0002 in full before writing the new ADR."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The export must work with the\nstandard library only (R-3, QG-2) and must not weaken the storage rules: all reads go through\n`Store` (ADR-0003, QG-3).",
+      "source": "workspace/docs/adr/0004-export-notes-as-jsonl-via-export-command.md",
+      "reason": "The Context cites by ID the requirement and quality goals the decision serves (R-3, QG-2, QG-3)."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1256498
+   },
+   "cost_usd": 0.00907,
+   "needs_review": false
+  },
+  {
+   "run": "S03-r1",
+   "scenario": "S03",
+   "checks": [
+    {
+     "name": "approved_accepted_dated",
+     "pass": true,
+     "detail": "accepted 2026-11-22"
+    },
+    {
+     "name": "rejected_kept_with_reason",
+     "pass": true,
+     "detail": "rejected 2026-11-22: a server database contradicts R-3, and we will not run a second storage engine"
+    },
+    {
+     "name": "supersede_new_adr",
+     "pass": true,
+     "detail": "0006-store-notes-as-json-files.md"
+    },
+    {
+     "name": "old_status",
+     "pass": true,
+     "detail": "accepted 2026-10-01"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "rejected 2026-11-22: a server database contradicts R-3, and we will not run a second storage engine",
+      "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
+      "reason": "ADR-0004 was accepted, ADR-0005 was rejected with the architect's reason, the SQLite move was recorded as the new ADR-0006, and ADRs 0001-0003 are unchanged."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**ADR-0006**, JSON file per note replacing SQLite. Question: do you accept it, which supersedes ADR-0001?",
+      "source": "transcript.md",
+      "reason": "ADR-0006 stays proposed, ADR-0001 is still accepted and unchanged, and the final message lists ADR-0006 as waiting for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1010298
+   },
+   "cost_usd": 0.006087,
+   "needs_review": false
+  },
+  {
+   "run": "S03-r2",
+   "scenario": "S03",
+   "checks": [
+    {
+     "name": "approved_accepted_dated",
+     "pass": true,
+     "detail": "accepted 2026-11-22"
+    },
+    {
+     "name": "rejected_kept_with_reason",
+     "pass": true,
+     "detail": "rejected 2026-11-22: a server database contradicts R-3 (standard library only); we will not run a second storage engine."
+    },
+    {
+     "name": "supersede_new_adr",
+     "pass": true,
+     "detail": "0006-store-notes-as-json-files.md"
+    },
+    {
+     "name": "old_status",
+     "pass": true,
+     "detail": "accepted 2026-10-01"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "rejected 2026-11-22: a server database contradicts R-3 (standard library only); we will not run a second storage engine.",
+      "source": "workspace/docs/adr/0005-add-postgresql-backend.md",
+      "reason": "ADR-0004 was accepted, ADR-0005 rejected with the given reason, and ADR-0006 was added for the move off SQLite, while ADR-0001 to ADR-0003 are unchanged."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Waiting for your approval:** ADR-0006",
+      "source": "transcript.md",
+      "reason": "ADR-0006 is left as proposed, ADR-0001 stays accepted, and the final message says ADR-0006 waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1256538
+   },
+   "cost_usd": 0.007789,
+   "needs_review": false
+  },
+  {
+   "run": "S04-r1",
+   "scenario": "S04",
+   "checks": [
+    {
+     "name": "arc42_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adrs_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Duplicate of **R-4** (deferred",
+      "source": "transcript.md",
+      "reason": "The agent explicitly identifies requirement 1 as a duplicate of the deferred R-4."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Conflicts with **R-3** (active, rank 3), the section 2 stdlib-only constraint",
+      "source": "transcript.md",
+      "reason": "The agent names R-3 and the stdlib-only constraint as conflicting with the rich/pip requirement."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Conflicts with **ADR-0001** (accepted): the store is a binary SQLite file",
+      "source": "transcript.md",
+      "reason": "The agent names ADR-0001 as conflicting with the text-editor requirement."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "Nothing is written yet: this step ends with your confirmation.",
+      "source": "transcript.md",
+      "reason": "The agent proposes one outcome per requirement (R-4 stays deferred, rejected, system-level, feature-level, rejected), changes no files, and asks the architect to confirm."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.11070580000000001
+   },
+   "cost_usd": 0.008346,
+   "needs_review": false
+  },
+  {
+   "run": "S04-r2",
+   "scenario": "S04",
+   "checks": [
+    {
+     "name": "arc42_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adrs_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Repeats R-4** (deferred: \"needs a server; revisit next year\")",
+      "source": "transcript.md",
+      "reason": "The agent explicitly identifies the sync requirement as a duplicate of the deferred R-4."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Rejected**: `rich` is a third-party dependency, which conflicts with R-3 and constraint 2.",
+      "source": "transcript.md",
+      "reason": "The agent names R-3 and the standard-library-only constraint as conflicting with the rich/pip requirement."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "ADR-0001 (accepted): SQLite file, \"cannot be read with a text editor\"",
+      "source": "transcript.md",
+      "reason": "The agent names ADR-0001's SQLite storage as blocking the text-editor requirement and proposes a superseding ADR."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "Please confirm or change the outcomes for items 1\u20135 (for example, \"3 system-level, 4 feature-level, 2 and 5 rejected\"). I'll apply them once you've answered.",
+      "source": "transcript.md",
+      "reason": "The agent proposes one outcome per requirement (1 stays deferred as R-4, 2 and 5 rejected, 3 system-level, 4 feature-level) and asks for confirmation without changing any files."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1155098
+   },
+   "cost_usd": 0.008776,
+   "needs_review": false
+  },
+  {
+   "run": "S05-r1",
+   "scenario": "S05",
+   "checks": [
+    {
+     "name": "old_rows_kept",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "new_rows",
+     "pass": true,
+     "detail": "R-6 rejected; R-7 active; R-8 active"
+    },
+    {
+     "name": "ids_next_free",
+     "pass": true,
+     "detail": "R-6, R-7, R-8"
+    },
+    {
+     "name": "superseding_adr",
+     "pass": true,
+     "detail": "0004-store-notes-as-plain-text.md"
+    },
+    {
+     "name": "goals_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-notes-list-newest-first.md"
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "R-8 touches a confidentiality goal that no QG covers. Proposed: QG-5 Security: confidentiality, measured as \"0 plaintext note bytes recoverable from the store file without the key\".",
+      "source": "transcript.md",
+      "reason": "The final message proposes a security goal with a measure and asks the architect to decide on it, without adding it to the goal tables."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Set the order for R-7 and R-8 (proposed 4 and 5).",
+      "source": "transcript.md",
+      "reason": "The agent proposes ranks 4 and 5 for the new active requirements and asks the architect to set the order."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "No storage code changes until this ADR is accepted.",
+      "source": "workspace/docs/adr/0004-store-notes-as-plain-text.md",
+      "reason": "The agent states that storage work waits for ADR-0004 to be accepted."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1284418
+   },
+   "cost_usd": 0.012482,
+   "needs_review": false
+  },
+  {
+   "run": "S05-r2",
+   "scenario": "S05",
+   "checks": [
+    {
+     "name": "old_rows_kept",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "new_rows",
+     "pass": true,
+     "detail": "R-6 rejected; R-7 active; R-8 active"
+    },
+    {
+     "name": "ids_next_free",
+     "pass": true,
+     "detail": "R-6, R-7, R-8"
+    },
+    {
+     "name": "superseding_adr",
+     "pass": true,
+     "detail": "0004-store-notes-as-text-files.md"
+    },
+    {
+     "name": "goals_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-list-newest-first.md"
+    },
+    {
+     "name": "ranks_marked_proposed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "3. Do you want QG-4 with the scenario above?",
+      "source": "transcript.md",
+      "reason": "The agent proposed a security goal with a scenario and measure and asked the architect instead of adding it; the quality goals table is unchanged."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "1. Set the order. Proposed: R-1, R-2, R-3, R-7 (4), R-8 (5).",
+      "source": "transcript.md",
+      "reason": "The agent proposed ranks for R-7 and R-8 and asked the architect to set the order."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "5. ADR-0004 waits for your approval, and the work that depends on it waits until you accept it.",
+      "source": "transcript.md",
+      "reason": "The agent states that dependent storage work waits for the new ADR's acceptance."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1226298
+   },
+   "cost_usd": 0.011412,
+   "needs_review": false
+  },
+  {
+   "run": "S06-r1",
+   "scenario": "S06",
+   "checks": [
+    {
+     "name": "t1_only_skeleton",
+     "pass": true,
+     "detail": "new: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "headings",
+     "pass": true,
+     "detail": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+    },
+    {
+     "name": "rlist",
+     "pass": true,
+     "detail": "R-1 active, R-2 active, R-3 active, R-4 active, R-5 active"
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QG-4"
+    },
+    {
+     "name": "adr_0001",
+     "pass": true,
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'QG-3', 'R-1', 'R-3', 'R-4']"
+    },
+    {
+     "name": "section5_started",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "section9_links_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-list-latest-first.md"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Please confirm and rank the top 3 to 5. I'd keep reliability and portability in any set.",
+      "source": "transcript.md",
+      "reason": "Turn 1 ends with a triage table for all six requirements, a reasoned ranking, and candidate quality goals citing R-IDs with scenarios, and it asks the architect to confirm."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Time behaviour (R-5) has no measure yet and is an open question, so it has no goal row.",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "\"Fast\" is kept as an open question, and no goal with an invented measure is filed."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "*Security: confidentiality.* Are sightings private? Sensitive locations, such as nest sites, may need protecting on disk.",
+      "source": "transcript.md",
+      "reason": "The agent asks gap questions about unsupported characteristics, and the filed goals QG-1 to QG-4 all trace to requirements."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "**Waiting for you:** approve or change the text of ADR 0001.",
+      "source": "transcript.md",
+      "reason": "The final message states that ADR 0001 waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1694858
+   },
+   "cost_usd": 0.035097,
+   "needs_review": false
+  },
+  {
+   "run": "S06-r2",
+   "scenario": "S06",
+   "checks": [
+    {
+     "name": "t1_only_skeleton",
+     "pass": true,
+     "detail": "new: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "headings",
+     "pass": true,
+     "detail": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+    },
+    {
+     "name": "rlist",
+     "pass": true,
+     "detail": "R-1 active, R-2 active, R-3 active, R-4 active, R-5 active"
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3"
+    },
+    {
+     "name": "adr_0001",
+     "pass": true,
+     "detail": "0001-record-architecture-decisions.md; status proposed; cites ['QG-1', 'QG-2', 'QG-3', 'R-2', 'R-3', 'R-4']"
+    },
+    {
+     "name": "section5_started",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "section9_links_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "feature_routed",
+     "pass": true,
+     "detail": ".scratch/requirements/issues/01-list-newest-first.md"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "1. **Confirm or change** the outcomes, the rank, and the R-2 / R-5 tie-breaker.",
+      "source": "transcript.md",
+      "reason": "Turn 1 ends with a triage table covering all six requirements, a ranking with one reason each, candidate goals QG-1 to QG-3 each citing R-IDs with a scenario, and this request to confirm."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Open question (no goal row until a measure is given): performance efficiency, time behaviour, from R-5.",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "\"Fast\" is kept as an open question with no goal row and no invented measure."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "6. **Gaps:** did you leave out any of these?",
+      "source": "transcript.md",
+      "reason": "The agent asked about unsupported characteristics (confidentiality, user error protection, interoperability, capacity) and filed only QG-1 to QG-3, none of which covers them."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "`docs/adr/0001-record-architecture-decisions.md`: status `proposed`. It needs your approval before its list counts as decided.",
+      "source": "transcript.md",
+      "reason": "The final message states that ADR-0001 is proposed and waits for the architect's approval."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1713498
+   },
+   "cost_usd": 0.031214,
+   "needs_review": false
+  },
+  {
+   "run": "S07-r1",
+   "scenario": "S07",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "docs_kept",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "arc42_links_existing",
+     "pass": true,
+     "detail": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+    },
+    {
+     "name": "no_copy",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "legacy_upgraded",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "made_centrally_next",
+     "pass": true,
+     "detail": "docs/decisions/0003-record-architecture-decisions.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QG-4, QG-5"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "README \u203a How it works \u2192 section 5 (README stays as it is).",
+      "source": "transcript.md",
+      "reason": "In turn 1 the agent maps the README section to arc42 section 5 and the ADRs in docs/decisions/ to section 9, says the README stays as it is, and leaves the ADRs in place."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Upgrade to `accepted (legacy)` and add the fields; the Decision text stays.",
+      "source": "transcript.md",
+      "reason": "Both ADR 0001 and 0002 are offered together under 'Legacy ADRs (offered as one batch)', keeping their decisions unchanged."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "It is `proposed`; you have not yet approved its wording. Recorded decisions wait on that approval",
+      "source": "transcript.md",
+      "reason": "The final message states ADR 0003 stays proposed pending the architect's approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "upgraded to `accepted (legacy)`. Their Decision text is unchanged.",
+      "source": "transcript.md",
+      "reason": "The final message presents ADR-0001 and ADR-0002 as accepted (legacy) with unchanged decisions, not as items to re-approve."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1746338
+   },
+   "cost_usd": 0.035175,
+   "needs_review": false
+  },
+  {
+   "run": "S07-r2",
+   "scenario": "S07",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "docs_kept",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "arc42_links_existing",
+     "pass": true,
+     "detail": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+    },
+    {
+     "name": "no_copy",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "legacy_upgraded",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "made_centrally_next",
+     "pass": true,
+     "detail": "docs/decisions/0003-record-architecture-decisions.md"
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3, QG-5"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "README \u203a How it works \u2192 section 5, linked. The README stays as it is.",
+      "source": "transcript.md",
+      "reason": "In turn 1 the agent maps the README section to arc42 section 5 and docs/decisions/ to section 9, and says both documents stay as they are."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ADRs 0001 and 0002 have no Status. I propose upgrading them in one batch to `accepted (legacy)`, with their Decision text unchanged.",
+      "source": "transcript.md",
+      "reason": "Both existing ADRs are offered for upgrade together, and their decisions are kept unchanged."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "ADR 0003, \"Record architecture decisions\", stays `proposed` until you approve its text.",
+      "source": "transcript.md",
+      "reason": "The final message says the new ADR waits for the architect's approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "`docs/decisions/0001-store-books-in-one-json-file.md`: upgraded to `accepted (legacy)`.",
+      "source": "transcript.md",
+      "reason": "The final message presents the legacy ADRs as accepted (legacy), not as decisions to approve again."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1953098
+   },
+   "cost_usd": 0.037134,
+   "needs_review": false
+  },
+  {
+   "run": "S08-r1",
+   "scenario": "S08",
+   "checks": [
+    {
+     "name": "report_outside_repo",
+     "pass": true,
+     "detail": "writes: /tmp/architecture-review-20261122-181631.html; in workspace: "
+    },
+    {
+     "name": "goals_cited",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3"
+    },
+    {
+     "name": "t1_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0002-pass-room-heat-capacity-through-controller-port.md; status proposed; cites ['QG-1', 'QG-2']"
+    },
+    {
+     "name": "adr0001_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The fix is to make `C` a parameter of `Thermostat` with no default, bound in `System` as `Thermostat thermostat(C = room.C)`.",
+      "source": "transcript.md",
+      "reason": "Coupling and fixes are framed as parameters, parameter bindings, ports and connections rather than OO classes, methods or inheritance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "QG-3 (QS-3): \"every model checks\" becomes true for each block, not only for System.",
+      "source": "transcript.md",
+      "reason": "Every candidate card has a QG badge and a Quality goal line (QG-2/QG-1, QG-2, QG-3)."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Accepting a candidate means recording its ADR first, so no model code changes until you accept one.\n\nWhich of these would you like to explore?",
+      "source": "transcript.md",
+      "reason": "Turn 1's final message ends by asking the architect which candidate to explore."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "The decision is recorded as a proposed ADR, and no model, test, or arc42 code has changed.",
+      "source": "transcript.md",
+      "reason": "The final message states the ADR is proposed and awaits the architect's approval, and that no model was changed."
+     }
+    ],
+    "quote_errors": [
+     "J2: quote not found in transcript.md"
+    ],
+    "needs_review": true,
+    "cost_usd": 0.2481618
+   },
+   "cost_usd": 0.053855,
+   "needs_review": true
+  },
+  {
+   "run": "S08-r2",
+   "scenario": "S08",
+   "checks": [
+    {
+     "name": "report_outside_repo",
+     "pass": true,
+     "detail": "writes: /tmp/architecture-review-20261122-181641.html; in workspace: "
+    },
+    {
+     "name": "goals_cited",
+     "pass": true,
+     "detail": "QG-2, QG-3"
+    },
+    {
+     "name": "t1_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0002-thermostat-gain-through-seam.md; status proposed; cites ['QG-2']"
+    },
+    {
+     "name": "adr0001_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The fix is to pass the room's capacity into `Thermostat` as a parameter and have `System` connect the two.",
+      "source": "transcript.md",
+      "reason": "Coupling is described through parameters, ports and System's wiring, not object-oriented classes, methods or inheritance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "2. **Worth exploring: Give Room and Thermostat their own test surface (QG-3).**",
+      "source": "transcript.md",
+      "reason": "Both candidates name a quality goal: candidate 1 names QG-2 replaceability and candidate 2 names QG-3."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Which of these would you like to explore?",
+      "source": "transcript.md",
+      "reason": "Turn 1 ends by asking the architect which candidate to explore."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "I've drafted the ADR for the accepted candidate. It is still `proposed`, so the code is unchanged.",
+      "source": "transcript.md",
+      "reason": "The final message states the ADR is proposed and awaiting approval, and that no model files were changed."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2049698
+   },
+   "cost_usd": 0.04004,
+   "needs_review": false
+  },
+  {
+   "run": "S09-r1",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-22"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 6; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "5 recovered, limit 5; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "It goes into section 11 once the architecture is recovered from the code, after you approve ADR 0001.",
+      "source": "transcript.md",
+      "reason": "Turn 1 proposes the decisions-made-centrally list as draft ADR 0001 and states that recovery from the code waits for the architect's approval of it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Next step:** please approve the text of ADR 0001. Once you accept it, recovery of the architecture from the code starts. Until then, sections 2\u20138 and 11 stay empty.",
+      "source": "transcript.md",
+      "reason": "Turn 2 writes only confirmed sections 1, 9 and 10 plus the proposed ADR, and ends by asking for approval of ADR 0001 before any recovery."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**arc42 sections 2\u20138 and 11** are filled, each starting with *As found, unconfirmed.*",
+      "source": "transcript.md",
+      "reason": "The final message names the as-found sections for the architect to confirm or correct, and separately lists proposed ADRs 0002\u20130006 awaiting acceptance."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.3633658
+   },
+   "cost_usd": 0.08061,
+   "needs_review": false
+  },
+  {
+   "run": "S09-r2",
+   "scenario": "S09",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-22"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 6; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "4 recovered, limit 4; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "That means the architecture is recovered from the code only after you approve the \"Record architecture decisions\" ADR.",
+      "source": "transcript.md",
+      "reason": "Turn 1 drafts the centrally-decided list for ADR-0001 and states that recovery waits for the architect's approval of it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "3. **Approve ADR-0001.** It lists the centrally decided items: the file format and crash-safety rule, the CLI names and exit codes, the stdlib-only rule, and the module boundary. Once you approve its text, I will recover the rest of the architecture from the code.",
+      "source": "transcript.md",
+      "reason": "Turn 2 closes by asking for approval of ADR-0001 before recovery and leaves sections 2\u20138 and 11 empty, recovering nothing."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "`docs/architecture/arc42.md`: sections 2\u20138 and 11 describe the code as found. Sections 1, 9, 10 and 12 hold what you confirmed.",
+      "source": "transcript.md",
+      "reason": "The final message names the as-found sections awaiting review and lists proposed ADRs 0002\u20130005 with a review question for each."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2665298
+   },
+   "cost_usd": 0.062691,
+   "needs_review": false
+  },
+  {
+   "run": "S10-r1",
+   "scenario": "S10",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-22"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 4; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "5 recovered, limit 5; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-1, QG-2"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Recovering the rest of the architecture from the code waits for your approval of this ADR. Sections 2\u20138 and 11 stay empty until then.",
+      "source": "transcript.md",
+      "reason": "Turn 1 proposes the list of decisions made centrally and says recovery waits for the architect's approval of it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Approve the text of ADR 0001.** Until you do, its status stays `proposed`.\n- **Recovering the architecture from the code** waits for that approval. Sections 2\u20138 and 11 stay empty until then.",
+      "source": "transcript.md",
+      "reason": "Turn 2 ends by asking for approval of ADR 0001, and its arc42 write leaves sections 2\u20138 and 11 empty, so nothing was recovered."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "sections 2\u20138 and 11 are filled, each starting with *As found, unconfirmed.*",
+      "source": "transcript.md",
+      "reason": "The proposed ADRs are listed, but the marked sections are given only as a range that wrongly includes the empty, unmarked section 7, so the architect does not get an accurate section-by-section list."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "`HeatingLib.roomHeatCapacity` (5e5 J/K) is a package constant, not a block. `Room` reads it as\nits parameter `C`, and `Thermostat` reads it in its gain `k`. See ADR 0003.",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "Section 5 gives each block's in/out connectors as its interface and names the coupling through the shared constant roomHeatCapacity."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.3056258
+   },
+   "cost_usd": 0.069227,
+   "needs_review": true
+  },
+  {
+   "run": "S10-r2",
+   "scenario": "S10",
+   "checks": [
+    {
+     "name": "t1_only_arc42",
+     "pass": true,
+     "detail": "changed: docs/architecture/arc42.md; rows: 0"
+    },
+    {
+     "name": "t2_waits",
+     "pass": true,
+     "detail": "ADRs: 0001-record-architecture-decisions.md; status proposed; marker False; section 5 rows 0"
+    },
+    {
+     "name": "list_accepted",
+     "pass": true,
+     "detail": "accepted 2026-11-22"
+    },
+    {
+     "name": "recovered_marked",
+     "pass": true,
+     "detail": "section 5 rows 4; "
+    },
+    {
+     "name": "recovery_adrs",
+     "pass": true,
+     "detail": "5 recovered, limit 6; "
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_measured",
+     "pass": true,
+     "detail": "QG-2, QG-3"
+    }
+   ],
+   "passed": 7,
+   "total": 7,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Recovery from the code waits until you approve the \"Record architecture decisions\" ADR.",
+      "source": "transcript.md",
+      "reason": "Turn 1 drafts the decisions-made-centrally list as ADR 0001 and states that recovery waits for the architect's approval of it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Sections 2\u20138 and 11 stay empty until you approve the ADR; then recovery from the code starts.",
+      "source": "transcript.md",
+      "reason": "Turn 2 ends asking for approval of ADR 0001 and leaves the recovered sections empty."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "- The code's findings in sections 2\u20138 and 11 are unconfirmed until you confirm them.",
+      "source": "transcript.md",
+      "reason": "The final message names the as-found sections for review and separately lists ADRs 0002\u20130006 as proposed, awaiting approval."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "| `Room` | lumped room air: stores heat and loses it through the walls | `Q_heat` (heating power) | `T` (room temperature) | `Interfaces`; `HeatingLib.roomHeatCapacity` (default of `C`) |",
+      "source": "workspace/docs/architecture/arc42.md",
+      "reason": "Section 5 gives each block's in and out signals as its interface and names the coupling through roomHeatCapacity."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.26013780000000003
+   },
+   "cost_usd": 0.080125,
+   "needs_review": false
+  },
+  {
+   "run": "S11-r1",
+   "scenario": "S11",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": "turn 1: ; end: "
+    },
+    {
+     "name": "arc42_read",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_cited",
+     "pass": false,
+     "detail": ""
+    },
+    {
+     "name": "add_requirements_suggested",
+     "pass": false,
+     "detail": "named False; loaded False"
+    }
+   ],
+   "passed": 2,
+   "total": 4,
+   "score": 0.5,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": false,
+      "quote": "R-3 says the tool uses only the Python standard library.",
+      "source": "transcript.md",
+      "reason": "The agent named requirement R-3 but never named the quality goals the export touches by QG-n ID, either before or while laying out approaches."
+     },
+     {
+      "criterion": "J2",
+      "pass": false,
+      "quote": "Cost: CBC has no integrity check, so tampered files decrypt to garbage instead of failing.",
+      "source": "transcript.md",
+      "reason": "Three options and a recommendation are given, but they are not tied to the quality goals (no QG IDs), and option 1 is weighed only on cipher properties, not on any project quality goal."
+     },
+     {
+      "criterion": "J3",
+      "pass": false,
+      "quote": "Accept your choice as an ADR, since export format and dependencies are architect decisions.",
+      "source": "transcript.md",
+      "reason": "The agent routes encryption into an ADR decision and never names it as a new system-level requirement or suggests running `add-requirements`."
+     },
+     {
+      "criterion": "J4",
+      "pass": false,
+      "quote": "ADR-0004 (proposed) already requires any file the store writes, exports included, to go through a temp file, fsync, and rename.",
+      "source": "transcript.md",
+      "reason": "Although it labels ADR-0004 as proposed, the agent says it 'already requires' atomic writes, treating it as a binding rule rather than an open decision."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1329898
+   },
+   "cost_usd": 0.015326,
+   "needs_review": false
+  },
+  {
+   "run": "S11-r2",
+   "scenario": "S11",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": "turn 1: ; end: "
+    },
+    {
+     "name": "arc42_read",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "goals_cited",
+     "pass": true,
+     "detail": "QG-1, QG-2, QG-3"
+    },
+    {
+     "name": "add_requirements_suggested",
+     "pass": true,
+     "detail": "named True; loaded False"
+    }
+   ],
+   "passed": 4,
+   "total": 4,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Quality goals this touches:** QG-1 Reliability: fault tolerance (a crash mid-export must not leave a half-written file, ADR-0004), QG-2 Portability: installability (stdlib only, R-3, QS-2), QG-3 Maintainability: modifiability (export reads through `Store.all()`, ADR-0003, and the crypto stays in one module).",
+      "source": "transcript.md",
+      "reason": "Before the options, the agent states the goals the export touches and names each by its QG ID."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Recommendation: Option 1.** It is the only option that keeps the Python code stdlib-only while using a reviewed cipher.",
+      "source": "transcript.md",
+      "reason": "Three options are given, each naming QG goals it serves or hurts, and Option 1 is recommended."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "arc42 has no quality goal for confidentiality. R-3 and QS-2 concern installation, not secrecy. If \"a lost stick exposes nothing\" should bind the whole system, run `/add-requirements` with it.",
+      "source": "transcript.md",
+      "reason": "The agent identifies the encryption need as uncovered by the requirements, suggests the architect run /add-requirements, and leaves arc42 unchanged."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "ADR-0004 (proposed) decides whether export writes are crash-safe. Accepting it means temp file, fsync, then replace; rejecting it means a crash can leave a partial export.",
+      "source": "transcript.md",
+      "reason": "ADR-0004 is named as an open decision with the outcome of accepting or rejecting it, and no option depends on it."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1603338
+   },
+   "cost_usd": 0.022237,
+   "needs_review": false
+  },
+  {
+   "run": "S12-r1",
+   "scenario": "S12",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-backup-spec.md"
+    },
+    {
+     "name": "qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "qr_cites",
+     "pass": true,
+     "detail": "QS-1, QS-2, QS-3, R-2, R-3"
+    },
+    {
+     "name": "not_copied",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "status_blocked",
+     "pass": true,
+     "detail": "blocked (ADR-0004)"
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**The spec is blocked on ADR-0004.** It is still `proposed`, and the atomic-write rule in your design depends on it.",
+      "source": "transcript.md",
+      "reason": "The spec's status line is blocked and lists ADR-0004 under Blocked by, and the final message tells the user the spec waits for the ADR's acceptance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Serves:** R-2 (no note is lost; a backup is the copy that survives a lost disk), R-3 (standard library only, Linux and macOS).",
+      "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
+      "reason": "The Quality Requirements section names the parent requirements R-2 and R-3 under Serves, and names QS-1, QS-2 and QS-3 under Keeps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2046458
+   },
+   "cost_usd": 0.016261,
+   "needs_review": false
+  },
+  {
+   "run": "S12-r2",
+   "scenario": "S12",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-backup-spec.md"
+    },
+    {
+     "name": "qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "qr_cites",
+     "pass": true,
+     "detail": "QS-1, QS-2, QS-3, R-2"
+    },
+    {
+     "name": "not_copied",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "status_blocked",
+     "pass": true,
+     "detail": "blocked (ADR-0004)"
+    },
+    {
+     "name": "code_unchanged",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**The spec's status is `blocked (ADR-0004)`.** ADR-0004 (atomic writes) is still `proposed`.",
+      "source": "transcript.md",
+      "reason": "The spec is marked blocked until the proposed ADR-0004 is accepted, and the final message tells the user so."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "- **Serves:** R-2 (no note is lost; a user-kept copy protects against loss of the machine).",
+      "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
+      "reason": "The Quality Requirements section names R-2 as the parent requirement and lists QS-1, QS-2 and QS-3 under Keeps."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1918098
+   },
+   "cost_usd": 0.017753,
+   "needs_review": false
+  },
+  {
+   "run": "S13-r1",
+   "scenario": "S13",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-min-count-spec.md"
+    },
+    {
+     "name": "no_qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_docs",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    },
+    {
+     "name": "no_arc42_mentioned",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 5,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The spec is written and committed at `docs/specs/2026-11-22-min-count-spec.md` (commit `5c850a5`). The repo has no tracker config, so it is a local file, not a tracker issue. I did not break the work into tickets or write a plan, since this is one small slice.",
+      "source": "transcript.md",
+      "reason": "The final report and the spec cover only feature behaviour, the test seam and assumptions, with no quality goals, arc42 or ADRs raised anywhere."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1267938
+   },
+   "cost_usd": 0.010581,
+   "needs_review": false
+  },
+  {
+   "run": "S13-r2",
+   "scenario": "S13",
+   "checks": [
+    {
+     "name": "one_spec",
+     "pass": true,
+     "detail": "2026-11-22-min-count-spec.md"
+    },
+    {
+     "name": "no_qr_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_docs",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    },
+    {
+     "name": "no_arc42_mentioned",
+     "pass": false,
+     "detail": ""
+    }
+   ],
+   "passed": 4,
+   "total": 5,
+   "score": 0.8,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The repo has no tracker config, glossary, or ADRs, so the spec went to a local file.",
+      "source": "transcript.md",
+      "reason": "The agent names ADRs and arc42 only to say they are absent when choosing where to publish, never proposes quality goals, arc42 or ADRs, and the spec contains none of them."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1170898
+   },
+   "cost_usd": 0.009878,
+   "needs_review": true
+  },
+  {
+   "run": "S14-r1",
+   "scenario": "S14",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_quality_goals",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "\"Word pair\" can mean two different things, and they lead to very different tools. Do you mean two words that sit right next to each other in the text, like \"ice cream\" or \"of the\", or any two words that appear together in the same sentence, even with other words between them?",
+      "source": "transcript.md",
+      "reason": "The agent's messages ask a clarifying question about what word pairs mean and never raise quality goals, arc42 or ADRs."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0492378
+   },
+   "cost_usd": 0.004327,
+   "needs_review": false
+  },
+  {
+   "run": "S14-r2",
+   "scenario": "S14",
+   "checks": [
+    {
+     "name": "nothing_built",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_quality_goals",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "setup_suggested_at_most_once",
+     "pass": true,
+     "detail": "0 mentions"
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**What do you want to learn from the pairs that the single-word list doesn't show you?**",
+      "source": "transcript.md",
+      "reason": "The agent's messages stick to the code's behaviour and ask about the user's goal for pairs, without raising quality goals, arc42 or ADRs."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0483138
+   },
+   "cost_usd": 0.00455,
+   "needs_review": false
+  },
+  {
+   "run": "S15-r1",
+   "scenario": "S15",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-store-tags-as-comma-separated-column.md: proposed cites ['QG-1', 'QG-3', 'QS-1', 'R-1', 'R-3']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Please accept or reject it. If you'd rather have a separate `tags` table, tell me and I'll redraft the ADR and Task 2 to match.",
+      "source": "transcript.md",
+      "reason": "The message that reports ADR-0004 asks the architect to accept or reject it and names Task 2 as the work that depends on it."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ledger: Task 1: complete (commits 3f89b5e..ce59ee9, tests: python3 -m unittest \u2192 OK)",
+      "source": "transcript.md",
+      "reason": "Task 1 was implemented with TDD, committed and recorded as complete before the agent paused only Task 2."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**Task 2, tags:** paused. I have not written any tag code.",
+      "source": "transcript.md",
+      "reason": "The agent left the ADR as proposed, wrote no tag code and made no ruling on the storage format or CLI options; the decision stays with the architect."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.21909779999999998
+   },
+   "cost_usd": 0.019058,
+   "needs_review": false
+  },
+  {
+   "run": "S15-r2",
+   "scenario": "S15",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.038s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-tags-as-comma-separated-column.md: proposed cites ['QG-3', 'QS-1', 'QS-3', 'R-1', 'R-2']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Accepting A unblocks Task 2 as written. Rejecting it needs your reason, and I'll redraft.",
+      "source": "transcript.md",
+      "reason": "The message reporting ADR-0004 asks the architect to accept or reject it and names Task 2 as the task it unblocks."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Task 1: complete (commits 3f89b5e..7f69b1a, tests: python3 -m unittest \u2192 OK)",
+      "source": "workspace/.skills/sdd/2026-11-22-search-and-tags/progress.md",
+      "reason": "Task 1 was implemented, tested and committed before the run paused only Task 2."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "Recommended, awaiting the architect: We will use option A.",
+      "source": "workspace/docs/adr/0004-tags-as-comma-separated-column.md",
+      "reason": "The storage format and the --tag CLI options stay in a proposed ADR marked as awaiting the architect, and no Task 2 code was written."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.23120580000000002
+   },
+   "cost_usd": 0.026052,
+   "needs_review": false
+  },
+  {
+   "run": "S16-r1",
+   "scenario": "S16",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.098s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-tags-as-note-column-and-cli-options.md: proposed cites ['QG-3', 'QS-1', 'R-1', 'R-2']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_committed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_issue",
+     "pass": true,
+     "detail": "files: ; gh calls: 0"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "The question is whether to accept the recommended column design or choose the separate-table alternative. Accepting it unblocks Task 2.",
+      "source": "transcript.md",
+      "reason": "The report names ADR-0004 as proposed and says Task 2 waits for it and is unblocked by its acceptance."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ADR-0002 decides both centrally, and no accepted ADR covers tags, so I did not write Task 2's code.",
+      "source": "transcript.md",
+      "reason": "The agent finished Task 1 without waiting and left the tags design to the architect as a proposed ADR, writing no Task 2 code."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**Suggested requirement:** tagging is not named in arc42 section 1. Consider running `add-requirements` to add it.",
+      "source": "transcript.md",
+      "reason": "The agent reported the missing tagging requirement as a suggestion to run add-requirements."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2033378
+   },
+   "cost_usd": 0.020696,
+   "needs_review": false
+  },
+  {
+   "run": "S16-r2",
+   "scenario": "S16",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.094s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.038s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-store-tags-as-a-column-on-notes.md: proposed cites ['QS-1', 'QS-3', 'R-2']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_committed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_issue",
+     "pass": true,
+     "detail": "files: ; gh calls: 0"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "I drafted **ADR-0004** as `proposed`, with the plan's column option as my recommendation. The architect must choose between option A (a `tags` column) and option B (a `note_tags` table). Accepting A unblocks Task 2 as the plan describes it.",
+      "source": "transcript.md",
+      "reason": "The final report lists ADR-0004 as proposed, Task 2 as paused on it, and what accepting it unblocks."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Task 2 (tags): paused, not implemented.**",
+      "source": "transcript.md",
+      "reason": "The agent kept working on the independent task, left the storage-format choice to the architect as a proposed ADR, and wrote no tag schema or CLI options."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "**New requirement:** tagging is not named by any R-n in arc42 section 1. Suggest running `add-requirements`.",
+      "source": "transcript.md",
+      "reason": "The new tagging requirement is reported as a suggestion to run add-requirements."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2782698
+   },
+   "cost_usd": 0.218167,
+   "needs_review": false
+  },
+  {
+   "run": "S17-r1",
+   "scenario": "S17",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.067s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-tag-notes-in-a-comma-separated-column.md: proposed cites ['QS-1', 'R-1']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_committed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "status_needs_decision",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "asked_no_one",
+     "pass": true,
+     "detail": "0 AskUserQuestion calls"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "Drafted `docs/adr/0004-tag-notes-in-a-comma-separated-column.md` as `proposed`. It needs the architect's approval.",
+      "source": "transcript.md",
+      "reason": "The final report names the ADR path, leaves the decision to the architect via the dispatcher, states the open point and says the tests and code wait, without the agent contacting the architect itself."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "so I did not write the failing tests or the implementation. Nothing else in Task 2 is separable.",
+      "source": "workspace/.dispatch/task-2-report.md",
+      "reason": "The ADR stays proposed, no ruling settles the format or the options, and no tags code was written."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1529298
+   },
+   "cost_usd": 0.008736,
+   "needs_review": false
+  },
+  {
+   "run": "S17-r2",
+   "scenario": "S17",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.069s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "adr_proposed",
+     "pass": true,
+     "detail": "0004-tags-as-comma-separated-text.md: proposed cites ['QS-1', 'R-1', 'R-2', 'R-3']"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_committed",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "status_needs_decision",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "asked_no_one",
+     "pass": true,
+     "detail": "0 AskUserQuestion calls"
+    }
+   ],
+   "passed": 8,
+   "total": 8,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Architect decision needed:** approve ADR-0004 as written. The main question is whether a comma-separated column is acceptable, since a tag cannot contain a comma.",
+      "source": "transcript.md",
+      "reason": "The final report hands the open question on the proposed ADR back for the architect to decide, names the ADR path elsewhere in the same message, and the agent never contacts the architect itself."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "The brief is\nnot an accepted ADR, so I did not write the tag code or its tests.",
+      "source": "workspace/.dispatch/task-2-report.md",
+      "reason": "The ADR stays proposed, nothing claims a decision on the storage format or the CLI options, and no tags code was written."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1494858
+   },
+   "cost_usd": 0.009079,
+   "needs_review": false
+  },
+  {
+   "run": "S18-r1",
+   "scenario": "S18",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.065s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": false,
+     "detail": "ext for n in store.search(\"milk\")], [\"Milk the budget\", \"Buy milk\"])\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Lists differ: ['Buy milk', 'Milk the budget'] != ['Milk the budget', 'Buy milk']\n\nFirst differing element 0:\n'Buy milk'\n'Milk the budget'\n\n- ['Buy milk', 'Milk the budget']\n+ ['Milk the budget', 'Buy milk']\n\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nFAILED (failures=1)\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 5,
+   "total": 6,
+   "score": 0.833,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "- **Decision for you:** accept or reject ADR-0004. Accepting it unblocks Task 2 as the plan describes it. Rejecting it means the tags design needs rework.",
+      "source": "transcript.md",
+      "reason": "The final report names the existing proposed ADR-0004 as what Task 2 waits for and says that accepting it unblocks Task 2."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ADR-0004, which proposes exactly this, is still `proposed`. It was already in the repo, so I didn't draft a duplicate or add a commit.",
+      "source": "transcript.md",
+      "reason": "The agent left Task 2's code unwritten and wrote no second ADR, so the decision stays with the architect."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.2278738
+   },
+   "cost_usd": 0.018934,
+   "needs_review": true
+  },
+  {
+   "run": "S18-r2",
+   "scenario": "S18",
+   "checks": [
+    {
+     "name": "tests_pass",
+     "pass": true,
+     "detail": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.097s\n\nOK\n"
+    },
+    {
+     "name": "independent_done",
+     "pass": true,
+     "detail": ".\n----------------------------------------------------------------------\nRan 1 test in 0.037s\n\nOK\n"
+    },
+    {
+     "name": "paused_area_untouched",
+     "pass": true,
+     "detail": "tag in: ; table unchanged: True"
+    },
+    {
+     "name": "others_unchanged",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "report_names_adr",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_new_adr",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**To unblock Task 2:** accept ADR-0004. The architect needs to decide whether a comma-separated `tags` text column with `ALTER TABLE` migration, plus `--tag` on `add` and `list`, is the format and CLI they want. Once it is accepted, Task 2 can run as written.",
+      "source": "transcript.md",
+      "reason": "The final report names the existing proposed ADR-0004 as the blocker and says accepting it lets Task 2 run as written."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "ADR-0004 is tracked (committed as `proposed` in `bfdc530`), so no new ADR is needed.",
+      "source": "transcript.md",
+      "reason": "The agent wrote no second ADR and no Task 2 code, leaving the tags format to the architect through the existing ADR-0004."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.17442980000000002
+   },
+   "cost_usd": 0.016661,
+   "needs_review": false
+  },
+  {
+   "run": "S19-r1",
+   "scenario": "S19",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_under_architecture",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "section8_under_architecture",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "qs_under_architecture",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "trace_under_architecture",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Critical: ADR-0003 breach**, `notes/cli.py:3` and `notes/cli.py:18-19`. ADR-0003 (accepted) says \"Only `notes/store.py` imports `sqlite3` or touches the database file.\"",
+      "source": "transcript.md",
+      "reason": "The sqlite3 breach appears under the Architecture section, cites ADR-0003 and quotes its Decision, and does not appear under Standards or Spec."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**Minor: traceability**, `docs/adr/0004-export-as-json-lines.md:9-11`. ADR-0004 is accepted, and its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves.",
+      "source": "transcript.md",
+      "reason": "The review reports ADR-0004's missing requirement or quality IDs as a traceability finding."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "After this diff, a storage swap must also change `notes/cli.py`.",
+      "source": "transcript.md",
+      "reason": "The review names QS-3 and explains that a storage swap would now also change notes/cli.py."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "**Summary:** Standards: 2 findings, worst Minor. Spec: 1 finding, worst Important. Architecture: 3 findings, worst Critical.",
+      "source": "transcript.md",
+      "reason": "The report has separate Standards, Spec and Architecture sections, and the closing line gives the findings and worst severity for each axis, while the section lines name the issues behind those severities."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.12826579999999999
+   },
+   "cost_usd": 0.008047,
+   "needs_review": false
+  },
+  {
+   "run": "S19-r2",
+   "scenario": "S19",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "adr_under_architecture",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "section8_under_architecture",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "qs_under_architecture",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "trace_under_architecture",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 6,
+   "total": 6,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "1. **Important: breaches ADR-0003.** `notes/cli.py:3` imports `sqlite3` and `cli.py:16-17` queries the database directly. ADR-0003 says: \"Only `notes/store.py` imports `sqlite3` or touches the database file.\"",
+      "source": "transcript.md",
+      "reason": "The breach is listed under the Architecture section and cites ADR-0003 with its Decision sentence."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "4. **Traceability:** ADR-0004 is accepted and new, but its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves.",
+      "source": "transcript.md",
+      "reason": "The missing requirement or quality-goal ID in ADR-0004 is reported as a traceability finding."
+     },
+     {
+      "criterion": "J3",
+      "pass": true,
+      "quote": "The export query in `cli.py` breaks that, because a swap would now also touch `cli.py`.",
+      "source": "transcript.md",
+      "reason": "The review names QS-3 and explains that a storage swap would now also change cli.py."
+     },
+     {
+      "criterion": "J4",
+      "pass": true,
+      "quote": "Closing: Standards 2 findings, worst is possible Duplicated Code (judgement call). Spec 3 findings, worst is the crash on an empty store (Important). Architecture 4 findings, worst is the ADR-0003 breach (Important).",
+      "source": "transcript.md",
+      "reason": "The report uses separate Standards, Spec and Architecture sections, and the closing line names the worst issue per axis."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1201498
+   },
+   "cost_usd": 0.009782,
+   "needs_review": false
+  },
+  {
+   "run": "S20-r1",
+   "scenario": "S20",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_section",
+     "pass": true,
+     "detail": "section: False; arc42: False"
+    }
+   ],
+   "passed": 2,
+   "total": 2,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Per axis:** Standards has 2 findings, both judgement calls, and the worst is possible Duplicated Code (finding 1). Spec has 0 requirement violations and 3 minor findings, and the worst is the unhandled missing-file traceback.",
+      "source": "transcript.md",
+      "reason": "The final report covers only the Standards and Spec axes, with no Architecture section and no suggestion to set up arc42 or ADRs."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "**2. Possible Long Method** (`tally/cli.py:17-48`)",
+      "source": "transcript.md",
+      "reason": "The Standards findings name the long main as a possible Long Method, framed as a judgement call, and suggest extracting load_stopwords."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.10331780000000002
+   },
+   "cost_usd": 0.009212,
+   "needs_review": false
+  },
+  {
+   "run": "S20-r2",
+   "scenario": "S20",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "no_architecture_section",
+     "pass": true,
+     "detail": "section: False; arc42: False"
+    }
+   ],
+   "passed": 2,
+   "total": 2,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Summary:** Standards has 3 findings (worst: Duplicated Code, `tally/cli.py:34-47`). Spec has 0 spec violations (worst: unspecified missing-file behaviour, `tally/cli.py:27-28`).",
+      "source": "transcript.md",
+      "reason": "The report has only Standards and Spec sections, with no Architecture section and no arc42/ADR suggestion."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "2. **Long Method** (possible), `tally/cli.py:17-48`. `main()` now does argument parsing, file reading, stopword loading, counting, ranking, and printing.",
+      "source": "transcript.md",
+      "reason": "The Standards section names main as a possible Long Method, a judgement call, and suggests extracting load_stopwords."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.0933618
+   },
+   "cost_usd": 0.007135,
+   "needs_review": false
+  },
+  {
+   "run": "S21-r1",
+   "scenario": "S21",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "open_decision_under_architecture",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Important: relies on a proposed ADR.** `notes/store.py:37-46` implements and cites ADR-0004 (\"Write notes atomically via a temporary file and rename\"), whose Status is `proposed`. The change depends on an open decision. It neither conforms to nor breaks that ADR.",
+      "source": "transcript.md",
+      "reason": "Under Architecture the review reports the dependency on proposed ADR-0004 as an open decision and explicitly refuses to call the change conformant."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "Fix: get ADR-0004 accepted before merging, or drop the dependency.",
+      "source": "transcript.md",
+      "reason": "The review leaves ADR-0004 untouched and only says it must get accepted (by whoever accepts ADRs) or the dependency dropped, without accepting it or telling the author to accept it."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1610258
+   },
+   "cost_usd": 0.014299,
+   "needs_review": false
+  },
+  {
+   "run": "S21-r2",
+   "scenario": "S21",
+   "checks": [
+    {
+     "name": "read_only",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "architecture_section",
+     "pass": true,
+     "detail": ""
+    },
+    {
+     "name": "open_decision_under_architecture",
+     "pass": true,
+     "detail": ""
+    }
+   ],
+   "passed": 3,
+   "total": 3,
+   "score": 1.0,
+   "valid": true,
+   "judge": {
+    "criteria": [
+     "J1",
+     "J2"
+    ],
+    "verdicts": [
+     {
+      "criterion": "J1",
+      "pass": true,
+      "quote": "**Important: the change relies on a proposed ADR.** `docs/adr/0004-write-notes-atomically.md` has `Status: proposed`, so it is not a rule.",
+      "source": "transcript.md",
+      "reason": "Under Architecture the review flags the dependency on the proposed ADR-0004 as an open decision and explicitly says it is not a rule, without declaring the change conformant."
+     },
+     {
+      "criterion": "J2",
+      "pass": true,
+      "quote": "The architect needs to accept or reject ADR-0004.",
+      "source": "transcript.md",
+      "reason": "The review leaves the accept/reject decision to the architect, does not tell the author to accept it, and the workspace ADR-0004 is unchanged with status proposed."
+     }
+    ],
+    "quote_errors": [],
+    "needs_review": false,
+    "cost_usd": 0.1727458
+   },
+   "cost_usd": 0.016889,
+   "needs_review": false
+  }
+ ]
+}

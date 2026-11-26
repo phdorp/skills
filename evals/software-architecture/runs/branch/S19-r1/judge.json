@@ -1,0 +1,41 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3",
+  "J4"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "**Critical: ADR-0003 breach**, `notes/cli.py:3` and `notes/cli.py:18-19`. ADR-0003 (accepted) says \"Only `notes/store.py` imports `sqlite3` or touches the database file.\"",
+   "source": "transcript.md",
+   "reason": "The sqlite3 breach appears under the Architecture section, cites ADR-0003 and quotes its Decision, and does not appear under Standards or Spec."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "**Minor: traceability**, `docs/adr/0004-export-as-json-lines.md:9-11`. ADR-0004 is accepted, and its Context names no `R-n`, `QG-n` or `QS-n`, so nobody can tell which requirement it serves.",
+   "source": "transcript.md",
+   "reason": "The review reports ADR-0004's missing requirement or quality IDs as a traceability finding."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "After this diff, a storage swap must also change `notes/cli.py`.",
+   "source": "transcript.md",
+   "reason": "The review names QS-3 and explains that a storage swap would now also change notes/cli.py."
+  },
+  {
+   "criterion": "J4",
+   "pass": true,
+   "quote": "**Summary:** Standards: 2 findings, worst Minor. Spec: 1 finding, worst Important. Architecture: 3 findings, worst Critical.",
+   "source": "transcript.md",
+   "reason": "The report has separate Standards, Spec and Architecture sections, and the closing line gives the findings and worst severity for each axis, while the section lines name the issues behind those severities."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.12826579999999999
+}

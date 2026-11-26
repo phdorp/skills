@@ -1,0 +1,41 @@
+{
+ "criteria": [
+  "J1",
+  "J2",
+  "J3",
+  "J4"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "The fix is to pass the room's capacity into `Thermostat` as a parameter and have `System` connect the two.",
+   "source": "transcript.md",
+   "reason": "Coupling is described through parameters, ports and System's wiring, not object-oriented classes, methods or inheritance."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "2. **Worth exploring: Give Room and Thermostat their own test surface (QG-3).**",
+   "source": "transcript.md",
+   "reason": "Both candidates name a quality goal: candidate 1 names QG-2 replaceability and candidate 2 names QG-3."
+  },
+  {
+   "criterion": "J3",
+   "pass": true,
+   "quote": "Which of these would you like to explore?",
+   "source": "transcript.md",
+   "reason": "Turn 1 ends by asking the architect which candidate to explore."
+  },
+  {
+   "criterion": "J4",
+   "pass": true,
+   "quote": "I've drafted the ADR for the accepted candidate. It is still `proposed`, so the code is unchanged.",
+   "source": "transcript.md",
+   "reason": "The final message states the ADR is proposed and awaiting approval, and that no model files were changed."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.2049698
+}

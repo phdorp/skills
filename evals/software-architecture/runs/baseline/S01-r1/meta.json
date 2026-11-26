@@ -1,0 +1,13 @@
+{
+ "scenario": "S01",
+ "arm": "baseline",
+ "ref": "main",
+ "sha": "ee3e90725afa81778e1e920488f9e5df3e033a2e",
+ "model": "claude-haiku-5-5",
+ "effort": "medium",
+ "cost_usd": 0.007819570000000001,
+ "duration_s": 20.4,
+ "exit_code": 0,
+ "isolation_ok": true,
+ "isolation_errors": []
+}

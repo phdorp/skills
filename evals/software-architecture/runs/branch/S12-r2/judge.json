@@ -1,0 +1,25 @@
+{
+ "criteria": [
+  "J1",
+  "J2"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "**The spec's status is `blocked (ADR-0004)`.** ADR-0004 (atomic writes) is still `proposed`.",
+   "source": "transcript.md",
+   "reason": "The spec is marked blocked until the proposed ADR-0004 is accepted, and the final message tells the user so."
+  },
+  {
+   "criterion": "J2",
+   "pass": true,
+   "quote": "- **Serves:** R-2 (no note is lost; a user-kept copy protects against loss of the machine).",
+   "source": "workspace/docs/specs/2026-11-22-backup-spec.md",
+   "reason": "The Quality Requirements section names R-2 as the parent requirement and lists QS-1, QS-2 and QS-3 under Keeps."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1918098
+}

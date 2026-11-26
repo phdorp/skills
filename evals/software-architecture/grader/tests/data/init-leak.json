@@ -1,0 +1,26 @@
+{
+ "type": "system",
+ "subtype": "init",
+ "model": "claude-haiku-5-5",
+ "plugins": [
+  {
+   "name": "sa",
+   "path": "{plugin_dir}",
+   "source": "sa@inline"
+  },
+  {
+   "name": "cc-plugin-telemetry",
+   "path": "builtin",
+   "source": "cc-plugin-telemetry@builtin"
+  }
+ ],
+ "skills": [
+  "sa:alpha",
+  "sa:beta",
+  "design",
+  "dataviz",
+  "code-review",
+  "simplify",
+  "codebase-design"
+ ]
+}

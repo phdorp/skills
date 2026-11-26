@@ -1,0 +1,25 @@
+{
+ "criteria": [
+  "J1",
+  "J2"
+ ],
+ "verdicts": [
+  {
+   "criterion": "J1",
+   "pass": true,
+   "quote": "Status: ready-for-agent (blocked on ADR-0004 acceptance; see Further Notes)",
+   "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+   "reason": "The spec marks the atomic-write dependency as waiting for ADR-0004's acceptance, and the final message also reports the blocker."
+  },
+  {
+   "criterion": "J2",
+   "pass": false,
+   "quote": "Related: ADR-0002 (decisions reserved for the architect), ADR-0003 (CLI reaches storage only through `Store`), ADR-0004 (atomic writes), arc42 QG-1 / QS-1 (no note lost).",
+   "source": "workspace/docs/specs/2026-11-22-backup-command-spec.md",
+   "reason": "The spec has no Quality Requirements section naming the parent requirement R-n and the QS-n scenarios; it only lists QG-1/QS-1 in a header line."
+  }
+ ],
+ "quote_errors": [],
+ "needs_review": false,
+ "cost_usd": 0.1984338
+}

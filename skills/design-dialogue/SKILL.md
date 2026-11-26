@@ -15,6 +15,8 @@ Before your first message, read what the user pointed at and the code or materia
 
 Never ask what the repo, the spec, or the conversation already answers. Facts are your job.
 
+If `docs/architecture/arc42.md` exists, read [references/architecture.md](references/architecture.md) before your first message: it changes how this dialogue runs.
+
 When looking further would help, offer recon: deeper into the codebase, the user's files and data, or the web. Say what you would look for and why it changes the design. Use [research](../research/SKILL.md) for a cited investigation; dispatch a focused explorer subagent when you only need facts from this repo.
 
 ## The first message
@@ -138,3 +140,4 @@ When the document is approved, hand off to [spec-and-plan](../spec-and-plan/SKIL
 | "The spike works, I'll keep building on it" | Keeping it is a new request. Back through the gate. |
 | "I know enough to start coding" | Then the frontier is empty. Confirm it, write it down, and get approval. |
 | "I'll ask them for the config value" | Look it up. Facts are your job; decisions are theirs. |
+| "`arc42.md` is there and I read it myself" | Read references/architecture.md too; it changes how this dialogue runs. |

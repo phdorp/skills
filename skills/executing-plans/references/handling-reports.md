@@ -6,6 +6,8 @@ Part of [executing-plans](../SKILL.md). Applies to subagent-driven mode, and to 
 
 **NEEDS_CONTEXT:** The implementer needs information that was not provided. Provide the missing context and dispatch again.
 
+**NEEDS_DECISION:** The implementer met an architectural decision and wrote it as a proposed ADR. Apply [architecture-decisions.md](architecture-decisions.md) as the parent: pause the tasks behind it and take it to the architect, or commit and report it.
+
 **BLOCKED:** The implementer cannot complete the task. Assess the blocker:
 
 1. If it is a context problem, provide more context and dispatch again with the same model.

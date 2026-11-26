@@ -35,18 +35,24 @@ The skills are designed to chain. A typical feature runs:
 
 | Step | Skill | What it produces |
 |---|---|---|
+| 0 | [`setup-architecture`](skills/setup-architecture/SKILL.md) | Once per project, optional: arc42, ranked requirements, quality goals |
 | 1 | [`design-dialogue`](skills/design-dialogue/SKILL.md) | Shared understanding and an approved design |
 | 2 | [`spec-and-plan`](skills/spec-and-plan/SKILL.md) | A spec, a ticket graph, and a task-by-task plan |
 | 3 | [`using-git-worktrees`](skills/using-git-worktrees/SKILL.md) | An isolated workspace with a clean baseline |
 | 4 | [`executing-plans`](skills/executing-plans/SKILL.md) | Implemented tasks, each verified and reviewed |
-| 5 | [`code-review`](skills/code-review/SKILL.md) | Standards and spec findings, acted on |
+| 5 | [`code-review`](skills/code-review/SKILL.md) | Standards and spec findings, plus Architecture in a set-up project, acted on |
 | 6 | [`finishing-a-development-branch`](skills/finishing-a-development-branch/SKILL.md) | A merge, PR, or preserved branch |
 | 7 | [`retro`](skills/retro/SKILL.md) | Improvements to the environment for next time |
+
+A set-up project has `docs/architecture/arc42.md`. There, new requirements enter through
+[`add-requirements`](skills/add-requirements/SKILL.md), and design, planning, execution and
+review work from the architecture: its quality goals, accepted ADRs and the architect's open
+decisions.
 
 ## All skills
 
 Every skill below is **model-invoked** unless it is labelled _(user-invoked)_. Model-invoked
-skills carry a description the agent can reach on its own; user-invoked skills are the ten listed
+skills carry a description the agent can reach on its own; user-invoked skills are the twelve listed
 again under [User-invoked skills](#user-invoked-skills) and can only be called by hand.
 
 ### Design and planning
@@ -56,12 +62,20 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 - **[spec-and-plan](skills/spec-and-plan/SKILL.md)** - Turn an agreed design into a written
   spec, tracer-bullet tickets with blocking edges, and an executable plan.
 - **[codebase-design](skills/codebase-design/SKILL.md)** - Shared vocabulary for deep modules,
-  seams, adapters, leverage, and locality.
+  seams, adapters, leverage, and locality, mapped to object-oriented, imperative and dataflow
+  code, with principle, pattern and anti-pattern tables.
 - **[domain-modeling](skills/domain-modeling/SKILL.md)** - Build and sharpen the project's
   glossary and ADRs as decisions crystallise.
+- **[setup-architecture](skills/setup-architecture/SKILL.md)** _(user-invoked)_ - Set up a
+  project's arc42 document, requirements, quality goals and "made centrally" ADR with the architect.
+- **[quality-requirements](skills/quality-requirements/SKILL.md)** - Rank requirements and
+  derive ISO/IEC 25010 quality goals and scenarios, each confirmed by the architect.
+- **[add-requirements](skills/add-requirements/SKILL.md)** _(user-invoked)_ - Check new
+  requirements against the architecture and apply the outcomes the architect confirms.
 - **[prototype](skills/prototype/SKILL.md)** - Throwaway code that answers one design question.
 - **[improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md)** _(user-invoked)_ - Scan for
-  deepening opportunities, report them visually, then explore the chosen one.
+  deepening opportunities, report them visually, then explore the chosen one; in a set-up
+  project each one serves a quality goal and an accepted one becomes a proposed ADR.
 - **[wayfinder](skills/wayfinder/SKILL.md)** _(user-invoked)_ - Map work too large for one session as decision
   tickets on an issue tracker.
 - **[research](skills/research/SKILL.md)** - Investigate a question against primary sources and
@@ -84,8 +98,8 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 
 ### Review and delivery
 
-- **[code-review](skills/code-review/SKILL.md)** - Two-axis review (Standards and Spec), plus
-  how to request, receive, and act on feedback.
+- **[code-review](skills/code-review/SKILL.md)** - Review on two axes (Standards and Spec), with
+  a third, Architecture, in a set-up project, plus how to request, receive, and act on feedback.
 - **[finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md)** - Verify,
   choose merge/PR/keep, and clean up; includes the PR body shape.
 - **[conventional-commits](skills/conventional-commits/SKILL.md)** - Write commit messages in
@@ -126,7 +140,7 @@ again under [User-invoked skills](#user-invoked-skills) and can only be called b
 
 ## User-invoked skills
 
-Ten skills are meant to be called by you, not fired autonomously by the model. Each sets
+Twelve skills are meant to be called by you, not fired autonomously by the model. Each sets
 `metadata: opencode/autoinvoke: false` in its frontmatter, so OpenCode keeps its description out
 of the agent's context and only your explicit invocation loads it. They still work by typing the
 skill's name; they just cannot be reached by the agent. Reach for one when:
@@ -134,6 +148,8 @@ skill's name; they just cannot be reached by the agent. Reach for one when:
 | Skill | Purpose |
 |---|---|
 | [`wayfinder`](skills/wayfinder/SKILL.md) | Map work too large for one session as decision tickets on the issue tracker and resolve them one at a time. |
+| [`setup-architecture`](skills/setup-architecture/SKILL.md) | Set up architecture documentation for a project: a fresh project, existing documentation, or code without documentation. |
+| [`add-requirements`](skills/add-requirements/SKILL.md) | Bring new requirements into a project that has an architecture (`docs/architecture/arc42.md`). |
 | [`triage`](skills/triage/SKILL.md) | Move incoming issues and external PRs through triage into agent-ready briefs, or close them with a reason. |
 | [`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md) | Scan a codebase for deepening opportunities, report them visually, then work through the chosen one. |
 | [`retro`](skills/retro/SKILL.md) | Conduct a retrospective on a coding session and rank evidence-backed improvements to steering files, checks, and tooling. |

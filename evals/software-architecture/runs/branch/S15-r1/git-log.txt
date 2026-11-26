@@ -1,0 +1,3 @@
+b484aef193db7cd70c1a4bbd3ab55c3a09a1c41f docs(adr): propose storing note tags as a comma-separated column
+ce59ee9899bcf3e55ba13ff293d99b2bd1c56497 feat: list search results newest first
+3f89b5eac3ec0fdc0250cd4f9dff171dfb680464 fixture
